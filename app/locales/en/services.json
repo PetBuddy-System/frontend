@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "Spa & Grooming Services - PetStore.vn"
+  },
+  "hero": {
+    "title": "Professional Spa & Grooming Services",
+    "subtitle": "Bring the most relaxing experience for your pet with our dedicated team of experts.",
+    "cta": "Book now"
+  },
+  "individual": {
+    "title": "Individual Services",
+    "subtitle": "Comprehensive care for your beloved pet",
+    "cta": "Book",
+    "items": {
+      "bath": {
+        "title": "Standard Bath & Dry",
+        "description": "Deep cleansing, deodorizing, fluffy blow-dry with professional shampoo.",
+        "price": "From 150k",
+        "imageAlt": "A fluffy dog getting a standard bath and dry with bubbles and a towel"
+      },
+      "grooming": {
+        "title": "Trimming & Styling",
+        "description": "Neat trimming, fashionable styling on request by professionals.",
+        "price": "From 250k",
+        "imageAlt": "Professional groomer styling a dog's fur with scissors"
+      },
+      "hygiene": {
+        "title": "Ear & Nail Hygiene",
+        "description": "Safe ear cleaning, nail trimming and filing to prevent bacteria.",
+        "price": "From 50k",
+        "imageAlt": "Detailed cleaning of a dog's paws and ears by a groomer"
+      }
+    }
+  },
+  "combo": {
+    "title": "Grooming Ticket Combo Savings",
+    "subtitle": "Unlimited baths - No price worries",
+    "promoImageAlt": "Promotional graphic showing discount packages for dog grooming",
+    "packages": {
+      "five": {
+        "title": "Buy 5 tickets",
+        "discount": "10% off",
+        "description": "Flexible use within 2 months",
+        "badge": "Best seller",
+        "cta": "Buy now"
+      },
+      "ten": {
+        "title": "Buy 10 tickets",
+        "discount": "15% off",
+        "description": "Optimal choice, valid for 4 months",
+        "cta": "Buy now"
+      },
+      "twenty": {
+        "title": "Buy 20 tickets",
+        "discount": "20% off",
+        "description": "Maximum savings, valid for 6 months",
+        "cta": "Buy now"
+      }
+    }
+  },
+  "gallery": {
+    "title": "Adorable Moments",
+    "images": {
+      "mainAlt": "A very happy golden retriever covered in bubbles in a bathtub",
+      "secondAlt": "A cute poodle looking clean and stylish after grooming",
+      "thirdAlt": "A cat wearing a towel on its head looking relaxed"
+    },
+    "ctaTitle": "Visit PetStore now!",
+    "ctaSubtitle": "We love your pets like family."
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "brand": {
+    "name": "Pet Store",
+    "logoAlt": "Logo Pet Store",
+    "tagline": "Hệ thống cửa hàng chăm sóc và cung cấp sản phẩm cao cấp cho thú cưng."
+  },
+  "nav": {
+    "services": "Dịch vụ",
+    "store": "Cửa hàng",
+    "products": "Sản phẩm",
+    "blog": "Blog",
+    "contact": "Liên hệ"
+  },
+  "header": {
+    "searchPlaceholder": "Tìm kiếm..."
+  },
+  "actions": {
+    "cart": "Mở giỏ hàng",
+    "account": "Mở tài khoản",
+    "menu": "Mở menu",
+    "addToCart": "Thêm vào giỏ",
+    "viewOptions": "Tùy chọn",
+    "viewDetails": "Xem chi tiết"
+  },
+  "hero": {
+    "title": "Thức ăn & Phụ kiện cho chó",
+    "subtitle": "Khám phá đa dạng các sản phẩm dinh dưỡng và phụ kiện chất lượng cao, giúp cún cưng của bạn luôn khỏe mạnh và vui vẻ mỗi ngày."
+  },
+  "filters": {
+    "title": "Bộ lọc",
+    "categoriesTitle": "Danh mục",
+    "brandsTitle": "Thương hiệu",
+    "priceTitle": "Mức giá",
+    "priceMin": "0đ",
+    "priceMax": "1.000.000đ+",
+    "categories": {
+      "all": "Tất cả",
+      "dryFood": "Thức ăn hạt",
+      "wetFood": "Pate / Thức ăn ướt",
+      "treats": "Bánh thưởng / Xương gặm",
+      "accessories": "Phụ kiện"
+    }
+  },
+  "brands": {
+    "royalCanin": "Royal Canin",
+    "ganador": "Ganador",
+    "pedigree": "Pedigree",
+    "zenith": "Zenith",
+    "jerhigh": "JerHigh",
+    "accessories": "Phụ kiện",
+    "mckelly": "Mckelly",
+    "snappyTom": "Snappy Tom",
+    "doggyman": "DoggyMan"
+  },
+  "search": {
+    "categoryPlaceholder": "Tìm kiếm sản phẩm trong danh mục này..."
+  },
+  "mobile": {
+    "filterSort": "Lọc & Sắp xếp",
+    "count": "{{count}} sản phẩm"
+  },
+  "sort": {
+    "results": "Hiển thị {{from}}-{{to}} của {{total}} sản phẩm",
+    "label": "Sắp xếp theo:",
+    "options": {
+      "popular": "Phổ biến nhất",
+      "priceLow": "Giá: Thấp đến Cao",
+      "priceHigh": "Giá: Cao đến Thấp",
+      "newest": "Mới nhất"
+    }
+  },
+  "chips": {
+    "all": "Tất cả",
+    "dryFood": "Thức ăn hạt",
+    "pate": "Pate",
+    "chews": "Xương gặm",
+    "toys": "Đồ chơi"
+  },
+  "products": {
+    "badges": {
+      "hot": "Hot",
+      "new": "Mới",
+      "sale": "-10%"
+    },
+    "items": {
+      "royalCaninPoodle": {
+        "title": "Thức ăn hạt Royal Canin Poodle Adult 1.5kg",
+        "imageAlt": "Thức ăn hạt Royal Canin Poodle"
+      },
+      "ganadorLamb": {
+        "title": "Hạt Ganador Adult Vị Cừu & Gạo 3kg",
+        "imageAlt": "Hạt Ganador vị cừu"
+      },
+      "zenithPuppy": {
+        "title": "Hạt mềm Zenith cho chó con (Puppy) 1.2kg",
+        "imageAlt": "Hạt mềm Zenith Puppy"
+      },
+      "jerhighTreat": {
+        "title": "Bánh thưởng JerHigh cho chó nhiều vị 70g",
+        "imageAlt": "Bánh thưởng JerHigh"
+      },
+      "cowhideBone": {
+        "title": "Xương da bò nút thắt làm sạch răng cho chó",
+        "imageAlt": "Xương da bò làm sạch răng"
+      },
+      "mckellyPate": {
+        "title": "Pate Mckelly lon vị gà & cá ngừ 400g",
+        "imageAlt": "Pate Mckelly"
+      },
+      "snappyTom": {
+        "title": "Pate Snappy Tom gà xé lõi lon 400g",
+        "imageAlt": "Pate Snappy Tom"
+      },
+      "pedigreeDentastix": {
+        "title": "Bánh răng cưa chăm sóc răng miệng Pedigree Dentastix",
+        "imageAlt": "Bánh răng cưa Pedigree"
+      },
+      "royalRenal": {
+        "title": "Hạt Royal Canin Renal hỗ trợ thận cho chó 2kg",
+        "imageAlt": "Hạt Royal Canin Renal"
+      },
+      "doggymanJerky": {
+        "title": "Snack cho chó DoggyMan Soft Jerky 100g",
+        "imageAlt": "Snack DoggyMan"
+      },
+      "pedigreeCombo": {
+        "title": "Combo bánh răng cưa Pedigree Dentastix tiết kiệm",
+        "imageAlt": "Combo Pedigree Dentastix"
+      },
+      "zenithGrainFree": {
+        "title": "Hạt mềm Zenith Grain Free cao cấp cho chó",
+        "imageAlt": "Hạt mềm Zenith Grain Free"
+      }
+    }
+  },
+  "gallery": {
+    "title": "Khoảnh khắc đáng yêu",
+    "subtitle": "Cùng chia sẻ niềm vui bên những người bạn bốn chân",
+    "viewAll": "Xem tất cả",
+    "share": "Chia sẻ ảnh của bạn",
+    "items": {
+      "walk": "Dắt chó đi dạo",
+      "trust": "Niềm tin khách hàng",
+      "promo": "Khuyến mãi cửa hàng",
+      "couple": "Cặp đôi với thú cưng"
+    }
+  },
+  "pagination": {
+    "prev": "Trang trước",
+    "next": "Trang sau"
+  },
+  "bottomNav": {
+    "store": "Cửa hàng",
+    "services": "Dịch vụ",
+    "cart": "Giỏ hàng",
+    "account": "Tài khoản"
+  },
+  "footer": {
+    "aboutTitle": "Về chúng tôi",
+    "policyTitle": "Chính sách",
+    "contactTitle": "Liên hệ",
+    "aboutLinks": {
+      "intro": "Giới thiệu",
+      "stores": "Hệ thống cửa hàng",
+      "careers": "Tuyển dụng"
+    },
+    "policyLinks": {
+      "shipping": "Chính sách vận chuyển",
+      "returns": "Chính sách đổi trả",
+      "privacy": "Chính sách bảo mật"
+    },
+    "address": "123 Đường Pet, Quận 1, TP.HCM",
+    "phone": "1900 1234",
+    "zaloSupport": "Zalo hỗ trợ",
+    "copyright": "© 2023 Pet Store. Đồng hành cùng thú cưng của bạn."
+  }
+}

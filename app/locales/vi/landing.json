@@ -1,0 +1,139 @@
+{
+  "brand": {
+    "name": "Pet Store",
+    "logoAlt": "Logo Pet Store",
+    "tagline": "Hệ thống cửa hàng chăm sóc và cung cấp sản phẩm cao cấp cho thú cưng."
+  },
+  "nav": {
+    "services": "Dịch vụ",
+    "store": "Cửa hàng",
+    "blog": "Blog",
+    "contact": "Liên hệ",
+    "products": "Sản phẩm"
+  },
+  "actions": {
+    "cart": "Mở giỏ hàng",
+    "menu": "Mở menu",
+    "addToCart": "Thêm vào giỏ",
+    "supportChat": "Trò chuyện hỗ trợ",
+    "callNow": "Gọi ngay",
+    "login": "Đăng nhập",
+    "register": "Đăng ký"
+  },
+  "hero": {
+    "title": "Chăm sóc trọn vẹn cho cún yêu của bạn",
+    "subtitle": "Mang đến trải nghiệm dịch vụ chuyên nghiệp, tận tâm và các sản phẩm chất lượng cao nhất cho thú cưng của gia đình bạn.",
+    "cta": "Đặt lịch dịch vụ ngay"
+  },
+  "services": {
+    "title": "Dịch vụ Spa & Grooming chuyên nghiệp",
+    "subtitle": "Trải nghiệm dịch vụ chăm sóc chuẩn 5 sao với đội ngũ chuyên viên yêu động vật và giàu kinh nghiệm.",
+    "cta": "Đặt lịch qua Zalo",
+    "items": {
+      "bath": {
+        "title": "Tắm & sấy tiêu chuẩn",
+        "description": "Quy trình tắm sấy nhiều bước với dầu gội chuyên dụng, giúp làm sạch sâu, khử mùi và dưỡng lông mềm mượt. Phù hợp cho mọi giống chó mèo.",
+        "imageAlt": "Tắm và sấy chó",
+        "bullets": [
+          "Làm sạch tuyến hôi",
+          "Sấy phồng tạo kiểu cơ bản",
+          "Vệ sinh tai, cắt móng"
+        ]
+      },
+      "grooming": {
+        "title": "Tỉa lông & tạo kiểu (Grooming)",
+        "description": "Dịch vụ cắt tỉa nghệ thuật theo tiêu chuẩn hoặc theo yêu cầu riêng, biến hóa ngoại hình thú cưng trở nên đáng yêu và gọn gàng hơn.",
+        "imageAlt": "Tỉa lông và tạo kiểu",
+        "bullets": [
+          "Tư vấn kiểu cắt phù hợp",
+          "Cắt tỉa chi tiết toàn thân",
+          "Phục hồi lông xơ rối"
+        ]
+      }
+    }
+  },
+  "products": {
+    "title": "Sản phẩm nổi bật",
+    "filters": {
+      "all": "Tất cả",
+      "food": "Thức ăn",
+      "accessories": "Phụ kiện",
+      "toys": "Đồ chơi"
+    },
+    "badgeHot": "HOT",
+    "viewAll": "Xem tất cả sản phẩm",
+    "items": {
+      "royalCanin": {
+        "title": "Thức ăn hạt cho chó con Royal Canin Mini Puppy 2kg",
+        "price": "350.000đ",
+        "imageAlt": "Thức ăn hạt Royal Canin"
+      },
+      "ganador": {
+        "title": "Thức ăn cho chó trưởng thành Ganador Adult vị thịt gà",
+        "price": "120.000đ",
+        "imageAlt": "Thức ăn hạt Ganador"
+      },
+      "bone": {
+        "title": "Xương gặm sạch răng da bò tự nhiên cho chó cỡ trung",
+        "price": "45.000đ",
+        "imageAlt": "Xương da bò"
+      },
+      "carrier": {
+        "title": "Lồng vận chuyển thú cưng hàng không size M",
+        "price": "450.000đ",
+        "imageAlt": "Lồng di động"
+      }
+    }
+  },
+  "trust": {
+    "title": "Tại sao chọn Pet Store?",
+    "items": {
+      "love": {
+        "title": "Yêu thương như người nhà",
+        "description": "Chúng tôi đối xử với mọi thú cưng bằng sự tận tâm và tình yêu thương chân thành nhất."
+      },
+      "authentic": {
+        "title": "Sản phẩm chính hãng",
+        "description": "Cam kết 100% sản phẩm có nguồn gốc rõ ràng, đảm bảo an toàn cho sức khỏe thú cưng."
+      },
+      "support": {
+        "title": "Hỗ trợ nhiệt tình 24/7",
+        "description": "Đội ngũ chuyên gia luôn sẵn sàng tư vấn về dinh dưỡng và cách chăm sóc thú cưng."
+      }
+    }
+  },
+  "team": {
+    "title": "Đội ngũ chuyên nghiệp",
+    "description": "Đội ngũ groomer tại Pet Store được đào tạo bài bản, có chứng chỉ chuyên môn và nhiều năm kinh nghiệm. Đặc biệt, các bạn đều là những người nuôi và cực kỳ yêu thương động vật, thấu hiểu tâm lý của các bé để mang lại trải nghiệm thư giãn nhất.",
+    "cta": "Tìm hiểu thêm về chúng tôi"
+  },
+  "images": {
+    "trustAlt": "Niềm tin khách hàng",
+    "teamAlt": "Đội ngũ nhân viên"
+  },
+  "footer": {
+    "aboutTitle": "Về chúng tôi",
+    "policyTitle": "Chính sách",
+    "contactTitle": "Liên hệ",
+    "aboutLinks": {
+      "intro": "Giới thiệu",
+      "stores": "Hệ thống cửa hàng",
+      "careers": "Tuyển dụng"
+    },
+    "policyLinks": {
+      "shipping": "Chính sách vận chuyển",
+      "returns": "Chính sách đổi trả",
+      "privacy": "Chính sách bảo mật"
+    },
+    "address": "123 Đường Pet, Quận 1, TP.HCM",
+    "phone": "1900 1234",
+    "zaloSupport": "Zalo hỗ trợ",
+    "copyright": "© 2026 Pet Store. Đồng hành cùng thú cưng của bạn."
+  },
+  "mobileNav": {
+    "store": "Cửa hàng",
+    "services": "Dịch vụ",
+    "cart": "Giỏ hàng",
+    "account": "Tài khoản"
+  }
+}

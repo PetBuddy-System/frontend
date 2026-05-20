@@ -1,0 +1,177 @@
+{
+  "brand": {
+    "name": "Pet Store",
+    "logoAlt": "Pet Store logo",
+    "tagline": "A premium pet care system with high-quality products and services."
+  },
+  "nav": {
+    "services": "Services",
+    "store": "Shop",
+    "products": "Products",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "header": {
+    "searchPlaceholder": "Search..."
+  },
+  "actions": {
+    "cart": "Open cart",
+    "account": "Open account",
+    "menu": "Open menu",
+    "addToCart": "Add to cart",
+    "viewOptions": "Options",
+    "viewDetails": "View details"
+  },
+  "hero": {
+    "title": "Dog food & accessories",
+    "subtitle": "Explore premium nutrition and accessories to keep your pups healthy and happy every day."
+  },
+  "filters": {
+    "title": "Filters",
+    "categoriesTitle": "Categories",
+    "brandsTitle": "Brands",
+    "priceTitle": "Price range",
+    "priceMin": "0 VND",
+    "priceMax": "1,000,000 VND+",
+    "categories": {
+      "all": "All",
+      "dryFood": "Dry food",
+      "wetFood": "Wet food",
+      "treats": "Treats & chews",
+      "accessories": "Accessories"
+    }
+  },
+  "brands": {
+    "royalCanin": "Royal Canin",
+    "ganador": "Ganador",
+    "pedigree": "Pedigree",
+    "zenith": "Zenith",
+    "jerhigh": "JerHigh",
+    "accessories": "Accessories",
+    "mckelly": "Mckelly",
+    "snappyTom": "Snappy Tom",
+    "doggyman": "DoggyMan"
+  },
+  "search": {
+    "categoryPlaceholder": "Search products in this category..."
+  },
+  "mobile": {
+    "filterSort": "Filter & sort",
+    "count": "{{count}} products"
+  },
+  "sort": {
+    "results": "Showing {{from}}-{{to}} of {{total}} products",
+    "label": "Sort by:",
+    "options": {
+      "popular": "Most popular",
+      "priceLow": "Price: low to high",
+      "priceHigh": "Price: high to low",
+      "newest": "Newest"
+    }
+  },
+  "chips": {
+    "all": "All",
+    "dryFood": "Dry food",
+    "pate": "Pate",
+    "chews": "Chews",
+    "toys": "Toys"
+  },
+  "products": {
+    "badges": {
+      "hot": "Hot",
+      "new": "New",
+      "sale": "-10%"
+    },
+    "items": {
+      "royalCaninPoodle": {
+        "title": "Royal Canin Poodle Adult dry food 1.5kg",
+        "imageAlt": "Royal Canin Poodle dry food"
+      },
+      "ganadorLamb": {
+        "title": "Ganador Adult lamb & rice 3kg",
+        "imageAlt": "Ganador lamb & rice"
+      },
+      "zenithPuppy": {
+        "title": "Zenith soft food for puppies 1.2kg",
+        "imageAlt": "Zenith puppy soft food"
+      },
+      "jerhighTreat": {
+        "title": "JerHigh assorted dog treats 70g",
+        "imageAlt": "JerHigh dog treats"
+      },
+      "cowhideBone": {
+        "title": "Knotted cowhide bone for dental care",
+        "imageAlt": "Cowhide dental bone"
+      },
+      "mckellyPate": {
+        "title": "Mckelly chicken & tuna pate 400g",
+        "imageAlt": "Mckelly pate"
+      },
+      "snappyTom": {
+        "title": "Snappy Tom shredded chicken pate 400g",
+        "imageAlt": "Snappy Tom pate"
+      },
+      "pedigreeDentastix": {
+        "title": "Pedigree Dentastix dental chews",
+        "imageAlt": "Pedigree Dentastix"
+      },
+      "royalRenal": {
+        "title": "Royal Canin Renal kidney support 2kg",
+        "imageAlt": "Royal Canin Renal"
+      },
+      "doggymanJerky": {
+        "title": "DoggyMan soft jerky snack 100g",
+        "imageAlt": "DoggyMan jerky snack"
+      },
+      "pedigreeCombo": {
+        "title": "Pedigree Dentastix value combo",
+        "imageAlt": "Pedigree Dentastix combo"
+      },
+      "zenithGrainFree": {
+        "title": "Zenith Grain Free premium dog food",
+        "imageAlt": "Zenith Grain Free"
+      }
+    }
+  },
+  "gallery": {
+    "title": "Happy moments",
+    "subtitle": "Share the joy with your four-legged friends",
+    "viewAll": "View all",
+    "share": "Share your photo",
+    "items": {
+      "walk": "Walking with dogs",
+      "trust": "Trust building",
+      "promo": "Store promotion",
+      "couple": "Couple with pets"
+    }
+  },
+  "pagination": {
+    "prev": "Previous page",
+    "next": "Next page"
+  },
+  "bottomNav": {
+    "store": "Shop",
+    "services": "Services",
+    "cart": "Cart",
+    "account": "Account"
+  },
+  "footer": {
+    "aboutTitle": "About us",
+    "policyTitle": "Policies",
+    "contactTitle": "Contact",
+    "aboutLinks": {
+      "intro": "Introduction",
+      "stores": "Store locations",
+      "careers": "Careers"
+    },
+    "policyLinks": {
+      "shipping": "Shipping policy",
+      "returns": "Return policy",
+      "privacy": "Privacy policy"
+    },
+    "address": "123 Pet Street, District 1, Ho Chi Minh City",
+    "phone": "1900 1234",
+    "zaloSupport": "Zalo support",
+    "copyright": "© 2023 Pet Store. Caring for your pets every day."
+  }
+}

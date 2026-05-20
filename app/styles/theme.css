@@ -1,0 +1,85 @@
+/* ===================================================================
+   THEME TOKENS  —  chỉnh màu chủ đạo TẠI ĐÂY và CHỈ TẠI ĐÂY.
+
+   Quy tắc cho component:
+   - Luôn dùng class semantic (bg-background, text-primary, border-border…)
+   - Tuyệt đối không hard-code màu (bg-orange-500, text-gray-700…)
+   Khi đổi màu chủ đạo (vd cam → xanh lá) chỉ sửa các biến --color-*
+   trong khối :root (light) và .dark (dark) — không động vào component.
+   =================================================================== */
+
+:root {
+  /* --- Light theme (Canine Joy) --- */
+  --color-background: #f8f9fa;
+  --color-foreground: #191c1d;
+
+  --color-card: #ffffff;
+  --color-card-foreground: #191c1d;
+
+  --color-muted: #f3f4f5;
+  --color-muted-foreground: #424752;
+
+  --color-border: #c2c6d4;
+  --color-input: #c2c6d4;
+  --color-ring: #005db7;
+
+  --color-primary: #004d99;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: #fcd400;
+  --color-secondary-foreground: #6e5c00;
+
+  --color-accent: #a84a00;
+  --color-accent-foreground: #ffdece;
+
+  --color-tertiary: #823800;
+  --color-tertiary-foreground: #ffffff;
+
+  --color-destructive: #d32f2f;
+  --color-destructive-foreground: #ffffff;
+
+  --color-brand-zalo: #0068ff;
+  --color-brand-zalo-foreground: #ffffff;
+  --color-cream-variant: #fff5e6;
+
+  /* Radius tokens — đổi 1 chỗ, áp cho mọi component qua rounded-* */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+.dark {
+  /* --- Dark theme (derived) --- */
+  --color-background: #0b1220;
+  --color-foreground: #e2e8f0;
+
+  --color-card: #111a2e;
+  --color-card-foreground: #e2e8f0;
+
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
+
+  --color-border: #263247;
+  --color-input: #263247;
+  --color-ring: #7fb6ff;
+
+  --color-primary: #7fb6ff;
+  --color-primary-foreground: #0b1220;
+
+  --color-secondary: #f1c84f;
+  --color-secondary-foreground: #2c2400;
+
+  --color-accent: #c05a1b;
+  --color-accent-foreground: #1b0d06;
+
+  --color-tertiary: #ffb68f;
+  --color-tertiary-foreground: #331200;
+
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+
+  --color-brand-zalo: #3a7dff;
+  --color-brand-zalo-foreground: #0b1220;
+  --color-cream-variant: #2a1d12;
+}

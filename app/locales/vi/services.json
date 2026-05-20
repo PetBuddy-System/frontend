@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "title": "Dịch vụ Spa & Grooming - PetStore.vn"
+  },
+  "hero": {
+    "title": "Dịch vụ Spa & Grooming Chuyên Nghiệp",
+    "subtitle": "Mang đến trải nghiệm thư giãn tuyệt vời nhất cho thú cưng của bạn với đội ngũ chuyên gia tận tâm.",
+    "cta": "Đặt lịch ngay"
+  },
+  "individual": {
+    "title": "Các Gói Dịch Vụ Lẻ",
+    "subtitle": "Chăm sóc toàn diện cho bé yêu",
+    "cta": "Đặt lịch",
+    "items": {
+      "bath": {
+        "title": "Tắm & Sấy Tiêu Chuẩn",
+        "description": "Làm sạch sâu, khử mùi, sấy khô bồng bềnh với sữa tắm chuyên dụng.",
+        "price": "Từ 150k",
+        "imageAlt": "Chú chó được tắm và sấy với bọt xà phòng và khăn"
+      },
+      "grooming": {
+        "title": "Tỉa Lông & Tạo Kiểu",
+        "description": "Cắt tỉa gọn gàng, tạo kiểu thời trang theo yêu cầu bởi chuyên gia.",
+        "price": "Từ 250k",
+        "imageAlt": "Groomer chuyên nghiệp tạo kiểu lông chó bằng kéo"
+      },
+      "hygiene": {
+        "title": "Vệ Sinh Tai & Móng",
+        "description": "Làm sạch tai, cắt mài móng an toàn, hạn chế vi khuẩn gây bệnh.",
+        "price": "Từ 50k",
+        "imageAlt": "Groomer vệ sinh tai và móng cho chó"
+      }
+    }
+  },
+  "combo": {
+    "title": "Combo Vé Grooming Tiết Kiệm",
+    "subtitle": "Tắm thả ga - Không lo về giá",
+    "promoImageAlt": "Hình ảnh khuyến mãi các gói grooming cho chó",
+    "packages": {
+      "five": {
+        "title": "Mua 5 vé",
+        "discount": "Giảm 10%",
+        "description": "Sử dụng linh hoạt trong 2 tháng",
+        "badge": "Bán chạy",
+        "cta": "Mua ngay"
+      },
+      "ten": {
+        "title": "Mua 10 vé",
+        "discount": "Giảm 15%",
+        "description": "Lựa chọn tối ưu, dùng trong 4 tháng",
+        "cta": "Mua ngay"
+      },
+      "twenty": {
+        "title": "Mua 20 vé",
+        "discount": "Giảm 20%",
+        "description": "Tiết kiệm tối đa, dùng trong 6 tháng",
+        "cta": "Mua ngay"
+      }
+    }
+  },
+  "gallery": {
+    "title": "Khoảnh Khắc Đáng Yêu",
+    "images": {
+      "mainAlt": "Chú chó Golden Retriever vui vẻ trong bồn tắm bọt xà phòng",
+      "secondAlt": "Chú Poodle sạch sẽ và phong cách sau khi grooming",
+      "thirdAlt": "Chú mèo quấn khăn trên đầu trông thư giãn"
+    },
+    "ctaTitle": "Đến PetStore ngay!",
+    "ctaSubtitle": "Chúng tôi yêu thương thú cưng như gia đình."
+  }
+}
