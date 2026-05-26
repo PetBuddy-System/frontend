@@ -14,6 +14,8 @@ const CATEGORIES = [
   "wetFood",
   "treats",
   "accessories",
+  "dogs",
+  "cats"
 ] as const;
 
 const BRANDS = ["royalCanin", "ganador", "pedigree", "zenith"] as const;

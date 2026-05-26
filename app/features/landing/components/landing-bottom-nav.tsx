@@ -6,7 +6,7 @@ import { cn } from "~/shared/lib/cn";
 const NAV_ITEMS = [
   { key: "store", icon: "pets", active: true, href: "/" },
   { key: "services", icon: "content_cut", active: false, href: "/services" },
-  { key: "cart", icon: "shopping_cart", active: false, href: "#" },
+  { key: "cart", icon: "shopping_cart", active: false, href: "/cart" },
   { key: "account", icon: "person", active: false, href: "#" },
 ] as const;
 

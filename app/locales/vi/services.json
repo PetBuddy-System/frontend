@@ -11,6 +11,7 @@
     "title": "Các Gói Dịch Vụ Lẻ",
     "subtitle": "Chăm sóc toàn diện cho bé yêu",
     "cta": "Đặt lịch",
+    "detailsCta": "Xem chi tiết",
     "items": {
       "bath": {
         "title": "Tắm & Sấy Tiêu Chuẩn",
@@ -56,6 +57,297 @@
         "description": "Tiết kiệm tối đa, dùng trong 6 tháng",
         "cta": "Mua ngay"
       }
+    }
+  },
+  "priceBoard": {
+    "title": "Bảng Giá Dịch Vụ",
+    "imageAlt": "Bảng giá dịch vụ grooming PetStore",
+    "placeholderTitle": "Khung bảng giá dịch vụ",
+    "placeholderDescription": "Bạn có thể đặt ảnh bảng giá dịch vụ vào khung lớn này để khách hàng xem rõ hơn."
+  },
+  "detail": {
+    "breadcrumb": {
+      "label": "Điều hướng",
+      "home": "Trang chủ",
+      "services": "Dịch vụ Spa",
+      "current": "Tắm & Sấy Tiêu Chuẩn"
+    },
+    "badge": "Bán chạy",
+    "title": "Tắm & Sấy Tiêu Chuẩn",
+    "ratingLabel": "Đánh giá 5 trên 5 sao",
+    "reviewCount": "(128 đánh giá)",
+    "startingPrice": "Từ 150.000đ",
+    "summary": "Quy trình tắm sấy 5 bước chuyên nghiệp giúp thú cưng sạch sẽ, thơm tho và thư giãn. Sử dụng sản phẩm sữa tắm dịu nhẹ, an toàn cho da nhạy cảm.",
+    "certifiedNote": "Dịch vụ được thực hiện bởi chuyên viên Grooming có chứng chỉ.",
+    "gallery": {
+      "heroAlt": "Chú chó vui vẻ được tắm trong salon grooming sạch sẽ",
+      "thumbnails": {
+        "bath": "Xem ảnh quy trình tắm",
+        "dry": "Xem ảnh sấy chuyên nghiệp",
+        "finish": "Xem ảnh thú cưng sau grooming"
+      }
+    },
+    "sizeSelector": {
+      "label": "Chọn kích cỡ thú cưng:",
+      "options": {
+        "s": "Size S (Dưới 5kg)",
+        "m": "Size M (5-10kg)",
+        "l": "Size L (10-20kg)",
+        "xl": "Size XL (Trên 20kg)"
+      }
+    },
+    "actions": {
+      "book": "Đặt lịch ngay",
+      "zalo": "Tư vấn qua Zalo"
+    },
+    "tabs": {
+      "description": "Mô tả dịch vụ",
+      "reviews": "Đánh giá (128)"
+    },
+    "process": {
+      "title": "Quy trình thực hiện 5 bước",
+      "steps": {
+        "check": {
+          "title": "Bước 1: Kiểm tra da lông",
+          "description": "Chuyên viên sẽ kiểm tra tổng quát tình trạng da và lông để chọn loại sữa tắm phù hợp nhất, phát hiện sớm các vấn đề về da nếu có."
+        },
+        "bath": {
+          "title": "Bước 2: Tắm massage thư giãn",
+          "description": "Làm sạch sâu bụi bẩn, dầu nhờn với 2 lần sữa tắm chuyên dụng. Kết hợp massage nhẹ nhàng giúp bé thư giãn, lưu thông máu."
+        },
+        "dry": {
+          "title": "Bước 3: Sấy khô & Chải phồng",
+          "description": "Sử dụng máy sấy chuyên dụng, đảm bảo lông khô hoàn toàn tận gốc, chải phồng mượt mà, ngăn ngừa nấm da."
+        },
+        "ear": {
+          "title": "Bước 4: Vệ sinh tai",
+          "description": "Làm sạch tai bằng dung dịch chuyên dụng, nhổ lông tai nếu cần để ngăn ngừa viêm nhiễm và mùi hôi."
+        },
+        "nail": {
+          "title": "Bước 5: Cắt móng & Mài móng",
+          "description": "Cắt gọn móng và mài nhẵn để bé không bị trầy xước khi gãi và bảo vệ đồ đạc trong nhà."
+        }
+      }
+    },
+    "benefits": {
+      "title": "Lợi ích dịch vụ",
+      "items": {
+        "parasite": {
+          "title": "Sạch ký sinh trùng",
+          "description": "Hỗ trợ loại bỏ ve, rận, bọ chét và bụi bẩn ẩn náu trong lông."
+        },
+        "odor": {
+          "title": "Giảm mùi hôi",
+          "description": "Khử mùi hôi hiệu quả, lưu hương thơm mát nhiều ngày."
+        },
+        "comfort": {
+          "title": "Thú cưng thoải mái",
+          "description": "Massage giúp giảm stress, bé vui vẻ và năng động hơn."
+        }
+      }
+    },
+    "pricing": {
+      "title": "Bảng giá chi tiết",
+      "items": {
+        "s": {
+          "label": "Size S",
+          "weight": "Dưới 5kg",
+          "price": "150.000đ"
+        },
+        "m": {
+          "label": "Size M",
+          "weight": "5 - 10kg",
+          "price": "250.000đ"
+        },
+        "l": {
+          "label": "Size L",
+          "weight": "10 - 20kg",
+          "price": "350.000đ"
+        },
+        "xl": {
+          "label": "Size XL",
+          "weight": "Trên 20kg",
+          "price": "Liên hệ"
+        }
+      },
+      "note": "Giá trên áp dụng cho lông ngắn. Thú cưng lông dài, lông rối nhiều sẽ phụ thu thêm phí gỡ rối từ 50k-100k tùy tình trạng."
+    },
+    "related": {
+      "title": "Dịch vụ liên quan",
+      "subtitle": "Khám phá thêm các dịch vụ chăm sóc toàn diện cho bé.",
+      "viewAll": "Xem tất cả",
+      "hotBadge": "HOT",
+      "items": {
+        "grooming": {
+          "title": "Tỉa lông & Tạo kiểu",
+          "description": "Cắt tỉa gọn gàng, tạo kiểu hợp thời trang giúp bé thêm đáng yêu và thoải mái vận động.",
+          "price": "Từ 200.000đ",
+          "imageAlt": "Groomer chuyên nghiệp tỉa lông cho chó"
+        },
+        "nail": {
+          "title": "Cắt móng & Vệ sinh tai",
+          "description": "Gói dịch vụ nhanh giúp giữ vệ sinh cơ bản, ngăn ngừa các bệnh viêm nhiễm thường gặp.",
+          "price": "50.000đ",
+          "imageAlt": "Cắt móng chuyên nghiệp cho chó"
+        },
+        "combo": {
+          "title": "Combo Toàn diện",
+          "description": "Bao gồm tắm sấy, cắt tỉa tạo kiểu và vệ sinh toàn diện. Tiết kiệm hơn 15% so với dịch vụ lẻ.",
+          "price": "Từ 350.000đ",
+          "imageAlt": "Thú cưng sạch đẹp sau gói spa toàn diện"
+        }
+      }
+    },
+    "reviews": {
+      "title": "Đánh giá từ khách hàng",
+      "write": "Viết đánh giá",
+      "verified": "Đã xác nhận",
+      "viewAll": "Xem tất cả đánh giá",
+      "items": {
+        "nguyenHuy": {
+          "initials": "NH",
+          "name": "Nguyễn Huy",
+          "date": "15/10/2023",
+          "content": "Dịch vụ rất tuyệt vời, nhân viên nhiệt tình và bé cưng nhà mình được chăm sóc rất kỹ. Sau khi tắm xong lông rất thơm và mượt."
+        },
+        "minhTu": {
+          "initials": "MT",
+          "name": "Minh Tú",
+          "date": "02/11/2023",
+          "content": "Giá cả hợp lý cho một quy trình tắm sấy chuyên nghiệp 5 bước. Bé nhà mình rất sợ nước nhưng các bạn Groomer ở đây làm rất khéo."
+        }
+      }
+    }
+  },
+  "booking": {
+    "admin": {
+      "brand": "PetStore Chain",
+      "subtitle": "Bảng điều khiển quản trị",
+      "avatarAlt": "Ảnh đại diện quản trị viên",
+      "nav": {
+        "employees": "Quản lý nhân viên",
+        "services": "Dịch vụ & Sản phẩm",
+        "users": "Quản lý người dùng",
+        "reports": "Báo cáo",
+        "help": "Trung tâm hỗ trợ",
+        "logout": "Đăng xuất"
+      }
+    },
+    "topNav": {
+      "parent": "Dịch vụ & Sản phẩm",
+      "current": "Cấu hình dịch vụ mới"
+    },
+    "searchPlaceholder": "Tìm kiếm hệ thống...",
+    "general": {
+      "title": "Thông tin chung",
+      "name": "Tên dịch vụ",
+      "namePlaceholder": "Ví dụ: Tắm & Sấy chuyên sâu",
+      "category": "Danh mục",
+      "description": "Mô tả dịch vụ",
+      "descriptionPlaceholder": "Nhập mô tả chi tiết về quy trình và lợi ích của dịch vụ...",
+      "categories": {
+        "grooming": "Grooming & Spa",
+        "hotel": "Lưu trú thú cưng",
+        "clinic": "Thú y",
+        "training": "Huấn luyện"
+      }
+    },
+    "pricing": {
+      "title": "Bảng giá & Tùy chọn",
+      "add": "Thêm khung giá",
+      "remove": "Xóa khung giá",
+      "weightPlaceholder": "Nhập phân loại...",
+      "columns": {
+        "weight": "Phân loại cân nặng",
+        "price": "Đơn giá (VNĐ)",
+        "discount": "Khuyến mãi (%)",
+        "actions": "Thao tác"
+      }
+    },
+    "duration": {
+      "title": "Thời gian thực hiện",
+      "note": "* Thời gian ước tính trung bình để hoàn thành dịch vụ.",
+      "options": {
+        "30": "30 phút",
+        "60": "60 phút",
+        "90": "90 phút",
+        "120": "120 phút",
+        "day": "Cả ngày"
+      }
+    },
+    "status": {
+      "title": "Trạng thái",
+      "active": "Đang hoạt động"
+    },
+    "media": {
+      "title": "Hình ảnh dịch vụ",
+      "uploadTitle": "Kéo thả hoặc click để tải lên",
+      "uploadHint": "Định dạng JPG, PNG, tối đa 5MB. Kích thước khuyên dùng: 800x800px.",
+      "previewAlt": "Ảnh minh họa grooming thú cưng",
+      "removeImage": "Xóa ảnh",
+      "addImage": "Thêm ảnh"
+    },
+    "actions": {
+      "cancel": "Hủy bỏ",
+      "save": "Lưu cấu hình dịch vụ"
+    }
+  },
+  "bookingPage": {
+    "title": "Đặt lịch dịch vụ",
+    "subtitle": "Trải nghiệm chăm sóc thú cưng chuyên nghiệp và tận tâm.",
+    "service": {
+      "title": "1. Chọn gói dịch vụ",
+      "items": {
+        "bath": {
+          "title": "Tắm & Sấy Cơ Bản",
+          "description": "Làm sạch sâu, sấy khô bồng bềnh, vắt tuyến hôi và vệ sinh tai cơ bản.",
+          "price": "250.000đ"
+        },
+        "spa": {
+          "title": "Combo Cắt Tỉa & Spa",
+          "description": "Tắm massage, cắt tỉa tạo kiểu chuyên nghiệp, vệ sinh toàn diện cho thú cưng.",
+          "price": "450.000đ"
+        },
+        "hygiene": {
+          "title": "Vệ Sinh Tai & Móng",
+          "description": "Làm sạch tai, cắt mài móng an toàn, khử mùi hôi hiệu quả.",
+          "price": "150.000đ"
+        }
+      }
+    },
+    "time": {
+      "title": "2. Chọn ngày giờ",
+      "dateLabel": "Ngày hẹn",
+      "slotLabel": "Khung giờ",
+      "note": "Vui lòng đặt lịch trước ít nhất 2 giờ. Đối với cuối tuần, nên đặt trước 1 ngày.",
+      "fullSlot": "{{time}} (Kín)"
+    },
+    "pet": {
+      "title": "3. Thông tin thú cưng",
+      "countLabel": "Số lượng thú cưng",
+      "breedLabel": "Giống / Trọng lượng dự kiến",
+      "breedPlaceholder": "VD: Poodle, 5kg",
+      "noteLabel": "Ghi chú thêm (Không bắt buộc)",
+      "notePlaceholder": "Đặc điểm thú cưng, dị ứng, hoặc yêu cầu đặc biệt...",
+      "countOptions": {
+        "one": "1 bé",
+        "two": "2 bé",
+        "more": "3 bé trở lên"
+      }
+    },
+    "summary": {
+      "title": "Thông tin đặt lịch",
+      "serviceLabel": "Dịch vụ đã chọn",
+      "timeLabel": "Thời gian",
+      "petLabel": "Thú cưng",
+      "today": "Hôm nay, {{time}}",
+      "totalLabel": "Tạm tính:",
+      "termsPrefix": "Bằng việc xác nhận, bạn đồng ý với",
+      "termsLink": "Điều khoản dịch vụ",
+      "termsSuffix": "của chúng tôi."
+    },
+    "actions": {
+      "confirm": "Xác nhận đặt lịch"
     }
   },
   "gallery": {

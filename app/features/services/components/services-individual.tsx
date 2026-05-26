@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 
+import { MaterialIcon } from "./material-icon";
+
 const SERVICE_ITEMS = [
   {
     key: "bath",
@@ -36,7 +38,7 @@ export function ServicesIndividual() {
         {SERVICE_ITEMS.map((item) => (
           <div
             key={item.key}
-            className="overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-transform hover:-translate-y-1 hover:shadow-lg"
+            className="flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-transform hover:-translate-y-1 hover:shadow-lg"
           >
             <div className="h-48 bg-muted">
               <img
@@ -45,23 +47,32 @@ export function ServicesIndividual() {
                 className="h-full w-full object-cover"
               />
             </div>
-            <div className="flex h-full flex-col gap-3 p-6">
+            <div className="flex flex-1 flex-col gap-3 p-6">
               <h3 className="font-display text-xl font-semibold text-foreground">
                 {t(`individual.items.${item.key}.title`)}
               </h3>
-              <p className="flex-grow text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 {t(`individual.items.${item.key}.description`)}
               </p>
-              <div className="mt-4 flex items-center justify-between">
+              <div className="mt-auto flex flex-col gap-3 pt-4">
                 <span className="font-display text-xl font-bold text-primary">
                   {t(`individual.items.${item.key}.price`)}
                 </span>
-                <button
-                  type="button"
-                  className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:opacity-90"
-                >
-                  {t("individual.cta")}
-                </button>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <a
+                    href={`/services/${item.key}`}
+                    className="flex items-center justify-center gap-2 rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                  >
+                    <MaterialIcon name="info" className="text-[18px]" />
+                    {t("individual.detailsCta")}
+                  </a>
+                  <button
+                    type="button"
+                    className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:opacity-90"
+                  >
+                    {t("individual.cta")}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

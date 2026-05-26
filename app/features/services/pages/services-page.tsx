@@ -7,6 +7,7 @@ import { ServicesCombo } from "../components/services-combo";
 import { ServicesGallery } from "../components/services-gallery";
 import { ServicesHero } from "../components/services-hero";
 import { ServicesIndividual } from "../components/services-individual";
+import { ServicesPriceBoard } from "../components/services-price-board";
 
 export function ServicesPage() {
   return (
@@ -16,6 +17,7 @@ export function ServicesPage() {
         <ServicesHero />
         <ServicesIndividual />
         <ServicesCombo />
+        <ServicesPriceBoard />
         <ServicesGallery />
       </main>
       <LandingFooter />

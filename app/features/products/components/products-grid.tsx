@@ -193,13 +193,13 @@ export function ProductsGrid() {
                 ? t("actions.viewOptions")
                 : t("actions.addToCart")}
             </button>
-            <button
-              type="button"
+            <a
+              href={`/products/${product.key}`}
               className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-primary"
             >
               <MaterialIcon name="info" className="text-[18px]" />
               {t("actions.viewDetails")}
-            </button>
+            </a>
           </div>
         </article>
       ))}

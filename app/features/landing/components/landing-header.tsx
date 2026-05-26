@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import logo from "../assets/logo.png";
+import logo from "../assets/logoPetBuddy2.svg";
 import { MaterialIcon } from "./material-icon";
 import { cn } from "~/shared/lib/cn";
 
@@ -22,7 +22,7 @@ export function LandingHeader() {
           <img
             src={logo}
             alt={t("brand.logoAlt")}
-            className="h-9 w-auto object-contain"
+            className="h-auto w-30 object-contain md:w-30"
           />
           <span className="sr-only">{t("brand.name")}</span>
         </a>
@@ -45,13 +45,13 @@ export function LandingHeader() {
         </nav>
 
         <div className="flex items-center gap-2 text-primary">
-          <button
-            type="button"
+          <a
+            href="/cart"
             aria-label={t("actions.cart")}
             className="rounded-full p-2 transition-colors hover:bg-muted"
           >
             <MaterialIcon name="shopping_cart" className="text-[22px]" />
-          </button>
+          </a>
           <div className="hidden items-center gap-2 md:flex">
             <a
               href="/login"

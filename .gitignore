@@ -6,7 +6,9 @@
 /.claude/
 /.kiro/
 /build/
-
+AGENTS.md
+DESIGN.md
+ARCHITECTURE.md
 # Environment variables
 .env.local
 # Whitelist template — commit cho dev mới biết cần env vars gì

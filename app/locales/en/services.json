@@ -11,6 +11,7 @@
     "title": "Individual Services",
     "subtitle": "Comprehensive care for your beloved pet",
     "cta": "Book",
+    "detailsCta": "View details",
     "items": {
       "bath": {
         "title": "Standard Bath & Dry",
@@ -56,6 +57,297 @@
         "description": "Maximum savings, valid for 6 months",
         "cta": "Buy now"
       }
+    }
+  },
+  "priceBoard": {
+    "title": "Service Price List",
+    "imageAlt": "PetStore grooming service price list",
+    "placeholderTitle": "Service price board",
+    "placeholderDescription": "Add the service price list image here to display it in a large, easy-to-read frame."
+  },
+  "detail": {
+    "breadcrumb": {
+      "label": "Breadcrumb",
+      "home": "Home",
+      "services": "Spa services",
+      "current": "Standard Bath & Dry"
+    },
+    "badge": "Best seller",
+    "title": "Standard Bath & Dry",
+    "ratingLabel": "Rated 5 out of 5 stars",
+    "reviewCount": "(128 reviews)",
+    "startingPrice": "From 150,000 VND",
+    "summary": "A professional 5-step bath and dry process that keeps pets clean, fresh and relaxed. We use gentle shampoo products that are safe for sensitive skin.",
+    "certifiedNote": "Service performed by certified grooming specialists.",
+    "gallery": {
+      "heroAlt": "Happy dog being gently bathed in a clean grooming salon",
+      "thumbnails": {
+        "bath": "View bath process photo",
+        "dry": "View professional blow-dry photo",
+        "finish": "View clean pet after grooming"
+      }
+    },
+    "sizeSelector": {
+      "label": "Choose pet size:",
+      "options": {
+        "s": "Size S (Under 5kg)",
+        "m": "Size M (5-10kg)",
+        "l": "Size L (10-20kg)",
+        "xl": "Size XL (Over 20kg)"
+      }
+    },
+    "actions": {
+      "book": "Book now",
+      "zalo": "Consult via Zalo"
+    },
+    "tabs": {
+      "description": "Service description",
+      "reviews": "Reviews (128)"
+    },
+    "process": {
+      "title": "5-step service process",
+      "steps": {
+        "check": {
+          "title": "Step 1: Skin and coat check",
+          "description": "Our specialist checks the skin and coat condition to choose the most suitable shampoo and spot potential skin issues early."
+        },
+        "bath": {
+          "title": "Step 2: Relaxing massage bath",
+          "description": "Deep cleansing removes dirt and oil with two rounds of professional shampoo, combined with gentle massage for relaxation."
+        },
+        "dry": {
+          "title": "Step 3: Drying and fluff brushing",
+          "description": "Professional drying equipment keeps the coat dry from the roots, fluffy and smooth, helping prevent skin fungus."
+        },
+        "ear": {
+          "title": "Step 4: Ear hygiene",
+          "description": "Ears are cleaned with professional solution, with ear hair removal when needed to reduce odor and infection risk."
+        },
+        "nail": {
+          "title": "Step 5: Nail trimming and filing",
+          "description": "Nails are trimmed and smoothed so pets avoid scratching themselves and household furniture."
+        }
+      }
+    },
+    "benefits": {
+      "title": "Service benefits",
+      "items": {
+        "parasite": {
+          "title": "Parasite removal",
+          "description": "Helps remove ticks, fleas and hidden dirt from the coat."
+        },
+        "odor": {
+          "title": "Odor reduction",
+          "description": "Removes unpleasant smell and keeps a fresh scent for days."
+        },
+        "comfort": {
+          "title": "Pet comfort",
+          "description": "Massage helps reduce stress so pets feel happier and more active."
+        }
+      }
+    },
+    "pricing": {
+      "title": "Detailed pricing",
+      "items": {
+        "s": {
+          "label": "Size S",
+          "weight": "Under 5kg",
+          "price": "150,000 VND"
+        },
+        "m": {
+          "label": "Size M",
+          "weight": "5 - 10kg",
+          "price": "250,000 VND"
+        },
+        "l": {
+          "label": "Size L",
+          "weight": "10 - 20kg",
+          "price": "350,000 VND"
+        },
+        "xl": {
+          "label": "Size XL",
+          "weight": "Over 20kg",
+          "price": "Contact us"
+        }
+      },
+      "note": "Prices apply to short coats. Long or heavily tangled coats may include an extra detangling fee from 50k-100k depending on condition."
+    },
+    "related": {
+      "title": "Related services",
+      "subtitle": "Explore more complete care services for your pet.",
+      "viewAll": "View all",
+      "hotBadge": "HOT",
+      "items": {
+        "grooming": {
+          "title": "Trimming & Styling",
+          "description": "Neat trimming and fashionable styling help pets look cute and move comfortably.",
+          "price": "From 200,000 VND",
+          "imageAlt": "Professional groomer trimming a dog's fur"
+        },
+        "nail": {
+          "title": "Nail & Ear Hygiene",
+          "description": "A quick service package for basic hygiene and preventing common infections.",
+          "price": "50,000 VND",
+          "imageAlt": "Professional nail clipping for a calm dog"
+        },
+        "combo": {
+          "title": "Full Care Combo",
+          "description": "Includes bath and dry, trimming and full hygiene. Save over 15% compared with separate services.",
+          "price": "From 350,000 VND",
+          "imageAlt": "Clean and fluffy pet after full grooming spa"
+        }
+      }
+    },
+    "reviews": {
+      "title": "Customer reviews",
+      "write": "Write a review",
+      "verified": "Verified",
+      "viewAll": "View all reviews",
+      "items": {
+        "nguyenHuy": {
+          "initials": "NH",
+          "name": "Nguyen Huy",
+          "date": "15/10/2023",
+          "content": "The service was excellent. The staff were enthusiastic and took very careful care of my pet. After bathing, the coat was fragrant and smooth."
+        },
+        "minhTu": {
+          "initials": "MT",
+          "name": "Minh Tu",
+          "date": "02/11/2023",
+          "content": "Reasonable price for a professional 5-step bath and dry process. My pet is afraid of water but the groomers handled everything very gently."
+        }
+      }
+    }
+  },
+  "booking": {
+    "admin": {
+      "brand": "PetStore Chain",
+      "subtitle": "Global Admin Panel",
+      "avatarAlt": "Administrator profile avatar",
+      "nav": {
+        "employees": "Employee Management",
+        "services": "Services & Products",
+        "users": "User Management",
+        "reports": "Reports",
+        "help": "Help Center",
+        "logout": "Logout"
+      }
+    },
+    "topNav": {
+      "parent": "Services & Products",
+      "current": "New service configuration"
+    },
+    "searchPlaceholder": "Search system...",
+    "general": {
+      "title": "General information",
+      "name": "Service name",
+      "namePlaceholder": "Example: Deep Bath & Dry",
+      "category": "Category",
+      "description": "Service description",
+      "descriptionPlaceholder": "Enter details about the service process and benefits...",
+      "categories": {
+        "grooming": "Grooming & Spa",
+        "hotel": "Pet hotel",
+        "clinic": "Veterinary clinic",
+        "training": "Training"
+      }
+    },
+    "pricing": {
+      "title": "Pricing & Options",
+      "add": "Add price tier",
+      "remove": "Remove price tier",
+      "weightPlaceholder": "Enter weight tier...",
+      "columns": {
+        "weight": "Weight tier",
+        "price": "Unit price (VND)",
+        "discount": "Promotion (%)",
+        "actions": "Actions"
+      }
+    },
+    "duration": {
+      "title": "Service duration",
+      "note": "* Average estimated time to complete the service.",
+      "options": {
+        "30": "30 minutes",
+        "60": "60 minutes",
+        "90": "90 minutes",
+        "120": "120 minutes",
+        "day": "Full day"
+      }
+    },
+    "status": {
+      "title": "Status",
+      "active": "Active"
+    },
+    "media": {
+      "title": "Service images",
+      "uploadTitle": "Drag and drop or click to upload",
+      "uploadHint": "JPG, PNG format, maximum 5MB. Recommended size: 800x800px.",
+      "previewAlt": "Pet grooming example",
+      "removeImage": "Remove image",
+      "addImage": "Add image"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "save": "Save service configuration"
+    }
+  },
+  "bookingPage": {
+    "title": "Book a service",
+    "subtitle": "Enjoy professional and attentive pet care.",
+    "service": {
+      "title": "1. Choose a service package",
+      "items": {
+        "bath": {
+          "title": "Basic Bath & Dry",
+          "description": "Deep cleaning, fluffy drying, gland expression and basic ear hygiene.",
+          "price": "250,000 VND"
+        },
+        "spa": {
+          "title": "Styling & Spa Combo",
+          "description": "Massage bath, professional styling and full hygiene care for your pet.",
+          "price": "450,000 VND"
+        },
+        "hygiene": {
+          "title": "Ear & Nail Hygiene",
+          "description": "Ear cleaning, safe nail trimming and filing, and effective odor control.",
+          "price": "150,000 VND"
+        }
+      }
+    },
+    "time": {
+      "title": "2. Choose date and time",
+      "dateLabel": "Appointment date",
+      "slotLabel": "Time slot",
+      "note": "Please book at least 2 hours in advance. For weekends, booking 1 day ahead is recommended.",
+      "fullSlot": "{{time}} (Full)"
+    },
+    "pet": {
+      "title": "3. Pet information",
+      "countLabel": "Number of pets",
+      "breedLabel": "Breed / estimated weight",
+      "breedPlaceholder": "Example: Poodle, 5kg",
+      "noteLabel": "Additional note (optional)",
+      "notePlaceholder": "Pet behavior, allergies, or special requests...",
+      "countOptions": {
+        "one": "1 pet",
+        "two": "2 pets",
+        "more": "3+ pets"
+      }
+    },
+    "summary": {
+      "title": "Booking information",
+      "serviceLabel": "Selected service",
+      "timeLabel": "Time",
+      "petLabel": "Pet",
+      "today": "Today, {{time}}",
+      "totalLabel": "Subtotal:",
+      "termsPrefix": "By confirming, you agree to our",
+      "termsLink": "Terms of Service",
+      "termsSuffix": "."
+    },
+    "actions": {
+      "confirm": "Confirm booking"
     }
   },
   "gallery": {

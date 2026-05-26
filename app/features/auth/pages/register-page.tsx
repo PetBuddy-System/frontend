@@ -85,26 +85,7 @@ export function RegisterPage() {
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="phone"
-                  className="text-sm font-semibold text-foreground"
-                >
-                  {t("fields.phone.label")}
-                </label>
-                <div className="relative">
-                  <MaterialIcon
-                    name="phone"
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
-                  />
-                  <input
-                    id="phone"
-                    type="tel"
-                    placeholder={t("fields.phone.placeholder")}
-                    className="w-full rounded-xl border border-border bg-muted py-3 pl-12 pr-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring"
-                  />
-                </div>
-              </div>
+              
             </div>
 
             <div className="space-y-2">

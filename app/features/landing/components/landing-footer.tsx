@@ -1,9 +1,6 @@
 import { useTranslation } from "react-i18next";
-
+import logo from "../assets/logoPetBuddy2.png";
 import { MaterialIcon } from "./material-icon";
-
-const LOGO_URL =
-  "https://lh3.googleusercontent.com/aida/ADBb0uiXpm-7DHl6cWDuhBjICMrAhUrzY_6nlwbTJl29i6PxqPts3zVWhFJ2z84YTLlQyNSSwRxHsx85KN-GRvyixKMotaH4Uy6tiWxiNjKlcTmge-IUM76-1VQHwWqpnAPNxOB83wC6RULBmuHEX3H3JZlrd6KtzFn-e8UMAdgExahKW-9UtFj_MyMsrdMXHJUi-eIDQMC4G4wKiqg8S03HSG6-RjEu5_7X-MkkNrqqxq-2pyIWTY21BCH-FbM";
 
 export function LandingFooter() {
   const { t } = useTranslation("landing");
@@ -13,9 +10,9 @@ export function LandingFooter() {
       <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-16 md:grid-cols-4 md:px-6">
         <div className="flex flex-col gap-4">
           <img
-            src={LOGO_URL}
+            src={logo}
             alt={t("brand.logoAlt")}
-            className="h-10 w-fit rounded-lg bg-background p-2"
+            className="h-auto w-36 rounded-lg bg-background p-2 object-contain md:w-44"
           />
           <p className="text-sm text-muted-foreground">
             {t("brand.tagline")}

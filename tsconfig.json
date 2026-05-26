@@ -1,5 +1,8 @@
 {
-  "include": ["**/*", "**/.server/**/*", "**/.client/**/*", ".react-router/types/**/*"],
+  "include": ["**/*", "**/.server/**/*", "**/.client/**/*"],
+  "watchOptions": {
+    "excludeDirectories": ["**/.react-router", "**/node_modules/.vite"]
+  },
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["node", "vite/client"],
