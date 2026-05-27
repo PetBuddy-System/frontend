@@ -2,12 +2,14 @@ import enAuth from "~/locales/en/auth.json";
 import enCommon from "~/locales/en/common.json";
 import enLanding from "~/locales/en/landing.json";
 import enProducts from "~/locales/en/products.json";
+import enProfile from "~/locales/en/profile.json";
 import enServices from "~/locales/en/services.json";
 import enWelcome from "~/locales/en/welcome.json";
 import viAuth from "~/locales/vi/auth.json";
 import viCommon from "~/locales/vi/common.json";
 import viLanding from "~/locales/vi/landing.json";
 import viProducts from "~/locales/vi/products.json";
+import viProfile from "~/locales/vi/profile.json";
 import viServices from "~/locales/vi/services.json";
 import viWelcome from "~/locales/vi/welcome.json";
 
@@ -28,6 +30,7 @@ export const NAMESPACES = [
   "landing",
   "auth",
   "products",
+  "profile",
   "services",
 ] as const;
 export type Namespace = (typeof NAMESPACES)[number];
@@ -40,6 +43,7 @@ export const resources = {
     common: enCommon,
     landing: enLanding,
     products: enProducts,
+    profile: enProfile,
     services: enServices,
     welcome: enWelcome,
   },
@@ -48,6 +52,7 @@ export const resources = {
     common: viCommon,
     landing: viLanding,
     products: viProducts,
+    profile: viProfile,
     services: viServices,
     welcome: viWelcome,
   },

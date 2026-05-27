@@ -3,7 +3,7 @@ import { LandingBottomNav } from "~/features/landing/components/landing-bottom-n
 import { LandingFab } from "~/features/landing/components/landing-fab";
 import { LandingFooter } from "~/features/landing/components/landing-footer";
 import { LandingHeader } from "~/features/landing/components/landing-header";
-import { MaterialIcon } from "../components/material-icon";
+import { MaterialIcon } from "~/shared/ui";
 import { ProductsGrid } from "../components/products-grid";
 import { ProductsHero } from "../components/products-hero";
 import { ProductsGallery } from "../components/products-gallery";

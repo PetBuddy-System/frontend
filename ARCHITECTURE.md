@@ -1,6 +1,6 @@
 # Kiến trúc src — dành cho dev FE mới
 
-> Tài liệu giải thích cách tổ chức source code của **edu-nexus-web** kèm ví dụ thực tế. Đọc file này trước khi code feature mới.
+> Tài liệu giải thích cách tổ chức source code của **petbuddy-web** kèm ví dụ thực tế. Đọc file này trước khi code feature mới.
 >
 > Tài liệu liên quan: [`AGENTS.md`](./AGENTS.md) (chi tiết quy ước & API), [`README.md`](./README.md) (setup & scripts).
 
@@ -287,7 +287,7 @@ import { CoursesPage } from "~/features/courses";
 import type { Route } from "./+types/courses";
 
 export function meta({}: Route.MetaArgs) {
-  return [{ title: "Khoá học - Edu Nexus" }];
+  return [{ title: "Khoá học - PetBuddy" }];
 }
 
 export default function Courses() {

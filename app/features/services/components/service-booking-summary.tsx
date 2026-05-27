@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import type { BookingServiceKey } from "./service-booking-service-picker";
-import { MaterialIcon } from "./material-icon";
+import { MaterialIcon } from "~/shared/ui";
 
 export interface ServiceBookingSummaryProps {
   selectedService: BookingServiceKey;

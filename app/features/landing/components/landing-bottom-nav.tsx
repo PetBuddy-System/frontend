@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 
-import { MaterialIcon } from "./material-icon";
+import { MaterialIcon } from "~/shared/ui";
 import { cn } from "~/shared/lib/cn";
 
 const NAV_ITEMS = [
   { key: "store", icon: "pets", active: true, href: "/" },
   { key: "services", icon: "content_cut", active: false, href: "/services" },
   { key: "cart", icon: "shopping_cart", active: false, href: "/cart" },
-  { key: "account", icon: "person", active: false, href: "#" },
+  { key: "account", icon: "person", active: false, href: "/profile" },
 ] as const;
 
 export function LandingBottomNav() {

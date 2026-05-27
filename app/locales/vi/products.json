@@ -253,6 +253,57 @@
       "apply": "Áp dụng"
     }
   },
+  "orderSuccess": {
+    "banner": {
+      "title": "Cảm ơn bạn đã đặt hàng!",
+      "orderCodePrefix": "Mã đơn hàng của bạn là",
+      "emailPrefix": "Một email xác nhận đã được gửi đến"
+    },
+    "details": {
+      "title": "Chi tiết đơn hàng",
+      "itemCount": "{{count}} sản phẩm",
+      "quantity": "Số lượng: {{count}}",
+      "items": {
+        "oliveShampoo": {
+          "title": "Sữa tắm Olive Essence lông nâu",
+          "imageAlt": "Chai sữa tắm Olive Essence cho thú cưng"
+        },
+        "royalCaninPoodle": {
+          "title": "Thức ăn hạt Royal Canin Poodle Adult",
+          "imageAlt": "Túi thức ăn hạt Royal Canin Poodle Adult"
+        }
+      }
+    },
+    "delivery": {
+      "title": "Thông tin nhận hàng",
+      "name": "Nguyễn Văn An",
+      "phone": "090 123 4567",
+      "address": "123 Đường Lê Lợi, Phường Bến Thành, Quận 1, TP. Hồ Chí Minh"
+    },
+    "method": {
+      "title": "Phương thức vận chuyển và thanh toán",
+      "shippingLabel": "Vận chuyển",
+      "shipping": "Giao hàng nhanh (2-3 ngày)",
+      "paymentLabel": "Thanh toán",
+      "payment": "Thẻ tín dụng (Visa **** 4455)"
+    },
+    "payment": {
+      "title": "Tổng cộng",
+      "subtotal": "Tạm tính",
+      "shipping": "Phí vận chuyển",
+      "freeShipping": "Miễn phí",
+      "total": "Tổng tiền",
+      "trackOrder": "Theo dõi đơn hàng",
+      "continueShopping": "Tiếp tục mua sắm"
+    },
+    "support": {
+      "title": "Cần hỗ trợ?",
+      "description": "Đội ngũ chăm sóc thú cưng luôn sẵn sàng giúp đỡ bạn.",
+      "phone": "1900 1234",
+      "chat": "Chat với chúng tôi"
+    },
+    "trustQuote": "Dành cho những cái đuôi luôn vẫy hạnh phúc."
+  },
   "hero": {
     "title": "Thức ăn & Phụ kiện cho chó",
     "subtitle": "Khám phá đa dạng các sản phẩm dinh dưỡng và phụ kiện chất lượng cao, giúp cún cưng của bạn luôn khỏe mạnh và vui vẻ mỗi ngày."

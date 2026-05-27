@@ -5,7 +5,7 @@ import { ProductDetailGallery } from "../components/product-detail-gallery";
 import { ProductDetailInfo } from "../components/product-detail-info";
 import { ProductsBottomNav } from "../components/products-bottom-nav";
 import { RelatedProducts } from "../components/related-products";
-import { MaterialIcon } from "../components/material-icon";
+import { MaterialIcon } from "~/shared/ui";
 import { LandingFooter } from "~/features/landing/components/landing-footer";
 import { LandingHeader } from "~/features/landing/components/landing-header";
 

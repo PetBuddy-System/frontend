@@ -1,15 +1,15 @@
-# AGENTS.md — edu-nexus-web
+# AGENTS.md — petbuddy-web
 
-> Tài liệu dành cho các AI agent (Codex, Cursor, Cline, Claude Code, ...) và dev mới khi làm việc trên codebase frontend của dự án **Edu Nexus**. Đọc kỹ trước khi sinh code, refactor hay đề xuất thay đổi.
+> Tài liệu dành cho các AI agent (Codex, Cursor, Cline, Claude Code, ...) và dev mới khi làm việc trên codebase frontend của dự án **PetBuddy**. Đọc kỹ trước khi sinh code, refactor hay đề xuất thay đổi.
 
 ---
 
 ## 1. Bối cảnh dự án (Project Context)
 
-- **Tên dự án:** Edu Nexus — nền tảng giáo dục/learning platform (SPA + SSR).
-- **Khoá / môn:** FPT University, semester 7, môn **EXE**.
-- **Vai trò repo này:** Frontend web app (`edu-nexus-web`).
-- **Người dùng cuối:** Sinh viên, giảng viên, người học. UI cần **đa ngôn ngữ** (mặc định **tiếng Việt**, hỗ trợ EN) và **dark/light mode**.
+- **Tên dự án:** PetBuddy — nền tảng thương mại và dịch vụ chăm sóc thú cưng (SPA + SSR).
+- **Khoá / môn:** FPT University, semester 8, môn **SBA301**.
+- **Vai trò repo này:** Frontend web app (`petbuddy-web`).
+- **Người dùng cuối:** Người nuôi thú cưng, khách mua sản phẩm và khách đặt dịch vụ. UI cần **đa ngôn ngữ** (mặc định **tiếng Việt**, hỗ trợ EN) và **dark/light mode**.
 - **Nguyên tắc cốt lõi:** _dễ bảo trì, dễ mở rộng, đa ngôn ngữ, đa theme._
 
 ---
@@ -40,7 +40,7 @@
 Lấy cảm hứng từ **Feature-Sliced Design** (tinh giản): phân lớp rõ giữa `routes` (routing), `features` (business), `shared` (tái sử dụng), `providers` (context cấp app), `styles` (CSS) và `locales` (i18n).
 
 ```
-edu-nexus-web/
+petbuddy-web/
 ├── app/
 │   ├── root.tsx                       # Root layout, gắn AppProviders + theme init script
 │   ├── routes.ts                      # Khai báo route (config object)
@@ -211,7 +211,7 @@ const { theme, setTheme, toggleTheme } = useTheme();
 ```
 - `ThemeProvider` được gắn 1 lần tại `app/providers/app-providers.tsx`. **KHÔNG** gắn lại ở component con.
 - `themeInitScript` được inject `<script>` trong `<head>` (tại `root.tsx`) để áp class `dark` **trước khi** React hydrate → tránh flash màu sai (FOUC).
-- State persist trong `localStorage` key `STORAGE_KEYS.theme` = `"edu-nexus-theme"`.
+- State persist trong `localStorage` key `STORAGE_KEYS.theme` = `"petbuddy-theme"`.
 - Khi chưa có giá trị lưu, fallback theo `prefers-color-scheme` của OS.
 
 ### 4.6 Đổi màu chủ đạo về sau
@@ -233,7 +233,7 @@ File `app/shared/lib/i18n/index.ts`:
 - `fallbackLng: "vi"` (mặc định tiếng Việt)
 - `supportedLngs: ["en", "vi"]`
 - Detector order: `localStorage` → `navigator`
-- Storage key: `STORAGE_KEYS.language` = `"edu-nexus-lang"`
+- Storage key: `STORAGE_KEYS.language` = `"petbuddy-lang"`
 - Default namespace: `"common"`
 - Namespaces hiện có: `["common", "welcome", "landing", "pricing", "auth", "dashboard"]`
 

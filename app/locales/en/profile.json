@@ -1,0 +1,139 @@
+{
+  "brand": {
+    "name": "PetBuddy"
+  },
+  "user": {
+    "name": "Nguyen Van An",
+    "tier": "Loyal customer",
+    "avatarAlt": "Profile photo of Nguyen Van An"
+  },
+  "sidebar": {
+    "nav": {
+      "profile": "Personal information",
+      "orders": "My orders",
+      "services": "Booked services",
+      "addresses": "Shipping addresses"
+    },
+    "utility": {
+      "zalo": "Zalo support",
+      "home": "Back to home"
+    },
+    "logout": "Log out"
+  },
+  "header": {
+    "title": "Personal information",
+    "backHome": "Back to home",
+    "notifications": "Open notifications",
+    "cart": "Open cart"
+  },
+  "stats": {
+    "orders": "Total orders",
+    "spent": "Total spending",
+    "offers": "Available offers"
+  },
+  "profile": {
+    "avatarAlt": "Large profile photo",
+    "changePhoto": "Change profile photo",
+    "goldMember": "Gold member",
+    "memberSince": "Joined January 2023 • 150 reward points",
+    "edit": "Edit",
+    "fields": {
+      "fullName": {
+        "label": "Full name",
+        "value": "Nguyen Van An"
+      },
+      "email": {
+        "label": "Email",
+        "value": "an.nguyen@email.com"
+      },
+      "phone": {
+        "label": "Phone number",
+        "value": "090 123 4567"
+      },
+      "birthday": {
+        "label": "Birthday",
+        "value": "15/05/1992"
+      },
+      "gender": {
+        "label": "Gender",
+        "value": "Male"
+      }
+    }
+  },
+  "pets": {
+    "title": "My pets",
+    "add": "Add pet",
+    "items": {
+      "lu": {
+        "name": "Lu",
+        "description": "Golden Retriever • 3 years old",
+        "imageAlt": "Golden Retriever dog named Lu"
+      },
+      "mimi": {
+        "name": "Mimi",
+        "description": "Poodle • 1.5 years old",
+        "imageAlt": "White Poodle dog named Mimi"
+      }
+    }
+  },
+  "support": {
+    "zalo": "Zalo support"
+  },
+  "serviceHistory": {
+    "headerTitle": "Booked services",
+    "headerSubtitle": "Review and manage every pet care appointment you have booked.",
+    "breadcrumb": {
+      "dashboard": "Dashboard",
+      "current": "Booked services"
+    },
+    "title": "Booked services",
+    "description": "Manage your pet care appointments in one place.",
+    "filters": {
+      "all": "All",
+      "upcoming": "Upcoming",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "status": {
+      "upcoming": "Upcoming",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "badges": {
+      "bestseller": "Bestseller"
+    },
+    "orderId": "ID: {{id}}",
+    "actions": {
+      "viewDetails": "View details",
+      "cancel": "Cancel booking",
+      "bookAgain": "Book again",
+      "invoice": "View invoice",
+      "bookNow": "Book again now"
+    },
+    "loadMore": "View older services",
+    "empty": "No services match this filter yet.",
+    "items": {
+      "bathStandard": {
+        "title": "Standard Bath & Dry",
+        "pet": "Lu",
+        "time": "14:30 - 28/10/2024",
+        "meta": "District 1 branch",
+        "imageAlt": "Happy dog being bathed in a clean grooming salon",
+        "petImageAlt": "Pet avatar for Lu"
+      },
+      "professionalStyling": {
+        "title": "Professional Trim & Styling",
+        "pet": "Mimi",
+        "time": "09:00 - 15/10/2024",
+        "meta": "Rated: 5 stars",
+        "imageAlt": "Professional grooming service in a clean pet studio",
+        "petImageAlt": "Pet avatar for Mimi"
+      },
+      "healthCheck": {
+        "title": "Routine Health Check",
+        "pet": "Lu",
+        "reason": "Reason: Customer changed schedule"
+      }
+    }
+  }
+}

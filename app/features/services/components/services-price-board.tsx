@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { MaterialIcon } from "./material-icon";
+import { MaterialIcon } from "~/shared/ui";
 import BangGia from "../assets/BangGia.png";
 
 export function ServicesPriceBoard() {

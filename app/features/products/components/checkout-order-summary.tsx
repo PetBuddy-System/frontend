@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { MaterialIcon } from "./material-icon";
+import { MaterialIcon } from "~/shared/ui";
 
 const TRUST_BADGES = [
   { key: "secure", icon: "verified_user" },
@@ -85,13 +85,13 @@ export function CheckoutOrderSummary({
           </div>
         </div>
 
-        <button
-          type="button"
+        <a
+          href="/order-success"
           className="flex w-full items-center justify-center gap-3 rounded-full bg-secondary px-6 py-4 font-display font-semibold text-secondary-foreground shadow-md transition-transform active:scale-95"
         >
           <MaterialIcon name="lock" filled className="text-[20px]" />
           {t("checkout.summary.placeOrder")}
-        </button>
+        </a>
 
         <div className="mt-6 flex flex-col gap-3 border-t border-border pt-4">
           {TRUST_BADGES.map((badge) => (

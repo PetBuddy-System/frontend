@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { MaterialIcon } from "./material-icon";
+import { MaterialIcon } from "~/shared/ui";
 
 export function LandingFab() {
   const { t } = useTranslation("landing");

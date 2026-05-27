@@ -5,7 +5,7 @@ import { LandingFab } from "~/features/landing/components/landing-fab";
 import { LandingFooter } from "~/features/landing/components/landing-footer";
 import { LandingHeader } from "~/features/landing/components/landing-header";
 
-import { MaterialIcon } from "../components/material-icon";
+import { MaterialIcon } from "~/shared/ui";
 import { ServiceDetailContent } from "../components/service-detail-content";
 import { ServiceDetailGallery } from "../components/service-detail-gallery";
 import { ServiceDetailInfo } from "../components/service-detail-info";

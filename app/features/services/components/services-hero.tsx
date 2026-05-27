@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { MaterialIcon } from "./material-icon";
+import { MaterialIcon } from "~/shared/ui";
 
 const HERO_IMAGE_URL =
   "https://lh3.googleusercontent.com/aida/ADBb0uh52RpcFbu1XGzWt7elY-_58td2OhVfTmJh7LrRteHmc7uwKetPvOEQYDoS7OwztP6YTZtCOVikIAiZ74QZc4aYbjnup-Jb7Z0ot7BHxKGOm2JLSNN73tAEWmsmSPeEOIHsM1-cGQWU2BnDqCvDSzw9BY2EvQ-A0dX0wdhSX1Pf3atW3rlDz5lNfQDa4MqtC9Qbw_FOgzvcFChIHhtQax0MnmPcHQLb0wadnEtWz1AblgvqLJo5Es2CFis";

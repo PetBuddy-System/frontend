@@ -1,0 +1,139 @@
+{
+  "brand": {
+    "name": "PetBuddy"
+  },
+  "user": {
+    "name": "Nguyễn Văn An",
+    "tier": "Khách hàng thân thiết",
+    "avatarAlt": "Ảnh đại diện của Nguyễn Văn An"
+  },
+  "sidebar": {
+    "nav": {
+      "profile": "Thông tin cá nhân",
+      "orders": "Đơn hàng của tôi",
+      "services": "Dịch vụ đã đặt",
+      "addresses": "Địa chỉ giao hàng"
+    },
+    "utility": {
+      "zalo": "Hỗ trợ Zalo",
+      "home": "Quay lại trang chủ"
+    },
+    "logout": "Đăng xuất"
+  },
+  "header": {
+    "title": "Thông tin cá nhân",
+    "backHome": "Về trang chủ",
+    "notifications": "Mở thông báo",
+    "cart": "Mở giỏ hàng"
+  },
+  "stats": {
+    "orders": "Tổng đơn hàng",
+    "spent": "Tổng tích lũy",
+    "offers": "Ưu đãi hiện có"
+  },
+  "profile": {
+    "avatarAlt": "Ảnh hồ sơ cỡ lớn",
+    "changePhoto": "Đổi ảnh hồ sơ",
+    "goldMember": "Thành viên Vàng",
+    "memberSince": "Tham gia từ tháng 1, 2023 • 150 điểm thưởng",
+    "edit": "Chỉnh sửa",
+    "fields": {
+      "fullName": {
+        "label": "Họ và tên",
+        "value": "Nguyễn Văn An"
+      },
+      "email": {
+        "label": "Email",
+        "value": "an.nguyen@email.com"
+      },
+      "phone": {
+        "label": "Số điện thoại",
+        "value": "090 123 4567"
+      },
+      "birthday": {
+        "label": "Ngày sinh",
+        "value": "15/05/1992"
+      },
+      "gender": {
+        "label": "Giới tính",
+        "value": "Nam"
+      }
+    }
+  },
+  "pets": {
+    "title": "Thú cưng của tôi",
+    "add": "Thêm thú cưng",
+    "items": {
+      "lu": {
+        "name": "Lu",
+        "description": "Golden Retriever • 3 tuổi",
+        "imageAlt": "Chó Golden Retriever tên Lu"
+      },
+      "mimi": {
+        "name": "Mimi",
+        "description": "Poodle • 1.5 tuổi",
+        "imageAlt": "Chó Poodle trắng tên Mimi"
+      }
+    }
+  },
+  "support": {
+    "zalo": "Hỗ trợ Zalo"
+  },
+  "serviceHistory": {
+    "headerTitle": "Dịch vụ đã đặt",
+    "headerSubtitle": "Xem lại và quản lý các lịch hẹn chăm sóc thú cưng của bạn.",
+    "breadcrumb": {
+      "dashboard": "Dashboard",
+      "current": "Dịch vụ đã đặt"
+    },
+    "title": "Dịch vụ đã đặt",
+    "description": "Quản lý các lịch hẹn chăm sóc thú cưng của bạn tại một nơi.",
+    "filters": {
+      "all": "Tất cả",
+      "upcoming": "Sắp tới",
+      "completed": "Hoàn thành",
+      "cancelled": "Đã hủy"
+    },
+    "status": {
+      "upcoming": "Sắp tới",
+      "completed": "Hoàn thành",
+      "cancelled": "Đã hủy"
+    },
+    "badges": {
+      "bestseller": "Bestseller"
+    },
+    "orderId": "ID: {{id}}",
+    "actions": {
+      "viewDetails": "Xem chi tiết",
+      "cancel": "Hủy lịch",
+      "bookAgain": "Đặt lại",
+      "invoice": "Xem hóa đơn",
+      "bookNow": "Đặt lại ngay"
+    },
+    "loadMore": "Xem thêm dịch vụ cũ",
+    "empty": "Chưa có dịch vụ nào phù hợp với bộ lọc này.",
+    "items": {
+      "bathStandard": {
+        "title": "Tắm & Sấy Tiêu Chuẩn",
+        "pet": "Lu",
+        "time": "14:30 - 28/10/2024",
+        "meta": "Chi nhánh Quận 1",
+        "imageAlt": "Chú chó vui vẻ được tắm trong salon grooming sạch sẽ",
+        "petImageAlt": "Ảnh đại diện thú cưng Lu"
+      },
+      "professionalStyling": {
+        "title": "Tỉa Lông & Tạo Kiểu Professional",
+        "pet": "Mimi",
+        "time": "09:00 - 15/10/2024",
+        "meta": "Đã đánh giá: 5 sao",
+        "imageAlt": "Dịch vụ grooming chuyên nghiệp trong studio thú cưng sạch sẽ",
+        "petImageAlt": "Ảnh đại diện thú cưng Mimi"
+      },
+      "healthCheck": {
+        "title": "Kiểm tra sức khỏe định kỳ",
+        "pet": "Lu",
+        "reason": "Lý do: Khách hàng thay đổi lịch trình"
+      }
+    }
+  }
+}

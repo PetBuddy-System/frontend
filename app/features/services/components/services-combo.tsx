@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { MaterialIcon } from "./material-icon";
+import { MaterialIcon } from "~/shared/ui";
 
 const PROMO_IMAGE_URL =
   "https://lh3.googleusercontent.com/aida/ADBb0uiFwC2ygqdDAmb9zP-r0p20uViqelQfZM0AyzOY0wd4Le7--GuJJbH5dWKQ90UfZuE_-KsVI0LlDdK6_xLhmuw6jq93C0Pcljkk4dKz-0SLKLn7Da2-eoBSUnBbHtXF14ilHzxfck53BNHG58v9QssfwaG10H4mxpX_WdlmTTGKWd1Ft4fBLOimPMK8_8Fcg3nsXnMpPgFU6RDuvLjeDzVATvWcqk2sdSjG67310wg5_MclAR7_2ARxfQI";

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 import logo from "../assets/logoPetBuddy2.svg";
-import { MaterialIcon } from "./material-icon";
+import { MaterialIcon } from "~/shared/ui";
 import { cn } from "~/shared/lib/cn";
 
 const NAV_ITEMS = [
@@ -51,6 +51,13 @@ export function LandingHeader() {
             className="rounded-full p-2 transition-colors hover:bg-muted"
           >
             <MaterialIcon name="shopping_cart" className="text-[22px]" />
+          </a>
+          <a
+            href="/profile"
+            aria-label={t("actions.account")}
+            className="rounded-full p-2 transition-colors hover:bg-muted"
+          >
+            <MaterialIcon name="account_circle" className="text-[22px]" />
           </a>
           <div className="hidden items-center gap-2 md:flex">
             <a

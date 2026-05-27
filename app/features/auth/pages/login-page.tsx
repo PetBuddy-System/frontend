@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import logo from "../assets/cho-login.jpg";
-import { MaterialIcon } from "../components/material-icon";
+import { MaterialIcon } from "~/shared/ui";
 
 export function LoginPage() {
   const { t } = useTranslation("auth");

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import logo from "../assets/logoPetBuddy2.png";
-import { MaterialIcon } from "./material-icon";
+import { MaterialIcon } from "~/shared/ui";
 
 export function LandingFooter() {
   const { t } = useTranslation("landing");

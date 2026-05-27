@@ -253,6 +253,57 @@
       "apply": "Apply"
     }
   },
+  "orderSuccess": {
+    "banner": {
+      "title": "Thank you for your order!",
+      "orderCodePrefix": "Your order code is",
+      "emailPrefix": "A confirmation email has been sent to"
+    },
+    "details": {
+      "title": "Order details",
+      "itemCount": "{{count}} products",
+      "quantity": "Quantity: {{count}}",
+      "items": {
+        "oliveShampoo": {
+          "title": "Olive Essence shampoo for brown coats",
+          "imageAlt": "Olive Essence pet shampoo bottle"
+        },
+        "royalCaninPoodle": {
+          "title": "Royal Canin Poodle Adult dry food",
+          "imageAlt": "Royal Canin Poodle Adult dry food bag"
+        }
+      }
+    },
+    "delivery": {
+      "title": "Delivery information",
+      "name": "Nguyen Van An",
+      "phone": "090 123 4567",
+      "address": "123 Le Loi Street, Ben Thanh Ward, District 1, Ho Chi Minh City"
+    },
+    "method": {
+      "title": "Shipping & payment method",
+      "shippingLabel": "Shipping",
+      "shipping": "Express delivery (2-3 days)",
+      "paymentLabel": "Payment",
+      "payment": "Credit card (Visa **** 4455)"
+    },
+    "payment": {
+      "title": "Total",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping fee",
+      "freeShipping": "Free",
+      "total": "Total paid",
+      "trackOrder": "Track order",
+      "continueShopping": "Continue shopping"
+    },
+    "support": {
+      "title": "Need support?",
+      "description": "Our pet care team is always ready to help.",
+      "phone": "1900 1234",
+      "chat": "Chat with us"
+    },
+    "trustQuote": "For every tail that keeps wagging happily."
+  },
   "hero": {
     "title": "Dog food & accessories",
     "subtitle": "Explore premium nutrition and accessories to keep your pups healthy and happy every day."

@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 
 import { cn } from "~/shared/lib/cn";
 
-import { MaterialIcon } from "./material-icon";
+import { MaterialIcon } from "~/shared/ui";
 
 export const BOOKING_SERVICES = [
   {
