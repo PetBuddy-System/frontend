@@ -1,7 +1,9 @@
 {
   "brand": {
-    "name": "Pet Store",
-    "logoAlt": "Logo Pet Store",
+    "name": "PetBuddy",
+    "petName": "Pet",
+    "buddyName": "Buddy",
+    "logoAlt": "Logo PetBuddy",
     "tagline": "Hệ thống cửa hàng chăm sóc và cung cấp sản phẩm cao cấp cho thú cưng."
   },
   "nav": {
@@ -13,6 +15,7 @@
   },
   "actions": {
     "cart": "Mở giỏ hàng",
+    "account": "Mở tài khoản",
     "menu": "Mở menu",
     "addToCart": "Thêm vào giỏ",
     "supportChat": "Trò chuyện hỗ trợ",
@@ -34,21 +37,13 @@
         "title": "Tắm & sấy tiêu chuẩn",
         "description": "Quy trình tắm sấy nhiều bước với dầu gội chuyên dụng, giúp làm sạch sâu, khử mùi và dưỡng lông mềm mượt. Phù hợp cho mọi giống chó mèo.",
         "imageAlt": "Tắm và sấy chó",
-        "bullets": [
-          "Làm sạch tuyến hôi",
-          "Sấy phồng tạo kiểu cơ bản",
-          "Vệ sinh tai, cắt móng"
-        ]
+        "bullets": ["Làm sạch tuyến hôi", "Sấy phồng tạo kiểu cơ bản", "Vệ sinh tai, cắt móng"]
       },
       "grooming": {
         "title": "Tỉa lông & tạo kiểu (Grooming)",
         "description": "Dịch vụ cắt tỉa nghệ thuật theo tiêu chuẩn hoặc theo yêu cầu riêng, biến hóa ngoại hình thú cưng trở nên đáng yêu và gọn gàng hơn.",
         "imageAlt": "Tỉa lông và tạo kiểu",
-        "bullets": [
-          "Tư vấn kiểu cắt phù hợp",
-          "Cắt tỉa chi tiết toàn thân",
-          "Phục hồi lông xơ rối"
-        ]
+        "bullets": ["Tư vấn kiểu cắt phù hợp", "Cắt tỉa chi tiết toàn thân", "Phục hồi lông xơ rối"]
       }
     }
   },
@@ -100,6 +95,70 @@
         "title": "Hỗ trợ nhiệt tình 24/7",
         "description": "Đội ngũ chuyên gia luôn sẵn sàng tư vấn về dinh dưỡng và cách chăm sóc thú cưng."
       }
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Liên hệ & hỗ trợ",
+      "subtitle": "Chúng tôi luôn sẵn sàng đồng hành để thú cưng của bạn được chăm sóc chu đáo nhất.",
+      "imageAlt": "Khu vực lễ tân thú y ấm áp với thú cưng và chủ nuôi"
+    },
+    "info": {
+      "title": "Thông tin liên hệ",
+      "addressLabel": "Địa chỉ",
+      "address": "151 Huy Cận, Thủ Đức, TP. HCM",
+      "phoneLabel": "Điện thoại",
+      "phone": "092 199 9319",
+      "followLabel": "Theo dõi",
+      "facebook": "Facebook: PetBuddy",
+      "mapAlt": "Bản đồ khu vực Thủ Đức, TP. Hồ Chí Minh",
+      "openMap": "Mở Google Maps"
+    },
+    "policies": {
+      "purchaseTab": "Chính sách mua hàng",
+      "shippingTab": "Chính sách giao hàng",
+      "purchaseDescription": "Tại PetBuddy, chúng tôi cam kết mang đến trải nghiệm mua sắm an toàn, minh bạch và đáng tin cậy. Mỗi sản phẩm thức ăn, phụ kiện và chăm sóc đều được kiểm tra kỹ trước khi đến tay thú cưng của bạn.",
+      "purchaseCards": {
+        "verified": {
+          "title": "Nguồn gốc rõ ràng",
+          "description": "Tất cả sản phẩm đều chính hãng và được kiểm tra về độ an toàn."
+        },
+        "quality": {
+          "title": "Chất lượng cao",
+          "description": "Chúng tôi ưu tiên sản phẩm cao cấp, phù hợp tiêu chuẩn chăm sóc thú cưng."
+        },
+        "support": {
+          "title": "Hỗ trợ 24/7",
+          "description": "Đội ngũ luôn sẵn sàng tư vấn để bạn chọn đúng sản phẩm và dịch vụ."
+        }
+      },
+      "shippingHero": {
+        "title": "Miễn phí giao hàng nội thành",
+        "description": "Các đơn hàng trong khu vực trung tâm TP. HCM được hỗ trợ giao hàng miễn phí.",
+        "imageAlt": "Nhân viên PetBuddy giao kiện hàng cho khách"
+      },
+      "shippingItems": {
+        "fast": {
+          "title": "Giao hàng nhanh",
+          "description": "Phần lớn đơn hàng được xử lý và gửi đi trong 2-4 giờ sau xác nhận."
+        },
+        "safe": {
+          "title": "Đóng gói an toàn",
+          "description": "Bao bì được chuẩn bị cẩn thận để giữ sản phẩm nguyên vẹn khi vận chuyển."
+        },
+        "schedule": {
+          "title": "Linh hoạt thời gian",
+          "description": "Bạn có thể chọn khung giờ giao phù hợp với lịch sinh hoạt của mình."
+        }
+      }
+    },
+    "newsletter": {
+      "title": "Tham gia cộng đồng yêu thú cưng",
+      "description": "Nhận mẹo chăm sóc, cập nhật sức khỏe và ưu đãi đặc biệt mỗi tuần.",
+      "placeholder": "Nhập email của bạn",
+      "submit": "Đăng ký",
+      "submitted": "Đã đăng ký",
+      "imageAlt": "Hai chú chó vui vẻ ngồi cạnh nhau trong công viên"
     }
   },
   "team": {

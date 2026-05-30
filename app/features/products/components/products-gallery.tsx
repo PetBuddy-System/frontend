@@ -1,30 +1,28 @@
 import { useTranslation } from "react-i18next";
-
 import { MaterialIcon } from "~/shared/ui";
-
+import dogCute8 from "../assets/dogCute8.png";
+import dogCute3 from "../assets/dogCute3.png";
+import dogCute7 from "../assets/dogCute7.png";
+import dogCute5 from "../assets/dogCute5.png";
 const GALLERY_ITEMS = [
   {
     key: "walk",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida/ADBb0uhL-ZfgOs7CcCLYAL-5AxOKWdpLdz5eHLGnrr-dCnEPxLAXCILHRgZqwJa48aciiNsAKo63ZEEAJyl0zBworFGiSfUnBtYWeT2mMHyzVfUw_4ZIiXnclzOj06Z0hUq5E9kgiPgV_W4lKncvz3uncJ7BXjH_PgEGPkRftRobUIfZh7BtUSO5-66Fa42_J4S5yUPuTjlqHfounuDyi2lwxXqQn6V8uCWhSqXStIKjc183U4P1nWn_STGYsw",
+    imageSrc: dogCute8,
     className: "col-span-1 row-span-2",
   },
   {
     key: "trust",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida/ADBb0ug_iHJPwaugicPReZf1_ARoTGJDmQWmw9VXTsOX81GqmAIpIuPP-No6c_8xc4bizQEHZi5gvrMcm8_SHRDFtQ9VhWG3If1vfjDRVZRnpu1gVpd9wyauao6o1WzOyjlg2peNpE4aI_i0U6NLNrVe-WBRLTQ87x_bqgQlRdpHmL67URaULyynNZoA9LdN6JSx61YRcVgYBISmX14cZZYz-7guBB55H5yUdvu3fiZVueScKrsL8-BhAUhkkQ",
+    imageSrc: dogCute3,
     className: "col-span-1 row-span-1",
   },
   {
     key: "promo",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida/ADBb0ujPhLVnLQTA6EvmpAAFwUJz2EyTJkkG4JhutCZDYbfqJhIW2EE_0Z9HLBTDHRjZwswsF2W61POXxSYGVsYXow8pqTq0yoCErYIu24GkO2-TjXCgDsTSbvYLybUQkBReICauQIXBz6m5boKvXc8MP7O92gBE4VfZB4ev1OI-GRZFTGM2mosfM0bVz9fE56GiEZLuqwJsxeJY0hSmMsLr95wcPRYvPovGKMjKAM_prd0Y5gVY6atSuMBU6A",
+    imageSrc: dogCute5,
     className: "col-span-2 row-span-1",
   },
   {
     key: "couple",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida/ADBb0ujWQU1rNVnNdsyZ6z2gDcJu9jCkpScYcOKAHRzcgH1uRPamFn9YYVtzeUos16J23fO9tK1s3QQvyegb2BC8VX44RSRyg7adP5tz4nSLVAZb6HiKIgxdb03w6CBdd54UjGUYffn5LSEd4HCcpRYIQZ_uZAGLsdMzYvMJVPQqb8EZ_552En7Qa-tyNFFS0GXcbXMuyrY8my1RMn7YnEX3xt2bnjSJjA_liRd-pxtLQMkYy-XoRsmleuS9T8E",
+    imageSrc: dogCute7,
     className: "col-span-1 row-span-1",
   },
 ] as const;
@@ -56,7 +54,7 @@ export function ProductsGallery() {
         {GALLERY_ITEMS.map((item) => (
           <div key={item.key} className={item.className}>
             <img
-              src={item.imageUrl}
+              src={item.imageSrc}
               alt={t(`gallery.items.${item.key}`)}
               className="h-full w-full rounded-xl object-cover shadow-sm transition-transform duration-300 hover:scale-[1.02]"
             />

@@ -15,4 +15,5 @@ export const SITE = {
 export const STORAGE_KEYS = {
   theme: "petbuddy-theme",
   language: "petbuddy-lang",
+  sidebarCollapsed: "petbuddy-sidebar-collapsed",
 } as const;

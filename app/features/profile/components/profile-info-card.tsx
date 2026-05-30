@@ -11,13 +11,13 @@ export function ProfileInfoCard() {
   const { t } = useTranslation("profile");
 
   return (
-    <section className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm transition-transform hover:-translate-y-0.5 md:p-8">
+    <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-transform hover:-translate-y-0.5 md:p-6">
       <div className="flex flex-col items-center gap-8 md:flex-row">
         <div className="relative">
           <img
             src={PROFILE_IMAGE}
             alt={t("profile.avatarAlt")}
-            className="h-32 w-32 rounded-3xl border-4 border-background object-cover shadow-lg"
+            className="h-28 w-28 rounded-3xl border-4 border-background object-cover shadow-lg md:h-32 md:w-32"
           />
           <button
             type="button"
@@ -30,7 +30,7 @@ export function ProfileInfoCard() {
 
         <div className="flex-1 text-center md:text-left">
           <div className="mb-2 flex flex-col items-center gap-3 md:flex-row">
-            <h2 className="font-display text-2xl font-semibold text-foreground">
+            <h2 className="font-display text-xl font-semibold text-foreground md:text-2xl">
               {t("user.name")}
             </h2>
             <span className="mx-auto flex w-fit items-center gap-1 rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary-foreground md:mx-0">
@@ -38,19 +38,21 @@ export function ProfileInfoCard() {
               {t("profile.goldMember")}
             </span>
           </div>
-          <p className="text-muted-foreground">{t("profile.memberSince")}</p>
+          <p className="text-sm text-muted-foreground md:text-base">
+            {t("profile.memberSince")}
+          </p>
         </div>
 
         <button
           type="button"
-          className="flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 font-bold text-primary-foreground transition-opacity hover:opacity-90"
+          className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 md:text-base"
         >
           <MaterialIcon name="edit" className="text-[20px]" />
           {t("profile.edit")}
         </button>
       </div>
 
-      <hr className="my-8 border-border" />
+      <hr className="my-6 border-border md:my-8" />
 
       <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
         {PROFILE_FIELDS.map((field) => (
@@ -58,7 +60,7 @@ export function ProfileInfoCard() {
             <p className="text-sm font-semibold text-muted-foreground">
               {t(`profile.fields.${field}.label`)}
             </p>
-            <p className="rounded-lg border border-border bg-background px-4 py-3 text-foreground">
+            <p className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground md:py-3 md:text-base">
               {t(`profile.fields.${field}.value`)}
             </p>
           </div>

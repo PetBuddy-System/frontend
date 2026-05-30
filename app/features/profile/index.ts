@@ -1,2 +1,5 @@
 export { ProfilePage } from "./pages/profile-page";
+export { ProfileOrdersPage } from "./pages/profile-orders-page";
+export { ProfileTrackingPage } from "./pages/profile-tracking-page";
 export { ProfileServicesPage } from "./pages/profile-services-page";
+export { ProfileReturnsPage } from "./pages/profile-returns-page";

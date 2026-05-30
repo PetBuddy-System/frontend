@@ -1,7 +1,9 @@
 {
   "brand": {
-    "name": "Pet Store",
-    "logoAlt": "Pet Store logo",
+    "name": "PetBuddy",
+    "petName": "Pet",
+    "buddyName": "Buddy",
+    "logoAlt": "PetBuddy logo",
     "tagline": "A premium pet care system with high-quality products and services."
   },
   "nav": {
@@ -13,6 +15,7 @@
   },
   "actions": {
     "cart": "Open cart",
+    "account": "Open account",
     "menu": "Open menu",
     "addToCart": "Add to cart",
     "supportChat": "Support chat",
@@ -34,21 +37,13 @@
         "title": "Bath & blow dry",
         "description": "A multi-step bath routine with specialized shampoos to deep clean, deodorize, and leave coats silky smooth for all breeds.",
         "imageAlt": "Bath and blow dry",
-        "bullets": [
-          "Deep clean scent glands",
-          "Basic fluffy blow dry",
-          "Ear cleaning and nail trim"
-        ]
+        "bullets": ["Deep clean scent glands", "Basic fluffy blow dry", "Ear cleaning and nail trim"]
       },
       "grooming": {
         "title": "Grooming & styling",
         "description": "Artistic trimming based on standard styles or personal requests to make pets look neat, cute, and confident.",
         "imageAlt": "Grooming and styling",
-        "bullets": [
-          "Style consultation",
-          "Full-body detailed trim",
-          "Coat repair for tangles"
-        ]
+        "bullets": ["Style consultation", "Full-body detailed trim", "Coat repair for tangles"]
       }
     }
   },
@@ -100,6 +95,70 @@
         "title": "24/7 friendly support",
         "description": "Our experts are always ready to advise on nutrition and pet care."
       }
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Contact & support",
+      "subtitle": "We're here to provide the best care for your pets. Reach out to our dedicated team anytime.",
+      "imageAlt": "Warm veterinary reception area with a happy dog and owner"
+    },
+    "info": {
+      "title": "Our information",
+      "addressLabel": "Address",
+      "address": "151 Huy Can, Thu Duc, Ho Chi Minh City",
+      "phoneLabel": "Phone",
+      "phone": "092 199 9319",
+      "followLabel": "Follow us",
+      "facebook": "Facebook: PetBuddy",
+      "mapAlt": "Map view of Thu Duc district in Ho Chi Minh City",
+      "openMap": "Open Google Maps"
+    },
+    "policies": {
+      "purchaseTab": "Purchase policy",
+      "shippingTab": "Shipping policy",
+      "purchaseDescription": "At PetBuddy, we are committed to a safe, transparent shopping experience. Every food, accessory, and care item is reviewed carefully before reaching your pet, because we know pets are family.",
+      "purchaseCards": {
+        "verified": {
+          "title": "Verified origins",
+          "description": "Every product is authentic and checked for safety and quality."
+        },
+        "quality": {
+          "title": "High quality",
+          "description": "We prioritize premium products that meet trusted pet-care standards."
+        },
+        "support": {
+          "title": "24/7 support",
+          "description": "Our team is ready to help you choose the right care for your pet."
+        }
+      },
+      "shippingHero": {
+        "title": "Inner HCM City free shipping",
+        "description": "Orders within central districts enjoy complimentary shipping from our team.",
+        "imageAlt": "PetBuddy delivery staff handing a package to a customer"
+      },
+      "shippingItems": {
+        "fast": {
+          "title": "Fast delivery",
+          "description": "Most orders are processed and shipped within 2-4 hours after confirmation."
+        },
+        "safe": {
+          "title": "Safe packaging",
+          "description": "Careful packaging keeps food fresh and products protected during transit."
+        },
+        "schedule": {
+          "title": "Flexible schedule",
+          "description": "Choose a delivery window that fits your pet-parent routine."
+        }
+      }
+    },
+    "newsletter": {
+      "title": "Join our pet-loving community",
+      "description": "Get exclusive care tips, health updates, and special offers delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "submit": "Subscribe",
+      "submitted": "Subscribed",
+      "imageAlt": "Two happy dogs sitting together in a park"
     }
   },
   "team": {

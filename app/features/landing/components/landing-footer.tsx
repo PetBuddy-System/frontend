@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import logo from "../assets/logoPetBuddy2.png";
+import logo from '../assets/petbuddy-logo-cropped.png'
 import { MaterialIcon } from "~/shared/ui";
 
 export function LandingFooter() {

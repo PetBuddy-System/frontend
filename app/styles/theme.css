@@ -40,6 +40,15 @@
 
   --color-brand-zalo: #0068ff;
   --color-brand-zalo-foreground: #ffffff;
+  --color-success: #16a34a;
+  --color-success-foreground: #ffffff;
+  --color-info: #2563eb;
+  --color-info-foreground: #ffffff;
+  --color-warning: #d97706;
+  --color-warning-foreground: #ffffff;
+
+  --color-logo-primary: #0055f1;
+  --color-logo-secondary: #49a3f1;
   --color-cream-variant: #fff5e6;
 
   /* Radius tokens — đổi 1 chỗ, áp cho mọi component qua rounded-* */
@@ -81,5 +90,14 @@
 
   --color-brand-zalo: #3a7dff;
   --color-brand-zalo-foreground: #0b1220;
+  --color-success: #22c55e;
+  --color-success-foreground: #052e16;
+  --color-info: #60a5fa;
+  --color-info-foreground: #082f49;
+  --color-warning: #f59e0b;
+  --color-warning-foreground: #172554;
+
+  --color-logo-primary: #0055f1;
+  --color-logo-secondary: #49a3f1;
   --color-cream-variant: #2a1d12;
 }

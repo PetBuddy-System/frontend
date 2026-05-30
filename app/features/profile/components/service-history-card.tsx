@@ -42,7 +42,7 @@ export function ServiceHistoryCard({ item }: ServiceHistoryCardProps) {
   return (
     <article
       className={cn(
-        "rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:border-primary/40 md:p-6",
+        "rounded-2xl border border-border bg-card p-4 shadow-sm transition-all duration-300 hover:border-primary/40 md:p-5",
         item.status !== "upcoming" && "opacity-90 hover:opacity-100",
       )}
     >
@@ -53,12 +53,12 @@ export function ServiceHistoryCard({ item }: ServiceHistoryCardProps) {
               src={item.image}
               alt={t(`serviceHistory.items.${item.key}.imageAlt`)}
               className={cn(
-                "h-36 w-full rounded-xl object-cover shadow-sm md:h-32 md:w-48",
+                "h-32 w-full rounded-xl object-cover shadow-sm md:h-28 md:w-40",
                 item.status === "completed" && "grayscale-[20%] transition-all hover:grayscale-0",
               )}
             />
           ) : (
-            <div className="flex h-36 w-full items-center justify-center rounded-xl bg-muted md:h-32 md:w-48">
+            <div className="flex h-32 w-full items-center justify-center rounded-xl bg-muted md:h-28 md:w-40">
               <MaterialIcon name="block" className="text-4xl text-muted-foreground" />
             </div>
           )}
@@ -75,7 +75,7 @@ export function ServiceHistoryCard({ item }: ServiceHistoryCardProps) {
               <div>
                 <h2
                   className={cn(
-                    "font-display text-2xl font-semibold transition-colors",
+                    "font-display text-lg font-semibold transition-colors md:text-xl",
                     item.status === "cancelled"
                       ? "text-muted-foreground"
                       : "text-foreground group-hover:text-primary",
@@ -120,7 +120,7 @@ export function ServiceHistoryCard({ item }: ServiceHistoryCardProps) {
               <div className="text-right">
                 <p
                   className={cn(
-                    "font-display text-xl font-bold",
+                    "font-display text-lg font-bold md:text-xl",
                     item.status === "upcoming" ? "text-primary" : "text-muted-foreground",
                   )}
                 >
@@ -136,7 +136,7 @@ export function ServiceHistoryCard({ item }: ServiceHistoryCardProps) {
 
             <div
               className={cn(
-                "mt-4 grid gap-4 border-t border-border pt-4 text-muted-foreground md:grid-cols-2",
+                "mt-4 grid gap-3 border-t border-border pt-4 text-sm text-muted-foreground md:grid-cols-2 md:text-base",
                 item.status === "cancelled" && "md:grid-cols-1",
               )}
             >
@@ -171,13 +171,13 @@ export function ServiceHistoryCard({ item }: ServiceHistoryCardProps) {
             </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-5 flex flex-wrap gap-3">
             {item.status === "upcoming" ? (
               <>
-                <button className="rounded-xl border border-primary px-6 py-2.5 text-sm font-bold text-primary transition-colors hover:bg-accent">
+                <button className="rounded-xl border border-primary px-5 py-2 text-sm font-bold text-primary transition-colors hover:bg-accent">
                   {t("serviceHistory.actions.viewDetails")}
                 </button>
-                <button className="rounded-xl bg-muted px-6 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive">
+                <button className="rounded-xl bg-muted px-5 py-2 text-sm font-bold text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive">
                   {t("serviceHistory.actions.cancel")}
                 </button>
               </>
@@ -185,17 +185,17 @@ export function ServiceHistoryCard({ item }: ServiceHistoryCardProps) {
 
             {item.status === "completed" ? (
               <>
-                <button className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground shadow-sm transition-colors hover:opacity-90">
+                <button className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-primary-foreground shadow-sm transition-colors hover:opacity-90">
                   {t("serviceHistory.actions.bookAgain")}
                 </button>
-                <button className="rounded-xl border border-border px-6 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:bg-muted">
+                <button className="rounded-xl border border-border px-5 py-2 text-sm font-bold text-muted-foreground transition-colors hover:bg-muted">
                   {t("serviceHistory.actions.invoice")}
                 </button>
               </>
             ) : null}
 
             {item.status === "cancelled" ? (
-              <button className="rounded-xl border border-primary px-6 py-2.5 text-sm font-bold text-primary transition-colors hover:bg-accent">
+              <button className="rounded-xl border border-primary px-5 py-2 text-sm font-bold text-primary transition-colors hover:bg-accent">
                 {t("serviceHistory.actions.bookNow")}
               </button>
             ) : null}

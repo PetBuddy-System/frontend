@@ -29,7 +29,7 @@ export function ServiceHistoryFilters({
           key={filter}
           type="button"
           className={cn(
-            "rounded-full px-5 py-2 text-sm font-semibold transition-colors",
+            "rounded-full px-4 py-1.5 text-xs font-semibold transition-colors md:px-5 md:py-2 md:text-sm",
             activeFilter === filter
               ? "border border-secondary bg-secondary text-secondary-foreground shadow-sm"
               : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground",

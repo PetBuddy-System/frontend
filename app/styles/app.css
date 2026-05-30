@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "./theme.css";
+@import 'tailwindcss';
+@import './theme.css';
 
 /* Bật dark mode dựa trên class `dark` ở <html> (do ThemeProvider
    set). Dùng class thay vì prefers-color-scheme để user có thể
@@ -30,6 +30,14 @@
   --color-destructive-foreground: var(--color-destructive-foreground);
   --color-brand-zalo: var(--color-brand-zalo);
   --color-brand-zalo-foreground: var(--color-brand-zalo-foreground);
+  --color-logo-primary: var(--color-logo-primary);
+  --color-logo-secondary: var(--color-logo-secondary);
+  --color-success: var(--color-success);
+  --color-success-foreground: var(--color-success-foreground);
+  --color-info: var(--color-info);
+  --color-info-foreground: var(--color-info-foreground);
+  --color-warning: var(--color-warning);
+  --color-warning-foreground: var(--color-warning-foreground);
   --color-cream-variant: var(--color-cream-variant);
 
   --radius-sm: var(--radius-sm);
@@ -37,11 +45,10 @@
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
 
-  --font-sans: "Be Vietnam Pro", "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
-  --font-display: "Plus Jakarta Sans", "Be Vietnam Pro", ui-sans-serif,
-    system-ui, sans-serif;
+  --font-sans:
+    'Be Vietnam Pro', 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-display: 'Plus Jakarta Sans', 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
 }
 
 html,
@@ -55,11 +62,48 @@ html.dark {
 }
 
 .material-symbols-outlined {
-  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
   display: inline-block;
   line-height: 1;
 }
 
 .material-symbols-outlined.fill {
-  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+/* Order tracking stepper — dashed/solid progress lines */
+.stepper-line {
+  background: repeating-linear-gradient(
+    to right,
+    var(--color-border),
+    var(--color-border) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.stepper-line-active {
+  background: var(--color-primary);
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

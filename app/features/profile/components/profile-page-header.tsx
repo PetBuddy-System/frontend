@@ -14,7 +14,7 @@ export function ProfilePageHeader({
   const { t } = useTranslation("profile");
 
   return (
-    <header className="mb-8 flex items-center justify-between">
+    <header className="mb-6 flex items-center justify-between md:mb-8">
       <div>
         <a
           href="/"
@@ -23,11 +23,11 @@ export function ProfilePageHeader({
           <MaterialIcon name="arrow_back" className="text-[20px]" />
           {t("header.backHome")}
         </a>
-        <h1 className="font-display text-3xl font-bold text-primary md:text-5xl">
+        <h1 className="font-display text-2xl font-bold text-primary sm:text-3xl lg:text-4xl">
           {t(titleKey)}
         </h1>
         {subtitleKey ? (
-          <p className="mt-2 max-w-2xl text-muted-foreground">
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground md:text-base">
             {t(subtitleKey)}
           </p>
         ) : null}

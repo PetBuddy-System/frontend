@@ -1,11 +1,9 @@
 import { useTranslation } from "react-i18next";
 
 import { MaterialIcon } from "~/shared/ui";
+import happydog from "../assets/happy-dog-training-03.png";
+import dogTrust from "../assets/dogTrust.png";
 
-const TRUST_IMAGE_URL =
-  "https://lh3.googleusercontent.com/aida/ADBb0ug_iHJPwaugicPReZf1_ARoTGJDmQWmw9VXTsOX81GqmAIpIuPP-No6c_8xc4bizQEHZi5gvrMcm8_SHRDFtQ9VhWG3If1vfjDRVZRnpu1gVpd9wyauao6o1WzOyjlg2peNpE4aI_i0U6NLNrVe-WBRLTQ87x_bqgQlRdpHmL67URaULyynNZoA9LdN6JSx61YRcVgYBISmX14cZZYz-7guBB55H5yUdvu3fiZVueScKrsL8-BhAUhkkQ";
-const TEAM_IMAGE_URL =
-  "https://lh3.googleusercontent.com/aida/ADBb0uiWccCL-qqqt_cg8TJMe3EVsimm102lkxyqupEPvmleGG-dPaKAM5b0N5FDbs0tECqulWDW6oSvQmrr7yg8z3l_JYtJSLq1LcAsSAWkLdK-BRPzAX4guqsVOJcZMlo4xkE52QPy0FxEc-M8rSzewBPCBxvpj7yxTzv45O58MMw0gW2eJrmbjugyWlsCSuEN79vVE3eu86s7hpFUB0lon_-cnR69BwrODmFueoPheXaUaPbB7BalxISOOzI";
 
 const TRUST_ITEMS = [
   { key: "love", icon: "favorite" },
@@ -44,7 +42,7 @@ export function LandingTrust() {
           </div>
           <div className="overflow-hidden rounded-2xl border border-border/60 shadow-sm">
             <img
-              src={TRUST_IMAGE_URL}
+              src={happydog}
               alt={t("images.trustAlt")}
               className="h-full w-full object-cover"
             />
@@ -54,7 +52,7 @@ export function LandingTrust() {
         <div className="mt-16 grid items-center gap-12 md:grid-cols-2">
           <div className="order-2 overflow-hidden rounded-2xl border border-border/60 shadow-sm md:order-1">
             <img
-              src={TEAM_IMAGE_URL}
+              src={dogTrust}
               alt={t("images.teamAlt")}
               className="h-full w-full object-cover"
             />

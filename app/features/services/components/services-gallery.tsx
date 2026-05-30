@@ -1,11 +1,13 @@
 import { useTranslation } from "react-i18next";
-
+import serviceGallery from "../assets/servicegallery.png";
+import serviceGallery2 from "../assets/servicegallery2.png";
+import serviceGallery3 from "../assets/serviceGallery3.png";
 const GALLERY_IMAGES = {
-  main: "https://lh3.googleusercontent.com/aida/ADBb0uiIV8czvW6LU1CpQVNPn9YtRIeXVRQ_Qt8O3DYFFOAwWJM8RT0jNDRCiIRCrMkLW6ABdHzzR6-qP5kPDxlnbPUBGyW_zECwKyUV-If7Twm0IG4uEI8O-RAHuo138yfPk4Npt3CyDGJ0AsKTFKakzJ9ETm05-OPhhKMrgNalcySmakhLYUtXBvd1sruwDO0YgpbP3io4JjB2qE-HUhJa3c11XR1LjtZO1uDB6qhQYN24OThlJfk4PR-jG4U",
+  main: serviceGallery,
   second:
-    "https://lh3.googleusercontent.com/aida/ADBb0ugRSO5ZhJ2ebq3Pu3Ug5j5LHWkQ17vXIaLNqk4BaJrPnt0v4Gy2sL4ATPXzyWe25RP2h-u7JSlypguvaIlV2umXkAFaiohpRi-UT_ogP6Dh9MpL7LQPV90n7CSMMoGpV-tMyHhZ7Cui6qFXKJC9ANCwRWvDSeeVcfshcWRMadvJsOhSoLhaHBlKASqI9pQpg8vwWJaxQwg4e7u-MyJnHN1uaWirELfpJWbBV9Yc0XeTL_i7VmKKYhs87Q",
+    serviceGallery2,
   third:
-    "https://lh3.googleusercontent.com/aida/ADBb0uguFB7PEYn5dEZkQE7Epyj20ysYR_Ngns1rrCoXjv6ltoCO93Ky7Y--BGqayja9z9u33KvhDkAcpxZ3v-y1yi2B0sT6qQjBuIPkMiWlSQmxYpmvueoflTgsK9lsMndRaqtIeMEooby6C8vNulPpfrR6tcEuQyPTuwsxfPIAWIkfoJ3M5ghm73KxXF-cOHiCGUEJbjhZIjee-E1fRt7xkmf8gOMxFR9z47XrPzYGeXgp2USBL8ZoMGnA3kk",
+    serviceGallery3,
 } as const;
 
 export function ServicesGallery() {

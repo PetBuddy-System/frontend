@@ -10,8 +10,10 @@
   "sidebar": {
     "nav": {
       "profile": "Personal information",
+      "tracking": "Track order",
       "orders": "My orders",
       "services": "Booked services",
+      "returns": "Returns & Warranty",
       "addresses": "Shipping addresses"
     },
     "utility": {
@@ -134,6 +136,188 @@
         "pet": "Lu",
         "reason": "Reason: Customer changed schedule"
       }
+    }
+  },
+  "orderHistory": {
+    "headerTitle": "My Orders",
+    "headerSubtitle": "Track and manage your purchase history.",
+    "breadcrumb": {
+      "dashboard": "Dashboard",
+      "current": "Orders"
+    },
+    "title": "My Orders",
+    "description": "Track and manage your purchase history.",
+    "filters": {
+      "all": "All",
+      "pending": "Pending",
+      "shipping": "Shipping",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "status": {
+      "pending": "Pending",
+      "shipping": "Shipping",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "statusIcons": {
+      "pending": "schedule",
+      "shipping": "local_shipping",
+      "delivered": "check_circle",
+      "cancelled": "cancel"
+    },
+    "orderDate": "Ordered: {{date}}",
+    "quantity": "Qty: {{qty}}",
+    "totalLabel": "Total:",
+    "actions": {
+      "viewDetails": "View details",
+      "buyAgain": "Buy again",
+      "track": "Track"
+    },
+    "empty": "No orders match this filter yet.",
+    "items": {
+      "ord5542": {
+        "id": "#ORD-5542",
+        "date": "12/10/2023",
+        "products": [
+          {
+            "name": "Premium dry food for adult dogs",
+            "quantity": 1,
+            "price": "450,000đ",
+            "image": "https://lh3.googleusercontent.com/aida/ADBb0uifyciLtOf41cCMEjWdvIny__fSd_mCekw3D66AomlUIUDWxAl10w6qXwjx5sjucTPqsrDUaCjs5nlzG1AaNMwDzbTXZzCbNWf4n4P0ABkDTjFl5k96tQcB_Xr8IsHeNBWlyK57S6JUw-g3jMLFAvkiKf68zt4b-J2CKek0ib842v4nMCMu3HWT3JpPLmy9v-yegvMU6gQ5kkmk2BmN9z8DwBT_ypTYfotaAknGFH1YtoCBfYFTaRy2vg"
+          },
+          {
+            "name": "Hello bath gel for dogs & cats 280g",
+            "quantity": 2,
+            "price": "120,000đ",
+            "image": "https://lh3.googleusercontent.com/aida/ADBb0uiD2iNUbQz2Hs_xHergS9X6TBN_RLOdfzCsTQyFr6mPAI-q3PGlxKrEMWRS2mZ6NW5BIkBX-Zwmjrxk3CaHaHVNRCBreBxbANzRZjr6NDa5HAh66eUX-SlKemHGRcmR_oQWLH6UM8Cx6etWFvrzC_Zx7Ik9t1KFjGCBvXF-f5CrDF0NKIcL2T-AIK1gNaPoq4OK1LWnzv-OI2BejbgO7sGLwh9HNHuYMAvDK00LoTsZwkVJulKsabSdbqs"
+          }
+        ],
+        "total": "690,000đ"
+      },
+      "ord5589": {
+        "id": "#ORD-5589",
+        "date": "24/10/2023",
+        "products": [
+          {
+            "name": "Cature Tofu soybean cat litter",
+            "quantity": 3,
+            "price": "185,000đ",
+            "image": "https://lh3.googleusercontent.com/aida/ADBb0uio3yhORq1HxGnDHRDl3K1tbAslOGzxMCESj2lUcheAh1b-83fsuGGfcUj3g96-5sFYzgewrKvc0Hc5935JsAEUPchtsgUSZB8dJDd91s1ERQ5iGrFrnJFh5aYAVASMnFuxVE8XapXYUdL_9ke1o613b3bpD8VaI3reVeT7aYSNMquvqJEtNJgtQevBwtdGNC9EMnBCXPVGgf_Q7mvwLoKybk5d5ZUya2vd3vPv95pO-qe74DBdMbrVrxs"
+          }
+        ],
+        "total": "555,000đ"
+      },
+      "ord5410": {
+        "id": "#ORD-5410",
+        "date": "05/10/2023",
+        "products": [
+          {
+            "name": "Rope toy for pets",
+            "quantity": 1,
+            "price": "85,000đ",
+            "image": "https://lh3.googleusercontent.com/aida/ADBb0uifyciLtOf41cCMEjWdvIny__fSd_mCekw3D66AomlUIUDWxAl10w6qXwjx5sjucTPqsrDUaCjs5nlzG1AaNMwDzbTXZzCbNWf4n4P0ABkDTjFl5k96tQcB_Xr8IsHeNBWlyK57S6JUw-g3jMLFAvkiKf68zt4b-J2CKek0ib842v4nMCMu3HWT3JpPLmy9v-yegvMU6gQ5kkmk2BmN9z8DwBT_ypTYfotaAknGFH1YtoCBfYFTaRy2vg"
+          }
+        ],
+        "total": "85,000đ"
+      }
+    }
+  },
+  "orderTracking": {
+    "headerTitle": "Track Order",
+    "headerSubtitle": "Enter your order ID to check the detailed delivery route.",
+    "search": {
+      "placeholder": "Enter order ID (e.g.: PS12345)...",
+      "button": "Track",
+      "searching": "Searching..."
+    },
+    "stepper": {
+      "ordered": "Order placed",
+      "processing": "Processing",
+      "shipping": "In transit",
+      "delivered": "Delivered"
+    },
+    "timeline": {
+      "title": "Delivery details"
+    },
+    "info": {
+      "title": "Order information",
+      "orderDate": "Order date:",
+      "recipient": "Recipient:",
+      "address": "Address:",
+      "productsCount": "Products ({{count}})",
+      "quantity": "Qty: {{qty}}",
+      "subtotal": "Subtotal:",
+      "shippingFee": "Shipping fee:",
+      "shippingFree": "Free",
+      "total": "Total:"
+    },
+    "support": {
+      "title": "Need help?",
+      "description": "Our customer service team is available 24/7 to assist you.",
+      "hotline": "Hotline: 1900 1234",
+      "chat": "Chat with agent"
+    }
+  },
+  "returnWarranty": {
+    "headerTitle": "Submit Return / Warranty Request",
+    "headerSubtitle": "Please fill in all the details below so we can support you as fast as possible.",
+    "breadcrumb": {
+      "dashboard": "Home",
+      "account": "Account",
+      "current": "Returns & Warranty"
+    },
+    "step": {
+      "order": "Select order",
+      "type": "Request type",
+      "reason": "Reason & Description",
+      "photos": "Illustrative photos"
+    },
+    "order": {
+      "placeholder": "Select order ID for support",
+      "selectProducts": "SELECT PRODUCTS FOR SUPPORT:",
+      "quantity": "Quantity: {{qty}}",
+      "price": "Price: {{price}}"
+    },
+    "type": {
+      "exchange": "Product Exchange",
+      "warranty": "Warranty Request"
+    },
+    "reason": {
+      "label": "Main reason",
+      "descriptionLabel": "Detailed status description",
+      "placeholder": "Please describe specifically the condition of the product and the issue you encountered...",
+      "options": {
+        "defect": "Technical defect",
+        "wrong": "Wrong/Missing items",
+        "notAsDescribed": "Product not as described",
+        "damaged": "Packaging heavily damaged in transit",
+        "other": "Other"
+      }
+    },
+    "photos": {
+      "upload": "Upload",
+      "note": "Note: Maximum 5 images (format JPG, PNG). File size under 5MB/image."
+    },
+    "submit": "Submit Request Now",
+    "success": {
+      "title": "Request Submitted Successfully!",
+      "message": "Thank you. Your return/warranty request has been received. Our customer support team will contact you within 1-3 business days.",
+      "button": "Back to My Orders"
+    },
+    "policy": {
+      "title": "Policies to Keep in Mind",
+      "item1": "Return period within 7 days from receiving the goods.",
+      "item2": "Products must have intact tags, packaging, and accompanying gifts (if any).",
+      "item3": "Free shipping for cases of technical defect or wrong items.",
+      "item4": "Request processing time from 1-3 business days.",
+      "link": "See policy details"
+    },
+    "urgentSupport": {
+      "title": "Need Urgent Support?",
+      "description": "Our staff is always ready to support you from 8:00 to 22:00 daily.",
+      "hotline": "1900 1234 (Free)",
+      "zalo": "Chat Zalo Support"
     }
   }
 }

@@ -19,15 +19,15 @@ export function ProfilePetsCard() {
   const { t } = useTranslation("profile");
 
   return (
-    <section className="h-full rounded-2xl border border-border/60 bg-card p-6 shadow-sm transition-transform hover:-translate-y-0.5">
+    <section className="h-full rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-transform hover:-translate-y-0.5 md:p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="font-display text-2xl font-semibold text-foreground">
+        <h2 className="font-display text-xl font-semibold text-foreground md:text-2xl">
           {t("pets.title")}
         </h2>
         <button
           type="button"
           aria-label={t("pets.add")}
-          className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+          className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-primary text-primary transition-colors hover:bg-primary hover:text-primary-foreground md:h-10 md:w-10"
         >
           <MaterialIcon name="add" className="text-[22px]" />
         </button>
@@ -43,10 +43,10 @@ export function ProfilePetsCard() {
               <img
                 src={pet.image}
                 alt={t(`pets.items.${pet.key}.imageAlt`)}
-                className="h-16 w-16 rounded-xl object-cover"
+                className="h-14 w-14 rounded-xl object-cover md:h-16 md:w-16"
               />
               <div className="flex-1">
-                <h3 className="text-lg font-bold text-foreground">
+                <h3 className="text-base font-bold text-foreground md:text-lg">
                   {t(`pets.items.${pet.key}.name`)}
                 </h3>
                 <p className="text-sm text-muted-foreground">
@@ -63,10 +63,12 @@ export function ProfilePetsCard() {
 
         <button
           type="button"
-          className="mt-4 flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-transparent py-8 text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          className="mt-4 flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-transparent py-6 text-muted-foreground transition-colors hover:border-primary hover:text-primary md:py-8"
         >
-          <MaterialIcon name="add_circle" className="text-[32px]" />
-          <span className="text-sm font-semibold">{t("pets.add")}</span>
+          <MaterialIcon name="add_circle" className="text-[28px] md:text-[32px]" />
+          <span className="text-xs font-semibold md:text-sm">
+            {t("pets.add")}
+          </span>
         </button>
       </div>
     </section>

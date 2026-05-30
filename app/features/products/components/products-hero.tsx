@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
+import cat from "../assets/hinh-nen-meo.png"
 
-const HERO_IMAGE_URL =
-  "https://lh3.googleusercontent.com/aida/ADBb0ujD9zfUDjFA6DO7L42adKw3TsgA-wdfz3Kl24DKYMah36Z8qYP3lr3z9fpESvidhVuwo5-12yzLc41sHr40ccHzqmo5EZW0jabESfONUXlCU0a_QduxlsDe0aXiXm8XE0I0mAq6rFcSICFZ8qi9f6Gaa4MW8Ig7B2eta9rszS0IoCit7uy94UNo4wp7DhFwyc0PMhRmiG0sri1KBBSnNP0nhDv-z1WxbqF_-nr72mfdQhJcVAGBc5mwDg";
 
 export function ProductsHero() {
   const { t } = useTranslation("products");
@@ -10,7 +9,7 @@ export function ProductsHero() {
     <section className="relative flex h-[260px] items-center overflow-hidden bg-muted md:h-[360px]">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-80"
-        style={{ backgroundImage: `url(${HERO_IMAGE_URL})` }}
+        style={{ backgroundImage: `url(${cat})` }}
         aria-hidden
       />
       <div

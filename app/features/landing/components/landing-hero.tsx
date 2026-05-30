@@ -1,7 +1,5 @@
 import { useTranslation } from 'react-i18next'
-
-const HERO_IMAGE_URL =
-  'https://lh3.googleusercontent.com/aida/ADBb0ujUvir-U55of6tVY0VW1LwtFXFqdWHuMZdvuqGCJND60tGofrdom0jryqqOxwNmetAJoWLOMCJ8GbVNf4BxLspLTLJgwb1J5lEPgHyuXO6PTlISGrz38VxFRIevyyu9tq8jzKknoOTrFhIPHZQAjFLwDYFYyENB00TJTQgEdmgZq9-zWaZVnyV2wurkRN5WmMnzTjNNWpNLwai_P_TPOeZaLbpyvReGVF_unr932Yw2djPMaTBXW3r__A'
+import dogTrust from '../assets/dogProductHero.png'
 
 export function LandingHero() {
   const { t } = useTranslation('landing')
@@ -13,7 +11,7 @@ export function LandingHero() {
     >
       <div
         className='absolute inset-0 bg-cover bg-center'
-        style={{ backgroundImage: `url(${HERO_IMAGE_URL})` }}
+        style={{ backgroundImage: `url(${dogTrust})` }}
         aria-hidden
       />
       <div className='absolute inset-0 bg-gradient-to-r from-primary/80 to-transparent' aria-hidden />

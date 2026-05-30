@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { MaterialIcon } from "~/shared/ui";
 import {
   ServiceHistoryCard,
   type ServiceHistoryItem,
@@ -10,7 +11,6 @@ import {
   ServiceHistoryFilters,
   type ServiceHistoryFilter,
 } from "./service-history-filters";
-import { MaterialIcon } from "~/shared/ui";
 
 const SERVICE_HISTORY_ITEMS: ServiceHistoryItem[] = [
   {
@@ -55,29 +55,14 @@ export function ServiceHistoryList() {
 
   return (
     <section>
-      <div className="mb-8 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-        <div>
-          <nav className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            <span>{t("serviceHistory.breadcrumb.dashboard")}</span>
-            <MaterialIcon name="chevron_right" className="text-sm" />
-            <span className="text-primary">
-              {t("serviceHistory.breadcrumb.current")}
-            </span>
-          </nav>
-          <h2 className="font-display text-3xl font-bold text-primary md:text-5xl">
-            {t("serviceHistory.title")}
-          </h2>
-          <p className="mt-2 text-muted-foreground">
-            {t("serviceHistory.description")}
-          </p>
-        </div>
+      <div className="mb-6 flex justify-end">
         <ServiceHistoryFilters
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
         />
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-5">
         {filteredItems.map((item) => (
           <ServiceHistoryCard key={item.key} item={item} />
         ))}
@@ -87,7 +72,7 @@ export function ServiceHistoryList() {
         <div className="mt-12 flex justify-center">
           <button
             type="button"
-            className="flex items-center gap-2 rounded-full border-2 border-border px-8 py-3 text-sm font-bold text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+            className="flex items-center gap-2 rounded-full border-2 border-border px-6 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:border-primary hover:text-primary"
           >
             {t("serviceHistory.loadMore")}
             <MaterialIcon name="expand_more" className="text-[20px]" />
