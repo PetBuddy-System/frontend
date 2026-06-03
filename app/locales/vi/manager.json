@@ -1,0 +1,242 @@
+{
+  "dashboard": {
+    "export": "Xuất lịch sử",
+    "print": "In",
+    "subtitle": "Lịch sử nhập/xuất kho chi tiết - Quận 1",
+    "title": "Lịch sử giao dịch tồn kho"
+  },
+  "filters": {
+    "apply": "Áp dụng bộ lọc",
+    "date": "Khoảng ngày",
+    "staff": "Nhân viên",
+    "staffPlaceholder": "Tìm theo tên...",
+    "type": {
+      "all": "Tất cả loại",
+      "label": "Loại giao dịch"
+    },
+    "zone": {
+      "all": "Tất cả khu vực",
+      "back": "Kho sau A",
+      "cold": "Kho lạnh",
+      "front": "Cửa hàng phía trước",
+      "label": "Kho / khu vực"
+    }
+  },
+  "pagination": {
+    "showing": "Hiển thị 1 đến 10 trong 2,450 mục"
+  },
+  "sidebar": {
+    "branch": "Chi nhánh Quận 1",
+    "brand": "Store Ops",
+    "help": "Trung tâm trợ giúp",
+    "logoAlt": "Logo PetBuddy",
+    "logout": "Đăng xuất",
+    "nav": {
+      "inventory": "Kiểm soát kho",
+      "reports": "Báo cáo",
+      "risk": "Quản lý rủi ro",
+      "staff": "Điều phối nhân sự"
+    },
+    "newReport": "Báo cáo mới"
+  },
+  "stats": {
+    "discrepancies": {
+      "label": "Chênh lệch hiện tại",
+      "note": "Cần kiểm tra"
+    },
+    "exports": {
+      "label": "Tổng xuất kho (30 ngày)",
+      "note": "+5% so với tháng trước"
+    },
+    "imports": {
+      "label": "Tổng nhập kho (30 ngày)",
+      "note": "+12% so với tháng trước"
+    }
+  },
+  "staffSchedule": {
+    "actions": {
+      "assign": "Phân công"
+    },
+    "assignmentModal": {
+      "availableWithMatch": "Sẵn sàng • {{match}} match",
+      "cancel": "Hủy",
+      "choose": "Chọn",
+      "close": "Đóng hộp thoại phân công",
+      "confirm": "Xác nhận phân công",
+      "filters": {
+        "all": "Tất cả",
+        "grooming": "Grooming",
+        "sitter": "Sitter",
+        "vet": "Thú y"
+      },
+      "searchPlaceholder": "Tìm theo tên hoặc kỹ năng...",
+      "selected": "Đã chọn",
+      "staff": {
+        "hoangNam": {
+          "name": "Hoàng Nam",
+          "role": "Chuyên gia Grooming"
+        },
+        "leThiLan": {
+          "name": "Lê Thị Lan",
+          "role": "Trưởng nhóm Grooming",
+          "status": "Bận đến 15:30"
+        },
+        "minhTu": {
+          "name": "Minh Tú",
+          "role": "Nhân viên Grooming"
+        },
+        "tranVanNam": {
+          "name": "Trần Văn Nam",
+          "role": "Nhân viên hỗ trợ"
+        }
+      },
+      "title": "Phân công nhân viên cho {{bookingCode}}"
+    },
+    "bookingList": {
+      "filter": "Lọc",
+      "title": "Danh sách đặt chỗ chờ điều phối",
+      "today": "Hôm nay"
+    },
+    "categories": {
+      "grooming": "Grooming",
+      "sitter": "Sitter",
+      "vet": "Thú y"
+    },
+    "pagination": {
+      "showing": "Hiển thị 3 trên 12 đơn đặt chỗ"
+    },
+    "quickTip": {
+      "description": "Đơn hàng có trạng thái Chờ phân công cần được ưu tiên điều phối nhân sự để đảm bảo tiến độ phục vụ khách hàng.",
+      "title": "Mẹo nhanh"
+    },
+    "searchPlaceholder": "Tìm đơn đặt chỗ...",
+    "staffStatus": {
+      "groups": {
+        "grooming": {
+          "title": "Grooming (2/3 sẵn sàng)"
+        },
+        "vet": {
+          "title": "Thú y (1/1 sẵn sàng)"
+        }
+      },
+      "members": {
+        "mai": {
+          "name": "Mai N.",
+          "status": "Đang rảnh"
+        },
+        "nam": {
+          "name": "Nam T.",
+          "status": "Đang bận đến 15:00"
+        },
+        "son": {
+          "name": "Bs. Sơn",
+          "status": "Đang rảnh"
+        }
+      },
+      "online": "Trực tuyến",
+      "title": "Trạng thái nhân sự",
+      "viewAll": "Xem tất cả nhân sự"
+    },
+    "status": {
+      "pending": "Chờ phân công",
+      "scheduled": "Lên lịch trước"
+    },
+    "subtitle": "Giao việc cho nhân viên dựa trên các lịch đặt chỗ chờ xử lý.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "code": "Mã đơn",
+        "customerPet": "Khách hàng & thú cưng",
+        "service": "Dịch vụ",
+        "status": "Trạng thái",
+        "time": "Thời gian"
+      },
+      "rows": {
+        "bk1024": {
+          "code": "#BK-1024",
+          "customer": "Chị Lan",
+          "date": "Hôm nay, 24/10",
+          "pet": "Poodle \"Bông\"",
+          "service": "Cắt tỉa lông cao cấp",
+          "time": "14:00 - 15:30"
+        },
+        "bk1025": {
+          "code": "#BK-1025",
+          "customer": "Anh Quân",
+          "date": "Hôm nay, 24/10",
+          "pet": "Husky \"Max\"",
+          "service": "Khám tổng quát",
+          "time": "16:00 - 17:00"
+        },
+        "bk1026": {
+          "code": "#BK-1026",
+          "customer": "Chị Minh",
+          "date": "Ngày mai, 25/10",
+          "pet": "Mèo Ragdoll \"Mochi\"",
+          "service": "Trông giữ ban ngày",
+          "time": "08:00 - 18:00"
+        }
+      }
+    },
+    "title": "Điều phối nhân sự"
+  },
+  "table": {
+    "columns": {
+      "balance": "Tồn cuối",
+      "dateTime": "Ngày & giờ",
+      "id": "Mã phiếu",
+      "movement": "Biến động",
+      "note": "Ghi chú",
+      "product": "Sản phẩm/SKU",
+      "staff": "Người thực hiện",
+      "type": "Loại giao dịch"
+    },
+    "rows": {
+      "adj0092": {
+        "dateTime": "23/10, 16:45",
+        "id": "ADJ-0092",
+        "note": "Bao bì bị hỏng",
+        "product": "Đồ chơi cần câu lông vũ",
+        "sku": "SKU: TOY-FW-01",
+        "staff": "Lê Văn C"
+      },
+      "aud1104": {
+        "dateTime": "23/10, 08:00",
+        "id": "AUD-1104",
+        "note": "Điều chỉnh kiểm kê tháng",
+        "product": "Cát vệ sinh Silica 5L",
+        "sku": "SKU: LIT-SIL-5L",
+        "staff": "Quản lý kho"
+      },
+      "rc99021": {
+        "dateTime": "24/10, 09:15",
+        "id": "RC-99021",
+        "note": "Nhà cung cấp giao Q4",
+        "product": "Royal Canin Maxi Adult 15kg",
+        "sku": "SKU: RC-MAX-15",
+        "staff": "Nguyễn Văn A"
+      },
+      "so45091": {
+        "dateTime": "24/10, 11:30",
+        "id": "SO-45091",
+        "note": "Đơn web #W-991",
+        "product": "NexGard Spectra (L)",
+        "sku": "SKU: NXG-L-03",
+        "staff": "Trần Thị B"
+      }
+    },
+    "viewDetails": "Xem chi tiết"
+  },
+  "topNav": {
+    "notifications": "Thông báo",
+    "search": "Tìm kiếm...",
+    "settings": "Cài đặt",
+    "title": "Quản lý PetStore.vn"
+  },
+  "transactionTypes": {
+    "audit": "Kiểm kê",
+    "damage": "Hàng hỏng",
+    "export": "Xuất hàng",
+    "import": "Nhập hàng"
+  }
+}

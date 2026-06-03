@@ -347,6 +347,23 @@ i18n.changeLanguage("en");
 - Locale key: `camelCase`, namespace tách bằng `.`.
 - Mỗi feature có `index.ts` làm **public API barrel** — nơi khác chỉ import qua barrel: `import { WelcomePage } from "~/features/welcome"`.
 
+**Variable / function / type naming:**
+- Biến thường, state, params dùng `camelCase`: `selectedServiceId`, `bookingDate`, `petCount`.
+- Boolean ưu tiên prefix rõ nghĩa: `isOpen`, `hasDiscount`, `canSubmit`, `shouldShowError`.
+- Constant cấp module / config tĩnh dùng `SCREAMING_SNAKE_CASE`: `NAV_ITEMS`, `SERVICE_STATUS_OPTIONS`, `DEFAULT_PAGE_SIZE`.
+- Constant local trong scope nhỏ có thể dùng `camelCase`: `totalPrice`, `currentStep`.
+- Function thường dùng `camelCase` và nên bắt đầu bằng động từ: `formatCurrency`, `calculateTotal`, `getServiceStatusLabel`.
+- Event handler trong component dùng `handleXxx`: `handleSubmit`, `handleServiceSelect`, `handleQuantityChange`.
+- Callback prop dùng `onXxx`: `onSubmit`, `onServiceSelect`, `onClose`.
+- Type / interface / union type dùng `PascalCase`: `ServiceStatus`, `BookingFormValues`, `CartItem`.
+- Props interface luôn dùng `XxxProps`: `ServiceCardProps`, `ProfileSidebarProps`.
+- Array/list nên dùng tên số nhiều hoặc hậu tố rõ nghĩa: `services`, `cartItems`, `bookingHistoryItems`.
+- Object dạng map/record nên thể hiện rõ chiều mapping: `statusLabelMap`, `serviceIconByType`, `routeByRole`.
+- Component render một item dùng tên số ít: `ServiceHistoryCard`, `ProductCard`.
+- Component render list/section dùng tên số nhiều hoặc section rõ nghĩa: `ServiceHistoryList`, `ProfileStats`, `ContactInfoSection`.
+- Tránh viết tắt mơ hồ như `svc`, `usr`, `tmp`, `data1`; ưu tiên tên đầy đủ: `service`, `user`, `temporaryFile`, `profileData`.
+- Tránh tên quá chung như `data`, `item`, `value` nếu đã có ngữ cảnh rõ hơn; dùng `service`, `booking`, `cartItem`, `selectedValue`.
+
 ### 7.6 Lint / Format / Typecheck
 ```bash
 npm run typecheck    # react-router typegen + tsc

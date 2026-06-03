@@ -96,6 +96,125 @@ app/features/<feature>/
 └── index.ts
 ```
 
+### Quy tắc chia nhỏ `components/` trong feature lớn
+
+Với feature nhỏ, giữ cấu trúc đơn giản:
+
+```text
+app/features/<feature>/
+├── components/
+├── pages/
+└── index.ts
+```
+
+Khi `components/` có nhiều hơn khoảng **8-10 file**, hoặc đã phục vụ nhiều page/flow khác nhau, hãy chia thành folder con theo **màn hình / nghiệp vụ / user flow**. Tránh để quá nhiều file nằm trực tiếp ở root `components/`.
+
+Ưu tiên đặt folder theo câu hỏi: _"Component này phục vụ màn hình/flow nào?"_
+
+```text
+components/
+├── listing/
+├── detail/
+├── booking/
+├── cart/
+├── checkout/
+├── order-success/
+├── overview/
+├── services/
+├── orders/
+├── tracking/
+├── returns/
+├── home/
+└── contact/
+```
+
+Hạn chế chia theo loại UI chung chung nếu chưa thật sự cần:
+
+```text
+components/
+├── cards/
+├── buttons/
+├── modals/
+└── sections/
+```
+
+`layout/` chỉ dùng cho layout riêng của feature, ví dụ sidebar/header/support floating của profile:
+
+```text
+components/layout/
+├── profile-sidebar.tsx
+├── profile-page-header.tsx
+└── profile-floating-support.tsx
+```
+
+Component chỉ dùng cho một page/flow thì đặt vào folder của page/flow đó:
+
+```text
+components/booking/service-booking-summary.tsx
+components/checkout/checkout-payment-methods.tsx
+components/tracking/order-tracking-stepper.tsx
+```
+
+Nếu một component dùng chung bởi nhiều page **trong cùng feature**, có thể tạo:
+
+```text
+components/shared/
+```
+
+Nhưng chỉ tạo `shared/` khi đã có ít nhất 2 page trong cùng feature dùng chung. Không tạo folder rỗng để "chuẩn bị trước".
+
+Nếu component dùng chung bởi **2 feature trở lên**, không đặt trong `features/<x>/components/shared`; hãy kéo lên:
+
+```text
+app/shared/components/
+```
+
+Ví dụ trong repo hiện tại:
+
+```text
+app/features/profile/components/
+├── layout/
+├── overview/
+├── services/
+├── orders/
+├── tracking/
+└── returns/
+
+app/features/products/components/
+├── listing/
+├── detail/
+├── cart/
+├── checkout/
+└── order-success/
+
+app/features/services/components/
+├── listing/
+├── detail/
+└── booking/
+
+app/features/landing/components/
+├── home/
+└── contact/
+```
+
+Page trong `pages/` import component bằng relative path trong cùng feature:
+
+```tsx
+import { ServiceBookingSummary } from "../components/booking/service-booking-summary";
+```
+
+Không import component nội bộ của feature khác:
+
+```tsx
+// Không nên
+import { LandingHeader } from "~/features/landing/components/landing-header";
+
+// Nên
+import { SiteHeader } from "~/shared/components";
+```
+
+Rule ngắn gọn: chia theo **màn hình/flow người dùng**, không chia theo "nó là card/button/list" nếu chưa có nhu cầu tái sử dụng thật. Mở `service-booking-page.tsx` thì dev phải đoán được component nằm ở `components/booking/`; mở `profile-tracking-page.tsx` thì dev phải đoán được component nằm ở `components/tracking/`.
+
 Tương tự với `app/routes/`, khi route nhiều nên nhóm theo domain:
 
 ```text

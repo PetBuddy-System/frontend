@@ -1,0 +1,185 @@
+{
+  "dashboard": {
+    "subtitle": "Tổng quan ca làm và hoạt động cửa hàng trong ngày",
+    "title": "Bảng điều khiển nhân viên"
+  },
+  "notifications": {
+    "items": {
+      "process": {
+        "description": "Checklist bàn giao tại quầy đã được cập nhật. Vui lòng xem lại trước ca làm tiếp theo.",
+        "time": "2 giờ trước",
+        "title": "Cập nhật quy trình đón khách mới"
+      },
+      "reward": {
+        "description": "Chúc mừng đội grooming có điểm đánh giá dịch vụ cao nhất trong tuần này.",
+        "time": "Thứ 2, 09:00",
+        "title": "Khen thưởng nhân viên xuất sắc tuần"
+      },
+      "shift": {
+        "description": "Yêu cầu đổi ca chiều thứ Bảy của bạn đã được quản lý chấp thuận.",
+        "time": "Hôm qua, 15:30",
+        "title": "Yêu cầu đổi ca được chấp thuận"
+      }
+    },
+    "title": "Thông báo quan trọng",
+    "viewAll": "Xem tất cả thông báo"
+  },
+  "schedule": {
+    "date": "Thứ 5, 24 tháng 10",
+    "shifts": {
+      "afternoon": {
+        "area": "Khu vực: Phòng tắm thú cưng",
+        "status": "Sắp tới",
+        "time": "13:00 - 17:00",
+        "title": "Hỗ trợ Spa & Grooming"
+      },
+      "morning": {
+        "area": "Khu vực: Quầy thanh toán & đồ dùng",
+        "status": "Đang diễn ra",
+        "time": "08:00 - 12:00",
+        "title": "Nhân viên bán hàng (Ca sáng)"
+      }
+    },
+    "title": "Lịch làm việc hôm nay"
+  },
+  "sidebar": {
+    "avatarAlt": "Ảnh đại diện nhân viên",
+    "logoAlt": "Logo PetBuddy",
+    "logout": "Đăng xuất",
+    "nav": {
+      "attendanceHistory": "Lịch sử chấm công",
+      "shiftRequest": "Tạo yêu cầu đổi ca",
+      "violations": "Xem các lần vi phạm",
+      "weeklySchedule": "Xem các ca làm việc trong tuần"
+    },
+    "portalLabel": "PetBuddy Staff Portal",
+    "roleTitle": "Nhân viên cửa hàng"
+  },
+  "staff": {
+    "name": "Nguyễn Văn An"
+  },
+  "stats": {
+    "completed": {
+      "label": "Số ca đã hoàn thành",
+      "note": "Tuần này",
+      "unit": "ca",
+      "value": "5"
+    },
+    "hours": {
+      "label": "Tổng giờ làm",
+      "note": "Tuần này",
+      "unit": "giờ",
+      "value": "32.5"
+    },
+    "title": "Thống kê tuần này",
+    "violations": {
+      "label": "Số lần vi phạm",
+      "note": "Hồ sơ tốt",
+      "unit": "lần",
+      "value": "0"
+    },
+    "workDays": {
+      "label": "Ngày công tích lũy",
+      "note": "Tháng hiện tại",
+      "unit": "ngày",
+      "value": "18"
+    }
+  },
+  "topNav": {
+    "brand": "PetBuddy",
+    "help": "Trợ giúp",
+    "menu": "Mở menu",
+    "notifications": "Thông báo"
+  },
+  "welcome": {
+    "checkIn": "Chấm công ngay",
+    "kicker": "Ca làm hôm nay",
+    "subtitle": "Chúc bạn một ngày làm việc tràn đầy năng lượng tại PetBuddy.",
+    "title": "Chào buổi sáng, Nguyễn Văn An"
+  },
+  "attendance": {
+    "pageTitle": "Lịch sử chấm công",
+    "pageSubtitle": "Xem chi tiết giờ làm việc và trạng thái chuyên cần",
+    "heading": "Lịch sử chấm công",
+    "description": "Xem chi tiết giờ làm việc và trạng thái chuyên cần.",
+    "previousMonth": "Tháng trước",
+    "nextMonth": "Tháng sau",
+    "months": {
+      "oct2024": "Tháng 10/2024",
+      "sep2024": "Tháng 09/2024",
+      "aug2024": "Tháng 08/2024"
+    },
+    "summary": {
+      "totalDays": { "label": "Tổng ngày công", "value": "22", "unit": "ngày" },
+      "totalHours": { "label": "Số giờ làm việc", "value": "176", "unit": "giờ" },
+      "lateEarly": { "label": "Đi muộn/Về sớm", "value": "2", "unit": "lần" },
+      "daysOff": { "label": "Ngày nghỉ", "value": "1", "unit": "ngày" }
+    },
+    "status": {
+      "onTime": "Đúng giờ",
+      "late": "Đi muộn",
+      "earlyLeave": "Về sớm",
+      "dayOff": "Nghỉ phép"
+    },
+    "table": {
+      "title": "Chi tiết theo ngày",
+      "export": "Xuất báo cáo",
+      "showing": "Hiển thị {{from}}-{{to}} của {{total}} bản ghi",
+      "columns": {
+        "date": "Ngày",
+        "checkIn": "Giờ vào",
+        "checkOut": "Giờ ra",
+        "totalHours": "Tổng giờ",
+        "status": "Trạng thái",
+        "note": "Ghi chú"
+      }
+    },
+    "records": {
+      "day1": { "dayLabel": "Thứ 6, 25/10" },
+      "day2": { "dayLabel": "Thứ 5, 24/10", "note": "Tắc đường khu vực Cầu Giấy" },
+      "day3": { "dayLabel": "Thứ 4, 23/10" },
+      "day4": { "dayLabel": "Thứ 3, 22/10", "note": "Nghỉ phép năm (Đã duyệt)" },
+      "day5": { "dayLabel": "Thứ 2, 21/10" }
+    }
+  },
+  "shiftRequest": {
+    "pageTitle": "Tạo yêu cầu đổi ca",
+    "pageSubtitle": "Điền thông tin chi tiết bên dưới để yêu cầu đổi ca",
+    "heading": "Tạo yêu cầu đổi ca",
+    "description": "Điền thông tin chi tiết bên dưới để yêu cầu đổi ca làm việc hoặc tìm người thay thế.",
+    "form": {
+      "shiftLabel": "Ca làm việc muốn đổi",
+      "shiftPlaceholder": "Chọn ca làm việc...",
+      "shiftOptions": {
+        "morning": "Sáng: 08:00 - 14:00 | Thứ 5, 24/10/2023 | Grooming",
+        "afternoon": "Chiều: 14:00 - 20:00 | Thứ 6, 25/10/2023 | Bán hàng"
+      },
+      "reasonLabel": "Lý do đổi ca",
+      "reasonPlaceholder": "Nhập lý do chi tiết...",
+      "solutionLabel": "Phương án thay thế",
+      "solutionOptions": {
+        "specific": "Đổi ca trực tiếp với đồng nghiệp",
+        "open": "Đăng lên bảng tin (Tìm người thay thế)"
+      },
+      "colleagueLabel": "Chọn đồng nghiệp",
+      "colleaguePlaceholder": "Tìm kiếm tên...",
+      "compensationLabel": "Ca bạn sẽ làm bù (Tùy chọn)",
+      "cancel": "Hủy",
+      "submit": "Gửi yêu cầu"
+    },
+    "recent": {
+      "title": "Yêu cầu gần đây",
+      "viewAll": "Xem tất cả",
+      "status": {
+        "pending": "Đang chờ xử lý",
+        "approved": "Đã chấp nhận",
+        "rejected": "Từ chối"
+      },
+      "items": {
+        "req1": { "title": "Đổi với: Nguyễn Văn A", "shift": "Ca: Sáng 22/10" },
+        "req2": { "title": "Đăng lên bảng tin", "shift": "Ca: Chiều 18/10" },
+        "req3": { "title": "Đổi với: Trần Thị B", "shift": "Ca: Sáng 10/10" }
+      }
+    }
+  }
+}

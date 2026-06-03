@@ -1,0 +1,288 @@
+{
+  "admin": {
+    "name": "Quản trị viên",
+    "role": "Quản trị chăm sóc thú cưng"
+  },
+  "charts": {
+    "breakdown": {
+      "items": {
+        "grooming": "Spa & Grooming",
+        "medical": "Dịch vụ y tế",
+        "products": "Sản phẩm"
+      },
+      "primaryLabel": "Sản phẩm",
+      "title": "Cơ cấu doanh thu"
+    },
+    "revenueTrend": {
+      "days": {
+        "fri": "T6",
+        "mon": "T2",
+        "sat": "T7",
+        "sun": "CN",
+        "thu": "T5",
+        "tue": "T3",
+        "wed": "T4"
+      },
+      "title": "Xu hướng doanh thu",
+      "unit": "Triệu VNĐ"
+    }
+  },
+  "dashboard": {
+    "subtitle": "Xem tổng quan doanh thu cửa hàng ở chế độ chỉ xem",
+    "title": "Báo cáo doanh thu"
+  },
+  "employees": {
+    "actions": {
+      "add": "Thêm nhân viên mới",
+      "delete": "Xóa",
+      "edit": "Sửa"
+    },
+    "pagination": {
+      "next": "Trang sau",
+      "previous": "Trang trước",
+      "showing": "Hiển thị {{from}}-{{to}} trên {{total}} nhân viên"
+    },
+    "roles": {
+      "manager": "manager",
+      "staff": "staff"
+    },
+    "status": {
+      "leave": "Nghỉ phép",
+      "working": "Đang làm việc"
+    },
+    "table": {
+      "columns": {
+        "actions": "Hành động",
+        "name": "Họ tên",
+        "role": "Chức vụ",
+        "status": "Trạng thái"
+      },
+      "rows": {
+        "leThiMai": {
+          "name": "Lê Thị Mai"
+        },
+        "nguyenMinhHoang": {
+          "name": "Nguyễn Minh Hoàng"
+        },
+        "phamVanHung": {
+          "name": "Phạm Văn Hùng"
+        },
+        "tranVanAn": {
+          "name": "Trần Văn An"
+        }
+      }
+    },
+    "title": "Quản lý nhân viên",
+    "toolbar": {
+      "role": {
+        "all": "Tất cả chức vụ"
+      },
+      "searchPlaceholder": "Tìm kiếm theo tên, mã NV..."
+    }
+  },
+  "filters": {
+    "custom": "Tùy chỉnh",
+    "month": "Tháng này",
+    "today": "Hôm nay",
+    "week": "Tuần này"
+  },
+  "metrics": {
+    "averageOrder": {
+      "change": "+8.4% so với kỳ trước",
+      "label": "TB cỡ đơn"
+    },
+    "orders": {
+      "change": "+5.2% so với kỳ trước",
+      "label": "Đơn hàng"
+    },
+    "revenue": {
+      "change": "+12.5% so với kỳ trước",
+      "label": "Tổng doanh thu"
+    },
+    "services": {
+      "change": "-2.1% so với kỳ trước",
+      "label": "Dịch vụ"
+    }
+  },
+  "sidebar": {
+    "branch": "Chi nhánh chính",
+    "brand": "PawAdmin",
+    "logoAlt": "Logo PetBuddy",
+    "nav": {
+      "employees": "Nhân viên",
+      "inventory": "Kho hàng",
+      "reports": "Báo cáo",
+      "services": "Dịch vụ",
+      "users": "Người dùng"
+    }
+  },
+  "serviceBookings": {
+    "actions": {
+      "create": "Tạo lịch hẹn mới",
+      "edit": "Chỉnh sửa lịch hẹn",
+      "view": "Xem lịch hẹn"
+    },
+    "pagination": {
+      "label": "Phân trang lịch đặt",
+      "showing": "Hiển thị {{from}} - {{to}} của {{total}} lịch đặt"
+    },
+    "services": {
+      "bathDry": "Tắm & sấy khô",
+      "furTrim": "Cắt tỉa lông",
+      "hygieneCombo": "Combo vệ sinh",
+      "styling": "Cắt tỉa tạo kiểu"
+    },
+    "stats": {
+      "cancelled": "Đã hủy",
+      "completed": "Đã hoàn thành",
+      "pending": "Chờ xác nhận",
+      "total": "Tổng lịch đặt"
+    },
+    "status": {
+      "cancelled": "Đã hủy",
+      "completed": "Đã xong",
+      "confirmed": "Đã xác nhận",
+      "pending": "Đang chờ"
+    },
+    "subtitle": "Theo dõi và điều phối lịch hẹn chăm sóc thú cưng.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "code": "Mã đơn",
+        "customer": "Khách hàng",
+        "dateTime": "Ngày & giờ",
+        "pet": "Thú cưng",
+        "service": "Dịch vụ",
+        "status": "Trạng thái"
+      },
+      "rows": {
+        "cj9915": {
+          "customer": "Hoàng Kim Yến",
+          "pet": "Bông (Samoyed)"
+        },
+        "cj9918": {
+          "customer": "Trần Minh Quân",
+          "pet": "Mochi (Corgi)"
+        },
+        "cj9920": {
+          "customer": "Lê Thị Bích",
+          "pet": "Lu (Beagle)"
+        },
+        "cj9921": {
+          "customer": "Nguyễn Văn An",
+          "pet": "Bơ (Poodle)"
+        }
+      }
+    },
+    "title": "Quản lý lịch đặt dịch vụ",
+    "toolbar": {
+      "customerLabel": "Tìm kiếm khách hàng",
+      "dateLabel": "Khoảng ngày",
+      "filter": "Lọc",
+      "searchPlaceholder": "Nhập tên hoặc số điện thoại...",
+      "serviceLabel": "Loại dịch vụ",
+      "services": {
+        "all": "Tất cả dịch vụ",
+        "bath": "Tắm & sấy",
+        "combo": "Trọn gói combo",
+        "earCare": "Vệ sinh tai",
+        "grooming": "Cắt tỉa lông"
+      }
+    }
+  },
+  "topNav": {
+    "notifications": "Thông báo"
+  },
+  "topSales": {
+    "categories": {
+      "grooming": "Spa & Grooming",
+      "medical": "Dịch vụ y tế",
+      "product": "Sản phẩm"
+    },
+    "columns": {
+      "category": "Danh mục",
+      "name": "Tên sản phẩm/dịch vụ",
+      "quantity": "Số lượng",
+      "revenue": "Doanh thu"
+    },
+    "items": {
+      "grooming": {
+        "name": "Tắm & cắt tỉa lông chó/mèo cơ bản"
+      },
+      "royalCanin": {
+        "name": "Hạt Royal Canin Poodle Adult 1.5kg"
+      },
+      "vaccine": {
+        "name": "Tiêm phòng vắc xin 7 bệnh"
+      }
+    },
+    "title": "Sản phẩm & dịch vụ bán chạy nhất"
+  },
+  "users": {
+    "actions": {
+      "add": "Thêm người dùng",
+      "edit": "Chỉnh sửa",
+      "export": "Xuất danh sách",
+      "view": "Xem chi tiết"
+    },
+    "pagination": {
+      "label": "Phân trang",
+      "showing": "Hiển thị {{from}} - {{to}} trong số {{total}} kết quả"
+    },
+    "stats": {
+      "active": {
+        "label": "Đang hoạt động",
+        "note": "90% tỷ lệ hoạt động"
+      },
+      "newToday": {
+        "label": "Người dùng mới hôm nay",
+        "note": "Cập nhật 5 phút trước"
+      },
+      "total": {
+        "label": "Tổng người dùng",
+        "note": "+24 khách mới tháng này"
+      }
+    },
+    "status": {
+      "active": "Hoạt động",
+      "locked": "Bị khóa"
+    },
+    "subtitle": "Quản lý thông tin, điểm tích lũy và lịch sử mua hàng của khách hàng.",
+    "table": {
+      "columns": {
+        "actions": "Hành động",
+        "customer": "Khách hàng",
+        "orders": "Tổng đơn hàng",
+        "phone": "Số điện thoại",
+        "points": "Điểm tích lũy",
+        "status": "Trạng thái"
+      },
+      "orderCount": "{{count}} đơn",
+      "pointsUnit": "điểm",
+      "rows": {
+        "leThiB": {
+          "email": "lethib@email.com",
+          "name": "Lê Thị B"
+        },
+        "nguyenVanA": {
+          "email": "nguyenvana@email.com",
+          "name": "Nguyễn Văn A"
+        },
+        "tranVanC": {
+          "email": "tranvanc@email.com",
+          "name": "Trần Văn C"
+        }
+      }
+    },
+    "title": "Quản lý người dùng",
+    "toolbar": {
+      "advancedFilter": "Lọc nâng cao",
+      "searchPlaceholder": "Tìm kiếm theo tên hoặc số điện thoại...",
+      "status": {
+        "active": "Hoạt động",
+        "all": "Tất cả trạng thái",
+        "locked": "Bị khóa"
+      }
+    }
+  }
+}

@@ -1,0 +1,288 @@
+{
+  "admin": {
+    "name": "Admin User",
+    "role": "Pet Care Admin"
+  },
+  "charts": {
+    "breakdown": {
+      "items": {
+        "grooming": "Spa & Grooming",
+        "medical": "Medical services",
+        "products": "Products"
+      },
+      "primaryLabel": "Products",
+      "title": "Revenue Breakdown"
+    },
+    "revenueTrend": {
+      "days": {
+        "fri": "Fri",
+        "mon": "Mon",
+        "sat": "Sat",
+        "sun": "Sun",
+        "thu": "Thu",
+        "tue": "Tue",
+        "wed": "Wed"
+      },
+      "title": "Revenue Trend",
+      "unit": "Million VND"
+    }
+  },
+  "dashboard": {
+    "subtitle": "View store revenue overview in read-only mode",
+    "title": "Revenue Report"
+  },
+  "employees": {
+    "actions": {
+      "add": "Add new employee",
+      "delete": "Delete",
+      "edit": "Edit"
+    },
+    "pagination": {
+      "next": "Next page",
+      "previous": "Previous page",
+      "showing": "Showing {{from}}-{{to}} of {{total}} employees"
+    },
+    "roles": {
+      "manager": "manager",
+      "staff": "staff"
+    },
+    "status": {
+      "leave": "On leave",
+      "working": "Working"
+    },
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "name": "Full name",
+        "role": "Role",
+        "status": "Status"
+      },
+      "rows": {
+        "leThiMai": {
+          "name": "Le Thi Mai"
+        },
+        "nguyenMinhHoang": {
+          "name": "Nguyen Minh Hoang"
+        },
+        "phamVanHung": {
+          "name": "Pham Van Hung"
+        },
+        "tranVanAn": {
+          "name": "Tran Van An"
+        }
+      }
+    },
+    "title": "Employee Management",
+    "toolbar": {
+      "role": {
+        "all": "All roles"
+      },
+      "searchPlaceholder": "Search by name or employee code..."
+    }
+  },
+  "filters": {
+    "custom": "Custom",
+    "month": "This month",
+    "today": "Today",
+    "week": "This week"
+  },
+  "metrics": {
+    "averageOrder": {
+      "change": "+8.4% vs previous period",
+      "label": "Average Order"
+    },
+    "orders": {
+      "change": "+5.2% vs previous period",
+      "label": "Orders"
+    },
+    "revenue": {
+      "change": "+12.5% vs previous period",
+      "label": "Total Revenue"
+    },
+    "services": {
+      "change": "-2.1% vs previous period",
+      "label": "Services"
+    }
+  },
+  "sidebar": {
+    "branch": "Main Branch",
+    "brand": "PawAdmin",
+    "logoAlt": "PetBuddy logo",
+    "nav": {
+      "employees": "Employees",
+      "inventory": "Inventory",
+      "reports": "Reports",
+      "services": "Services",
+      "users": "Users"
+    }
+  },
+  "serviceBookings": {
+    "actions": {
+      "create": "Create new booking",
+      "edit": "Edit booking",
+      "view": "View booking"
+    },
+    "pagination": {
+      "label": "Booking pagination",
+      "showing": "Showing {{from}} - {{to}} of {{total}} bookings"
+    },
+    "services": {
+      "bathDry": "Bath & dry",
+      "furTrim": "Fur trimming",
+      "hygieneCombo": "Hygiene combo",
+      "styling": "Styling trim"
+    },
+    "stats": {
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "pending": "Pending confirmation",
+      "total": "Total bookings"
+    },
+    "status": {
+      "cancelled": "Cancelled",
+      "completed": "Done",
+      "confirmed": "Confirmed",
+      "pending": "Pending"
+    },
+    "subtitle": "Track and coordinate pet care appointments.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "code": "Order code",
+        "customer": "Customer",
+        "dateTime": "Date & time",
+        "pet": "Pet",
+        "service": "Service",
+        "status": "Status"
+      },
+      "rows": {
+        "cj9915": {
+          "customer": "Hoang Kim Yen",
+          "pet": "Bong (Samoyed)"
+        },
+        "cj9918": {
+          "customer": "Tran Minh Quan",
+          "pet": "Mochi (Corgi)"
+        },
+        "cj9920": {
+          "customer": "Le Thi Bich",
+          "pet": "Lu (Beagle)"
+        },
+        "cj9921": {
+          "customer": "Nguyen Van An",
+          "pet": "Bo (Poodle)"
+        }
+      }
+    },
+    "title": "Service Booking Management",
+    "toolbar": {
+      "customerLabel": "Search customer",
+      "dateLabel": "Date range",
+      "filter": "Filter",
+      "searchPlaceholder": "Enter name or phone number...",
+      "serviceLabel": "Service type",
+      "services": {
+        "all": "All services",
+        "bath": "Bath & dry",
+        "combo": "Full combo",
+        "earCare": "Ear cleaning",
+        "grooming": "Grooming"
+      }
+    }
+  },
+  "topNav": {
+    "notifications": "Notifications"
+  },
+  "topSales": {
+    "categories": {
+      "grooming": "Spa & Grooming",
+      "medical": "Medical services",
+      "product": "Product"
+    },
+    "columns": {
+      "category": "Category",
+      "name": "Product/Service Name",
+      "quantity": "Quantity",
+      "revenue": "Revenue"
+    },
+    "items": {
+      "grooming": {
+        "name": "Basic Dog/Cat Bath & Grooming"
+      },
+      "royalCanin": {
+        "name": "Royal Canin Poodle Adult 1.5kg"
+      },
+      "vaccine": {
+        "name": "7-in-1 Vaccine Injection"
+      }
+    },
+    "title": "Best-selling Products & Services"
+  },
+  "users": {
+    "actions": {
+      "add": "Add user",
+      "edit": "Edit",
+      "export": "Export list",
+      "view": "View details"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "showing": "Showing {{from}} - {{to}} of {{total}} results"
+    },
+    "stats": {
+      "active": {
+        "label": "Active users",
+        "note": "90% activity rate"
+      },
+      "newToday": {
+        "label": "New users today",
+        "note": "Updated 5 minutes ago"
+      },
+      "total": {
+        "label": "Total users",
+        "note": "+24 new customers this month"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "locked": "Locked"
+    },
+    "subtitle": "Manage customer information, loyalty points, and purchase history.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "customer": "Customer",
+        "orders": "Total orders",
+        "phone": "Phone number",
+        "points": "Loyalty points",
+        "status": "Status"
+      },
+      "orderCount": "{{count}} orders",
+      "pointsUnit": "points",
+      "rows": {
+        "leThiB": {
+          "email": "lethib@email.com",
+          "name": "Le Thi B"
+        },
+        "nguyenVanA": {
+          "email": "nguyenvana@email.com",
+          "name": "Nguyen Van A"
+        },
+        "tranVanC": {
+          "email": "tranvanc@email.com",
+          "name": "Tran Van C"
+        }
+      }
+    },
+    "title": "User Management",
+    "toolbar": {
+      "advancedFilter": "Advanced filter",
+      "searchPlaceholder": "Search by name or phone number...",
+      "status": {
+        "active": "Active",
+        "all": "All statuses",
+        "locked": "Locked"
+      }
+    }
+  }
+}

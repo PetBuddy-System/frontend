@@ -16,6 +16,15 @@ export default [
   route('products', 'routes/products.tsx'),
   route('products/:productId', 'routes/product-detail.tsx'),
   route('services', 'routes/services.tsx'),
+  route('staff/dashboard', 'routes/staff-dashboard.tsx'),
+  route('staff/attendance', 'routes/staff-attendance.tsx'),
+  route('staff/shift-request', 'routes/staff-shift-request.tsx'),
+  route('admin/dashboard', 'routes/admin-dashboard.tsx'),
+  route('admin/employees', 'routes/admin-employees.tsx'),
+  route('admin/service-bookings', 'routes/admin-service-bookings.tsx'),
+  route('admin/users', 'routes/admin-users.tsx'),
+  route('manager/dashboard', 'routes/manager-dashboard.tsx'),
+  route('manager/staff-schedule', 'routes/manager-staff-schedule.tsx'),
   route('services/:serviceId/book', 'routes/service-booking.tsx'),
   route('services/:serviceId', 'routes/service-detail.tsx')
 ] satisfies RouteConfig

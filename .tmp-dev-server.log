@@ -1,0 +1,42 @@
+
+> dev
+> react-router dev
+
+[2m15:42:28[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because vite config has changed
+Port 5173 is in use, trying another one...
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5174[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m15:58:46[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m15:58:46[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m15:58:46[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m15:58:46[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m15:58:46[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m15:58:46[22m [36m[1m[react-router][22m[39m [32mConfig changed.[39m
+[2m16:05:33[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:05:33[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:05:33[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:05:33[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:05:33[22m [36m[1m[react-router][22m[39m [32mConfig changed.[39m
+[2m16:14:18[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:14:18[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:14:19[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:14:19[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:14:19[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:14:19[22m [36m[1m[react-router][22m[39m [32mConfig changed.[39m
+[2m16:37:00[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:37:00[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:37:00[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:37:00[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:37:00[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:37:00[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:37:00[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:37:01[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:37:01[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:37:01[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:37:01[22m [36m[1m[react-router][22m[39m [32mConfig changed.[39m
+[2m16:46:20[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:46:20[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:46:20[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:46:20[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m
+[2m16:46:20[22m [36m[1m[react-router][22m[39m [32mConfig changed.[39m
+[2m16:55:11[22m [36m[1m[react-router][22m[39m [32mConfig saved[39m

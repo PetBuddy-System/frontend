@@ -1,5 +1,5 @@
-export { ProductsPage } from "./pages/products-page";
-export { ProductDetailPage } from "./pages/product-detail-page";
-export { CartPage } from "./pages/cart-page";
-export { CheckoutPage } from "./pages/checkout-page";
-export { OrderSuccessPage } from "./pages/order-success-page";
+export { ProductsPage } from './pages/products-page'
+export { ProductDetailPage } from './pages/product-detail-page'
+export { CartPage } from './pages/cart-page'
+export { CheckoutPage } from './pages/checkout-page'
+export { OrderSuccessPage } from './pages/order-success-page'

@@ -1,0 +1,242 @@
+{
+  "dashboard": {
+    "export": "Export Log",
+    "print": "Print",
+    "subtitle": "Detailed inventory import/export history - District 1",
+    "title": "Inventory Transaction History"
+  },
+  "filters": {
+    "apply": "Apply Filters",
+    "date": "Date Range",
+    "staff": "Staff Member",
+    "staffPlaceholder": "Search by name...",
+    "type": {
+      "all": "All Types",
+      "label": "Transaction Type"
+    },
+    "zone": {
+      "all": "All Zones",
+      "back": "Back Room A",
+      "cold": "Cold Storage",
+      "front": "Front Store",
+      "label": "Warehouse / Zone"
+    }
+  },
+  "pagination": {
+    "showing": "Showing 1 to 10 of 2,450 entries"
+  },
+  "sidebar": {
+    "branch": "District 1 Branch",
+    "brand": "Store Ops",
+    "help": "Help Center",
+    "logoAlt": "PetBuddy logo",
+    "logout": "Logout",
+    "nav": {
+      "inventory": "Inventory Control",
+      "reports": "Reports",
+      "risk": "Risk Management",
+      "staff": "Staff Coordination"
+    },
+    "newReport": "New Report"
+  },
+  "stats": {
+    "discrepancies": {
+      "label": "Current Discrepancies",
+      "note": "Requires review"
+    },
+    "exports": {
+      "label": "Total Exports (30 Days)",
+      "note": "+5% vs last month"
+    },
+    "imports": {
+      "label": "Total Imports (30 Days)",
+      "note": "+12% vs last month"
+    }
+  },
+  "staffSchedule": {
+    "actions": {
+      "assign": "Assign"
+    },
+    "assignmentModal": {
+      "availableWithMatch": "Available • {{match}} match",
+      "cancel": "Cancel",
+      "choose": "Choose",
+      "close": "Close assignment dialog",
+      "confirm": "Confirm assignment",
+      "filters": {
+        "all": "All",
+        "grooming": "Grooming",
+        "sitter": "Sitter",
+        "vet": "Vet"
+      },
+      "searchPlaceholder": "Search by name or skill...",
+      "selected": "Selected",
+      "staff": {
+        "hoangNam": {
+          "name": "Hoang Nam",
+          "role": "Grooming specialist"
+        },
+        "leThiLan": {
+          "name": "Le Thi Lan",
+          "role": "Grooming team lead",
+          "status": "Busy until 15:30"
+        },
+        "minhTu": {
+          "name": "Minh Tu",
+          "role": "Grooming staff"
+        },
+        "tranVanNam": {
+          "name": "Tran Van Nam",
+          "role": "Support staff"
+        }
+      },
+      "title": "Assign staff for {{bookingCode}}"
+    },
+    "bookingList": {
+      "filter": "Filter",
+      "title": "Pending Booking Assignments",
+      "today": "Today"
+    },
+    "categories": {
+      "grooming": "Grooming",
+      "sitter": "Sitter",
+      "vet": "Vet"
+    },
+    "pagination": {
+      "showing": "Showing 3 of 12 bookings"
+    },
+    "quickTip": {
+      "description": "Bookings marked as Pending assignment should be prioritized so the team can keep service timelines on track.",
+      "title": "Quick tip"
+    },
+    "searchPlaceholder": "Search bookings...",
+    "staffStatus": {
+      "groups": {
+        "grooming": {
+          "title": "Grooming (2/3 available)"
+        },
+        "vet": {
+          "title": "Vet (1/1 available)"
+        }
+      },
+      "members": {
+        "mai": {
+          "name": "Mai N.",
+          "status": "Available"
+        },
+        "nam": {
+          "name": "Nam T.",
+          "status": "Busy until 15:00"
+        },
+        "son": {
+          "name": "Dr. Son",
+          "status": "Available"
+        }
+      },
+      "online": "Online",
+      "title": "Staff status",
+      "viewAll": "View all staff"
+    },
+    "status": {
+      "pending": "Pending assignment",
+      "scheduled": "Pre-scheduled"
+    },
+    "subtitle": "Assign staff based on pending service bookings.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "code": "Booking ID",
+        "customerPet": "Customer & Pet",
+        "service": "Service",
+        "status": "Status",
+        "time": "Time"
+      },
+      "rows": {
+        "bk1024": {
+          "code": "#BK-1024",
+          "customer": "Ms. Lan",
+          "date": "Today, 24/10",
+          "pet": "Poodle \"Bong\"",
+          "service": "Premium grooming",
+          "time": "14:00 - 15:30"
+        },
+        "bk1025": {
+          "code": "#BK-1025",
+          "customer": "Mr. Quan",
+          "date": "Today, 24/10",
+          "pet": "Husky \"Max\"",
+          "service": "General checkup",
+          "time": "16:00 - 17:00"
+        },
+        "bk1026": {
+          "code": "#BK-1026",
+          "customer": "Ms. Minh",
+          "date": "Tomorrow, 25/10",
+          "pet": "Ragdoll cat \"Mochi\"",
+          "service": "Day care",
+          "time": "08:00 - 18:00"
+        }
+      }
+    },
+    "title": "Staff Coordination"
+  },
+  "table": {
+    "columns": {
+      "balance": "Ending Stock",
+      "dateTime": "Date & Time",
+      "id": "Receipt ID",
+      "movement": "Movement",
+      "note": "Note",
+      "product": "Product/SKU",
+      "staff": "Performed By",
+      "type": "Transaction Type"
+    },
+    "rows": {
+      "adj0092": {
+        "dateTime": "Oct 23, 16:45 PM",
+        "id": "ADJ-0092",
+        "note": "Damaged packaging",
+        "product": "Feather Wand Toy",
+        "sku": "SKU: TOY-FW-01",
+        "staff": "Le Van C"
+      },
+      "aud1104": {
+        "dateTime": "Oct 23, 08:00 AM",
+        "id": "AUD-1104",
+        "note": "Monthly count correction",
+        "product": "Cat Litter Silica 5L",
+        "sku": "SKU: LIT-SIL-5L",
+        "staff": "Manager Admin"
+      },
+      "rc99021": {
+        "dateTime": "Oct 24, 09:15 AM",
+        "id": "RC-99021",
+        "note": "Supplier delivery Q4",
+        "product": "Royal Canin Maxi Adult 15kg",
+        "sku": "SKU: RC-MAX-15",
+        "staff": "Nguyen Van A"
+      },
+      "so45091": {
+        "dateTime": "Oct 24, 11:30 AM",
+        "id": "SO-45091",
+        "note": "Web order #W-991",
+        "product": "NexGard Spectra (L)",
+        "sku": "SKU: NXG-L-03",
+        "staff": "Tran Thi B"
+      }
+    },
+    "viewDetails": "View details"
+  },
+  "topNav": {
+    "notifications": "Notifications",
+    "search": "Search...",
+    "settings": "Settings",
+    "title": "PetStore.vn Manager"
+  },
+  "transactionTypes": {
+    "audit": "Stock audit",
+    "damage": "Damaged goods",
+    "export": "Export",
+    "import": "Import"
+  }
+}
