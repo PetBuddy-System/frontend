@@ -59,7 +59,7 @@ export function ServiceHistoryCard({ item }: ServiceHistoryCardProps) {
             />
           ) : (
             <div className='flex h-32 w-full items-center justify-center rounded-xl bg-muted md:h-28 md:w-40'>
-              <MaterialIcon name='block' className='text-4xl text-muted-foreground' />
+              <MaterialIcon name='block' className='text-3xl text-muted-foreground' />
             </div>
           )}
           {item.status === 'upcoming' ? (

@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
+import { useSidebar } from '~/providers/sidebar-provider'
+import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
 const STAFF_AVATAR_URL =
@@ -7,6 +9,7 @@ const STAFF_AVATAR_URL =
 
 const STAFF_NAV_ITEMS = [
   { icon: 'swap_horiz', key: 'shiftRequest', href: '/staff/shift-request' },
+  { icon: 'delete_sweep', key: 'disposalRequest', href: '/staff/disposal-request' },
   { icon: 'report_problem', key: 'violations', href: '#' },
   { icon: 'calendar_view_week', key: 'weeklySchedule', href: '#' },
   { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance' }
@@ -20,36 +23,55 @@ export interface StaffSidebarProps {
 
 export function StaffSidebar({ activeItem }: StaffSidebarProps) {
   const { t } = useTranslation('staff')
+  const { isCollapsed, toggleSidebar } = useSidebar()
 
   return (
-    <aside className='hidden h-screen w-72 shrink-0 flex-col border-r border-border bg-card md:flex'>
-      <a href='/' className='flex items-center gap-3 border-b border-border p-6 transition-opacity hover:opacity-85'>
-        <img
-          src='/petbuddy-logo-cropped.png'
-          alt={t('sidebar.logoAlt')}
-          className='h-12 w-12 rounded-xl object-contain shadow-sm'
-        />
-        <div>
-          <p className='font-display text-xl font-bold text-primary'>{t('topNav.brand')}</p>
-          <p className='text-sm text-muted-foreground'>{t('sidebar.portalLabel')}</p>
-        </div>
-      </a>
+    <aside
+      className={cn(
+        'hidden h-screen shrink-0 flex-col overflow-hidden border-r border-border bg-card transition-all duration-300 md:flex',
+        isCollapsed ? 'w-[4.5rem]' : 'w-60'
+      )}
+    >
+      <div
+        className={cn(
+          'flex shrink-0 items-center border-b border-border px-3 py-3',
+          isCollapsed ? 'flex-col gap-2' : 'justify-between'
+        )}
+      >
+        <a href='/' className='transition-opacity hover:opacity-85'>
+          <img
+            src='/petbuddy-logo-cropped.png'
+            alt={t('sidebar.logoAlt')}
+            className={cn('w-auto object-contain', isCollapsed ? 'h-9 max-w-10' : 'h-11 max-w-[7rem]')}
+          />
+        </a>
+        <button
+          type='button'
+          onClick={toggleSidebar}
+          aria-label={t('sidebar.toggle')}
+          className='rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-primary active:scale-95'
+        >
+          <MaterialIcon name={isCollapsed ? 'menu' : 'menu_open'} className='text-[20px]' />
+        </button>
+      </div>
 
-      <div className='border-b border-border p-6'>
-        <div className='flex items-center gap-4 rounded-xl bg-muted p-4'>
+      <div className='shrink-0 border-b border-border p-3'>
+        <div className={cn('flex items-center rounded-xl bg-muted p-3', isCollapsed ? 'justify-center' : 'gap-3')}>
           <img
             src={STAFF_AVATAR_URL}
             alt={t('sidebar.avatarAlt')}
-            className='h-14 w-14 rounded-full border-2 border-primary object-cover'
+            className='h-11 w-11 rounded-full border-2 border-primary object-cover'
           />
-          <div className='min-w-0'>
-            <p className='truncate font-display text-base font-bold'>{t('staff.name')}</p>
-            <p className='text-sm text-muted-foreground'>{t('sidebar.roleTitle')}</p>
-          </div>
+          {!isCollapsed && (
+            <div className='min-w-0'>
+              <p className='truncate font-display text-base font-bold'>{t('staff.name')}</p>
+              <p className='text-sm text-muted-foreground'>{t('sidebar.roleTitle')}</p>
+            </div>
+          )}
         </div>
       </div>
 
-      <nav className='flex-1 space-y-2 p-4'>
+      <nav className='min-h-0 flex-1 space-y-1 overflow-y-auto p-3'>
         {STAFF_NAV_ITEMS.map((item) => {
           const isActive = activeItem === item.key
 
@@ -57,23 +79,32 @@ export function StaffSidebar({ activeItem }: StaffSidebarProps) {
             <a
               key={item.key}
               href={item.href}
-              className={
+              title={isCollapsed ? t(`sidebar.nav.${item.key}`) : undefined}
+              className={cn(
+                'flex items-center rounded-xl font-medium transition-colors',
+                isCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3.5 py-2.5',
                 isActive
-                  ? 'flex items-center gap-3 rounded-xl bg-secondary px-4 py-3 font-semibold text-secondary-foreground shadow-sm'
-                  : 'flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-primary'
-              }
+                  ? 'bg-secondary font-semibold text-secondary-foreground shadow-sm'
+                  : 'text-muted-foreground hover:bg-muted hover:text-primary'
+              )}
             >
               <MaterialIcon name={item.icon} filled={isActive} />
-              <span>{t(`sidebar.nav.${item.key}`)}</span>
+              {!isCollapsed && <span>{t(`sidebar.nav.${item.key}`)}</span>}
             </a>
           )
         })}
       </nav>
 
-      <div className='border-t border-border p-4'>
-        <button className='flex w-full items-center justify-center gap-2 rounded-xl border border-border px-4 py-3 font-semibold text-muted-foreground transition-colors hover:bg-destructive hover:text-destructive-foreground'>
+      <div className='shrink-0 border-t border-border p-3'>
+        <button
+          className={cn(
+            'flex w-full items-center justify-center rounded-xl border border-border font-semibold text-muted-foreground transition-colors hover:bg-destructive hover:text-destructive-foreground',
+            isCollapsed ? 'p-2.5' : 'gap-2 px-3.5 py-2.5'
+          )}
+          title={isCollapsed ? t('sidebar.logout') : undefined}
+        >
           <MaterialIcon name='logout' />
-          <span>{t('sidebar.logout')}</span>
+          {!isCollapsed && <span>{t('sidebar.logout')}</span>}
         </button>
       </div>
     </aside>

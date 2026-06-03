@@ -1,12 +1,15 @@
 import { useTranslation } from 'react-i18next'
 
+import { useSidebar } from '~/providers/sidebar-provider'
+import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
 const ADMIN_NAV_ITEMS = [
   { icon: 'badge', key: 'employees', href: '/admin/employees' },
-  { icon: 'medical_services', key: 'services', href: '/admin/service-bookings' },
+  { icon: 'medical_services', key: 'services', href: '/admin/services' },
   { icon: 'group', key: 'users', href: '/admin/users' },
-  { icon: 'inventory_2', key: 'inventory', href: '#' },
+  { icon: 'inventory_2', key: 'inventory', href: '/admin/products' },
+  { icon: 'confirmation_number', key: 'vouchers', href: '/admin/vouchers' },
   { icon: 'assessment', key: 'reports', href: '/admin/dashboard' }
 ] as const
 
@@ -18,22 +21,42 @@ export interface AdminSidebarProps {
 
 export function AdminSidebar({ activeItem = 'reports' }: AdminSidebarProps) {
   const { t } = useTranslation('admin')
+  const { isCollapsed, toggleSidebar } = useSidebar()
 
   return (
-    <aside className='hidden h-screen w-72 shrink-0 flex-col border-r border-border bg-card md:flex'>
-      <a href='/' className='flex items-center gap-3 border-b border-border p-6 transition-opacity hover:opacity-85'>
-        <img
-          src='/petbuddy-logo-cropped.png'
-          alt={t('sidebar.logoAlt')}
-          className='h-12 w-12 rounded-xl object-contain shadow-sm'
-        />
-        <div>
-          <p className='font-display text-xl font-bold text-primary'>{t('sidebar.brand')}</p>
-          <p className='text-sm text-muted-foreground'>{t('sidebar.branch')}</p>
-        </div>
-      </a>
+    <aside
+      className={cn(
+        'hidden h-screen shrink-0 flex-col overflow-hidden border-r border-border bg-card transition-all duration-300 md:flex',
+        isCollapsed ? 'w-[4.5rem]' : 'w-60'
+      )}
+    >
+      <div
+        className={cn(
+          'flex shrink-0 items-center border-b border-border px-3 py-3',
+          isCollapsed ? 'justify-center' : 'justify-between'
+        )}
+      >
+        <a href='/' className='transition-opacity hover:opacity-85'>
+          <img
+            src='/petbuddy-logo-cropped.png'
+            alt={t('sidebar.logoAlt')}
+            className={cn('w-auto object-contain', isCollapsed ? 'h-9 max-w-10' : 'h-11 max-w-[7rem]')}
+          />
+        </a>
+        <button
+          type='button'
+          onClick={toggleSidebar}
+          aria-label={t('sidebar.toggle')}
+          className={cn(
+            'rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-primary active:scale-95',
+            isCollapsed && 'mt-2'
+          )}
+        >
+          <MaterialIcon name={isCollapsed ? 'menu' : 'menu_open'} className='text-[20px]' />
+        </button>
+      </div>
 
-      <nav className='flex-1 space-y-2 p-4'>
+      <nav className='min-h-0 flex-1 space-y-1 overflow-y-auto p-3'>
         {ADMIN_NAV_ITEMS.map((item) => {
           const isActive = item.key === activeItem
 
@@ -41,28 +64,33 @@ export function AdminSidebar({ activeItem = 'reports' }: AdminSidebarProps) {
             <a
               key={item.key}
               href={item.href}
-              className={
+              title={isCollapsed ? t(`sidebar.nav.${item.key}`) : undefined}
+              className={cn(
+                'flex items-center rounded-xl font-medium transition-colors',
+                isCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3.5 py-2.5',
                 isActive
-                  ? 'flex items-center gap-3 rounded-xl bg-secondary px-4 py-3 font-semibold text-secondary-foreground shadow-sm'
-                  : 'flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-primary'
-              }
+                  ? 'bg-secondary font-semibold text-secondary-foreground shadow-sm'
+                  : 'text-muted-foreground hover:bg-muted hover:text-primary'
+              )}
             >
               <MaterialIcon name={item.icon} filled={isActive} />
-              <span>{t(`sidebar.nav.${item.key}`)}</span>
+              {!isCollapsed && <span>{t(`sidebar.nav.${item.key}`)}</span>}
             </a>
           )
         })}
       </nav>
 
-      <div className='border-t border-border p-4'>
-        <div className='flex items-center gap-3 rounded-xl bg-muted p-4'>
-          <div className='flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground'>
+      <div className='shrink-0 border-t border-border p-3'>
+        <div className={cn('flex items-center rounded-xl bg-muted p-3', isCollapsed ? 'justify-center' : 'gap-3')}>
+          <div className='flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground'>
             <MaterialIcon name='admin_panel_settings' filled />
           </div>
-          <div className='min-w-0'>
-            <p className='truncate font-display font-bold'>{t('admin.name')}</p>
-            <p className='text-sm text-muted-foreground'>{t('admin.role')}</p>
-          </div>
+          {!isCollapsed && (
+            <div className='min-w-0'>
+              <p className='truncate font-display font-bold'>{t('admin.name')}</p>
+              <p className='text-sm text-muted-foreground'>{t('admin.role')}</p>
+            </div>
+          )}
         </div>
       </div>
     </aside>

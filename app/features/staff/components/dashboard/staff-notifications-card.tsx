@@ -24,7 +24,7 @@ export function StaffNotificationsCard() {
   const { t } = useTranslation('staff')
 
   return (
-    <section className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
+    <section className='rounded-2xl border border-border bg-card p-5 shadow-sm'>
       <div className='mb-6 flex items-center justify-between gap-4'>
         <h2 className='font-display text-2xl font-bold'>{t('notifications.title')}</h2>
         <MaterialIcon name='notifications_active' filled className='text-primary' />

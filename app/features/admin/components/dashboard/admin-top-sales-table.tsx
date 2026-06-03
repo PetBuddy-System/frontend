@@ -34,7 +34,7 @@ export function AdminTopSalesTable() {
   const { t } = useTranslation('admin')
 
   return (
-    <section className='rounded-xl border border-border bg-card p-6 shadow-sm'>
+    <section className='rounded-xl border border-border bg-card p-5 shadow-sm'>
       <h2 className='mb-6 font-display text-2xl font-bold text-card-foreground'>{t('topSales.title')}</h2>
       <div className='overflow-x-auto'>
         <table className='w-full min-w-[720px] border-collapse text-left'>

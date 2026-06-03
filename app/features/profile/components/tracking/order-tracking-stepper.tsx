@@ -21,7 +21,7 @@ export function OrderTrackingStepper({ currentStep = 2 }: OrderTrackingStepperPr
   const progressWidth = currentStep > 0 ? `${(currentStep / (STEPS.length - 1)) * 100}%` : '0%'
 
   return (
-    <div className='rounded-2xl bg-card p-6 shadow-sm md:p-8'>
+    <div className='rounded-2xl bg-card p-6 shadow-sm md:p-6'>
       <div className='relative flex items-center justify-between'>
         {/* Background dashed line (inactive) */}
         <div className='stepper-line absolute left-0 top-5 -z-0 h-1 w-full' />

@@ -17,7 +17,7 @@ export function StaffScheduleCard() {
   const { t } = useTranslation('staff')
 
   return (
-    <section className='rounded-2xl border border-border bg-card p-6 shadow-sm lg:col-span-2'>
+    <section className='rounded-2xl border border-border bg-card p-5 shadow-sm lg:col-span-2'>
       <div className='mb-6 flex items-start justify-between gap-4'>
         <div>
           <h2 className='font-display text-2xl font-bold'>{t('schedule.title')}</h2>

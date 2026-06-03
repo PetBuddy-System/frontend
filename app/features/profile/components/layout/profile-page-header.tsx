@@ -17,7 +17,7 @@ export function ProfilePageHeader({ titleKey = 'header.title', subtitleKey }: Pr
           <MaterialIcon name='arrow_back' className='text-[20px]' />
           {t('header.backHome')}
         </a>
-        <h1 className='font-display text-2xl font-bold text-primary sm:text-3xl lg:text-4xl'>{t(titleKey)}</h1>
+        <h1 className='font-display text-2xl font-bold text-primary sm:text-3xl lg:text-3xl'>{t(titleKey)}</h1>
         {subtitleKey ? (
           <p className='mt-2 max-w-2xl text-sm text-muted-foreground md:text-base'>{t(subtitleKey)}</p>
         ) : null}

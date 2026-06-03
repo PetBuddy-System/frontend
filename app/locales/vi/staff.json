@@ -50,10 +50,12 @@
       "attendanceHistory": "Lịch sử chấm công",
       "shiftRequest": "Tạo yêu cầu đổi ca",
       "violations": "Xem các lần vi phạm",
-      "weeklySchedule": "Xem các ca làm việc trong tuần"
+      "weeklySchedule": "Xem các ca làm việc trong tuần",
+      "disposalRequest": "Tạo yêu cầu hủy hàng"
     },
     "portalLabel": "PetBuddy Staff Portal",
-    "roleTitle": "Nhân viên cửa hàng"
+    "roleTitle": "Nhân viên cửa hàng",
+    "toggle": "Thu gọn/mở rộng thanh bên"
   },
   "staff": {
     "name": "Nguyễn Văn An"
@@ -110,10 +112,26 @@
       "aug2024": "Tháng 08/2024"
     },
     "summary": {
-      "totalDays": { "label": "Tổng ngày công", "value": "22", "unit": "ngày" },
-      "totalHours": { "label": "Số giờ làm việc", "value": "176", "unit": "giờ" },
-      "lateEarly": { "label": "Đi muộn/Về sớm", "value": "2", "unit": "lần" },
-      "daysOff": { "label": "Ngày nghỉ", "value": "1", "unit": "ngày" }
+      "totalDays": {
+        "label": "Tổng ngày công",
+        "value": "22",
+        "unit": "ngày"
+      },
+      "totalHours": {
+        "label": "Số giờ làm việc",
+        "value": "176",
+        "unit": "giờ"
+      },
+      "lateEarly": {
+        "label": "Đi muộn/Về sớm",
+        "value": "2",
+        "unit": "lần"
+      },
+      "daysOff": {
+        "label": "Ngày nghỉ",
+        "value": "1",
+        "unit": "ngày"
+      }
     },
     "status": {
       "onTime": "Đúng giờ",
@@ -135,11 +153,23 @@
       }
     },
     "records": {
-      "day1": { "dayLabel": "Thứ 6, 25/10" },
-      "day2": { "dayLabel": "Thứ 5, 24/10", "note": "Tắc đường khu vực Cầu Giấy" },
-      "day3": { "dayLabel": "Thứ 4, 23/10" },
-      "day4": { "dayLabel": "Thứ 3, 22/10", "note": "Nghỉ phép năm (Đã duyệt)" },
-      "day5": { "dayLabel": "Thứ 2, 21/10" }
+      "day1": {
+        "dayLabel": "Thứ 6, 25/10"
+      },
+      "day2": {
+        "dayLabel": "Thứ 5, 24/10",
+        "note": "Tắc đường khu vực Cầu Giấy"
+      },
+      "day3": {
+        "dayLabel": "Thứ 4, 23/10"
+      },
+      "day4": {
+        "dayLabel": "Thứ 3, 22/10",
+        "note": "Nghỉ phép năm (Đã duyệt)"
+      },
+      "day5": {
+        "dayLabel": "Thứ 2, 21/10"
+      }
     }
   },
   "shiftRequest": {
@@ -176,10 +206,90 @@
         "rejected": "Từ chối"
       },
       "items": {
-        "req1": { "title": "Đổi với: Nguyễn Văn A", "shift": "Ca: Sáng 22/10" },
-        "req2": { "title": "Đăng lên bảng tin", "shift": "Ca: Chiều 18/10" },
-        "req3": { "title": "Đổi với: Trần Thị B", "shift": "Ca: Sáng 10/10" }
+        "req1": {
+          "title": "Đổi với: Nguyễn Văn A",
+          "shift": "Ca: Sáng 22/10"
+        },
+        "req2": {
+          "title": "Đăng lên bảng tin",
+          "shift": "Ca: Chiều 18/10"
+        },
+        "req3": {
+          "title": "Đổi với: Trần Thị B",
+          "shift": "Ca: Sáng 10/10"
+        }
       }
+    }
+  },
+  "disposalRequest": {
+    "pageTitle": "Tạo yêu cầu hủy hàng",
+    "pageSubtitle": "Gửi yêu cầu xử lý hàng hết hạn hoặc hàng lỗi",
+    "heading": "Tạo yêu cầu hủy hàng / xử lý hàng lỗi",
+    "description": "Vui lòng cung cấp đầy đủ thông tin để gửi yêu cầu phê duyệt cho quản lý cửa hàng.",
+    "form": {
+      "productLabel": "Sản phẩm cần xử lý",
+      "productPlaceholder": "Tìm kiếm theo tên hoặc mã SKU...",
+      "selectedProduct": {
+        "imageAlt": "Ảnh sản phẩm hạt Royal Canin Puppy",
+        "name": "Hạt Royal Canin Puppy",
+        "sku": "SKU: RC-PUP-001",
+        "stockLabel": "Tồn kho hiện tại:",
+        "stockValue": "24 túi"
+      },
+      "reasonLabel": "Lý do hủy",
+      "reasonPlaceholder": "Chọn lý do...",
+      "reasons": {
+        "expired": "Hết hạn sử dụng",
+        "damaged": "Hư hỏng vật lý",
+        "quality": "Vấn đề chất lượng",
+        "other": "Lý do khác"
+      },
+      "quantityLabel": "Số lượng hủy",
+      "batchLabel": "Số lô / Batch Number (Tùy chọn)",
+      "batchPlaceholder": "Ví dụ: LOT-2023-X",
+      "expiryDateLabel": "Ngày hết hạn (Nếu có)",
+      "evidenceLabel": "Minh chứng hình ảnh",
+      "uploadTitle": "Kéo thả hoặc nhấp để tải ảnh lên",
+      "uploadHint": "Hỗ trợ JPG, PNG (Tối đa 5MB)",
+      "evidenceAlt": "Ảnh minh chứng bao bì sản phẩm bị hỏng",
+      "removeEvidence": "Xóa ảnh minh chứng",
+      "descriptionLabel": "Mô tả chi tiết / Ghi chú",
+      "descriptionPlaceholder": "Vui lòng mô tả chi tiết tình trạng hàng hóa hoặc lý do cần tiêu hủy...",
+      "cancel": "Hủy",
+      "submit": "Gửi yêu cầu"
+    },
+    "summary": {
+      "title": "Tổng quan hôm nay",
+      "sent": "Yêu cầu đã gửi",
+      "products": "Sản phẩm xử lý"
+    },
+    "recent": {
+      "title": "Yêu cầu gần đây",
+      "viewAll": "Tất cả",
+      "quantity": "Số lượng: {{value}}",
+      "supportText": "Cần hỗ trợ từ kho vận?",
+      "supportAction": "Liên hệ hotline kho",
+      "status": {
+        "pending": "Đang chờ",
+        "approved": "Đã duyệt",
+        "rejected": "Từ chối"
+      },
+      "times": {
+        "today": "10:45 AM",
+        "yesterday": "Hôm qua",
+        "oct02": "02/10/2023",
+        "oct01": "01/10/2023"
+      },
+      "items": {
+        "royalCanin": "Hạt Royal Canin Puppy",
+        "pedigree": "Xương gặm sạch răng Pedigree",
+        "whiskas": "Pate Whiskas vị cá thu",
+        "maneki": "Cát vệ sinh Maneki Neko"
+      }
+    },
+    "toast": {
+      "title": "Yêu cầu đã gửi!",
+      "description": "Mã yêu cầu: #REQ-4922. Đang chờ quản lý duyệt."
     }
   }
 }

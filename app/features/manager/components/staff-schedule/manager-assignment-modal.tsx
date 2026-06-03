@@ -30,7 +30,7 @@ export function ManagerAssignmentModal({ bookingCode, onClose }: ManagerAssignme
         aria-labelledby='manager-assignment-modal-title'
         className='flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl bg-card shadow-2xl'
       >
-        <div className='flex items-center justify-between border-b border-border px-6 py-4'>
+        <div className='flex items-center justify-between border-b border-border px-4 py-3'>
           <h2 id='manager-assignment-modal-title' className='font-display text-xl font-bold text-card-foreground'>
             {t('staffSchedule.assignmentModal.title', { bookingCode })}
           </h2>
@@ -44,7 +44,7 @@ export function ManagerAssignmentModal({ bookingCode, onClose }: ManagerAssignme
           </button>
         </div>
 
-        <div className='space-y-4 p-6'>
+        <div className='space-y-4 p-5'>
           <div className='relative'>
             <MaterialIcon
               name='search'
@@ -144,7 +144,7 @@ export function ManagerAssignmentModal({ bookingCode, onClose }: ManagerAssignme
           })}
         </div>
 
-        <div className='flex items-center justify-end gap-3 border-t border-border bg-muted p-6'>
+        <div className='flex items-center justify-end gap-3 border-t border-border bg-muted p-5'>
           <button
             type='button'
             onClick={onClose}

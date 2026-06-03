@@ -16,11 +16,11 @@ export function AdminServiceBookingsPage() {
       <AdminSidebar activeItem='services' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
         <AdminTopNav />
-        <main className='flex-1 overflow-y-auto p-4 md:p-8'>
-          <div className='mx-auto flex max-w-7xl flex-col gap-8'>
+        <main className='flex-1 overflow-y-auto p-4 md:p-6'>
+          <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             <section className='flex flex-col justify-between gap-4 md:flex-row md:items-center'>
               <div>
-                <h1 className='mb-2 font-display text-3xl font-bold text-primary md:text-4xl'>
+                <h1 className='mb-2 font-display text-2xl font-bold text-primary md:text-3xl'>
                   {t('serviceBookings.title')}
                 </h1>
                 <p className='text-muted-foreground'>{t('serviceBookings.subtitle')}</p>

@@ -41,7 +41,7 @@ export function OrderTrackingTimeline() {
   const { t } = useTranslation('profile')
 
   return (
-    <div className='rounded-2xl bg-card p-6 shadow-sm md:p-8'>
+    <div className='rounded-2xl bg-card p-6 shadow-sm md:p-6'>
       <h2 className='mb-8 flex items-center gap-2 font-display text-xl font-semibold'>
         <MaterialIcon name='history' className='text-primary' />
         {t('orderTracking.timeline.title')}
@@ -52,7 +52,7 @@ export function OrderTrackingTimeline() {
           const isLatest = idx === 0
 
           return (
-            <div key={idx} className='relative flex items-start gap-8'>
+            <div key={idx} className='relative flex items-start gap-6'>
               <div
                 className={cn(
                   'absolute left-0 mt-1.5 flex h-10 w-10 items-center justify-center rounded-full ring-4 ring-card',

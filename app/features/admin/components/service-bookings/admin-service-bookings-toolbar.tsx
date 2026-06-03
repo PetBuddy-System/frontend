@@ -7,7 +7,7 @@ export function AdminServiceBookingsToolbar() {
 
   return (
     <section className='flex flex-wrap items-end gap-4 rounded-xl border border-border bg-card p-5 shadow-sm'>
-      <div className='min-w-72 flex-1'>
+      <div className='min-w-64 flex-1'>
         <label className='mb-2 block text-sm font-semibold text-muted-foreground'>
           {t('serviceBookings.toolbar.customerLabel')}
         </label>

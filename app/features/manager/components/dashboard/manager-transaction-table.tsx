@@ -23,7 +23,7 @@ export function ManagerTransactionTable() {
   return (
     <section className='overflow-hidden rounded-xl border border-border bg-card shadow-sm'>
       <div className='overflow-x-auto'>
-        <table className='w-full min-w-[1120px] border-collapse text-left'>
+        <table className='w-full min-w-[1040px] border-collapse text-left'>
           <thead>
             <tr className='border-b border-border bg-muted text-sm font-semibold text-muted-foreground'>
               <th className='px-4 py-4'>{t('table.columns.dateTime')}</th>

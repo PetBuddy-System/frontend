@@ -16,11 +16,11 @@ export function ManagerDashboardPage() {
       <ManagerSidebar />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
         <ManagerTopNav />
-        <main className='flex-1 overflow-y-auto p-4 md:p-8'>
+        <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             <section className='flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
               <div>
-                <h1 className='font-display text-3xl font-bold text-card-foreground md:text-4xl'>
+                <h1 className='font-display text-2xl font-bold text-card-foreground md:text-3xl'>
                   {t('dashboard.title')}
                 </h1>
                 <p className='mt-1 text-muted-foreground'>{t('dashboard.subtitle')}</p>

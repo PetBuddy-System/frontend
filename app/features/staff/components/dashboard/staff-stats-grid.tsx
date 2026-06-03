@@ -40,7 +40,7 @@ export function StaffStatsGrid() {
               <div className='min-w-0'>
                 <p className='text-sm font-medium text-muted-foreground'>{t(`stats.${card.key}.label`)}</p>
                 <div className='mt-3 flex items-end gap-2'>
-                  <p className='font-display text-3xl font-bold text-primary'>{t(`stats.${card.key}.value`)}</p>
+                  <p className='font-display text-2xl font-bold text-primary'>{t(`stats.${card.key}.value`)}</p>
                   <p className='pb-1 text-sm font-semibold text-muted-foreground'>{t(`stats.${card.key}.unit`)}</p>
                 </div>
                 <p className='mt-2 text-sm text-muted-foreground'>{t(`stats.${card.key}.note`)}</p>

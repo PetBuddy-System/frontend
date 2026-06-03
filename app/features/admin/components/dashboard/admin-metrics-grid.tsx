@@ -21,7 +21,7 @@ export function AdminMetricsGrid() {
         return (
           <article
             key={metric.key}
-            className='rounded-xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md'
+            className='rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md'
           >
             <div className='mb-4 flex items-center gap-3 text-muted-foreground'>
               <div className='flex h-11 w-11 items-center justify-center rounded-full bg-muted text-primary'>
@@ -29,7 +29,7 @@ export function AdminMetricsGrid() {
               </div>
               <span className='font-semibold'>{t(`metrics.${metric.key}.label`)}</span>
             </div>
-            <p className='mb-2 font-display text-3xl font-bold text-card-foreground'>{metric.value}</p>
+            <p className='mb-2 font-display text-2xl font-bold text-card-foreground'>{metric.value}</p>
             <div
               className={cn(
                 'flex items-center gap-1 text-sm font-semibold',

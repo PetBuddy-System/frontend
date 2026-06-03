@@ -147,7 +147,7 @@ export function ReturnWarrantyForm() {
 
   if (isSubmitted) {
     return (
-      <div className='flex flex-col items-center justify-center rounded-xl border border-border bg-card p-8 text-center shadow-md'>
+      <div className='flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 text-center shadow-md'>
         <div className='mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success text-success-foreground'>
           <MaterialIcon name='check' className='text-[36px]' />
         </div>

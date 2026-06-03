@@ -16,11 +16,11 @@ export function AdminUsersPage() {
       <AdminSidebar activeItem='users' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
         <AdminTopNav />
-        <main className='flex-1 overflow-y-auto p-4 md:p-8'>
-          <div className='mx-auto flex max-w-7xl flex-col gap-8'>
+        <main className='flex-1 overflow-y-auto p-4 md:p-6'>
+          <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             <section className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
               <div>
-                <h1 className='mb-2 font-display text-3xl font-bold text-primary md:text-5xl'>{t('users.title')}</h1>
+                <h1 className='mb-2 font-display text-2xl font-bold text-primary md:text-3xl'>{t('users.title')}</h1>
                 <p className='max-w-3xl text-muted-foreground'>{t('users.subtitle')}</p>
               </div>
               <div className='flex flex-wrap gap-3'>

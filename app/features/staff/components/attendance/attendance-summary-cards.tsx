@@ -17,7 +17,7 @@ export function AttendanceSummaryCards() {
       {SUMMARY_ITEMS.map((item) => (
         <div
           key={item.key}
-          className='group relative overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm'
+          className='group relative overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm'
         >
           <div
             className={`absolute -right-4 -top-4 h-24 w-24 rounded-full ${item.bgClass} transition-transform duration-500 group-hover:scale-110`}
@@ -25,17 +25,15 @@ export function AttendanceSummaryCards() {
           <div className='relative'>
             <div className='mb-2 flex items-center gap-3 text-muted-foreground'>
               <MaterialIcon name={item.icon} filled className={item.colorClass} />
-              <span className='text-sm font-semibold'>
-                {t(`attendance.summary.${item.key}.label`)}
-              </span>
+              <span className='text-sm font-semibold'>{t(`attendance.summary.${item.key}.label`)}</span>
             </div>
             <div className='flex items-baseline gap-1'>
-              <span className={`font-display text-4xl font-bold ${item.key === 'totalDays' ? 'text-primary' : item.key === 'daysOff' ? 'text-destructive' : item.key === 'lateEarly' ? 'text-accent' : 'text-foreground'}`}>
+              <span
+                className={`font-display text-3xl font-bold ${item.key === 'totalDays' ? 'text-primary' : item.key === 'daysOff' ? 'text-destructive' : item.key === 'lateEarly' ? 'text-accent' : 'text-foreground'}`}
+              >
                 {t(`attendance.summary.${item.key}.value`)}
               </span>
-              <span className='text-base text-muted-foreground'>
-                {t(`attendance.summary.${item.key}.unit`)}
-              </span>
+              <span className='text-base text-muted-foreground'>{t(`attendance.summary.${item.key}.unit`)}</span>
             </div>
           </div>
         </div>

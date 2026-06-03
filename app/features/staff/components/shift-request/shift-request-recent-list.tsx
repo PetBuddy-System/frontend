@@ -65,7 +65,7 @@ export function ShiftRequestRecentList() {
   const { t } = useTranslation('staff')
 
   return (
-    <div className='h-full rounded-xl border border-border bg-muted p-6'>
+    <div className='h-full rounded-xl border border-border bg-muted p-5'>
       <h2 className='mb-6 flex items-center gap-2 font-display text-xl font-bold'>
         <MaterialIcon name='history' className='text-secondary-foreground' />
         {t('shiftRequest.recent.title')}

@@ -96,7 +96,7 @@ export function AttendanceTable() {
   return (
     <div className='overflow-hidden rounded-xl border border-border bg-card shadow-sm'>
       {/* Table Header */}
-      <div className='flex items-center justify-between border-b border-border bg-card p-6'>
+      <div className='flex items-center justify-between border-b border-border bg-card p-5'>
         <h3 className='font-display text-xl font-bold'>{t('attendance.table.title')}</h3>
         <button
           type='button'
@@ -109,15 +109,27 @@ export function AttendanceTable() {
 
       {/* Table */}
       <div className='overflow-x-auto'>
-        <table className='w-full border-collapse text-left'>
+        <table className='w-full min-w-[920px] table-fixed border-collapse text-left'>
+          <colgroup>
+            <col className='w-[14%]' />
+            <col className='w-[9%]' />
+            <col className='w-[9%]' />
+            <col className='w-[10%]' />
+            <col className='w-[14%]' />
+            <col className='w-[44%]' />
+          </colgroup>
           <thead>
             <tr className='border-b border-border bg-muted text-muted-foreground'>
-              <th className='whitespace-nowrap p-4 text-sm font-bold'>{t('attendance.table.columns.date')}</th>
-              <th className='whitespace-nowrap p-4 text-sm font-bold'>{t('attendance.table.columns.checkIn')}</th>
-              <th className='whitespace-nowrap p-4 text-sm font-bold'>{t('attendance.table.columns.checkOut')}</th>
-              <th className='whitespace-nowrap p-4 text-sm font-bold'>{t('attendance.table.columns.totalHours')}</th>
-              <th className='whitespace-nowrap p-4 text-sm font-bold'>{t('attendance.table.columns.status')}</th>
-              <th className='w-full p-4 text-sm font-bold'>{t('attendance.table.columns.note')}</th>
+              <th className='whitespace-nowrap px-6 py-4 text-sm font-bold'>{t('attendance.table.columns.date')}</th>
+              <th className='whitespace-nowrap px-4 py-4 text-sm font-bold'>{t('attendance.table.columns.checkIn')}</th>
+              <th className='whitespace-nowrap px-4 py-4 text-sm font-bold'>
+                {t('attendance.table.columns.checkOut')}
+              </th>
+              <th className='whitespace-nowrap px-4 py-4 text-sm font-bold'>
+                {t('attendance.table.columns.totalHours')}
+              </th>
+              <th className='whitespace-nowrap px-4 py-4 text-sm font-bold'>{t('attendance.table.columns.status')}</th>
+              <th className='px-6 py-4 text-sm font-bold'>{t('attendance.table.columns.note')}</th>
             </tr>
           </thead>
           <tbody className='divide-y divide-border'>
@@ -127,16 +139,10 @@ export function AttendanceTable() {
               const isLate = record.status === 'late'
 
               return (
-                <tr
-                  key={record.key}
-                  className={cn(
-                    'transition-colors hover:bg-muted/50',
-                    isDayOff && 'bg-muted/20'
-                  )}
-                >
+                <tr key={record.key} className={cn('transition-colors hover:bg-muted/50', isDayOff && 'bg-muted/20')}>
                   <td
                     className={cn(
-                      'whitespace-nowrap p-4 text-base font-medium',
+                      'whitespace-nowrap px-6 py-4 text-base font-medium',
                       isDayOff ? 'text-muted-foreground' : 'text-foreground'
                     )}
                   >
@@ -144,24 +150,22 @@ export function AttendanceTable() {
                   </td>
                   <td
                     className={cn(
-                      'whitespace-nowrap p-4 text-base',
+                      'whitespace-nowrap px-4 py-4 text-base',
                       isLate ? 'font-medium text-destructive' : 'text-muted-foreground'
                     )}
                   >
                     {record.checkIn}
                   </td>
-                  <td className='whitespace-nowrap p-4 text-base text-muted-foreground'>
-                    {record.checkOut}
-                  </td>
+                  <td className='whitespace-nowrap px-4 py-4 text-base text-muted-foreground'>{record.checkOut}</td>
                   <td
                     className={cn(
-                      'whitespace-nowrap p-4 text-base',
+                      'whitespace-nowrap px-4 py-4 text-base',
                       isDayOff ? 'text-muted-foreground' : 'font-bold text-foreground'
                     )}
                   >
                     {record.totalHours}
                   </td>
-                  <td className='whitespace-nowrap p-4'>
+                  <td className='whitespace-nowrap px-4 py-4'>
                     <span
                       className={cn(
                         'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold',
@@ -173,9 +177,9 @@ export function AttendanceTable() {
                       {t(statusConfig.labelKey)}
                     </span>
                   </td>
-                  <td className='max-w-xs truncate p-4 text-base text-muted-foreground'>
+                  <td className='px-6 py-4 text-base text-muted-foreground'>
                     {record.note ? (
-                      <span className={isDayOff ? 'italic' : undefined}>{t(record.note)}</span>
+                      <span className={cn('block max-w-full truncate', isDayOff && 'italic')}>{t(record.note)}</span>
                     ) : (
                       '--'
                     )}

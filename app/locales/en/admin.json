@@ -110,11 +110,13 @@
     "logoAlt": "PetBuddy logo",
     "nav": {
       "employees": "Employees",
-      "inventory": "Inventory",
+      "inventory": "Products",
       "reports": "Reports",
       "services": "Services",
-      "users": "Users"
-    }
+      "users": "Users",
+      "vouchers": "Vouchers"
+    },
+    "toggle": "Toggle sidebar"
   },
   "serviceBookings": {
     "actions": {
@@ -190,6 +192,71 @@
       }
     }
   },
+  "serviceManagement": {
+    "actions": {
+      "add": "Add new service",
+      "delete": "Delete service",
+      "edit": "Edit service",
+      "view": "View service"
+    },
+    "categories": {
+      "grooming": "Grooming & Spa",
+      "hotel": "Hotel",
+      "vet": "Vet"
+    },
+    "filters": {
+      "advanced": "Advanced filter",
+      "categories": {
+        "all": "All",
+        "grooming": "Grooming & Spa",
+        "hotel": "Hotel",
+        "vet": "Vet"
+      },
+      "status": {
+        "active": "Active",
+        "all": "Status: All",
+        "inactive": "Inactive"
+      }
+    },
+    "pagination": {
+      "showing": "Showing 1 - 10 of 24 services"
+    },
+    "stats": {
+      "active": "Active",
+      "promotions": "Promotions",
+      "total": "Total services"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "subtitle": "Configure and update pet care service packages.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "category": "Category",
+        "name": "Service name",
+        "price": "Base price",
+        "status": "Status",
+        "updatedAt": "Updated"
+      },
+      "rows": {
+        "bathTrimCombo": {
+          "description": "For dogs under 5kg",
+          "name": "Bath, dry & trim combo"
+        },
+        "vaccination": {
+          "description": "5-vaccine package",
+          "name": "Routine vaccination"
+        },
+        "vipHotel": {
+          "description": "Air-conditioned single room",
+          "name": "VIP Pet Hotel"
+        }
+      }
+    },
+    "title": "Service Management"
+  },
   "topNav": {
     "notifications": "Notifications"
   },
@@ -197,7 +264,7 @@
     "categories": {
       "grooming": "Spa & Grooming",
       "medical": "Medical services",
-      "product": "Product"
+      "product": "Products"
     },
     "columns": {
       "category": "Category",
@@ -284,5 +351,157 @@
         "locked": "Locked"
       }
     }
+  },
+  "productManagement": {
+    "actions": {
+      "add": "Add new product",
+      "delete": "Delete product",
+      "edit": "Edit product",
+      "view": "View product"
+    },
+    "categories": {
+      "accessories": "Accessories",
+      "food": "Food"
+    },
+    "filters": {
+      "categories": {
+        "accessories": "Accessories",
+        "all": "All",
+        "food": "Food",
+        "medicine": "Pet medicine",
+        "toys": "Toys"
+      },
+      "status": {
+        "active": "Active",
+        "all": "Status: All",
+        "inactive": "Inactive"
+      }
+    },
+    "pagination": {
+      "showing": "Showing {{shown}} of {{total}} products"
+    },
+    "searchPlaceholder": "Search products...",
+    "stats": {
+      "available": "Available",
+      "lowStock": "Low stock",
+      "total": "Total products"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "stock": {
+      "low": "Low stock"
+    },
+    "subtitle": "Track categories, selling prices, inventory, and product availability.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "category": "Category",
+        "name": "Product name",
+        "price": "Price",
+        "status": "Status",
+        "stock": "Stock",
+        "updatedAt": "Updated"
+      },
+      "rows": {
+        "helloShampoo": {
+          "imageAlt": "Hello pet shampoo bottle",
+          "name": "Hello shampoo for dogs and cats 280g",
+          "sku": "SKU: ACC-SH-280G"
+        },
+        "royalCaninPoodle": {
+          "imageAlt": "Royal Canin Poodle Adult dry food package",
+          "name": "Royal Canin Poodle Adult dry food",
+          "sku": "SKU: RC-PAD-500G"
+        },
+        "transportCrate": {
+          "imageAlt": "Size M pet transport crate",
+          "name": "Size M transport crate",
+          "sku": "SKU: ACC-CR-M"
+        }
+      }
+    },
+    "title": "Product Management"
+  },
+  "voucherManagement": {
+    "actions": {
+      "create": "Create new voucher",
+      "delete": "Delete voucher",
+      "edit": "Edit voucher"
+    },
+    "pagination": {
+      "showing": "Showing 1-10 of 124 vouchers"
+    },
+    "rewards": {
+      "accumulation": "Point earning rate (Spending)",
+      "accumulationHint": "Customers receive 1 point for every 10,000 VND spent.",
+      "info": "Set earning and redemption rates for the whole reward points system.",
+      "pointUnit": "PTS",
+      "redemption": "Redemption value (Usage)",
+      "redemptionHint": "Each point can be redeemed as 1,000 VND at checkout.",
+      "save": "Update settings",
+      "scaleText": "Upgrade your plan to unlock personalized reward point features.",
+      "scaleTitle": "Scaling up?",
+      "tiers": {
+        "diamond": "Diamond (VIP 2)",
+        "gold": "Gold (VIP 1)",
+        "silver": "Silver (Default)"
+      },
+      "tiersTitle": "Membership tier multiplier",
+      "title": "Reward Points Settings"
+    },
+    "stats": {
+      "activeVouchers": {
+        "label": "Active vouchers",
+        "note": "+12% vs last month"
+      },
+      "issuedPoints": {
+        "label": "Points issued this month",
+        "note": "Total: 1.2M system-wide points"
+      },
+      "redeemedPoints": {
+        "label": "Redeemed points",
+        "note": "Redemption rate: 41.5%"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "subtitle": "Set up promotional campaigns and reward point rules for customers.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "code": "Voucher code",
+        "discount": "Discount type",
+        "expiry": "Expiry",
+        "status": "Status"
+      },
+      "filter": "Filter vouchers",
+      "minimumOrder": "Minimum order: {{value}}",
+      "searchPlaceholder": "Search voucher code...",
+      "title": "Voucher list",
+      "unlimited": "Unlimited",
+      "rows": {
+        "newbie": {
+          "description": "50k off first order",
+          "usage": "Used: 852/1000"
+        },
+        "petSpring": {
+          "daysLeft": "15 days left",
+          "description": "10% off spa services"
+        },
+        "xmas": {
+          "description": "Christmas offer",
+          "expired": "Expired"
+        }
+      }
+    },
+    "toast": {
+      "description": "Reward point settings have been saved.",
+      "title": "Success!"
+    },
+    "title": "Voucher & Reward Management"
   }
 }

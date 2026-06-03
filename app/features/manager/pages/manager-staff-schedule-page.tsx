@@ -15,11 +15,11 @@ export function ManagerStaffSchedulePage() {
       <ManagerSidebar activeItem='staff' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
         <ManagerTopNav />
-        <main className='flex-1 overflow-y-auto p-4 md:p-8'>
-          <div className='mx-auto flex max-w-7xl flex-col gap-8'>
+        <main className='flex-1 overflow-y-auto p-4 md:p-6'>
+          <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             <section className='flex flex-col gap-4 border-b border-border pb-6 md:flex-row md:items-center md:justify-between'>
               <div>
-                <h1 className='font-display text-3xl font-bold text-card-foreground md:text-5xl'>
+                <h1 className='font-display text-2xl font-bold text-card-foreground md:text-3xl'>
                   {t('staffSchedule.title')}
                 </h1>
                 <p className='mt-2 text-muted-foreground'>{t('staffSchedule.subtitle')}</p>
@@ -37,7 +37,7 @@ export function ManagerStaffSchedulePage() {
               </div>
             </section>
 
-            <div className='flex flex-col gap-8 lg:flex-row'>
+            <div className='flex flex-col gap-6 lg:flex-row'>
               <ManagerBookingAssignmentTable />
               <ManagerStaffAvailabilityPanel />
             </div>

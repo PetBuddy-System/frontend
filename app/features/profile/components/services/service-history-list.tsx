@@ -70,7 +70,7 @@ export function ServiceHistoryList() {
       ) : null}
 
       {SERVICE_HISTORY_FILTERS.includes(activeFilter) && filteredItems.length === 0 ? (
-        <p className='rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground'>
+        <p className='rounded-2xl border border-border bg-card p-6 text-center text-muted-foreground'>
           {t('serviceHistory.empty')}
         </p>
       ) : null}

@@ -59,23 +59,23 @@ export function AdminServiceBookingsTable() {
   return (
     <section className='overflow-hidden rounded-xl border border-border bg-card shadow-sm'>
       <div className='overflow-x-auto'>
-        <table className='w-full min-w-[980px] border-collapse text-left'>
+        <table className='w-full min-w-[900px] border-collapse text-left'>
           <thead>
             <tr className='border-b border-border bg-muted text-sm font-semibold text-muted-foreground'>
-              <th className='px-6 py-4'>{t('serviceBookings.table.columns.code')}</th>
-              <th className='px-6 py-4'>{t('serviceBookings.table.columns.customer')}</th>
-              <th className='px-6 py-4'>{t('serviceBookings.table.columns.service')}</th>
-              <th className='px-6 py-4'>{t('serviceBookings.table.columns.pet')}</th>
-              <th className='px-6 py-4'>{t('serviceBookings.table.columns.dateTime')}</th>
-              <th className='px-6 py-4'>{t('serviceBookings.table.columns.status')}</th>
-              <th className='px-6 py-4 text-right'>{t('serviceBookings.table.columns.actions')}</th>
+              <th className='px-4 py-3'>{t('serviceBookings.table.columns.code')}</th>
+              <th className='px-4 py-3'>{t('serviceBookings.table.columns.customer')}</th>
+              <th className='px-4 py-3'>{t('serviceBookings.table.columns.service')}</th>
+              <th className='px-4 py-3'>{t('serviceBookings.table.columns.pet')}</th>
+              <th className='px-4 py-3'>{t('serviceBookings.table.columns.dateTime')}</th>
+              <th className='px-4 py-3'>{t('serviceBookings.table.columns.status')}</th>
+              <th className='px-4 py-3 text-right'>{t('serviceBookings.table.columns.actions')}</th>
             </tr>
           </thead>
           <tbody className='divide-y divide-border'>
             {BOOKINGS.map((booking) => (
               <tr key={booking.key} className='transition-colors hover:bg-muted'>
-                <td className='px-6 py-4 font-semibold text-primary'>{booking.code}</td>
-                <td className='px-6 py-4'>
+                <td className='px-4 py-3 font-semibold text-primary'>{booking.code}</td>
+                <td className='px-4 py-3'>
                   <div className='flex flex-col'>
                     <span className='font-bold text-card-foreground'>
                       {t(`serviceBookings.table.rows.${booking.key}.customer`)}
@@ -83,12 +83,12 @@ export function AdminServiceBookingsTable() {
                     <span className='text-sm text-muted-foreground'>{booking.phone}</span>
                   </div>
                 </td>
-                <td className='px-6 py-4'>
+                <td className='px-4 py-3'>
                   <span className='inline-flex rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary'>
                     {t(`serviceBookings.services.${booking.service}`)}
                   </span>
                 </td>
-                <td className='px-6 py-4'>
+                <td className='px-4 py-3'>
                   <div className='flex items-center gap-3'>
                     <div className='flex h-9 w-9 items-center justify-center rounded-full bg-muted text-primary'>
                       <MaterialIcon name='pets' className='text-lg' />
@@ -98,13 +98,13 @@ export function AdminServiceBookingsTable() {
                     </span>
                   </div>
                 </td>
-                <td className='px-6 py-4'>
+                <td className='px-4 py-3'>
                   <div className='flex flex-col'>
                     <span className='font-semibold'>{booking.date}</span>
                     <span className='text-sm text-muted-foreground'>{booking.time}</span>
                   </div>
                 </td>
-                <td className='px-6 py-4'>
+                <td className='px-4 py-3'>
                   <span
                     className={cn(
                       'inline-flex rounded-full px-3 py-1 text-xs font-bold uppercase',
@@ -114,7 +114,7 @@ export function AdminServiceBookingsTable() {
                     {t(`serviceBookings.status.${booking.status}`)}
                   </span>
                 </td>
-                <td className='px-6 py-4'>
+                <td className='px-4 py-3'>
                   <div className='flex justify-end gap-2'>
                     <button
                       type='button'
@@ -137,7 +137,7 @@ export function AdminServiceBookingsTable() {
           </tbody>
         </table>
       </div>
-      <div className='flex flex-col gap-4 border-t border-border px-6 py-4 sm:flex-row sm:items-center sm:justify-between'>
+      <div className='flex flex-col gap-4 border-t border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between'>
         <p className='text-sm text-muted-foreground'>
           {t('serviceBookings.pagination.showing', { from: 1, to: 4, total: '1,284' })}
         </p>

@@ -12,7 +12,7 @@ export function ProfileInfoCard() {
 
   return (
     <section className='rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-transform hover:-translate-y-0.5 md:p-6'>
-      <div className='flex flex-col items-center gap-8 md:flex-row'>
+      <div className='flex flex-col items-center gap-6 md:flex-row'>
         <div className='relative'>
           <img
             src={PROFILE_IMAGE}

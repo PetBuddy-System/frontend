@@ -23,13 +23,13 @@ export function AdminServiceBookingsStatsGrid() {
       {BOOKING_STATS.map((stat) => (
         <article
           key={stat.key}
-          className={cn('rounded-xl border border-l-4 bg-card p-6 shadow-sm', stat.accentClassName)}
+          className={cn('rounded-xl border border-l-4 bg-card p-5 shadow-sm', stat.accentClassName)}
         >
           <p className='mb-3 text-xs font-bold uppercase tracking-wide text-muted-foreground'>
             {t(`serviceBookings.stats.${stat.key}`)}
           </p>
           <div className='flex items-center justify-between'>
-            <span className='font-display text-3xl font-bold text-card-foreground'>{stat.value}</span>
+            <span className='font-display text-2xl font-bold text-card-foreground'>{stat.value}</span>
             <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary'>
               <MaterialIcon name={stat.icon} />
             </div>

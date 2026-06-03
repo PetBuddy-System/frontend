@@ -47,10 +47,10 @@ export function AdminEmployeesTable() {
         <table className='w-full min-w-[720px] border-collapse text-left'>
           <thead>
             <tr className='border-b border-border bg-muted text-sm font-semibold text-muted-foreground'>
-              <th className='px-6 py-4'>{t('employees.table.columns.name')}</th>
-              <th className='px-6 py-4'>{t('employees.table.columns.role')}</th>
-              <th className='px-6 py-4'>{t('employees.table.columns.status')}</th>
-              <th className='px-6 py-4 text-right'>{t('employees.table.columns.actions')}</th>
+              <th className='px-4 py-3'>{t('employees.table.columns.name')}</th>
+              <th className='px-4 py-3'>{t('employees.table.columns.role')}</th>
+              <th className='px-4 py-3'>{t('employees.table.columns.status')}</th>
+              <th className='px-4 py-3 text-right'>{t('employees.table.columns.actions')}</th>
             </tr>
           </thead>
           <tbody className='divide-y divide-border'>
@@ -59,7 +59,7 @@ export function AdminEmployeesTable() {
 
               return (
                 <tr key={employee.key} className='transition-colors hover:bg-muted'>
-                  <td className='px-6 py-4'>
+                  <td className='px-4 py-3'>
                     <div className='flex items-center gap-3'>
                       <div
                         className={cn(
@@ -77,7 +77,7 @@ export function AdminEmployeesTable() {
                       </div>
                     </div>
                   </td>
-                  <td className='px-6 py-4'>
+                  <td className='px-4 py-3'>
                     <span
                       className={
                         employee.role === 'manager'
@@ -88,7 +88,7 @@ export function AdminEmployeesTable() {
                       {t(`employees.roles.${employee.role}`)}
                     </span>
                   </td>
-                  <td className='px-6 py-4'>
+                  <td className='px-4 py-3'>
                     <span
                       className={
                         isWorking
@@ -105,7 +105,7 @@ export function AdminEmployeesTable() {
                       {t(`employees.status.${employee.status}`)}
                     </span>
                   </td>
-                  <td className='px-6 py-4'>
+                  <td className='px-4 py-3'>
                     <div className='flex justify-end gap-1'>
                       <button
                         type='button'
@@ -129,7 +129,7 @@ export function AdminEmployeesTable() {
           </tbody>
         </table>
       </div>
-      <div className='flex items-center justify-between border-t border-border bg-card px-6 py-4'>
+      <div className='flex items-center justify-between border-t border-border bg-card px-4 py-3'>
         <span className='text-sm text-muted-foreground'>
           {t('employees.pagination.showing', { from: 1, to: 4, total: 48 })}
         </span>

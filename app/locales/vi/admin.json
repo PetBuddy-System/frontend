@@ -110,11 +110,13 @@
     "logoAlt": "Logo PetBuddy",
     "nav": {
       "employees": "Nhân viên",
-      "inventory": "Kho hàng",
+      "inventory": "Sản phẩm",
       "reports": "Báo cáo",
       "services": "Dịch vụ",
-      "users": "Người dùng"
-    }
+      "users": "Người dùng",
+      "vouchers": "Voucher"
+    },
+    "toggle": "Thu gọn/mở rộng thanh bên"
   },
   "serviceBookings": {
     "actions": {
@@ -189,6 +191,71 @@
         "grooming": "Cắt tỉa lông"
       }
     }
+  },
+  "serviceManagement": {
+    "actions": {
+      "add": "Thêm dịch vụ mới",
+      "delete": "Xóa dịch vụ",
+      "edit": "Chỉnh sửa dịch vụ",
+      "view": "Xem dịch vụ"
+    },
+    "categories": {
+      "grooming": "Grooming & Spa",
+      "hotel": "Khách sạn",
+      "vet": "Thú y"
+    },
+    "filters": {
+      "advanced": "Lọc nâng cao",
+      "categories": {
+        "all": "Tất cả",
+        "grooming": "Grooming & Spa",
+        "hotel": "Khách sạn",
+        "vet": "Thú y"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "all": "Trạng thái: Tất cả",
+        "inactive": "Ngừng hoạt động"
+      }
+    },
+    "pagination": {
+      "showing": "Hiển thị 1 - 10 trên tổng số 24 dịch vụ"
+    },
+    "stats": {
+      "active": "Đang hoạt động",
+      "promotions": "Khuyến mãi",
+      "total": "Tổng số dịch vụ"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng hoạt động"
+    },
+    "subtitle": "Cấu hình và cập nhật các gói dịch vụ dành cho thú cưng.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "category": "Phân loại",
+        "name": "Tên dịch vụ",
+        "price": "Giá cơ bản",
+        "status": "Trạng thái",
+        "updatedAt": "Cập nhật"
+      },
+      "rows": {
+        "bathTrimCombo": {
+          "description": "Dành cho chó dưới 5kg",
+          "name": "Combo tắm sấy & cắt tỉa"
+        },
+        "vaccination": {
+          "description": "Gói 5 loại vaccine",
+          "name": "Tiêm chủng định kỳ"
+        },
+        "vipHotel": {
+          "description": "Phòng đơn điều hòa",
+          "name": "Khách sạn thú cưng VIP"
+        }
+      }
+    },
+    "title": "Quản lý dịch vụ"
   },
   "topNav": {
     "notifications": "Thông báo"
@@ -284,5 +351,157 @@
         "locked": "Bị khóa"
       }
     }
+  },
+  "productManagement": {
+    "actions": {
+      "add": "Thêm sản phẩm mới",
+      "delete": "Xóa sản phẩm",
+      "edit": "Chỉnh sửa sản phẩm",
+      "view": "Xem sản phẩm"
+    },
+    "categories": {
+      "accessories": "Phụ kiện",
+      "food": "Thức ăn"
+    },
+    "filters": {
+      "categories": {
+        "accessories": "Phụ kiện",
+        "all": "Tất cả",
+        "food": "Thức ăn",
+        "medicine": "Thuốc thú y",
+        "toys": "Đồ chơi"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "all": "Trạng thái: Tất cả",
+        "inactive": "Ngừng kinh doanh"
+      }
+    },
+    "pagination": {
+      "showing": "Hiển thị {{shown}} trên {{total}} sản phẩm"
+    },
+    "searchPlaceholder": "Tìm kiếm sản phẩm...",
+    "stats": {
+      "available": "Sẵn hàng",
+      "lowStock": "Sắp hết hàng",
+      "total": "Tổng sản phẩm"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng kinh doanh"
+    },
+    "stock": {
+      "low": "Sắp hết"
+    },
+    "subtitle": "Theo dõi danh mục, giá bán, tồn kho và trạng thái kinh doanh của sản phẩm.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "category": "Danh mục",
+        "name": "Tên sản phẩm",
+        "price": "Giá bán",
+        "status": "Trạng thái",
+        "stock": "Tồn kho",
+        "updatedAt": "Cập nhật"
+      },
+      "rows": {
+        "helloShampoo": {
+          "imageAlt": "Chai sữa tắm Hello cho chó mèo",
+          "name": "Sữa tắm Hello cho chó mèo 280g",
+          "sku": "SKU: ACC-SH-280G"
+        },
+        "royalCaninPoodle": {
+          "imageAlt": "Bao bì thức ăn hạt Royal Canin Poodle Adult",
+          "name": "Thức ăn hạt Royal Canin Poodle Adult",
+          "sku": "SKU: RC-PAD-500G"
+        },
+        "transportCrate": {
+          "imageAlt": "Lồng vận chuyển thú cưng size M",
+          "name": "Lồng vận chuyển size M",
+          "sku": "SKU: ACC-CR-M"
+        }
+      }
+    },
+    "title": "Quản lý sản phẩm"
+  },
+  "voucherManagement": {
+    "actions": {
+      "create": "Tạo voucher mới",
+      "delete": "Xóa voucher",
+      "edit": "Chỉnh sửa voucher"
+    },
+    "pagination": {
+      "showing": "Hiển thị 1-10 trên 124 voucher"
+    },
+    "rewards": {
+      "accumulation": "Tỷ lệ tích điểm (Chi tiêu)",
+      "accumulationHint": "Khách hàng nhận được 1 điểm cho mỗi 10.000đ chi tiêu.",
+      "info": "Thiết lập tỷ lệ tích lũy và giá trị quy đổi điểm cho toàn hệ thống.",
+      "pointUnit": "ĐIỂM",
+      "redemption": "Giá trị quy đổi (Sử dụng)",
+      "redemptionHint": "Mỗi điểm có thể quy đổi thành 1.000đ khi thanh toán.",
+      "save": "Cập nhật cấu hình",
+      "scaleText": "Nâng cấp gói để có thêm tính năng cá nhân hóa điểm thưởng.",
+      "scaleTitle": "Mở rộng quy mô?",
+      "tiers": {
+        "diamond": "Kim cương (VIP 2)",
+        "gold": "Vàng (VIP 1)",
+        "silver": "Bạc (Mặc định)"
+      },
+      "tiersTitle": "Hệ số theo hạng thành viên",
+      "title": "Cấu hình điểm thưởng"
+    },
+    "stats": {
+      "activeVouchers": {
+        "label": "Voucher đang hoạt động",
+        "note": "+12% so với tháng trước"
+      },
+      "issuedPoints": {
+        "label": "Điểm đã cấp tháng này",
+        "note": "Tổng cộng: 1.2M điểm toàn hệ thống"
+      },
+      "redeemedPoints": {
+        "label": "Điểm đã quy đổi",
+        "note": "Tỷ lệ quy đổi: 41.5%"
+      }
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng hoạt động"
+    },
+    "subtitle": "Thiết lập chiến dịch khuyến mãi và hệ thống tích điểm cho khách hàng.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "code": "Mã voucher",
+        "discount": "Loại giảm giá",
+        "expiry": "Hạn dùng",
+        "status": "Trạng thái"
+      },
+      "filter": "Lọc voucher",
+      "minimumOrder": "Đơn từ: {{value}}",
+      "searchPlaceholder": "Tìm mã voucher...",
+      "title": "Danh sách voucher",
+      "unlimited": "Vô thời hạn",
+      "rows": {
+        "newbie": {
+          "description": "Tặng 50k đơn đầu tiên",
+          "usage": "Sử dụng: 852/1000"
+        },
+        "petSpring": {
+          "daysLeft": "Còn 15 ngày",
+          "description": "Giảm 10% dịch vụ Spa"
+        },
+        "xmas": {
+          "description": "Ưu đãi Giáng sinh",
+          "expired": "Đã hết hạn"
+        }
+      }
+    },
+    "toast": {
+      "description": "Cấu hình điểm thưởng đã được lưu.",
+      "title": "Thành công!"
+    },
+    "title": "Quản lý ưu đãi & điểm thưởng"
   }
 }

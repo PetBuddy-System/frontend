@@ -35,9 +35,12 @@
       "inventory": "Inventory Control",
       "reports": "Reports",
       "risk": "Risk Management",
-      "staff": "Staff Coordination"
+      "staff": "Staff Coordination",
+      "returnRequests": "Return approvals",
+      "disposalApprovals": "Disposal approvals"
     },
-    "newReport": "New Report"
+    "newReport": "New Report",
+    "toggle": "Toggle sidebar"
   },
   "stats": {
     "discrepancies": {
@@ -238,5 +241,122 @@
     "damage": "Damaged goods",
     "export": "Export",
     "import": "Import"
+  },
+  "returnRequests": {
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "view": "View details"
+    },
+    "breadcrumb": {
+      "current": "Request approvals",
+      "ops": "Operations"
+    },
+    "details": {
+      "approveRefund": "Approve refund",
+      "cancel": "Cancel",
+      "close": "Close request details",
+      "download": "Download document",
+      "orderInfo": "Order information",
+      "payment": "Payment method",
+      "proofAlt": "Customer proof image {{index}}",
+      "proofTitle": "Customer-provided evidence",
+      "purchaseDate": "Purchase date",
+      "reasonText": "The dog harness size guide was misleading. The customer ordered size L for a 30kg Golden Retriever, but the chest strap was still too tight even when fully extended. The finish quality is good, but the item is simply too small for the pet.",
+      "reasonTitle": "Return reason",
+      "submittedBy": "Submitted on Oct 14, 2023 by {{customer}}",
+      "title": "Return request {{code}}",
+      "totalValue": "Total value",
+      "validity": "Eligibility",
+      "validityValue": "Within 30 days"
+    },
+    "filters": {
+      "all": "All requests",
+      "filter": "Filter",
+      "pending": "Pending",
+      "resolved": "Resolved"
+    },
+    "pagination": {
+      "showing": "Showing 1-10 of 24 results"
+    },
+    "products": {
+      "bed": "Orthopedic Memory Foam pet bed",
+      "collar": "Safe LED collar (Green)",
+      "feeder": "SmartCat V2 automatic feeder",
+      "harness": "Ultima Pro dog harness (Size L)"
+    },
+    "status": {
+      "pending": "Pending review",
+      "urgent": "Urgent: Missing proof",
+      "verified": "Verified"
+    },
+    "subtitle": "Reviewing 24 pending return and warranty requests.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "code": "Order ID",
+        "customer": "Customer",
+        "product": "Product",
+        "status": "Status",
+        "type": "Type"
+      }
+    },
+    "title": "Complaint Management",
+    "types": {
+      "return": "Return",
+      "warranty": "Warranty"
+    }
+  },
+  "disposalApprovals": {
+    "actions": {
+      "approve": "Approve",
+      "approveDisposal": "Approve disposal",
+      "reject": "Reject",
+      "view": "View details"
+    },
+    "detail": {
+      "code": "Code {{code}}",
+      "damageValue": "Damage value",
+      "evidence": "Evidence photos (2)",
+      "evidenceAlt": "Disposal evidence image {{index}}",
+      "kicker": "Request details",
+      "location": "Location",
+      "locationValue": "Store A - Shelf 4B",
+      "more": "Request options",
+      "note": "The product arrived with a large crack on the rear glass panel. It is unsafe to display or use for pets and was immediately moved to the quarantine area.",
+      "noteTitle": "Staff note",
+      "close": "Close request details"
+    },
+    "pendingBadge": "{{count}} pending",
+    "products": {
+      "salmonFood": "Premium salmon dry food 5kg",
+      "terrarium": "Glass terrarium size M",
+      "tunaPate": "Tuna pate for cats 80g"
+    },
+    "reasons": {
+      "damaged": "Damaged",
+      "expired": "Expired"
+    },
+    "staff": {
+      "hieuPham": "Hieu Pham",
+      "minhTran": "Minh Tran",
+      "sarahNguyen": "Sarah Nguyen"
+    },
+    "subtitle": "Review and approve disposal requests for expired or damaged products.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "product": "Product",
+        "quantity": "Qty",
+        "reason": "Reason",
+        "staff": "Staff"
+      }
+    },
+    "times": {
+      "today0915": "Today, 09:15",
+      "today1145": "Today, 11:45",
+      "yesterday1430": "Yesterday, 14:30"
+    },
+    "title": "Disposal Requests"
   }
 }

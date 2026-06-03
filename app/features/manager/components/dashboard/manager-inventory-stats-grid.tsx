@@ -23,13 +23,13 @@ export function ManagerInventoryStatsGrid() {
       {STATS.map((stat) => (
         <article
           key={stat.key}
-          className='relative overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md'
+          className='relative overflow-hidden rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md'
         >
           <div className={cn('absolute -right-6 -top-6 h-24 w-24 rounded-full bg-muted', TONE_CLASS[stat.tone])} />
           <div className='relative z-10 flex items-start justify-between'>
             <div>
               <p className='mb-1 text-sm font-semibold text-muted-foreground'>{t(`stats.${stat.key}.label`)}</p>
-              <p className='font-display text-5xl font-bold text-card-foreground'>{stat.value}</p>
+              <p className='font-display text-2xl font-bold text-card-foreground'>{stat.value}</p>
             </div>
             <div
               className={cn('flex h-12 w-12 items-center justify-center rounded-full bg-muted', TONE_CLASS[stat.tone])}

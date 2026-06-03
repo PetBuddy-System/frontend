@@ -34,29 +34,18 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 z-40 hidden h-full flex-col gap-2 overflow-y-auto border-r border-border bg-muted shadow-sm lg:flex transition-all duration-300',
-        isCollapsed ? 'w-20 p-2' : 'w-64 p-4'
+        'fixed left-0 top-0 z-40 hidden h-full flex-col gap-2 overflow-y-auto border-r border-border bg-muted shadow-sm transition-all duration-300 lg:flex',
+        isCollapsed ? 'w-[4.5rem] p-2' : 'w-60 p-3'
       )}
     >
-      <div className={cn('mb-8 flex items-center justify-between', isCollapsed ? 'justify-center' : 'px-4')}>
-        {!isCollapsed ? (
-          <a href='/' className='flex items-center gap-3 transition-opacity hover:opacity-85'>
-            <img
-              src='/petbuddy-logo-cropped.png'
-              alt={t('brand.logoAlt')}
-              className='h-10 w-10 rounded-xl object-contain'
-            />
-            <span className='font-display text-2xl font-bold text-primary shrink-0'>{t('brand.name')}</span>
-          </a>
-        ) : (
-          <a href='/' className='transition-opacity hover:opacity-85'>
-            <img
-              src='/petbuddy-logo-cropped.png'
-              alt={t('brand.logoAlt')}
-              className='h-10 w-10 rounded-xl object-contain'
-            />
-          </a>
-        )}
+      <div className={cn('mb-5 flex items-center justify-between', isCollapsed ? 'justify-center' : 'px-3')}>
+        <a href='/' className='transition-opacity hover:opacity-85'>
+          <img
+            src='/petbuddy-logo-cropped.png'
+            alt={t('brand.logoAlt')}
+            className={cn('w-auto object-contain', isCollapsed ? 'h-9 max-w-10' : 'h-11 max-w-[7rem]')}
+          />
+        </a>
         <button
           type='button'
           onClick={toggleSidebar}
@@ -70,8 +59,8 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
       <div className='mb-auto flex flex-col gap-2'>
         <div
           className={cn(
-            'mb-4 flex items-center rounded-xl bg-card transition-all',
-            isCollapsed ? 'justify-center p-2' : 'gap-3 px-4 py-4'
+            'mb-3 flex items-center rounded-xl bg-card transition-all',
+            isCollapsed ? 'justify-center p-2' : 'gap-3 px-3 py-3'
           )}
         >
           <img src={AVATAR_URL} alt={t('user.avatarAlt')} className='h-10 w-10 rounded-full object-cover shrink-0' />
@@ -90,7 +79,7 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
               href={item.href}
               className={cn(
                 'flex items-center rounded-xl text-sm font-semibold transition-colors active:scale-95',
-                isCollapsed ? 'justify-center p-3' : 'gap-3 px-4 py-3',
+                isCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3.5 py-2.5',
                 activeItem === item.key
                   ? 'bg-secondary text-secondary-foreground'
                   : 'text-muted-foreground hover:bg-card'
@@ -111,7 +100,7 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
             href={item.href}
             className={cn(
               'flex items-center rounded-xl text-sm font-semibold text-muted-foreground transition-colors hover:bg-card',
-              isCollapsed ? 'justify-center p-3' : 'gap-3 px-4 py-3'
+              isCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3.5 py-2.5'
             )}
             title={isCollapsed ? t(`sidebar.utility.${item.key}`) : undefined}
           >
@@ -124,8 +113,8 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
         <button
           type='button'
           className={cn(
-            'mt-4 flex items-center font-bold text-destructive transition-colors hover:bg-destructive/10 rounded-xl',
-            isCollapsed ? 'justify-center p-3 w-full' : 'gap-2 px-4 py-3'
+            'mt-3 flex items-center rounded-xl font-bold text-destructive transition-colors hover:bg-destructive/10',
+            isCollapsed ? 'w-full justify-center p-2.5' : 'gap-2 px-3.5 py-2.5'
           )}
           title={isCollapsed ? t('sidebar.logout') : undefined}
         >

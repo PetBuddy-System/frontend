@@ -50,10 +50,12 @@
       "attendanceHistory": "Attendance history",
       "shiftRequest": "Create shift request",
       "violations": "View violations",
-      "weeklySchedule": "Weekly work schedule"
+      "weeklySchedule": "Weekly work schedule",
+      "disposalRequest": "Disposal request"
     },
     "portalLabel": "PetBuddy Staff Portal",
-    "roleTitle": "Store Staff"
+    "roleTitle": "Store Staff",
+    "toggle": "Toggle sidebar"
   },
   "staff": {
     "name": "Nguyen Van An"
@@ -110,10 +112,26 @@
       "aug2024": "August 2024"
     },
     "summary": {
-      "totalDays": { "label": "Total work days", "value": "22", "unit": "days" },
-      "totalHours": { "label": "Work hours", "value": "176", "unit": "hours" },
-      "lateEarly": { "label": "Late/Early leave", "value": "2", "unit": "times" },
-      "daysOff": { "label": "Days off", "value": "1", "unit": "day" }
+      "totalDays": {
+        "label": "Total work days",
+        "value": "22",
+        "unit": "days"
+      },
+      "totalHours": {
+        "label": "Work hours",
+        "value": "176",
+        "unit": "hours"
+      },
+      "lateEarly": {
+        "label": "Late/Early leave",
+        "value": "2",
+        "unit": "times"
+      },
+      "daysOff": {
+        "label": "Days off",
+        "value": "1",
+        "unit": "day"
+      }
     },
     "status": {
       "onTime": "On time",
@@ -135,11 +153,23 @@
       }
     },
     "records": {
-      "day1": { "dayLabel": "Fri, Oct 25" },
-      "day2": { "dayLabel": "Thu, Oct 24", "note": "Traffic jam at Cau Giay area" },
-      "day3": { "dayLabel": "Wed, Oct 23" },
-      "day4": { "dayLabel": "Tue, Oct 22", "note": "Annual leave (Approved)" },
-      "day5": { "dayLabel": "Mon, Oct 21" }
+      "day1": {
+        "dayLabel": "Fri, Oct 25"
+      },
+      "day2": {
+        "dayLabel": "Thu, Oct 24",
+        "note": "Traffic jam at Cau Giay area"
+      },
+      "day3": {
+        "dayLabel": "Wed, Oct 23"
+      },
+      "day4": {
+        "dayLabel": "Tue, Oct 22",
+        "note": "Annual leave (Approved)"
+      },
+      "day5": {
+        "dayLabel": "Mon, Oct 21"
+      }
     }
   },
   "shiftRequest": {
@@ -176,10 +206,90 @@
         "rejected": "Rejected"
       },
       "items": {
-        "req1": { "title": "Swap with: Nguyen Van A", "shift": "Shift: Morning Oct 22" },
-        "req2": { "title": "Posted on bulletin", "shift": "Shift: Afternoon Oct 18" },
-        "req3": { "title": "Swap with: Tran Thi B", "shift": "Shift: Morning Oct 10" }
+        "req1": {
+          "title": "Swap with: Nguyen Van A",
+          "shift": "Shift: Morning Oct 22"
+        },
+        "req2": {
+          "title": "Posted on bulletin",
+          "shift": "Shift: Afternoon Oct 18"
+        },
+        "req3": {
+          "title": "Swap with: Tran Thi B",
+          "shift": "Shift: Morning Oct 10"
+        }
       }
+    }
+  },
+  "disposalRequest": {
+    "pageTitle": "Create disposal request",
+    "pageSubtitle": "Submit expired or damaged product handling requests",
+    "heading": "Create disposal request / handle damaged goods",
+    "description": "Please provide complete information so the store manager can review and approve the request.",
+    "form": {
+      "productLabel": "Product to process",
+      "productPlaceholder": "Search by product name or SKU...",
+      "selectedProduct": {
+        "imageAlt": "Royal Canin Puppy product image",
+        "name": "Royal Canin Puppy dry food",
+        "sku": "SKU: RC-PUP-001",
+        "stockLabel": "Current stock:",
+        "stockValue": "24 bags"
+      },
+      "reasonLabel": "Disposal reason",
+      "reasonPlaceholder": "Select a reason...",
+      "reasons": {
+        "expired": "Expired product",
+        "damaged": "Physical damage",
+        "quality": "Quality issue",
+        "other": "Other reason"
+      },
+      "quantityLabel": "Disposal quantity",
+      "batchLabel": "Batch number (Optional)",
+      "batchPlaceholder": "Example: LOT-2023-X",
+      "expiryDateLabel": "Expiry date (If any)",
+      "evidenceLabel": "Photo evidence",
+      "uploadTitle": "Drag and drop or click to upload photos",
+      "uploadHint": "JPG, PNG supported (Max 5MB)",
+      "evidenceAlt": "Photo evidence of damaged product packaging",
+      "removeEvidence": "Remove evidence photo",
+      "descriptionLabel": "Detailed description / Notes",
+      "descriptionPlaceholder": "Describe the product condition or reason for disposal in detail...",
+      "cancel": "Cancel",
+      "submit": "Submit request"
+    },
+    "summary": {
+      "title": "Today overview",
+      "sent": "Requests submitted",
+      "products": "Products processed"
+    },
+    "recent": {
+      "title": "Recent requests",
+      "viewAll": "All",
+      "quantity": "Quantity: {{value}}",
+      "supportText": "Need warehouse support?",
+      "supportAction": "Contact warehouse hotline",
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "times": {
+        "today": "10:45 AM",
+        "yesterday": "Yesterday",
+        "oct02": "02/10/2023",
+        "oct01": "01/10/2023"
+      },
+      "items": {
+        "royalCanin": "Royal Canin Puppy dry food",
+        "pedigree": "Pedigree dental chew bone",
+        "whiskas": "Whiskas tuna pate",
+        "maneki": "Maneki Neko cat litter"
+      }
+    },
+    "toast": {
+      "title": "Request submitted!",
+      "description": "Request code: #REQ-4922. Waiting for manager approval."
     }
   }
 }

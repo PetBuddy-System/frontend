@@ -7,10 +7,7 @@ export interface StaffTopNavProps {
   subtitleKey?: string
 }
 
-export function StaffTopNav({
-  titleKey = 'dashboard.title',
-  subtitleKey = 'dashboard.subtitle'
-}: StaffTopNavProps) {
+export function StaffTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashboard.subtitle' }: StaffTopNavProps) {
   const { t } = useTranslation('staff')
 
   return (
@@ -25,9 +22,7 @@ export function StaffTopNav({
         </button>
         <div>
           <p className='font-display text-xl font-bold text-primary md:text-2xl'>{t(titleKey)}</p>
-          {subtitleKey ? (
-            <p className='hidden text-sm text-muted-foreground sm:block'>{t(subtitleKey)}</p>
-          ) : null}
+          {subtitleKey ? <p className='hidden text-sm text-muted-foreground sm:block'>{t(subtitleKey)}</p> : null}
         </div>
       </div>
 

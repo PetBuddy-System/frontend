@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { OrderHistoryCard, type OrderHistoryItem, type OrderStatus } from './order-history-card'
-import { ORDER_HISTORY_FILTERS, OrderHistoryFilters, type OrderHistoryFilter } from './order-history-filters'
+import { OrderHistoryFilters, type OrderHistoryFilter } from './order-history-filters'
 
 const ORDER_HISTORY_ITEMS: OrderHistoryItem[] = [
   {
@@ -87,7 +87,7 @@ export function OrderHistoryList() {
       </div>
 
       {filteredItems.length === 0 ? (
-        <p className='mt-6 rounded-2xl border border-border bg-card p-8 text-center text-muted-foreground'>
+        <p className='mt-6 rounded-2xl border border-border bg-card p-6 text-center text-muted-foreground'>
           {t('orderHistory.empty')}
         </p>
       ) : null}

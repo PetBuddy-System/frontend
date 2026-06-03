@@ -7,11 +7,7 @@ export function AttendanceMonthPicker() {
   const { t } = useTranslation('staff')
   const [monthIndex, setMonthIndex] = useState(0)
 
-  const MONTHS = [
-    'attendance.months.oct2024',
-    'attendance.months.sep2024',
-    'attendance.months.aug2024'
-  ] as const
+  const MONTHS = ['attendance.months.oct2024', 'attendance.months.sep2024', 'attendance.months.aug2024'] as const
 
   const handlePrevious = () => {
     setMonthIndex((prev) => Math.min(prev + 1, MONTHS.length - 1))
@@ -32,9 +28,7 @@ export function AttendanceMonthPicker() {
       >
         <MaterialIcon name='chevron_left' />
       </button>
-      <span className='min-w-[8rem] px-4 text-center text-sm font-bold'>
-        {t(MONTHS[monthIndex])}
-      </span>
+      <span className='min-w-[8rem] px-4 text-center text-sm font-bold'>{t(MONTHS[monthIndex])}</span>
       <button
         type='button'
         onClick={handleNext}
