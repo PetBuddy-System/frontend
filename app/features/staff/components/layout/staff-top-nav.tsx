@@ -2,6 +2,9 @@ import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
 
+const STAFF_AVATAR_URL =
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBuAh0OLqjDAwBT92pgm1m0PQuCq-4lY3Roo0v-PfbrMF5S_5kJNBDrTmyHdsaWPvZcMnGLotDJRDzKnOYRUj8XbJTH_PVyBktsYpg9OU1q__0JsjIC2Agz8SEHro0U3BJ9d6Wf0xLH_tlBMRNhNdGZjbuUPEgFsdsU9a_B_cUvs-JX7Y_Th7tMwz_bvAcafcswIIvRBc3Z4CFF70SllZQR3JXuad6nmKqAF1D8weMPDYZd3y119IBLx1gtAPypuzHVlAUZlI1mF4Y'
+
 export interface StaffTopNavProps {
   titleKey?: string
   subtitleKey?: string
@@ -42,6 +45,20 @@ export function StaffTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashb
         >
           <MaterialIcon name='help' />
         </button>
+
+        <div className='mx-1 h-8 w-px bg-border' />
+
+        <div className='flex items-center gap-3'>
+          <div className='hidden text-right sm:block'>
+            <p className='text-sm font-semibold'>{t('staff.name')}</p>
+            <p className='text-xs text-muted-foreground'>{t('sidebar.roleTitle')}</p>
+          </div>
+          <img
+            src={STAFF_AVATAR_URL}
+            alt={t('sidebar.avatarAlt')}
+            className='h-10 w-10 rounded-full border-2 border-primary object-cover'
+          />
+        </div>
       </div>
     </header>
   )

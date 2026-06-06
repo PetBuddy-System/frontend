@@ -13,7 +13,7 @@ export function AdminServiceBookingsPage() {
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
-      <AdminSidebar activeItem='services' />
+      <AdminSidebar activeItem='serviceBookings' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
         <AdminTopNav />
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>

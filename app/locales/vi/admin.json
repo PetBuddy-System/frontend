@@ -112,6 +112,7 @@
       "employees": "Nhân viên",
       "inventory": "Sản phẩm",
       "reports": "Báo cáo",
+      "serviceBookings": "Lịch đặt dịch vụ",
       "services": "Dịch vụ",
       "users": "Người dùng",
       "vouchers": "Voucher"
@@ -255,7 +256,37 @@
         }
       }
     },
-    "title": "Quản lý dịch vụ"
+    "title": "Quản lý dịch vụ",
+    "pricing": {
+      "cancel": "Đóng",
+      "close": "Đóng bảng giá dịch vụ",
+      "currency": "đ",
+      "editDetails": "Chỉnh sửa chi tiết",
+      "save": "Cập nhật bảng giá",
+      "serviceId": "Service ID: {{id}}",
+      "subtitle": "Cấu hình biểu phí linh hoạt cho Spa & Grooming. Mức giá được phân loại theo trọng lượng cơ thể để đảm bảo tính công bằng và chuyên nghiệp trong vận hành.",
+      "title": "Quản lý bảng giá dịch vụ",
+      "weightTiers": {
+        "under5": "Dưới 5kg",
+        "from5To10": "Từ 5kg - 10kg",
+        "from10To20": "Từ 10kg - 20kg",
+        "over20": "Trên 20kg"
+      },
+      "services": {
+        "bathDry": {
+          "title": "Tắm sấy tiêu chuẩn",
+          "description": "Bao gồm các bước vệ sinh cơ bản: tắm khử mùi, sấy khô đánh bóng lông và chải tơi."
+        },
+        "styling": {
+          "title": "Cắt tỉa & tạo kiểu",
+          "description": "Dịch vụ cắt lông tạo kiểu chuyên sâu theo yêu cầu riêng biệt hoặc theo đặc thù giống loài."
+        },
+        "hygieneCombo": {
+          "title": "Combo vệ sinh",
+          "description": "Chăm sóc toàn diện: cắt móng, mài móng, vắt tuyến hôi và vệ sinh tai chuyên sâu."
+        }
+      }
+    }
   },
   "topNav": {
     "notifications": "Thông báo"

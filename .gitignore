@@ -14,3 +14,4 @@ ARCHITECTURE.md
 .env.local
 # Whitelist template — commit cho dev mới biết cần env vars gì
 Note
+.tmp-dev-server*.log

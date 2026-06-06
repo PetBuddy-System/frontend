@@ -48,17 +48,6 @@ export function ManagerSidebar({ activeItem = 'inventory' }: ManagerSidebarProps
         </button>
       </div>
 
-      <button
-        className={cn(
-          'mb-3 flex h-10 w-full shrink-0 items-center justify-center rounded-lg bg-secondary text-sm font-semibold text-secondary-foreground shadow-sm transition-opacity hover:opacity-90',
-          isCollapsed ? 'px-0' : 'gap-2 px-3'
-        )}
-        title={isCollapsed ? t('sidebar.newReport') : undefined}
-      >
-        <MaterialIcon name='add' className='text-lg' />
-        {!isCollapsed && <span>{t('sidebar.newReport')}</span>}
-      </button>
-
       <nav className='flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto'>
         {MANAGER_NAV_ITEMS.map((item) => {
           const isActive = item.key === activeItem

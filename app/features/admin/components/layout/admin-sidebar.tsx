@@ -5,12 +5,13 @@ import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
 const ADMIN_NAV_ITEMS = [
+  { icon: 'assessment', key: 'reports', href: '/admin/dashboard' },
   { icon: 'badge', key: 'employees', href: '/admin/employees' },
   { icon: 'medical_services', key: 'services', href: '/admin/services' },
+  { icon: 'event_note', key: 'serviceBookings', href: '/admin/service-bookings' },
   { icon: 'group', key: 'users', href: '/admin/users' },
   { icon: 'inventory_2', key: 'inventory', href: '/admin/products' },
-  { icon: 'confirmation_number', key: 'vouchers', href: '/admin/vouchers' },
-  { icon: 'assessment', key: 'reports', href: '/admin/dashboard' }
+  { icon: 'confirmation_number', key: 'vouchers', href: '/admin/vouchers' }
 ] as const
 
 export type AdminNavKey = (typeof ADMIN_NAV_ITEMS)[number]['key']

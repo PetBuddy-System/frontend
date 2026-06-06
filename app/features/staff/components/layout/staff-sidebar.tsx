@@ -4,9 +4,6 @@ import { useSidebar } from '~/providers/sidebar-provider'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
-const STAFF_AVATAR_URL =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBuAh0OLqjDAwBT92pgm1m0PQuCq-4lY3Roo0v-PfbrMF5S_5kJNBDrTmyHdsaWPvZcMnGLotDJRDzKnOYRUj8XbJTH_PVyBktsYpg9OU1q__0JsjIC2Agz8SEHro0U3BJ9d6Wf0xLH_tlBMRNhNdGZjbuUPEgFsdsU9a_B_cUvs-JX7Y_Th7tMwz_bvAcafcswIIvRBc3Z4CFF70SllZQR3JXuad6nmKqAF1D8weMPDYZd3y119IBLx1gtAPypuzHVlAUZlI1mF4Y'
-
 const STAFF_NAV_ITEMS = [
   { icon: 'swap_horiz', key: 'shiftRequest', href: '/staff/shift-request' },
   { icon: 'delete_sweep', key: 'disposalRequest', href: '/staff/disposal-request' },
@@ -53,22 +50,6 @@ export function StaffSidebar({ activeItem }: StaffSidebarProps) {
         >
           <MaterialIcon name={isCollapsed ? 'menu' : 'menu_open'} className='text-[20px]' />
         </button>
-      </div>
-
-      <div className='shrink-0 border-b border-border p-3'>
-        <div className={cn('flex items-center rounded-xl bg-muted p-3', isCollapsed ? 'justify-center' : 'gap-3')}>
-          <img
-            src={STAFF_AVATAR_URL}
-            alt={t('sidebar.avatarAlt')}
-            className='h-11 w-11 rounded-full border-2 border-primary object-cover'
-          />
-          {!isCollapsed && (
-            <div className='min-w-0'>
-              <p className='truncate font-display text-base font-bold'>{t('staff.name')}</p>
-              <p className='text-sm text-muted-foreground'>{t('sidebar.roleTitle')}</p>
-            </div>
-          )}
-        </div>
       </div>
 
       <nav className='min-h-0 flex-1 space-y-1 overflow-y-auto p-3'>

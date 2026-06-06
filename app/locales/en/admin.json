@@ -112,6 +112,7 @@
       "employees": "Employees",
       "inventory": "Products",
       "reports": "Reports",
+      "serviceBookings": "Service Bookings",
       "services": "Services",
       "users": "Users",
       "vouchers": "Vouchers"
@@ -255,7 +256,37 @@
         }
       }
     },
-    "title": "Service Management"
+    "title": "Service Management",
+    "pricing": {
+      "cancel": "Close",
+      "close": "Close service pricing",
+      "currency": "VND",
+      "editDetails": "Edit details",
+      "save": "Update pricing",
+      "serviceId": "Service ID: {{id}}",
+      "subtitle": "Configure flexible pricing for spa and grooming services. Prices are grouped by body weight to keep operations fair and professional.",
+      "title": "Service Pricing Management",
+      "weightTiers": {
+        "under5": "Under 5kg",
+        "from5To10": "5kg - 10kg",
+        "from10To20": "10kg - 20kg",
+        "over20": "Over 20kg"
+      },
+      "services": {
+        "bathDry": {
+          "title": "Standard bath and dry",
+          "description": "Includes basic hygiene steps: deodorizing bath, blow dry, coat polishing, and brushing."
+        },
+        "styling": {
+          "title": "Trimming & styling",
+          "description": "Advanced grooming and styling based on individual requests or breed-specific needs."
+        },
+        "hygieneCombo": {
+          "title": "Hygiene combo",
+          "description": "Complete care package: nail trimming, nail filing, anal gland expression, and deep ear cleaning."
+        }
+      }
+    }
   },
   "topNav": {
     "notifications": "Notifications"
