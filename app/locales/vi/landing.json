@@ -23,6 +23,24 @@
     "login": "Đăng nhập",
     "register": "Đăng ký"
   },
+  "chatModal": {
+    "eyebrow": "Hỗ trợ trực tuyến",
+    "title": "Chat với PetBuddy",
+    "subtitle": "Hỏi về đặt lịch, sản phẩm hoặc lời khuyên chăm sóc thú cưng bất kỳ lúc nào.",
+    "close": "Đóng hộp chat",
+    "greeting": "Xin chào! Chúng tôi sẵn sàng hỗ trợ bạn chọn dịch vụ phù hợp cho bé yêu.",
+    "reply": "Đội ngũ của chúng tôi sẽ phản hồi trong vài phút. Bạn muốn tư vấn gì hôm nay?",
+    "followUp": "Nếu bạn cần gợi ý dịch vụ, hãy cho chúng tôi biết cân nặng và tình trạng lông của bé.",
+    "inputLabel": "Tin nhắn",
+    "placeholder": "Nhập câu hỏi của bạn",
+    "send": "Gửi",
+    "sideTitle": "Thông tin hỗ trợ",
+    "sideDescription": "Khu vực này dành cho hộp chat lớn hơn để cuộc trò chuyện dễ đọc và rõ ràng hơn.",
+    "sideHoursLabel": "Giờ hỗ trợ",
+    "sideHoursValue": "08:00 - 21:00 mỗi ngày",
+    "sidePhoneLabel": "Số điện thoại",
+    "sidePhoneValue": "092 199 9319"
+  },
   "hero": {
     "title": "Chăm sóc trọn vẹn cho cún yêu của bạn",
     "subtitle": "Mang đến trải nghiệm dịch vụ chuyên nghiệp, tận tâm và các sản phẩm chất lượng cao nhất cho thú cưng của gia đình bạn.",

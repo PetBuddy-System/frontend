@@ -16,6 +16,7 @@
       {
         "aria-valid-attr-value": "off"
       }
-    ]
+    ],
+    "typescript-config/consistent-casing": "off"
   }
 }

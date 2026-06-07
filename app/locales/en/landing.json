@@ -23,6 +23,24 @@
     "login": "Log in",
     "register": "Sign up"
   },
+  "chatModal": {
+    "eyebrow": "Live support",
+    "title": "PetBuddy chat",
+    "subtitle": "Ask us anything about booking, products, or pet care tips.",
+    "close": "Close chat box",
+    "greeting": "Hi! We’re here to help you choose the best service for your pet.",
+    "reply": "Our team can answer in a few minutes. What would you like to know?",
+    "followUp": "If you need a service recommendation, tell us your pet’s size and coat condition.",
+    "inputLabel": "Message",
+    "placeholder": "Type your question here",
+    "send": "Send",
+    "sideTitle": "Support details",
+    "sideDescription": "This space is reserved for a larger chat box so the conversation feels easier to read.",
+    "sideHoursLabel": "Hours",
+    "sideHoursValue": "08:00 - 21:00 daily",
+    "sidePhoneLabel": "Phone",
+    "sidePhoneValue": "092 199 9319"
+  },
   "hero": {
     "title": "Complete care for your beloved pets",
     "subtitle": "Professional, caring services and the highest quality products for every pet in your family.",

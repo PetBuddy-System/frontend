@@ -1,4 +1,5 @@
 export { LanguageSwitcher } from './language-switcher'
+export { SiteChatModal } from './site-chat-modal'
 export { SiteBottomNav } from './site-bottom-nav'
 export { SiteFab } from './site-fab'
 export { SiteFooter } from './site-footer'
