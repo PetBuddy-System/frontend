@@ -61,9 +61,40 @@
   },
   "priceBoard": {
     "title": "Service Price List",
-    "imageAlt": "PetStore grooming service price list",
-    "placeholderTitle": "Service price board",
-    "placeholderDescription": "Add the service price list image here to display it in a large, easy-to-read frame."
+    "eyebrow": "Pricing table",
+    "subtitle": "Compare each service by pet size so customers can choose the best fit instantly.",
+    "tableLabel": "Weight-based pricing",
+    "tableHint": "All prices are listed in VND and updated for standard short coats.",
+    "badge": "Popular",
+    "note": "Long or heavily tangled coats may require an extra detangling fee of 50k-100k depending on the condition.",
+    "columns": {
+      "service": "Service",
+      "info": "Information",
+      "under5": "Under 5kg",
+      "fiveTo10": "5-10kg",
+      "tenTo20": "10-20kg",
+      "over20": "Over 20kg"
+    },
+    "rows": {
+      "bath": {
+        "under5": "150,000",
+        "fiveTo10": "250,000",
+        "tenTo20": "350,000",
+        "over20": "450,000"
+      },
+      "grooming": {
+        "under5": "200,000",
+        "fiveTo10": "320,000",
+        "tenTo20": "450,000",
+        "over20": "550,000"
+      },
+      "hygiene": {
+        "under5": "80,000",
+        "fiveTo10": "120,000",
+        "tenTo20": "180,000",
+        "over20": "230,000"
+      }
+    }
   },
   "detail": {
     "breadcrumb": {

@@ -61,9 +61,40 @@
   },
   "priceBoard": {
     "title": "Bảng Giá Dịch Vụ",
-    "imageAlt": "Bảng giá dịch vụ grooming PetStore",
-    "placeholderTitle": "Khung bảng giá dịch vụ",
-    "placeholderDescription": "Bạn có thể đặt ảnh bảng giá dịch vụ vào khung lớn này để khách hàng xem rõ hơn."
+    "eyebrow": "Bảng giá",
+    "subtitle": "So sánh giá theo kích cỡ thú cưng để khách hàng lựa chọn nhanh chóng hơn.",
+    "tableLabel": "Bảng giá theo cân nặng",
+    "tableHint": "Tất cả giá đều theo đơn vị VND và áp dụng cho lông ngắn chuẩn.",
+    "badge": "Phổ biến",
+    "note": "Thú cưng lông dài hoặc rối nhiều có thể phát sinh thêm phí gỡ rối từ 50k-100k tùy tình trạng.",
+    "columns": {
+      "service": "Dịch vụ",
+      "info": "Thông tin",
+      "under5": "Dưới 5kg",
+      "fiveTo10": "5-10kg",
+      "tenTo20": "10-20kg",
+      "over20": "Trên 20kg"
+    },
+    "rows": {
+      "bath": {
+        "under5": "150.000",
+        "fiveTo10": "250.000",
+        "tenTo20": "350.000",
+        "over20": "450.000"
+      },
+      "grooming": {
+        "under5": "200.000",
+        "fiveTo10": "320.000",
+        "tenTo20": "450.000",
+        "over20": "550.000"
+      },
+      "hygiene": {
+        "under5": "80.000",
+        "fiveTo10": "120.000",
+        "tenTo20": "180.000",
+        "over20": "230.000"
+      }
+    }
   },
   "detail": {
     "breadcrumb": {

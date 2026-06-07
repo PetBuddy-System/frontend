@@ -175,7 +175,11 @@ export function AdminServicesTable() {
         <div className='flex flex-col gap-4 border-t border-border bg-muted px-4 py-3 sm:flex-row sm:items-center sm:justify-between'>
           <p className='text-sm text-muted-foreground'>{t('serviceManagement.pagination.showing')}</p>
           <div className='flex gap-2'>
-            <button className='flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:text-primary'>
+            <button
+              type='button'
+              aria-label={t('serviceManagement.pagination.previous')}
+              className='flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:text-primary'
+            >
               <MaterialIcon name='chevron_left' className='text-lg' />
             </button>
             {[1, 2, 3].map((page) => (
@@ -190,7 +194,11 @@ export function AdminServicesTable() {
                 {page}
               </button>
             ))}
-            <button className='flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:text-primary'>
+            <button
+              type='button'
+              aria-label={t('serviceManagement.pagination.next')}
+              className='flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:text-primary'
+            >
               <MaterialIcon name='chevron_right' className='text-lg' />
             </button>
           </div>

@@ -200,6 +200,55 @@
       "edit": "Chỉnh sửa dịch vụ",
       "view": "Xem dịch vụ"
     },
+    "create": {
+      "accent": {
+        "label": "Tư vấn nhanh",
+        "text": "Dùng hình ảnh chất lượng cao và mô tả rõ ràng để tăng tỷ lệ đặt lịch và giúp khách hàng hiểu ngay giá trị dịch vụ.",
+        "title": "Kết nối trải nghiệm khách hàng"
+      },
+      "cancel": "Hủy bỏ",
+      "categories": {
+        "grooming": "Grooming & Spa",
+        "hotel": "Khách sạn thú cưng",
+        "vet": "Thú y"
+      },
+      "close": "Đóng form tạo dịch vụ",
+      "fields": {
+        "category": "Danh mục",
+        "description": "Mô tả dịch vụ",
+        "name": "Tên dịch vụ",
+        "status": "Trạng thái hoạt động"
+      },
+      "media": {
+        "hint": "PNG, JPG tối đa 10MB",
+        "subtitle": "Tải ảnh minh họa hoặc kéo thả vào đây để làm nổi bật dịch vụ mới.",
+        "title": "Hình ảnh minh họa",
+        "uploadLabel": "Tải ảnh lên hoặc kéo thả vào đây"
+      },
+      "placeholders": {
+        "description": "Mô tả quy trình, lợi ích và trải nghiệm khách hàng sẽ nhận được.",
+        "name": "Ví dụ: Tắm sấy trọn gói"
+      },
+      "pricing": {
+        "badge": "Bảng giá linh hoạt",
+        "currency": "đ",
+        "subtitle": "Điền mức giá theo từng phân khúc cân nặng để giữ tính công bằng và chuyên nghiệp.",
+        "title": "Bảng giá theo cân nặng",
+        "tiers": {
+          "from10To20": "Từ 10kg - 20kg",
+          "from5To10": "Từ 5kg - 10kg",
+          "over20": "Trên 20kg",
+          "under5": "Dưới 5kg"
+        }
+      },
+      "save": "Lưu dịch vụ",
+      "subtitle": "Tạo gói dịch vụ mới, thiết lập giá theo trọng lượng và bổ sung hình ảnh để triển khai nhanh chóng.",
+      "tip": {
+        "text": "Hình ảnh chất lượng cao và mô tả chi tiết giúp khách hàng ra quyết định nhanh hơn và tăng tỷ lệ đặt lịch dịch vụ.",
+        "title": "Mẹo nhỏ"
+      },
+      "title": "Thêm dịch vụ mới"
+    },
     "categories": {
       "grooming": "Grooming & Spa",
       "hotel": "Khách sạn",

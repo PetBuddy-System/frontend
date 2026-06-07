@@ -200,6 +200,55 @@
       "edit": "Edit service",
       "view": "View service"
     },
+    "create": {
+      "accent": {
+        "label": "Quick guidance",
+        "text": "Use clear images and rich descriptions to help customers understand value quickly and increase booking confidence.",
+        "title": "Connect the customer experience"
+      },
+      "cancel": "Cancel",
+      "categories": {
+        "grooming": "Grooming & Spa",
+        "hotel": "Pet hotel",
+        "vet": "Veterinary"
+      },
+      "close": "Close the create-service form",
+      "fields": {
+        "category": "Category",
+        "description": "Service description",
+        "name": "Service name",
+        "status": "Active status"
+      },
+      "media": {
+        "hint": "PNG, JPG up to 10MB",
+        "subtitle": "Upload a preview image or drag and drop it here to highlight the new service.",
+        "title": "Illustration image",
+        "uploadLabel": "Upload image or drag it here"
+      },
+      "placeholders": {
+        "description": "Describe the steps, benefits, and experience customers will receive.",
+        "name": "Example: Full bath and dry package"
+      },
+      "pricing": {
+        "badge": "Flexible pricing",
+        "currency": "VND",
+        "subtitle": "Set pricing by weight tier to keep the service fair, transparent, and easy to manage.",
+        "title": "Pricing by weight",
+        "tiers": {
+          "from10To20": "10kg - 20kg",
+          "from5To10": "5kg - 10kg",
+          "over20": "Over 20kg",
+          "under5": "Under 5kg"
+        }
+      },
+      "save": "Save service",
+      "subtitle": "Create a new pet-care package, set weight-based pricing, and add visuals for faster rollout.",
+      "tip": {
+        "text": "High-quality imagery and detailed descriptions help customers decide faster and improve service booking conversion.",
+        "title": "Quick tip"
+      },
+      "title": "Add new service"
+    },
     "categories": {
       "grooming": "Grooming & Spa",
       "hotel": "Hotel",

@@ -1,14 +1,17 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
 
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
+import { AdminCreateServiceModal } from '../components/services/admin-create-service-modal'
 import { AdminServicesStatsGrid } from '../components/services/admin-services-stats-grid'
 import { AdminServicesTable } from '../components/services/admin-services-table'
 
 export function AdminServicesPage() {
   const { t } = useTranslation('admin')
+  const [isCreateServiceOpen, setIsCreateServiceOpen] = useState(false)
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -26,6 +29,7 @@ export function AdminServicesPage() {
               </div>
               <button
                 type='button'
+                onClick={() => setIsCreateServiceOpen(true)}
                 className='inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-secondary px-6 text-sm font-bold text-secondary-foreground shadow-sm transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring'
               >
                 <MaterialIcon name='add' className='text-lg' />
@@ -38,6 +42,11 @@ export function AdminServicesPage() {
           </div>
         </main>
       </div>
+
+      <AdminCreateServiceModal
+        isOpen={isCreateServiceOpen}
+        onClose={() => setIsCreateServiceOpen(false)}
+      />
     </div>
   )
 }
