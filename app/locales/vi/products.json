@@ -312,17 +312,14 @@
     "title": "Bộ lọc",
     "categoriesTitle": "Danh mục",
     "brandsTitle": "Thương hiệu",
-    "priceTitle": "Mức giá",
-    "priceMin": "0đ",
-    "priceMax": "1.000.000đ+",
     "categories": {
       "all": "Tất cả",
-      "dryFood": "Thức ăn hạt",
-      "wetFood": "Pate / Thức ăn ướt",
-      "treats": "Bánh thưởng / Xương gặm",
+      "toys": "Đồ chơi",
+      "hygiene": "Vệ sinh thú cưng",
+      "supplement": "Thực phẩm chức năng",
       "accessories": "Phụ kiện",
-      "dogs":"Chó",
-      "cats":"Mèo"
+      "dogFood": "Thức ăn cho Chó",
+      "catFood": "Thức ăn cho Mèo"
     }
   },
   "brands": {

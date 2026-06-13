@@ -312,17 +312,14 @@
     "title": "Filters",
     "categoriesTitle": "Categories",
     "brandsTitle": "Brands",
-    "priceTitle": "Price range",
-    "priceMin": "0 VND",
-    "priceMax": "1,000,000 VND+",
     "categories": {
       "all": "All",
-      "dryFood": "Dry food",
-      "wetFood": "Wet food",
-      "treats": "Treats & chews",
+      "toys": "Toys",
+      "hygiene": "Pet Hygiene",
+      "supplement": "Pet Supplements",
       "accessories": "Accessories",
-      "dogs": "Dogs",
-      "cats": "Cats"
+      "dogFood": "Dog Foods",
+      "catFood": "Cat Foods"
     }
   },
   "brands": {

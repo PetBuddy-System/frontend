@@ -4,9 +4,6 @@ import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { useSidebar } from '~/providers/sidebar-provider'
 
-const AVATAR_URL =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBYPki0QBRVMSU_gWuywGYHn2MGY0cy3c-I4AAJ1_AGgnsJhDdnUw4dxmNLwCruTAGeNIlHm_hINFhjIHPh_xLPeWBEkHAY9W3t97tqqozH0jF0ksRy6LmXQuVxlAph8P4-UpAphk1wILD996LWc4UhSdrZasTcPSzgFTGdqusfTOZY73gIJMLsF51IhPqG41XlPiHaolRIBOrT5HUwMwS6M80kSFL6PJwyJMATjUpg9fHXI58YLmNXqBV78v1g6YrkqOFUGOvXWJg'
-
 const MAIN_NAV = [
   { key: 'profile', icon: 'person', href: '/profile' },
   { key: 'tracking', icon: 'local_shipping', href: '/profile/tracking' },
@@ -14,11 +11,6 @@ const MAIN_NAV = [
   { key: 'services', icon: 'calendar_today', href: '/profile/services' },
   { key: 'returns', icon: 'assignment_return', href: '/profile/returns' },
   { key: 'addresses', icon: 'location_on', href: '#' }
-] as const
-
-const UTILITY_NAV = [
-  { key: 'zalo', icon: 'chat', href: '#', brand: true },
-  { key: 'home', icon: 'home', href: '/', brand: false }
 ] as const
 
 export type ProfileSidebarItem = (typeof MAIN_NAV)[number]['key']
@@ -34,7 +26,7 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 z-40 hidden h-full flex-col gap-2 overflow-y-auto border-r border-border bg-muted shadow-sm transition-all duration-300 lg:flex',
+        'hidden h-screen shrink-0 flex-col gap-2 overflow-y-auto border-r border-border bg-muted shadow-sm transition-all duration-300 lg:flex',
         isCollapsed ? 'w-[4.5rem] p-2' : 'w-60 p-3'
       )}
     >
@@ -57,21 +49,6 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
       </div>
 
       <div className='mb-auto flex flex-col gap-2'>
-        <div
-          className={cn(
-            'mb-3 flex items-center rounded-xl bg-card transition-all',
-            isCollapsed ? 'justify-center p-2' : 'gap-3 px-3 py-3'
-          )}
-        >
-          <img src={AVATAR_URL} alt={t('user.avatarAlt')} className='h-10 w-10 rounded-full object-cover shrink-0' />
-          {!isCollapsed && (
-            <div className='min-w-0'>
-              <p className='text-sm font-bold text-foreground truncate'>{t('user.name')}</p>
-              <p className='text-xs text-muted-foreground truncate'>{t('user.tier')}</p>
-            </div>
-          )}
-        </div>
-
         <nav className='flex flex-col gap-1'>
           {MAIN_NAV.map((item) => (
             <a
@@ -94,26 +71,10 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
       </div>
 
       <div className='flex flex-col gap-1 border-t border-border pt-4'>
-        {UTILITY_NAV.map((item) => (
-          <a
-            key={item.key}
-            href={item.href}
-            className={cn(
-              'flex items-center rounded-xl text-sm font-semibold text-muted-foreground transition-colors hover:bg-card',
-              isCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3.5 py-2.5'
-            )}
-            title={isCollapsed ? t(`sidebar.utility.${item.key}`) : undefined}
-          >
-            <MaterialIcon name={item.icon} className='text-[22px] shrink-0' />
-            {!isCollapsed && (
-              <span className={item.brand ? 'text-brand-zalo' : undefined}>{t(`sidebar.utility.${item.key}`)}</span>
-            )}
-          </a>
-        ))}
         <button
           type='button'
           className={cn(
-            'mt-3 flex items-center rounded-xl font-bold text-destructive transition-colors hover:bg-destructive/10',
+            'flex items-center rounded-xl font-bold text-destructive transition-colors hover:bg-destructive/10',
             isCollapsed ? 'w-full justify-center p-2.5' : 'gap-2 px-3.5 py-2.5'
           )}
           title={isCollapsed ? t('sidebar.logout') : undefined}

@@ -1,5 +1,5 @@
-import { CartPage } from "~/features/products";
+import { CartPage } from '~/features/products'
 
 export default function CartRoute() {
-  return <CartPage />;
+  return <CartPage />
 }

@@ -5,6 +5,116 @@
     "subtitle": "Lịch sử nhập/xuất kho chi tiết - Quận 1",
     "title": "Lịch sử giao dịch tồn kho"
   },
+  "managerDashboard": {
+    "title": "Bảng điều khiển tổng quan",
+    "subtitle": "Theo dõi nhanh vận hành cửa hàng, lịch hẹn và các việc cần xử lý.",
+    "hero": {
+      "leading": "Bảng",
+      "middle": "điều",
+      "trailing": "khiển Tổng quan",
+      "description": "Chào buổi sáng, Manager. Hệ thống đang vận hành ổn định.",
+      "dogAlt": "Cún con lông vàng đáng yêu trong ánh sáng ấm áp.",
+      "catAlt": "Mèo đen với ánh mắt tập trung trên nền sáng tối giản."
+    },
+    "stats": {
+      "revenue": {
+        "change": "+12%",
+        "label": "Doanh thu hôm nay",
+        "value": "42.500.000 VNĐ"
+      },
+      "pending": {
+        "badge": "Cần xử lý",
+        "label": "Lịch đặt chờ duyệt",
+        "value": "15 yêu cầu"
+      },
+      "staff": {
+        "badge": "Bình thường",
+        "label": "Nhân viên đang ca",
+        "value": "8 / 12 staff"
+      },
+      "stock": {
+        "badge": "Cảnh báo",
+        "label": "Sản phẩm sắp hết",
+        "value": "04 SKUs"
+      }
+    },
+    "chart": {
+      "title": "Xu hướng doanh thu",
+      "subtitle": "Phân tích dữ liệu 7 ngày gần nhất",
+      "period": "Tuần này",
+      "days": {
+        "mon": "T2",
+        "tue": "T3",
+        "wed": "T4",
+        "thu": "T5",
+        "fri": "T6",
+        "sat": "T7",
+        "sun": "CN"
+      },
+      "values": {
+        "mon": "28M",
+        "tue": "35M",
+        "thu": "42.5M"
+      }
+    },
+    "tasks": {
+      "title": "Việc cần làm ngay",
+      "viewAll": "Xem tất cả công việc",
+      "items": {
+        "shiftSwap": {
+          "title": "Duyệt yêu cầu đổi ca",
+          "subtitle": "Lê Văn Tám • Ca sáng 20/10"
+        },
+        "cancellationApproval": {
+          "title": "Phê duyệt hủy hàng",
+          "subtitle": "Đơn #8821 • Grooming Full"
+        },
+        "restock": {
+          "title": "Nhập kho định kỳ",
+          "subtitle": "Hạn chót: 15:00 hôm nay"
+        }
+      }
+    },
+    "appointments": {
+      "title": "Lịch hẹn gần nhất",
+      "create": "Tạo lịch mới",
+      "view": "Xem chi tiết lịch hẹn",
+      "more": "Tùy chọn khác",
+      "columns": {
+        "customer": "Khách hàng",
+        "pet": "Thú cưng",
+        "service": "Dịch vụ",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "rows": {
+        "nguyenHoang": {
+          "initials": "NH",
+          "customerName": "Nguyễn Hoàng",
+          "customerPhone": "090xxxx123",
+          "pet": "Mochi (Poodle)",
+          "service": "Cắt tỉa toàn diện",
+          "status": "Hoàn thành"
+        },
+        "tranVan": {
+          "initials": "TV",
+          "customerName": "Trần Vân",
+          "customerPhone": "098xxxx456",
+          "pet": "LuLu (Shiba)",
+          "service": "Tiêm phòng dại",
+          "status": "Đang chờ"
+        },
+        "quocMinh": {
+          "initials": "QM",
+          "customerName": "Quốc Minh",
+          "customerPhone": "034xxxx999",
+          "pet": "Bơ (Mèo Anh)",
+          "service": "Tắm sấy khử mùi",
+          "status": "Đang phục vụ"
+        }
+      }
+    }
+  },
   "filters": {
     "apply": "Áp dụng bộ lọc",
     "date": "Khoảng ngày",
@@ -28,13 +138,12 @@
   "sidebar": {
     "branch": "Chi nhánh Quận 1",
     "brand": "Store Ops",
-    "help": "Trung tâm trợ giúp",
     "logoAlt": "Logo PetBuddy",
     "logout": "Đăng xuất",
+    "roleTitle": "Quản lý cửa hàng",
     "nav": {
+      "dashboard": "Tổng quan vận hành",
       "inventory": "Kiểm soát kho",
-      "reports": "Báo cáo",
-      "risk": "Quản lý rủi ro",
       "staff": "Điều phối nhân sự",
       "returnRequests": "Duyệt đổi trả",
       "disposalApprovals": "Duyệt hủy hàng"
@@ -233,7 +342,12 @@
     "notifications": "Thông báo",
     "search": "Tìm kiếm...",
     "settings": "Cài đặt",
-    "title": "Quản lý PetStore.vn"
+    "title": "Quản lý PetStore.vn",
+    "help": "Trợ giúp",
+    "menu": "Mở menu"
+  },
+  "manager": {
+    "name": "Trần Thị Lan"
   },
   "transactionTypes": {
     "audit": "Kiểm kê",

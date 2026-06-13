@@ -1,5 +1,5 @@
-import { ProfileReturnsPage } from "~/features/profile";
+import { ProfileReturnsPage } from '~/features/profile'
 
 export default function ProfileReturnsRoute() {
-  return <ProfileReturnsPage />;
+  return <ProfileReturnsPage />
 }

@@ -3,6 +3,101 @@
     "name": "Quản trị viên",
     "role": "Quản trị chăm sóc thú cưng"
   },
+  "blogManagement": {
+    "actions": {
+      "add": "Tạo bài viết mới",
+      "delete": "Xóa bài viết",
+      "edit": "Sửa bài viết"
+    },
+    "confirmDelete": "Bạn có chắc muốn xóa bài viết này?",
+    "create": {
+      "accent": {
+        "label": "Hướng dẫn nhanh",
+        "text": "Nhập file .md để tự động điền nội dung. Sau đó chỉnh sửa tiêu đề, mô tả ngắn và ảnh bìa để có kết quả tốt nhất.",
+        "title": "Sẵn sàng nhập Markdown"
+      },
+      "cancel": "Hủy bỏ",
+      "close": "Đóng form tạo bài viết",
+      "draftHint": "Lưu nháp - chỉ hiển thị với quản trị viên",
+      "editTitle": "Chỉnh sửa bài viết",
+      "fields": {
+        "author": "Tác giả",
+        "category": "Danh mục",
+        "content": "Nội dung Markdown",
+        "excerpt": "Mô tả ngắn",
+        "imageUrl": "URL ảnh bìa",
+        "publish": "Xuất bản ngay",
+        "title": "Tiêu đề"
+      },
+      "importMd": "Nhập .md",
+      "placeholders": {
+        "author": "ví dụ: Đội ngũ PetBuddy",
+        "content": "# Tiêu đề của bạn\n\nViết nội dung bài viết bằng định dạng Markdown tại đây...",
+        "excerpt": "Một mô tả ngắn được hiển thị trên thẻ bài viết...",
+        "imageUrl": "https://example.com/image.jpg",
+        "title": "Tiêu đề bài viết của bạn"
+      },
+      "preview": {
+        "excerptPlaceholder": "Tóm tắt ngắn gọn bài viết...",
+        "subtitle": "Xem trước cách bài viết sẽ hiển thị trên trang blog.",
+        "title": "Xem trước thẻ bài viết",
+        "titlePlaceholder": "Tiêu đề bài viết của bạn"
+      },
+      "publishedHint": "Hiển thị cho tất cả người dùng trên trang blog",
+      "save": "Lưu bài viết",
+      "subtitle": "Viết hoặc nhập file .md, xem trước nội dung đã render, và xuất bản lên trang blog.",
+      "tabs": {
+        "editor": "Trình soạn thảo",
+        "preview": "Xem trước"
+      },
+      "tip": {
+        "text": "Dùng định dạng Markdown cho tiêu đề, danh sách, khối code và liên kết. Bảng và gạch ngang cũng được hỗ trợ qua GitHub Flavored Markdown.",
+        "title": "Mẹo về Markdown"
+      },
+      "title": "Tạo bài viết blog"
+    },
+    "pagination": {
+      "showing": "Hiển thị {{from}} - {{to}} của {{total}} bài viết"
+    },
+    "sidebar": {
+      "all": "Tất cả bài viết",
+      "featured": "Nổi bật",
+      "grooming": "Làm đẹp",
+      "health": "Sức khỏe",
+      "lifestyle": "Lối sống",
+      "nutrition": "Dinh dưỡng",
+      "training": "Huấn luyện"
+    },
+    "stats": {
+      "drafts": {
+        "label": "Bản nháp",
+        "note": "Chưa xuất bản"
+      },
+      "published": {
+        "label": "Đã xuất bản",
+        "note": "Đang hiển thị trên blog"
+      },
+      "total": {
+        "label": "Tổng bài viết",
+        "note": "Toàn thời gian"
+      }
+    },
+    "subtitle": "Quản lý bài viết blog, nhập file .md và xuất bản nội dung lên trang blog.",
+    "table": {
+      "columns": {
+        "actions": "Hành động",
+        "author": "Tác giả",
+        "category": "Danh mục",
+        "date": "Ngày",
+        "post": "Bài viết",
+        "status": "Trạng thái"
+      },
+      "draft": "Nháp",
+      "empty": "Chưa có bài viết nào. Tạo bài viết blog đầu tiên của bạn.",
+      "published": "Đã xuất bản"
+    },
+    "title": "Quản lý Blog"
+  },
   "charts": {
     "breakdown": {
       "items": {
@@ -108,7 +203,9 @@
     "branch": "Chi nhánh chính",
     "brand": "PawAdmin",
     "logoAlt": "Logo PetBuddy",
+    "logout": "Đăng xuất",
     "nav": {
+      "blog": "Blog",
       "employees": "Nhân viên",
       "inventory": "Sản phẩm",
       "reports": "Báo cáo",
@@ -316,28 +413,30 @@
       "subtitle": "Cấu hình biểu phí linh hoạt cho Spa & Grooming. Mức giá được phân loại theo trọng lượng cơ thể để đảm bảo tính công bằng và chuyên nghiệp trong vận hành.",
       "title": "Quản lý bảng giá dịch vụ",
       "weightTiers": {
-        "under5": "Dưới 5kg",
-        "from5To10": "Từ 5kg - 10kg",
         "from10To20": "Từ 10kg - 20kg",
-        "over20": "Trên 20kg"
+        "from5To10": "Từ 5kg - 10kg",
+        "over20": "Trên 20kg",
+        "under5": "Dưới 5kg"
       },
       "services": {
         "bathDry": {
-          "title": "Tắm sấy tiêu chuẩn",
-          "description": "Bao gồm các bước vệ sinh cơ bản: tắm khử mùi, sấy khô đánh bóng lông và chải tơi."
-        },
-        "styling": {
-          "title": "Cắt tỉa & tạo kiểu",
-          "description": "Dịch vụ cắt lông tạo kiểu chuyên sâu theo yêu cầu riêng biệt hoặc theo đặc thù giống loài."
+          "description": "Bao gồm các bước vệ sinh cơ bản: tắm khử mùi, sấy khô đánh bóng lông và chải tơi.",
+          "title": "Tắm sấy tiêu chuẩn"
         },
         "hygieneCombo": {
-          "title": "Combo vệ sinh",
-          "description": "Chăm sóc toàn diện: cắt móng, mài móng, vắt tuyến hôi và vệ sinh tai chuyên sâu."
+          "description": "Chăm sóc toàn diện: cắt móng, mài móng, vắt tuyến hôi và vệ sinh tai chuyên sâu.",
+          "title": "Combo vệ sinh"
+        },
+        "styling": {
+          "description": "Dịch vụ cắt lông tạo kiểu chuyên sâu theo yêu cầu riêng biệt hoặc theo đặc thù giống loài.",
+          "title": "Cắt tỉa & tạo kiểu"
         }
       }
     }
   },
   "topNav": {
+    "help": "Trợ giúp",
+    "menu": "Mở menu",
     "notifications": "Thông báo"
   },
   "topSales": {
@@ -560,9 +659,6 @@
       },
       "filter": "Lọc voucher",
       "minimumOrder": "Đơn từ: {{value}}",
-      "searchPlaceholder": "Tìm mã voucher...",
-      "title": "Danh sách voucher",
-      "unlimited": "Vô thời hạn",
       "rows": {
         "newbie": {
           "description": "Tặng 50k đơn đầu tiên",
@@ -576,7 +672,10 @@
           "description": "Ưu đãi Giáng sinh",
           "expired": "Đã hết hạn"
         }
-      }
+      },
+      "searchPlaceholder": "Tìm mã voucher...",
+      "title": "Danh sách voucher",
+      "unlimited": "Vô thời hạn"
     },
     "toast": {
       "description": "Cấu hình điểm thưởng đã được lưu.",

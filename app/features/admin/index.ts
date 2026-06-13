@@ -1,3 +1,4 @@
+export { AdminBlogManagementPage } from './pages/admin-blog-management-page'
 export { AdminDashboardPage } from './pages/admin-dashboard-page'
 export { AdminEmployeesPage } from './pages/admin-employees-page'
 export { AdminProductsPage } from './pages/admin-products-page'

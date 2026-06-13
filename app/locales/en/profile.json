@@ -27,7 +27,8 @@
     "title": "Personal information",
     "backHome": "Back to home",
     "notifications": "Open notifications",
-    "cart": "Open cart"
+    "cart": "Open cart",
+    "menu": "Open menu"
   },
   "stats": {
     "orders": "Total orders",

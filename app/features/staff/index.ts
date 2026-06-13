@@ -1,3 +1,4 @@
+export { StaffAddProductPage } from './pages/staff-add-product-page'
 export { StaffAttendancePage } from './pages/staff-attendance-page'
 export { StaffDashboardPage } from './pages/staff-dashboard-page'
 export { StaffDisposalRequestPage } from './pages/staff-disposal-request-page'

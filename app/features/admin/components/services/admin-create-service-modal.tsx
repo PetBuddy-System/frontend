@@ -102,9 +102,7 @@ export function AdminCreateServiceModal({ isOpen, onClose }: AdminCreateServiceM
                       <h3 className='text-lg font-extrabold text-card-foreground'>
                         {t('serviceManagement.create.pricing.title')}
                       </h3>
-                      <p className='text-sm text-muted-foreground'>
-                        {t('serviceManagement.create.pricing.subtitle')}
-                      </p>
+                      <p className='text-sm text-muted-foreground'>{t('serviceManagement.create.pricing.subtitle')}</p>
                     </div>
                     <span className='rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-primary'>
                       {t('serviceManagement.create.pricing.badge')}
@@ -136,7 +134,11 @@ export function AdminCreateServiceModal({ isOpen, onClose }: AdminCreateServiceM
                   <span className='text-sm font-semibold text-card-foreground'>
                     {t('serviceManagement.create.fields.status')}
                   </span>
-                  <input type='checkbox' defaultChecked className='h-5 w-5 rounded border-border text-primary focus:ring-primary' />
+                  <input
+                    type='checkbox'
+                    defaultChecked
+                    className='h-5 w-5 rounded border-border text-primary focus:ring-primary'
+                  />
                 </label>
               </form>
             </article>
@@ -146,9 +148,7 @@ export function AdminCreateServiceModal({ isOpen, onClose }: AdminCreateServiceM
                 <h3 className='text-base font-extrabold text-card-foreground'>
                   {t('serviceManagement.create.media.title')}
                 </h3>
-                <p className='mt-1 text-sm text-muted-foreground'>
-                  {t('serviceManagement.create.media.subtitle')}
-                </p>
+                <p className='mt-1 text-sm text-muted-foreground'>{t('serviceManagement.create.media.subtitle')}</p>
                 <button
                   type='button'
                   className='mt-5 flex aspect-square w-full flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-muted/70 text-center transition hover:border-primary hover:bg-primary/5'
@@ -165,9 +165,7 @@ export function AdminCreateServiceModal({ isOpen, onClose }: AdminCreateServiceM
 
               <section className='rounded-3xl bg-primary p-6 text-primary-foreground shadow-sm'>
                 <MaterialIcon name='lightbulb' className='text-2xl' />
-                <h3 className='mt-3 text-base font-extrabold'>
-                  {t('serviceManagement.create.tip.title')}
-                </h3>
+                <h3 className='mt-3 text-base font-extrabold'>{t('serviceManagement.create.tip.title')}</h3>
                 <p className='mt-2 text-sm leading-relaxed text-primary-foreground/90'>
                   {t('serviceManagement.create.tip.text')}
                 </p>
@@ -175,7 +173,11 @@ export function AdminCreateServiceModal({ isOpen, onClose }: AdminCreateServiceM
 
               <section className='rounded-3xl border border-border bg-card p-6 shadow-sm'>
                 <div className='flex items-center gap-3'>
-                  <div className={cn('flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground')}>
+                  <div
+                    className={cn(
+                      'flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground'
+                    )}
+                  >
                     <MaterialIcon name='pets' className='text-2xl' />
                   </div>
                   <div>
@@ -187,9 +189,7 @@ export function AdminCreateServiceModal({ isOpen, onClose }: AdminCreateServiceM
                     </h3>
                   </div>
                 </div>
-                <p className='mt-4 text-sm text-muted-foreground'>
-                  {t('serviceManagement.create.accent.text')}
-                </p>
+                <p className='mt-4 text-sm text-muted-foreground'>{t('serviceManagement.create.accent.text')}</p>
               </section>
             </aside>
           </div>

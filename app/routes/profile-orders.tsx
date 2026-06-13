@@ -1,5 +1,5 @@
-import { ProfileOrdersPage } from "~/features/profile";
+import { ProfileOrdersPage } from '~/features/profile'
 
 export default function ProfileOrdersRoute() {
-  return <ProfileOrdersPage />;
+  return <ProfileOrdersPage />
 }

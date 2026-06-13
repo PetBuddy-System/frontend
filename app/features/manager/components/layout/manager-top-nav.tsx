@@ -2,42 +2,65 @@ import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
 
-export function ManagerTopNav() {
+const MANAGER_AVATAR_URL =
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBuAh0OLqjDAwBT92pgm1m0PQuCq-4lY3Roo0v-PfbrMF5S_5kJNBDrTmyHdsaWPvZcMnGLotDJRDzKnOYRUj8XbJTH_PVyBktsYpg9OU1q__0JsjIC2Agz8SEHro0U3BJ9d6Wf0xLH_tlBMRNhNdGZjbuUPEgFsdsU9a_B_cUvs-JX7Y_Th7tMwz_bvAcafcswIIvRBc3Z4CFF70SllZQR3JXuad6nmKqAF1D8weMPDYZd3y119IBLx1gtAPypuzHVlAUZlI1mF4Y'
+
+export interface ManagerTopNavProps {
+  titleKey?: string
+  subtitleKey?: string
+}
+
+export function ManagerTopNav({
+  titleKey = 'dashboard.title',
+  subtitleKey = 'dashboard.subtitle'
+}: ManagerTopNavProps) {
   const { t } = useTranslation('manager')
 
   return (
-    <header className='flex h-16 shrink-0 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:px-8'>
-      <div className='font-display text-xl font-bold text-primary'>{t('topNav.title')}</div>
+    <header className='flex h-20 shrink-0 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:px-8'>
       <div className='flex items-center gap-3'>
-        <div className='relative hidden w-64 lg:block'>
-          <MaterialIcon
-            name='search'
-            className='absolute left-3 top-1/2 -translate-y-1/2 text-lg text-muted-foreground'
-          />
-          <input
-            type='text'
-            className='h-10 w-full rounded-full border border-input bg-muted px-10 text-sm outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring'
-            placeholder={t('topNav.search')}
-          />
+        <button
+          type='button'
+          aria-label={t('topNav.menu')}
+          className='rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-primary md:hidden'
+        >
+          <MaterialIcon name='menu' />
+        </button>
+        <div>
+          <p className='font-display text-xl font-bold text-primary md:text-2xl'>{t(titleKey)}</p>
+          {subtitleKey ? <p className='hidden text-sm text-muted-foreground sm:block'>{t(subtitleKey)}</p> : null}
         </div>
+      </div>
+
+      <div className='flex items-center gap-2'>
         <button
           type='button'
           aria-label={t('topNav.notifications')}
-          className='relative flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-primary'
+          className='relative rounded-full p-3 text-muted-foreground transition-colors hover:bg-muted hover:text-primary'
         >
           <MaterialIcon name='notifications' />
-          <span className='absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive' />
+          <span className='absolute right-3 top-3 h-2 w-2 rounded-full bg-destructive' />
         </button>
         <button
           type='button'
-          aria-label={t('topNav.settings')}
-          className='flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-primary'
+          aria-label={t('topNav.help')}
+          className='rounded-full p-3 text-muted-foreground transition-colors hover:bg-muted hover:text-primary'
         >
-          <MaterialIcon name='settings' />
+          <MaterialIcon name='help' />
         </button>
-        <div className='hidden h-8 w-px bg-border sm:block' />
-        <div className='flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground'>
-          <MaterialIcon name='account_circle' filled />
+
+        <div className='mx-1 h-8 w-px bg-border' />
+
+        <div className='flex items-center gap-3'>
+          <div className='hidden text-right sm:block'>
+            <p className='text-sm font-semibold'>{t('manager.name')}</p>
+            <p className='text-xs text-muted-foreground'>{t('sidebar.roleTitle')}</p>
+          </div>
+          <img
+            src={MANAGER_AVATAR_URL}
+            alt={t('sidebar.logoAlt')}
+            className='h-10 w-10 rounded-full border-2 border-primary object-cover'
+          />
         </div>
       </div>
     </header>

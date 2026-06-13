@@ -51,7 +51,8 @@
       "shiftRequest": "Create shift request",
       "violations": "View violations",
       "weeklySchedule": "Weekly work schedule",
-      "disposalRequest": "Disposal request"
+      "disposalRequest": "Disposal request",
+      "inventory": "Inventory management"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Store Staff",
@@ -291,5 +292,70 @@
       "title": "Request submitted!",
       "description": "Request code: #REQ-4922. Waiting for manager approval."
     }
+  },
+  "addProduct": {
+    "pageTitle": "Add New Product",
+    "heading1": "Add",
+    "heading2": "New",
+    "heading3": "Product",
+    "description": "Initialize a new product listing with complete technical information and high-quality images.",
+    "form": {
+      "productName": "Product name",
+      "productNamePlaceholder": "Example: Organic dry cat food",
+      "category": "Category",
+      "categoryPlaceholder": "Select category...",
+      "supplier": "Supplier",
+      "supplierPlaceholder": "Search supplier...",
+      "price": "Selling price (VND)",
+      "stock": "Stock quantity",
+      "description": "Detailed description",
+      "descriptionPlaceholder": "Enter detailed product information, ingredients, usage...",
+      "image": "Product image",
+      "uploadTitle": "Drag and drop images here",
+      "uploadHint": "Supported formats: JPG, PNG, WebP (Max 10MB). Recommended 1:1 ratio.",
+      "uploadButton": "Choose file from computer",
+      "confirm": "Confirm product",
+      "cancel": "Cancel",
+      "submit": "Save all",
+      "saving": "Saving..."
+    },
+    "categories": {
+      "toys": "Toys",
+      "hygiene": "Pet hygiene",
+      "supplement": "Functional food",
+      "accessories": "Accessories",
+      "dogFood": "Dog food",
+      "catFood": "Cat food"
+    },
+    "preview": {
+      "title": "Product List",
+      "count": "items",
+      "indexLabel": "Product",
+      "stock": "Stock",
+      "remove": "Remove product",
+      "empty": "No products added yet",
+      "emptyHint": "Fill in the form and click 'Confirm product' to add",
+      "noName": "No name",
+      "noPrice": "No price"
+    },
+    "tips": {
+      "title": "Tips",
+      "content": "Use short, concise names to help customers search easily via the Search bar."
+    },
+    "seo": {
+      "title": "SEO Preview",
+      "content": "Preview how the search result will display on mobile devices..."
+    },
+    "sync": {
+      "title": "Auto Sync",
+      "content": "Product will be automatically synced to POS system and Website after saving."
+    },
+    "toast": {
+      "successTitle": "Success!",
+      "successMessage": "Products have been saved to the database."
+    }
+  },
+  "inventory": {
+    "title": "Inventory"
   }
 }

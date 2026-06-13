@@ -1,13 +1,13 @@
-import { env } from "~/shared/config/env";
+import { env } from '~/shared/config/env'
 
 type RequestOptions = {
-  url: string;
-  method: string;
-  headers?: Record<string, string>;
-  params?: Record<string, string | number | boolean | undefined>;
-  data?: unknown;
-  signal?: AbortSignal;
-};
+  url: string
+  method: string
+  headers?: Record<string, string>
+  params?: Record<string, string | number | boolean | undefined>
+  data?: unknown
+  signal?: AbortSignal
+}
 
 /**
  * Custom fetch mutator — Orval sẽ gọi hàm này thay vì fetch thô.
@@ -24,41 +24,41 @@ type RequestOptions = {
  *   headers["Authorization"] = `Bearer ${token}`;
  */
 export async function customFetch<T>(options: RequestOptions): Promise<T> {
-  const { url, method, headers = {}, params, data, signal } = options;
+  const { url, method, headers = {}, params, data, signal } = options
 
   // When API_URL is empty (mock mode), resolve relative to current origin.
-  const base = env.API_URL || (typeof window !== "undefined" ? window.location.origin : "http://localhost:5173");
-  const fullUrl = new URL(`${env.API_URL}${url}`, base);
+  const base = env.API_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173')
+  const fullUrl = new URL(`${env.API_URL}${url}`, base)
 
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
-        fullUrl.searchParams.append(key, String(value));
+        fullUrl.searchParams.append(key, String(value))
       }
-    });
+    })
   }
 
   const response = await fetch(fullUrl.toString(), {
     method: method.toUpperCase(),
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      ...headers,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      ...headers
     },
     body: data !== undefined ? JSON.stringify(data) : undefined,
-    signal,
-  });
+    signal
+  })
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: response.statusText }));
-    throw Object.assign(new Error(error?.message ?? "API error"), {
+    const error = await response.json().catch(() => ({ message: response.statusText }))
+    throw Object.assign(new Error(error?.message ?? 'API error'), {
       status: response.status,
-      data: error,
-    });
+      data: error
+    })
   }
 
   // 204 No Content — không có body
-  if (response.status === 204) return undefined as T;
+  if (response.status === 204) return undefined as T
 
-  return response.json() as Promise<T>;
+  return response.json() as Promise<T>
 }

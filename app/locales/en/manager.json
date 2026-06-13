@@ -5,6 +5,116 @@
     "subtitle": "Detailed inventory import/export history - District 1",
     "title": "Inventory Transaction History"
   },
+  "managerDashboard": {
+    "title": "Overview dashboard",
+    "subtitle": "Track store operations, appointments, and priority tasks at a glance.",
+    "hero": {
+      "leading": "Dashboard",
+      "middle": "control",
+      "trailing": "overview",
+      "description": "Good morning, Manager. The system is operating smoothly.",
+      "dogAlt": "Cute golden puppy portrait in warm lighting.",
+      "catAlt": "Black cat with a focused gaze on a clean light background."
+    },
+    "stats": {
+      "revenue": {
+        "change": "+12%",
+        "label": "Today's revenue",
+        "value": "42,500,000 VND"
+      },
+      "pending": {
+        "badge": "Needs action",
+        "label": "Bookings pending approval",
+        "value": "15 requests"
+      },
+      "staff": {
+        "badge": "Normal",
+        "label": "Staff on shift",
+        "value": "8 / 12 staff"
+      },
+      "stock": {
+        "badge": "Alert",
+        "label": "Products running low",
+        "value": "04 SKUs"
+      }
+    },
+    "chart": {
+      "title": "Revenue trend",
+      "subtitle": "Seven-day performance snapshot",
+      "period": "This week",
+      "days": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "values": {
+        "mon": "28M",
+        "tue": "35M",
+        "thu": "42.5M"
+      }
+    },
+    "tasks": {
+      "title": "Immediate tasks",
+      "viewAll": "View all tasks",
+      "items": {
+        "shiftSwap": {
+          "title": "Review shift swap request",
+          "subtitle": "Le Van Tam • Morning shift 20/10"
+        },
+        "cancellationApproval": {
+          "title": "Approve cancellation request",
+          "subtitle": "Order #8821 • Full Grooming"
+        },
+        "restock": {
+          "title": "Routine restock intake",
+          "subtitle": "Deadline: 3:00 PM today"
+        }
+      }
+    },
+    "appointments": {
+      "title": "Latest appointments",
+      "create": "Create new appointment",
+      "view": "View appointment details",
+      "more": "More options",
+      "columns": {
+        "customer": "Customer",
+        "pet": "Pet",
+        "service": "Service",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "rows": {
+        "nguyenHoang": {
+          "initials": "NH",
+          "customerName": "Nguyen Hoang",
+          "customerPhone": "090xxxx123",
+          "pet": "Mochi (Poodle)",
+          "service": "Full grooming",
+          "status": "Completed"
+        },
+        "tranVan": {
+          "initials": "TV",
+          "customerName": "Tran Van",
+          "customerPhone": "098xxxx456",
+          "pet": "LuLu (Shiba)",
+          "service": "Rabies vaccination",
+          "status": "Pending"
+        },
+        "quocMinh": {
+          "initials": "QM",
+          "customerName": "Quoc Minh",
+          "customerPhone": "034xxxx999",
+          "pet": "Bo (British Shorthair)",
+          "service": "Deodorizing bath and dry",
+          "status": "In service"
+        }
+      }
+    }
+  },
   "filters": {
     "apply": "Apply Filters",
     "date": "Date Range",
@@ -28,13 +138,12 @@
   "sidebar": {
     "branch": "District 1 Branch",
     "brand": "Store Ops",
-    "help": "Help Center",
     "logoAlt": "PetBuddy logo",
     "logout": "Logout",
+    "roleTitle": "Store Manager",
     "nav": {
+      "dashboard": "Operations overview",
       "inventory": "Inventory Control",
-      "reports": "Reports",
-      "risk": "Risk Management",
       "staff": "Staff Coordination",
       "returnRequests": "Return approvals",
       "disposalApprovals": "Disposal approvals"
@@ -233,7 +342,12 @@
     "notifications": "Notifications",
     "search": "Search...",
     "settings": "Settings",
-    "title": "PetStore.vn Manager"
+    "title": "PetStore.vn Manager",
+    "help": "Help",
+    "menu": "Open menu"
+  },
+  "manager": {
+    "name": "Tran Thi Lan"
   },
   "transactionTypes": {
     "audit": "Stock audit",

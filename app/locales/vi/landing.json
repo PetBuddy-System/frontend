@@ -170,6 +170,31 @@
         }
       }
     },
+    "faq": {
+      "title": "Câu hỏi thường gặp",
+      "items": {
+        "booking": {
+          "question": "Làm thế nào để đặt lịch tắm cho chó?",
+          "answer": "Quý khách có thể đặt lịch trực tiếp tại mục Dịch vụ trên website hoặc liên hệ hotline 092 199 9319 để được đội ngũ PetBuddy hỗ trợ nhanh chóng."
+        },
+        "delivery": {
+          "question": "Cửa hàng có giao hàng tận nơi không?",
+          "answer": "Có. Chúng tôi hỗ trợ giao hàng tận nơi trên toàn quốc và miễn phí giao hàng với nhiều đơn trong khu vực nội thành TP. HCM theo chính sách hiện hành."
+        },
+        "returns": {
+          "question": "Chính sách đổi trả sản phẩm như thế nào?",
+          "answer": "PetBuddy hỗ trợ đổi trả trong vòng 7 ngày nếu sản phẩm có lỗi từ nhà sản xuất hoặc không đúng mô tả, với điều kiện sản phẩm còn nguyên tem nhãn và chưa qua sử dụng."
+        },
+        "loyalty": {
+          "question": "Có ưu đãi gì cho khách hàng thân thiết không?",
+          "answer": "Chúng tôi có chương trình tích điểm dành cho thành viên, giúp bạn đổi voucher giảm giá, quà tặng và nhận nhiều ưu đãi riêng cho khách hàng quay lại thường xuyên."
+        },
+        "vet": {
+          "question": "Có bác sĩ thú y tại cửa hàng không?",
+          "answer": "PetBuddy có đội ngũ tư vấn viên và bác sĩ thú y hỗ trợ tư vấn sức khỏe thú cưng, đồng thời thực hiện các dịch vụ chăm sóc cơ bản theo lịch tại cửa hàng."
+        }
+      }
+    },
     "newsletter": {
       "title": "Tham gia cộng đồng yêu thú cưng",
       "description": "Nhận mẹo chăm sóc, cập nhật sức khỏe và ưu đãi đặc biệt mỗi tuần.",

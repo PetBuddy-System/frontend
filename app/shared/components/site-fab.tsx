@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
 import { SiteChatModal } from './site-chat-modal'
 import { MaterialIcon } from '~/shared/ui'
 

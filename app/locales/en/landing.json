@@ -170,6 +170,31 @@
         }
       }
     },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "booking": {
+          "question": "How can I book a grooming appointment for my dog?",
+          "answer": "You can book directly from the Services section on our website or contact our hotline at 092 199 9319 for quick support from the PetBuddy team."
+        },
+        "delivery": {
+          "question": "Do you offer home delivery?",
+          "answer": "Yes. We provide nationwide delivery and complimentary shipping for many qualifying orders within inner Ho Chi Minh City under our current policy."
+        },
+        "returns": {
+          "question": "What is your product return policy?",
+          "answer": "PetBuddy supports returns within 7 days for manufacturer defects or items that do not match the description, as long as the product remains unused and keeps its original labels."
+        },
+        "loyalty": {
+          "question": "Do you have benefits for loyal customers?",
+          "answer": "Yes. Our member rewards program lets you collect points for discount vouchers, gifts, and exclusive perks for returning customers."
+        },
+        "vet": {
+          "question": "Is there a veterinarian available at the store?",
+          "answer": "PetBuddy has advisors and veterinarians available for pet health guidance, and they support scheduled in-store basic care services."
+        }
+      }
+    },
     "newsletter": {
       "title": "Join our pet-loving community",
       "description": "Get exclusive care tips, health updates, and special offers delivered to your inbox every week.",

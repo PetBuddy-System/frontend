@@ -5,12 +5,11 @@ import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
 const MANAGER_NAV_ITEMS = [
-  { icon: 'gpp_maybe', key: 'risk', href: '#' },
-  { icon: 'inventory_2', key: 'inventory', href: '/manager/dashboard' },
+  { icon: 'dashboard', key: 'dashboard', href: '/manager/dashboard' },
+  { icon: 'inventory_2', key: 'inventory', href: '/manager/inventory-transactions' },
   { icon: 'groups', key: 'staff', href: '/manager/staff-schedule' },
   { icon: 'assignment_turned_in', key: 'returnRequests', href: '/manager/return-requests' },
-  { icon: 'delete_sweep', key: 'disposalApprovals', href: '/manager/disposal-approvals' },
-  { icon: 'assessment', key: 'reports', href: '#' }
+  { icon: 'delete_sweep', key: 'disposalApprovals', href: '/manager/disposal-approvals' }
 ] as const
 
 export type ManagerNavKey = (typeof MANAGER_NAV_ITEMS)[number]['key']
@@ -74,28 +73,17 @@ export function ManagerSidebar({ activeItem = 'inventory' }: ManagerSidebarProps
 
       <div className='my-3 h-px shrink-0 bg-border' />
       <nav className='flex shrink-0 flex-col gap-1'>
-        <a
+        <button
+          type='button'
           className={cn(
-            'flex items-center rounded-lg font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-primary',
-            isCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3.5 py-2.5'
+            'flex items-center rounded-xl font-bold text-destructive transition-colors hover:bg-destructive/10',
+            isCollapsed ? 'w-full justify-center p-2.5' : 'gap-2 px-3.5 py-2.5'
           )}
-          href='#'
-          title={isCollapsed ? t('sidebar.help') : undefined}
-        >
-          <MaterialIcon name='help' className='text-xl' />
-          {!isCollapsed && <span>{t('sidebar.help')}</span>}
-        </a>
-        <a
-          className={cn(
-            'flex items-center rounded-lg font-semibold text-destructive transition-colors hover:bg-muted',
-            isCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3.5 py-2.5'
-          )}
-          href='#'
           title={isCollapsed ? t('sidebar.logout') : undefined}
         >
-          <MaterialIcon name='logout' className='text-xl' />
-          {!isCollapsed && <span>{t('sidebar.logout')}</span>}
-        </a>
+          <MaterialIcon name='logout' className='text-[22px] shrink-0' />
+          {!isCollapsed && <span className='text-sm'>{t('sidebar.logout')}</span>}
+        </button>
       </nav>
     </aside>
   )

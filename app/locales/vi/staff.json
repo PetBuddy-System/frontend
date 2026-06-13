@@ -51,7 +51,8 @@
       "shiftRequest": "Tạo yêu cầu đổi ca",
       "violations": "Xem các lần vi phạm",
       "weeklySchedule": "Xem các ca làm việc trong tuần",
-      "disposalRequest": "Tạo yêu cầu hủy hàng"
+      "disposalRequest": "Tạo yêu cầu hủy hàng",
+      "inventory": "Quản lý kho hàng"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Nhân viên cửa hàng",
@@ -291,5 +292,70 @@
       "title": "Yêu cầu đã gửi!",
       "description": "Mã yêu cầu: #REQ-4922. Đang chờ quản lý duyệt."
     }
+  },
+  "addProduct": {
+    "pageTitle": "Thêm Sản Phẩm Mới",
+    "heading1": "Thêm",
+    "heading2": "Sản Phẩm",
+    "heading3": "Mới",
+    "description": "Khởi tạo danh mục mới với đầy đủ thông tin kỹ thuật và hình ảnh chất lượng cao.",
+    "form": {
+      "productName": "Tên sản phẩm",
+      "productNamePlaceholder": "Ví dụ: Thức ăn khô hữu cơ cho mèo",
+      "category": "Danh mục",
+      "categoryPlaceholder": "Chọn danh mục...",
+      "supplier": "Nhà cung cấp",
+      "supplierPlaceholder": "Tìm nhà cung cấp...",
+      "price": "Giá bán (VND)",
+      "stock": "Số lượng tồn kho",
+      "description": "Mô tả chi tiết",
+      "descriptionPlaceholder": "Nhập thông tin chi tiết về sản phẩm, thành phần, công dụng...",
+      "image": "Hình ảnh sản phẩm",
+      "uploadTitle": "Kéo thả ảnh vào đây",
+      "uploadHint": "Định dạng hỗ trợ: JPG, PNG, WebP (Tối đa 10MB). Khuyên dùng tỉ lệ 1:1.",
+      "uploadButton": "Chọn tệp từ máy tính",
+      "confirm": "Xác nhận sản phẩm",
+      "cancel": "Hủy bỏ",
+      "submit": "Lưu tất cả",
+      "saving": "Đang lưu..."
+    },
+    "categories": {
+      "toys": "Đồ chơi",
+      "hygiene": "Vệ sinh thú cưng",
+      "supplement": "Thực phẩm chức năng",
+      "accessories": "Phụ kiện",
+      "dogFood": "Thức ăn cho Chó",
+      "catFood": "Thức ăn cho Mèo"
+    },
+    "preview": {
+      "title": "Danh sách sản phẩm",
+      "count": "sản phẩm",
+      "indexLabel": "Sản phẩm",
+      "stock": "Tồn kho",
+      "remove": "Xóa sản phẩm",
+      "empty": "Chưa có sản phẩm nào",
+      "emptyHint": "Điền thông tin và nhấn 'Xác nhận sản phẩm' để thêm",
+      "noName": "Chưa có tên",
+      "noPrice": "Chưa có giá"
+    },
+    "tips": {
+      "title": "Tips",
+      "content": "Sử dụng tên ngắn gọn, súc tích để khách hàng dễ dàng tìm kiếm qua thanh Search."
+    },
+    "seo": {
+      "title": "SEO Preview",
+      "content": "Xem trước hiển thị kết quả tìm kiếm trên thiết bị di động..."
+    },
+    "sync": {
+      "title": "Auto Sync",
+      "content": "Sản phẩm sẽ được tự động đồng bộ lên hệ thống POS và Website sau khi lưu."
+    },
+    "toast": {
+      "successTitle": "Thành công!",
+      "successMessage": "Các sản phẩm đã được lưu vào cơ sở dữ liệu."
+    }
+  },
+  "inventory": {
+    "title": "Kho hàng"
   }
 }

@@ -8,7 +8,7 @@ import { ProductsGrid } from '../components/listing/products-grid'
 import { ProductsHero } from '../components/listing/products-hero'
 import { ProductsGallery } from '../components/listing/products-gallery'
 
-const CATEGORIES = ['all', 'dryFood', 'wetFood', 'treats', 'accessories', 'dogs', 'cats'] as const
+const CATEGORIES = ['all', 'toys', 'hygiene', 'supplement', 'accessories', 'dogFood', 'catFood'] as const
 
 const BRANDS = ['royalCanin', 'ganador', 'pedigree', 'zenith'] as const
 
@@ -66,25 +66,6 @@ export function ProductsPage() {
                         <span className='text-sm text-foreground'>{t(`brands.${brand}`)}</span>
                       </label>
                     ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className='mb-3 text-xs font-semibold uppercase tracking-wider text-foreground'>
-                    {t('filters.priceTitle')}
-                  </h3>
-                  <div className='space-y-4'>
-                    <input
-                      type='range'
-                      min={0}
-                      max={1000000}
-                      defaultValue={500000}
-                      className='h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted accent-primary'
-                    />
-                    <div className='flex justify-between text-xs font-semibold text-muted-foreground'>
-                      <span>{t('filters.priceMin')}</span>
-                      <span>{t('filters.priceMax')}</span>
-                    </div>
                   </div>
                 </div>
               </div>

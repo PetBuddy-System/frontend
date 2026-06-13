@@ -1,5 +1,5 @@
-import { OrderSuccessPage } from "~/features/products";
+import { OrderSuccessPage } from '~/features/products'
 
 export default function OrderSuccessRoute() {
-  return <OrderSuccessPage />;
+  return <OrderSuccessPage />
 }

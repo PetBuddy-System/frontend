@@ -7,7 +7,7 @@ const NAV_ITEMS = [
   { key: 'store', href: '/' },
   { key: 'services', href: '/services' },
   { key: 'products', href: '/products' },
-  { key: 'blog', href: '/' },
+  { key: 'blog', href: '/blog' },
   { key: 'contact', href: '/contact' }
 ] as const
 

@@ -3,6 +3,101 @@
     "name": "Admin User",
     "role": "Pet Care Admin"
   },
+  "blogManagement": {
+    "actions": {
+      "add": "Create new post",
+      "delete": "Delete post",
+      "edit": "Edit post"
+    },
+    "confirmDelete": "Are you sure you want to delete this post?",
+    "create": {
+      "accent": {
+        "label": "Quick guidance",
+        "text": "Import your .md file to auto-fill content. Then refine the title, excerpt, and cover image for the best results.",
+        "title": "Markdown import ready"
+      },
+      "cancel": "Cancel",
+      "close": "Close the create post form",
+      "draftHint": "Save as draft - visible only to admins",
+      "editTitle": "Edit blog post",
+      "fields": {
+        "author": "Author",
+        "category": "Category",
+        "content": "Markdown content",
+        "excerpt": "Excerpt",
+        "imageUrl": "Cover image URL",
+        "publish": "Publish now",
+        "title": "Title"
+      },
+      "importMd": "Import .md",
+      "placeholders": {
+        "author": "e.g. PetBuddy Team",
+        "content": "# Your title\n\nWrite your blog post content in Markdown here...",
+        "excerpt": "A short summary shown on blog cards...",
+        "imageUrl": "https://example.com/image.jpg",
+        "title": "Your blog post title"
+      },
+      "preview": {
+        "excerptPlaceholder": "Short summary of the post...",
+        "subtitle": "Live preview of how the post will appear on the blog page.",
+        "title": "Card preview",
+        "titlePlaceholder": "Your blog post title"
+      },
+      "publishedHint": "Visible to all users on the blog page",
+      "save": "Save post",
+      "subtitle": "Write or import a .md file, preview the rendered output, and publish to the blog page.",
+      "tabs": {
+        "editor": "Editor",
+        "preview": "Preview"
+      },
+      "tip": {
+        "text": "Use Markdown formatting for headings, lists, code blocks, and links. Tables and strikethrough are also supported via GitHub Flavored Markdown.",
+        "title": "Markdown tips"
+      },
+      "title": "Create blog post"
+    },
+    "pagination": {
+      "showing": "Showing {{from}} - {{to}} of {{total}} posts"
+    },
+    "sidebar": {
+      "all": "All posts",
+      "featured": "Featured",
+      "grooming": "Grooming",
+      "health": "Health",
+      "lifestyle": "Lifestyle",
+      "nutrition": "Nutrition",
+      "training": "Training"
+    },
+    "stats": {
+      "drafts": {
+        "label": "Drafts",
+        "note": "Not published"
+      },
+      "published": {
+        "label": "Published",
+        "note": "Live on blog"
+      },
+      "total": {
+        "label": "Total posts",
+        "note": "All time"
+      }
+    },
+    "subtitle": "Manage blog posts, import .md files, and publish content to the blog page.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "author": "Author",
+        "category": "Category",
+        "date": "Date",
+        "post": "Post",
+        "status": "Status"
+      },
+      "draft": "Draft",
+      "empty": "No posts found. Create your first blog post.",
+      "published": "Published"
+    },
+    "title": "Blog Management"
+  },
   "charts": {
     "breakdown": {
       "items": {
@@ -108,7 +203,9 @@
     "branch": "Main Branch",
     "brand": "PawAdmin",
     "logoAlt": "PetBuddy logo",
+    "logout": "Logout",
     "nav": {
+      "blog": "Blog",
       "employees": "Employees",
       "inventory": "Products",
       "reports": "Reports",
@@ -316,28 +413,30 @@
       "subtitle": "Configure flexible pricing for spa and grooming services. Prices are grouped by body weight to keep operations fair and professional.",
       "title": "Service Pricing Management",
       "weightTiers": {
-        "under5": "Under 5kg",
-        "from5To10": "5kg - 10kg",
         "from10To20": "10kg - 20kg",
-        "over20": "Over 20kg"
+        "from5To10": "5kg - 10kg",
+        "over20": "Over 20kg",
+        "under5": "Under 5kg"
       },
       "services": {
         "bathDry": {
-          "title": "Standard bath and dry",
-          "description": "Includes basic hygiene steps: deodorizing bath, blow dry, coat polishing, and brushing."
-        },
-        "styling": {
-          "title": "Trimming & styling",
-          "description": "Advanced grooming and styling based on individual requests or breed-specific needs."
+          "description": "Includes basic hygiene steps: deodorizing bath, blow dry, coat polishing, and brushing.",
+          "title": "Standard bath and dry"
         },
         "hygieneCombo": {
-          "title": "Hygiene combo",
-          "description": "Complete care package: nail trimming, nail filing, anal gland expression, and deep ear cleaning."
+          "description": "Complete care package: nail trimming, nail filing, anal gland expression, and deep ear cleaning.",
+          "title": "Hygiene combo"
+        },
+        "styling": {
+          "description": "Advanced grooming and styling based on individual requests or breed-specific needs.",
+          "title": "Trimming & styling"
         }
       }
     }
   },
   "topNav": {
+    "help": "Help",
+    "menu": "Open menu",
     "notifications": "Notifications"
   },
   "topSales": {
@@ -560,9 +659,6 @@
       },
       "filter": "Filter vouchers",
       "minimumOrder": "Minimum order: {{value}}",
-      "searchPlaceholder": "Search voucher code...",
-      "title": "Voucher list",
-      "unlimited": "Unlimited",
       "rows": {
         "newbie": {
           "description": "50k off first order",
@@ -576,7 +672,10 @@
           "description": "Christmas offer",
           "expired": "Expired"
         }
-      }
+      },
+      "searchPlaceholder": "Search voucher code...",
+      "title": "Voucher list",
+      "unlimited": "Unlimited"
     },
     "toast": {
       "description": "Reward point settings have been saved.",

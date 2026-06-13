@@ -1,2 +1,5 @@
-export { LandingPage } from './pages/landing-page'
+export { BlogDetailPage } from './pages/blog-detail-page'
+export { BlogPage } from './pages/blog-page'
 export { ContactPage } from './pages/contact-page'
+export { getBlogPostById } from './data/post-details'
+export { LandingPage } from './pages/landing-page'

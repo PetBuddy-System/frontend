@@ -13,7 +13,7 @@ export function ManagerReturnRequestsPage() {
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
       <ManagerSidebar activeItem='returnRequests' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <ManagerTopNav />
+        <ManagerTopNav titleKey='returnRequests.title' subtitleKey='returnRequests.subtitle' />
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             <section className='flex flex-col gap-4 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between'>

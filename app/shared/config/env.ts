@@ -9,29 +9,29 @@
  */
 
 interface ImportMetaEnv {
-  readonly VITE_API_URL?: string;
-  readonly VITE_APP_ENV?: "development" | "staging" | "production";
+  readonly VITE_API_URL?: string
+  readonly VITE_APP_ENV?: 'development' | 'staging' | 'production'
   /** "true" Ä‘á»ƒ báº­t MSW mock. Chá»‰ dÃ¹ng trong mÃ´i trÆ°á»ng dev. */
-  readonly VITE_ENABLE_MOCK?: string;
+  readonly VITE_ENABLE_MOCK?: string
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv & {
-    readonly MODE: string;
-    readonly DEV: boolean;
-    readonly PROD: boolean;
-    readonly SSR: boolean;
-  };
+    readonly MODE: string
+    readonly DEV: boolean
+    readonly PROD: boolean
+    readonly SSR: boolean
+  }
 }
 
 export const env = {
-  API_URL: import.meta.env.VITE_API_URL ?? "",
-  APP_ENV: import.meta.env.VITE_APP_ENV ?? "development",
+  API_URL: import.meta.env.VITE_API_URL ?? '',
+  APP_ENV: import.meta.env.VITE_APP_ENV ?? 'development',
   /** true khi VITE_ENABLE_MOCK=true. MSW chá»‰ khá»Ÿi Ä‘á»™ng khi flag nÃ y báº­t. */
-  ENABLE_MOCK: import.meta.env.VITE_ENABLE_MOCK === "true",
+  ENABLE_MOCK: import.meta.env.VITE_ENABLE_MOCK === 'true',
   IS_DEV: import.meta.env.DEV,
   IS_PROD: import.meta.env.PROD,
-  IS_SSR: import.meta.env.SSR,
-} as const;
+  IS_SSR: import.meta.env.SSR
+} as const
 
-export type Env = typeof env;
+export type Env = typeof env

@@ -14,7 +14,7 @@ export function AdminEmployeesPage() {
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
       <AdminSidebar activeItem='employees' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <AdminTopNav />
+        <AdminTopNav titleKey='employees.title' subtitleKey='' />
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             <section className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>

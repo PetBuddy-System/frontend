@@ -1,0 +1,42 @@
+{
+  "hero": {
+    "title": "Blog Thú Cưng",
+    "subtitle": "Câu chuyện, mẹo hay và thông tin hữu ích về chăm sóc thú cưng",
+    "imageAlt": "Thú cưng hạnh phúc bên chủ"
+  },
+  "sidebar": {
+    "title": "Danh mục",
+    "featured": "Nổi bật",
+    "all": "Tất cả bài viết",
+    "nutrition": "Dinh dưỡng",
+    "health": "Sức khỏe",
+    "grooming": "Làm đẹp",
+    "training": "Huấn luyện",
+    "lifestyle": "Lối sống"
+  },
+  "card": {
+    "readMore": "Đọc thêm",
+    "author": "Bởi",
+    "date": "ngày"
+  },
+  "empty": {
+    "title": "Không tìm thấy bài viết",
+    "description": "Chưa có bài viết nào trong danh mục này."
+  },
+  "detail": {
+    "nav": {
+      "blog": "Blog"
+    },
+    "authorLabel": "Tác giả",
+    "readTime": "phút đọc",
+    "share": "Chia sẻ bài viết:",
+    "comments": "Để lại bình luận",
+    "commentPlaceholder": "Chia sẻ trải nghiệm hoặc đặt câu hỏi...",
+    "postComment": "Đăng bình luận",
+    "relatedTitle": "Bài viết liên quan",
+    "notFound": {
+      "title": "Không tìm thấy bài viết",
+      "backLink": "Quay lại Blog"
+    }
+  }
+}

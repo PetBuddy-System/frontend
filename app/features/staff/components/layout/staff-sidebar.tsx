@@ -7,6 +7,7 @@ import { MaterialIcon } from '~/shared/ui'
 const STAFF_NAV_ITEMS = [
   { icon: 'swap_horiz', key: 'shiftRequest', href: '/staff/shift-request' },
   { icon: 'delete_sweep', key: 'disposalRequest', href: '/staff/disposal-request' },
+  { icon: 'inventory_2', key: 'inventory', href: '/staff/add-product' },
   { icon: 'report_problem', key: 'violations', href: '#' },
   { icon: 'calendar_view_week', key: 'weeklySchedule', href: '#' },
   { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance' }
@@ -78,14 +79,15 @@ export function StaffSidebar({ activeItem }: StaffSidebarProps) {
 
       <div className='shrink-0 border-t border-border p-3'>
         <button
+          type='button'
           className={cn(
-            'flex w-full items-center justify-center rounded-xl border border-border font-semibold text-muted-foreground transition-colors hover:bg-destructive hover:text-destructive-foreground',
-            isCollapsed ? 'p-2.5' : 'gap-2 px-3.5 py-2.5'
+            'flex w-full items-center rounded-xl font-bold text-destructive transition-colors hover:bg-destructive/10',
+            isCollapsed ? 'justify-center p-2.5' : 'gap-2 px-3.5 py-2.5'
           )}
           title={isCollapsed ? t('sidebar.logout') : undefined}
         >
-          <MaterialIcon name='logout' />
-          {!isCollapsed && <span>{t('sidebar.logout')}</span>}
+          <MaterialIcon name='logout' className='text-[22px] shrink-0' />
+          {!isCollapsed && <span className='text-sm'>{t('sidebar.logout')}</span>}
         </button>
       </div>
     </aside>

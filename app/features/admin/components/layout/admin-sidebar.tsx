@@ -11,7 +11,8 @@ const ADMIN_NAV_ITEMS = [
   { icon: 'event_note', key: 'serviceBookings', href: '/admin/service-bookings' },
   { icon: 'group', key: 'users', href: '/admin/users' },
   { icon: 'inventory_2', key: 'inventory', href: '/admin/products' },
-  { icon: 'confirmation_number', key: 'vouchers', href: '/admin/vouchers' }
+  { icon: 'confirmation_number', key: 'vouchers', href: '/admin/vouchers' },
+  { icon: 'article', key: 'blog', href: '/admin/blog' }
 ] as const
 
 export type AdminNavKey = (typeof ADMIN_NAV_ITEMS)[number]['key']
@@ -82,17 +83,17 @@ export function AdminSidebar({ activeItem = 'reports' }: AdminSidebarProps) {
       </nav>
 
       <div className='shrink-0 border-t border-border p-3'>
-        <div className={cn('flex items-center rounded-xl bg-muted p-3', isCollapsed ? 'justify-center' : 'gap-3')}>
-          <div className='flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground'>
-            <MaterialIcon name='admin_panel_settings' filled />
-          </div>
-          {!isCollapsed && (
-            <div className='min-w-0'>
-              <p className='truncate font-display font-bold'>{t('admin.name')}</p>
-              <p className='text-sm text-muted-foreground'>{t('admin.role')}</p>
-            </div>
+        <button
+          type='button'
+          className={cn(
+            'flex w-full items-center rounded-xl font-bold text-destructive transition-colors hover:bg-destructive/10',
+            isCollapsed ? 'justify-center p-2.5' : 'gap-2 px-3.5 py-2.5'
           )}
-        </div>
+          title={isCollapsed ? t('sidebar.logout') : undefined}
+        >
+          <MaterialIcon name='logout' className='text-[22px] shrink-0' />
+          {!isCollapsed && <span className='text-sm'>{t('sidebar.logout')}</span>}
+        </button>
       </div>
     </aside>
   )

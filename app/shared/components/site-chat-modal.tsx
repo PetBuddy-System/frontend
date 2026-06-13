@@ -40,9 +40,7 @@ export function SiteChatModal({ isOpen, onClose }: SiteChatModalProps) {
           <div className='min-w-0'>
             <p className='text-[11px] uppercase tracking-[0.22em] text-primary'>{t('chatModal.eyebrow')}</p>
             <h3 className='mt-1 text-xl font-semibold text-foreground md:text-2xl'>{t('chatModal.title')}</h3>
-            <p className='mt-2 max-w-xl text-sm leading-6 text-muted-foreground'>
-              {t('chatModal.subtitle')}
-            </p>
+            <p className='mt-2 max-w-xl text-sm leading-6 text-muted-foreground'>{t('chatModal.subtitle')}</p>
           </div>
           <button
             type='button'

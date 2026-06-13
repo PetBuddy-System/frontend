@@ -1,5 +1,6 @@
 import enAdmin from '~/locales/en/admin.json'
 import enAuth from '~/locales/en/auth.json'
+import enBlog from '~/locales/en/blog.json'
 import enCommon from '~/locales/en/common.json'
 import enLanding from '~/locales/en/landing.json'
 import enManager from '~/locales/en/manager.json'
@@ -10,6 +11,7 @@ import enStaff from '~/locales/en/staff.json'
 import enWelcome from '~/locales/en/welcome.json'
 import viAdmin from '~/locales/vi/admin.json'
 import viAuth from '~/locales/vi/auth.json'
+import viBlog from '~/locales/vi/blog.json'
 import viCommon from '~/locales/vi/common.json'
 import viLanding from '~/locales/vi/landing.json'
 import viManager from '~/locales/vi/manager.json'
@@ -31,6 +33,7 @@ import viWelcome from '~/locales/vi/welcome.json'
  */
 
 export const NAMESPACES = [
+  'blog',
   'common',
   'welcome',
   'landing',
@@ -50,6 +53,7 @@ export const resources = {
   en: {
     admin: enAdmin,
     auth: enAuth,
+    blog: enBlog,
     common: enCommon,
     landing: enLanding,
     manager: enManager,
@@ -62,6 +66,7 @@ export const resources = {
   vi: {
     admin: viAdmin,
     auth: viAuth,
+    blog: viBlog,
     common: viCommon,
     landing: viLanding,
     manager: viManager,

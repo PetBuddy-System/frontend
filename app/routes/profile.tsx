@@ -1,5 +1,5 @@
-import { ProfilePage } from "~/features/profile";
+import { ProfilePage } from '~/features/profile'
 
 export default function ProfileRoute() {
-  return <ProfilePage />;
+  return <ProfilePage />
 }

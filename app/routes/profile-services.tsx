@@ -1,5 +1,5 @@
-import { ProfileServicesPage } from "~/features/profile";
+import { ProfileServicesPage } from '~/features/profile'
 
 export default function ProfileServicesRoute() {
-  return <ProfileServicesPage />;
+  return <ProfileServicesPage />
 }
