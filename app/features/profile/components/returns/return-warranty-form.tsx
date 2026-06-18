@@ -1,24 +1,14 @@
-import { useState, useRef, type ChangeEvent } from 'react'
+import { useState, type ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
-import { cn } from '~/shared/lib/cn'
+import { ReturnWarrantySuccess } from './return-warranty-success'
+import { ReturnWarrantyStepOrder, type ReturnOrder } from './return-warranty-step-order'
+import { ReturnWarrantyStepType } from './return-warranty-step-type'
+import { ReturnWarrantyStepReason } from './return-warranty-step-reason'
+import { ReturnWarrantyStepPhotos } from './return-warranty-step-photos'
 
-interface Product {
-  id: string
-  name: string
-  quantity: number
-  price: string
-  image: string
-}
-
-interface Order {
-  id: string
-  date: string
-  products: Product[]
-}
-
-const MOCK_ORDERS: Order[] = [
+const MOCK_ORDERS: ReturnOrder[] = [
   {
     id: 'ORD-2901',
     date: '25/10/2023',
@@ -62,7 +52,6 @@ const PRESET_IMAGE =
 
 export function ReturnWarrantyForm() {
   const { t } = useTranslation('profile')
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Form states
   const [selectedOrderId, setSelectedOrderId] = useState<string>('')
@@ -73,8 +62,6 @@ export function ReturnWarrantyForm() {
   const [photos, setPhotos] = useState<string[]>([PRESET_IMAGE])
   const [error, setError] = useState<string | null>(null)
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
-
-  const selectedOrder = MOCK_ORDERS.find((o) => o.id === selectedOrderId)
 
   const handleOrderChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const orderId = e.target.value
@@ -91,24 +78,9 @@ export function ReturnWarrantyForm() {
     setError(null)
   }
 
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files)
-      const newUrls = filesArray.map((file) => URL.createObjectURL(file))
-      setPhotos((prev) => {
-        const combined = [...prev, ...newUrls]
-        return combined.slice(0, 5) // Max 5 images
-      })
-      setError(null)
-    }
-  }
-
-  const removePhoto = (indexToRemove: number) => {
-    setPhotos((prev) => prev.filter((_, idx) => idx !== indexToRemove))
-  }
-
-  const triggerFileInput = () => {
-    fileInputRef.current?.click()
+  const handlePhotosChange = (newPhotos: string[]) => {
+    setPhotos(newPhotos)
+    setError(null)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -146,24 +118,7 @@ export function ReturnWarrantyForm() {
   }
 
   if (isSubmitted) {
-    return (
-      <div className='flex flex-col items-center justify-center rounded-xl border border-border bg-card p-6 text-center shadow-md'>
-        <div className='mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success text-success-foreground'>
-          <MaterialIcon name='check' className='text-[36px]' />
-        </div>
-        <h3 className='font-display text-xl font-bold text-foreground sm:text-2xl'>
-          {t('returnWarranty.success.title')}
-        </h3>
-        <p className='mt-2 max-w-md text-sm text-muted-foreground'>{t('returnWarranty.success.message')}</p>
-        <button
-          type='button'
-          onClick={resetForm}
-          className='mt-6 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-all hover:brightness-105 active:scale-[0.98]'
-        >
-          {t('returnWarranty.success.button')}
-        </button>
-      </div>
-    )
+    return <ReturnWarrantySuccess onReset={resetForm} />
   }
 
   return (
@@ -176,206 +131,33 @@ export function ReturnWarrantyForm() {
       )}
 
       {/* Step 1: Chọn đơn hàng */}
-      <div className='space-y-4 rounded-xl border border-border bg-card p-4 shadow-sm'>
-        <div className='flex items-center gap-3'>
-          <span className='flex h-8 w-8 items-center justify-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground'>
-            1
-          </span>
-          <h3 className='font-display text-lg font-bold text-foreground'>{t('returnWarranty.step.order')}</h3>
-        </div>
-
-        <div className='relative'>
-          <select
-            value={selectedOrderId}
-            onChange={handleOrderChange}
-            className='w-full cursor-pointer appearance-none rounded-xl border border-border bg-muted p-4 pr-12 text-sm text-foreground focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 focus:outline-none transition-colors'
-          >
-            <option value=''>{t('returnWarranty.order.placeholder')}</option>
-            {MOCK_ORDERS.map((order) => (
-              <option key={order.id} value={order.id}>
-                {order.id} - {order.date} ({order.products.length} {t('sidebar.nav.orders').toLowerCase()})
-              </option>
-            ))}
-          </select>
-          <MaterialIcon
-            name='expand_more'
-            className='pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-2xl text-muted-foreground'
-          />
-        </div>
-
-        {/* Product checkboxes */}
-        {selectedOrder && (
-          <div className='mt-4 border-t border-border pt-4 space-y-3'>
-            <p className='px-2 font-display text-xs font-bold tracking-wider text-muted-foreground'>
-              {t('returnWarranty.order.selectProducts')}
-            </p>
-            <div className='space-y-3'>
-              {selectedOrder.products.map((product) => (
-                <label
-                  key={product.id}
-                  className={cn(
-                    'flex items-center gap-4 rounded-xl border border-border bg-card p-3 cursor-pointer transition-colors hover:bg-muted/50',
-                    selectedProducts[product.id] && 'border-primary bg-primary/5'
-                  )}
-                >
-                  <input
-                    type='checkbox'
-                    checked={!!selectedProducts[product.id]}
-                    onChange={() => handleProductToggle(product.id)}
-                    className='h-5 w-5 rounded border-border text-primary focus:ring-primary focus:ring-offset-0'
-                  />
-                  <img src={product.image} alt={product.name} className='h-16 w-16 rounded-lg object-cover' />
-                  <div className='flex-1'>
-                    <p className='text-sm font-semibold text-foreground'>{product.name}</p>
-                    <p className='text-xs text-muted-foreground mt-1'>
-                      {t('returnWarranty.order.quantity', { qty: product.quantity })} |{' '}
-                      {t('returnWarranty.order.price', { price: product.price })}
-                    </p>
-                  </div>
-                </label>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      <ReturnWarrantyStepOrder
+        selectedOrderId={selectedOrderId}
+        selectedProducts={selectedProducts}
+        orders={MOCK_ORDERS}
+        onOrderChange={handleOrderChange}
+        onProductToggle={handleProductToggle}
+      />
 
       {/* Step 2: Hình thức yêu cầu */}
-      <div className='space-y-4 rounded-xl border border-border bg-card p-4 shadow-sm'>
-        <div className='flex items-center gap-3'>
-          <span className='flex h-8 w-8 items-center justify-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground'>
-            2
-          </span>
-          <h3 className='font-display text-lg font-bold text-foreground'>{t('returnWarranty.step.type')}</h3>
-        </div>
-
-        <div className='flex flex-col gap-4 sm:flex-row'>
-          <label
-            onClick={() => setRequestType('exchange')}
-            className={cn(
-              'flex flex-1 cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-border bg-card p-4 transition-all hover:bg-muted',
-              requestType === 'exchange' && 'border-primary bg-primary/5 text-primary'
-            )}
-          >
-            <input
-              type='radio'
-              name='request_type'
-              checked={requestType === 'exchange'}
-              onChange={() => setRequestType('exchange')}
-              className='sr-only'
-            />
-            <MaterialIcon name='swap_horiz' className='text-3xl' />
-            <span className='text-sm font-bold'>{t('returnWarranty.type.exchange')}</span>
-          </label>
-
-          <label
-            onClick={() => setRequestType('warranty')}
-            className={cn(
-              'flex flex-1 cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-border bg-card p-4 transition-all hover:bg-muted',
-              requestType === 'warranty' && 'border-primary bg-primary/5 text-primary'
-            )}
-          >
-            <input
-              type='radio'
-              name='request_type'
-              checked={requestType === 'warranty'}
-              onChange={() => setRequestType('warranty')}
-              className='sr-only'
-            />
-            <MaterialIcon name='verified_user' className='text-3xl' />
-            <span className='text-sm font-bold'>{t('returnWarranty.type.warranty')}</span>
-          </label>
-        </div>
-      </div>
+      <ReturnWarrantyStepType requestType={requestType} onChange={setRequestType} />
 
       {/* Step 3: Lý do & Mô tả */}
-      <div className='space-y-4 rounded-xl border border-border bg-card p-4 shadow-sm'>
-        <div className='flex items-center gap-3'>
-          <span className='flex h-8 w-8 items-center justify-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground'>
-            3
-          </span>
-          <h3 className='font-display text-lg font-bold text-foreground'>{t('returnWarranty.step.reason')}</h3>
-        </div>
-
-        <div className='space-y-4'>
-          <div className='space-y-2'>
-            <label className='text-xs font-bold text-muted-foreground'>{t('returnWarranty.reason.label')}</label>
-            <div className='relative'>
-              <select
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                className='w-full cursor-pointer appearance-none rounded-xl border border-border bg-muted p-3 pr-12 text-sm text-foreground focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 focus:outline-none transition-colors'
-              >
-                <option value='defect'>{t('returnWarranty.reason.options.defect')}</option>
-                <option value='wrong'>{t('returnWarranty.reason.options.wrong')}</option>
-                <option value='notAsDescribed'>{t('returnWarranty.reason.options.notAsDescribed')}</option>
-                <option value='damaged'>{t('returnWarranty.reason.options.damaged')}</option>
-                <option value='other'>{t('returnWarranty.reason.options.other')}</option>
-              </select>
-              <MaterialIcon
-                name='expand_more'
-                className='pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-2xl text-muted-foreground'
-              />
-            </div>
-          </div>
-
-          <div className='space-y-2'>
-            <label className='text-xs font-bold text-muted-foreground'>
-              {t('returnWarranty.reason.descriptionLabel')}
-            </label>
-            <textarea
-              rows={4}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder={t('returnWarranty.reason.placeholder')}
-              className='w-full rounded-xl border border-border bg-muted p-4 text-sm text-foreground focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-0 focus:outline-none transition-colors'
-            />
-          </div>
-        </div>
-      </div>
+      <ReturnWarrantyStepReason
+        reason={reason}
+        description={description}
+        onReasonChange={(val) => {
+          setReason(val)
+          setError(null)
+        }}
+        onDescriptionChange={(val) => {
+          setDescription(val)
+          setError(null)
+        }}
+      />
 
       {/* Step 4: Hình ảnh minh họa */}
-      <div className='space-y-4 rounded-xl border border-border bg-card p-4 shadow-sm'>
-        <div className='flex items-center gap-3'>
-          <span className='flex h-8 w-8 items-center justify-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground'>
-            4
-          </span>
-          <h3 className='font-display text-lg font-bold text-foreground'>{t('returnWarranty.step.photos')}</h3>
-        </div>
-
-        <div className='grid grid-cols-2 gap-4 sm:grid-cols-4'>
-          <input
-            type='file'
-            multiple
-            accept='image/*'
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            className='hidden'
-          />
-          <button
-            type='button'
-            onClick={triggerFileInput}
-            className='flex aspect-square flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-card text-muted-foreground hover:bg-muted hover:text-primary transition-all active:scale-95'
-          >
-            <MaterialIcon name='add_a_photo' className='text-3xl' />
-            <span className='text-[10px] font-bold uppercase'>{t('returnWarranty.photos.upload')}</span>
-          </button>
-
-          {/* Render uploaded image previews */}
-          {photos.map((url, idx) => (
-            <div key={idx} className='group relative aspect-square overflow-hidden rounded-xl bg-muted shadow-sm'>
-              <img src={url} alt='Upload preview' className='h-full w-full object-cover' />
-              <button
-                type='button'
-                onClick={() => removePhoto(idx)}
-                className='absolute right-1 top-1 rounded-full bg-black/50 p-1 text-white opacity-0 transition-opacity hover:bg-black/70 group-hover:opacity-100'
-              >
-                <MaterialIcon name='close' className='text-sm' />
-              </button>
-            </div>
-          ))}
-        </div>
-        <p className='text-xs italic text-muted-foreground'>{t('returnWarranty.photos.note')}</p>
-      </div>
+      <ReturnWarrantyStepPhotos photos={photos} onPhotosChange={handlePhotosChange} />
 
       <button
         type='submit'

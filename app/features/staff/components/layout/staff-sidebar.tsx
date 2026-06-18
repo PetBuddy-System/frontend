@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 
 import { useSidebar } from '~/providers/sidebar-provider'
+import { useAuth } from '~/providers/auth-provider'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
@@ -22,11 +24,13 @@ export interface StaffSidebarProps {
 export function StaffSidebar({ activeItem }: StaffSidebarProps) {
   const { t } = useTranslation('staff')
   const { isCollapsed, toggleSidebar } = useSidebar()
+  const { logout } = useAuth()
+  const navigate = useNavigate()
 
   return (
     <aside
       className={cn(
-        'hidden h-screen shrink-0 flex-col overflow-hidden border-r border-border bg-card transition-all duration-300 md:flex',
+        'sticky top-0 hidden h-screen shrink-0 flex-col overflow-hidden border-r border-border bg-card transition-all duration-300 md:flex',
         isCollapsed ? 'w-[4.5rem]' : 'w-60'
       )}
     >
@@ -80,6 +84,10 @@ export function StaffSidebar({ activeItem }: StaffSidebarProps) {
       <div className='shrink-0 border-t border-border p-3'>
         <button
           type='button'
+          onClick={async () => {
+            await logout()
+            void navigate('/')
+          }}
           className={cn(
             'flex w-full items-center rounded-xl font-bold text-destructive transition-colors hover:bg-destructive/10',
             isCollapsed ? 'justify-center p-2.5' : 'gap-2 px-3.5 py-2.5'

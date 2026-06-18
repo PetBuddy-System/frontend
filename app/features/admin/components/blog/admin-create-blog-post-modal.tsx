@@ -4,13 +4,19 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 import { MarkdownPreviewSkeleton, MarkdownRenderer } from './markdown-renderer'
+import { BlogImageUpload } from './blog-image-upload'
+import { BlogPostPreviewCard } from './blog-post-preview-card'
+import { BlogMarkdownTips } from './blog-markdown-tips'
 
 export interface BlogPostFormData {
   title: string
   excerpt: string
-  category: string
+  label: string
   author: string
-  imageUrl: string
+  /** File ảnh bìa được chọn từ máy (dùng cho create / update) */
+  imageFiles: File[]
+  /** URL ảnh bìa hiện tại (dùng cho preview khi edit bài đã có ảnh trên S3) */
+  existingImageUrl?: string
   markdownContent: string
   isPublished: boolean
 }
@@ -26,19 +32,21 @@ const CATEGORIES = ['featured', 'nutrition', 'health', 'grooming', 'training', '
 
 export function AdminCreateBlogPostModal({ isOpen, onClose, onSubmit, initialData }: AdminCreateBlogPostModalProps) {
   const { t } = useTranslation('admin')
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const mdFileInputRef = useRef<HTMLInputElement>(null)
 
   const [title, setTitle] = useState(initialData?.title ?? '')
   const [excerpt, setExcerpt] = useState(initialData?.excerpt ?? '')
-  const [category, setCategory] = useState(initialData?.category ?? 'featured')
+  const [label, setLabel] = useState(initialData?.label ?? 'featured')
   const [author, setAuthor] = useState(initialData?.author ?? '')
-  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl ?? '')
+  const [imageFiles, setImageFiles] = useState<File[]>(initialData?.imageFiles ?? [])
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>(initialData?.existingImageUrl ?? '')
   const [markdownContent, setMarkdownContent] = useState(initialData?.markdownContent ?? '')
   const [isPublished, setIsPublished] = useState(initialData?.isPublished ?? false)
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor')
   const [isDragging, setIsDragging] = useState(false)
 
-  const handleFileImport = useCallback((file: File) => {
+  // ─── Markdown file import ─────────────────────────────────────────────────
+  const handleMdFileImport = useCallback((file: File) => {
     if (!file.name.endsWith('.md')) {
       return
     }
@@ -50,39 +58,41 @@ export function AdminCreateBlogPostModal({ isOpen, onClose, onSubmit, initialDat
     reader.readAsText(file)
   }, [])
 
-  const handleDrop = useCallback(
+  const handleMdDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault()
       setIsDragging(false)
       const file = e.dataTransfer.files[0]
       if (file) {
-        handleFileImport(file)
+        handleMdFileImport(file)
       }
     },
-    [handleFileImport]
+    [handleMdFileImport]
   )
 
-  const handleFileChange = useCallback(
+  const handleMdFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
       if (file) {
-        handleFileImport(file)
+        handleMdFileImport(file)
       }
     },
-    [handleFileImport]
+    [handleMdFileImport]
   )
 
+  // ─── Submit ───────────────────────────────────────────────────────────────
   const handleSubmit = useCallback(() => {
     onSubmit({
       title,
       excerpt,
-      category,
+      label,
       author,
-      imageUrl,
+      imageFiles,
+      existingImageUrl: imagePreviewUrl,
       markdownContent,
       isPublished
     })
-  }, [title, excerpt, category, author, imageUrl, markdownContent, isPublished, onSubmit])
+  }, [title, excerpt, label, author, imageFiles, imagePreviewUrl, markdownContent, isPublished, onSubmit])
 
   if (!isOpen) {
     return null
@@ -166,11 +176,11 @@ export function AdminCreateBlogPostModal({ isOpen, onClose, onSubmit, initialDat
 
                     <label className='space-y-2'>
                       <span className='text-sm font-semibold text-card-foreground'>
-                        {t('blogManagement.create.fields.category')}
+                        {t('blogManagement.create.fields.label')}
                       </span>
                       <select
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
+                        value={label}
+                        onChange={(e) => setLabel(e.target.value)}
                         className='h-12 w-full rounded-2xl border border-border bg-card px-4 text-sm text-card-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-ring'
                       >
                         {CATEGORIES.map((cat) => (
@@ -196,18 +206,18 @@ export function AdminCreateBlogPostModal({ isOpen, onClose, onSubmit, initialDat
                       />
                     </label>
 
-                    <label className='space-y-2'>
-                      <span className='text-sm font-semibold text-card-foreground'>
-                        {t('blogManagement.create.fields.imageUrl')}
-                      </span>
-                      <input
-                        type='url'
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
-                        placeholder={t('blogManagement.create.placeholders.imageUrl')}
-                        className='h-12 w-full rounded-2xl border border-border bg-card px-4 text-sm text-card-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-ring'
-                      />
-                    </label>
+                    <BlogImageUpload
+                      imageFiles={imageFiles}
+                      imagePreviewUrl={imagePreviewUrl}
+                      onChange={(files, previewUrl) => {
+                        setImageFiles(files)
+                        setImagePreviewUrl(previewUrl)
+                      }}
+                      onRemove={() => {
+                        setImageFiles([])
+                        setImagePreviewUrl('')
+                      }}
+                    />
                   </div>
 
                   <label className='space-y-2'>
@@ -230,18 +240,18 @@ export function AdminCreateBlogPostModal({ isOpen, onClose, onSubmit, initialDat
                       </span>
                       <button
                         type='button'
-                        onClick={() => fileInputRef.current?.click()}
+                        onClick={() => mdFileInputRef.current?.click()}
                         className='inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/20'
                       >
                         <MaterialIcon name='upload_file' className='text-[14px]' />
                         {t('blogManagement.create.importMd')}
                       </button>
                       <input
-                        ref={fileInputRef}
+                        ref={mdFileInputRef}
                         type='file'
                         accept='.md'
                         className='hidden'
-                        onChange={handleFileChange}
+                        onChange={handleMdFileChange}
                       />
                     </div>
 
@@ -251,7 +261,7 @@ export function AdminCreateBlogPostModal({ isOpen, onClose, onSubmit, initialDat
                         setIsDragging(true)
                       }}
                       onDragLeave={() => setIsDragging(false)}
-                      onDrop={handleDrop}
+                      onDrop={handleMdDrop}
                       className={cn(
                         'rounded-2xl border-2 border-dashed p-4 transition-colors',
                         isDragging ? 'border-primary bg-primary/5' : 'border-border'
@@ -300,64 +310,15 @@ export function AdminCreateBlogPostModal({ isOpen, onClose, onSubmit, initialDat
             </article>
 
             <aside className='space-y-6'>
-              <section className='rounded-3xl border border-border bg-card p-6 shadow-sm'>
-                <h3 className='text-base font-extrabold text-card-foreground'>
-                  {t('blogManagement.create.preview.title')}
-                </h3>
-                <p className='mt-1 text-sm text-muted-foreground'>{t('blogManagement.create.preview.subtitle')}</p>
+              <BlogPostPreviewCard
+                title={title}
+                excerpt={excerpt}
+                label={label}
+                author={author}
+                imagePreviewUrl={imagePreviewUrl}
+              />
 
-                <div className='mt-4 overflow-hidden rounded-2xl border border-border'>
-                  <div className='h-40 w-full bg-muted'>
-                    {imageUrl ? (
-                      <img src={imageUrl} alt='' className='h-full w-full object-cover' />
-                    ) : (
-                      <div className='flex h-full items-center justify-center'>
-                        <MaterialIcon name='image' className='text-4xl text-muted-foreground' />
-                      </div>
-                    )}
-                  </div>
-                  <div className='bg-card p-4'>
-                    <span className='mb-2 inline-block rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground'>
-                      {t(`blogManagement.sidebar.${category}`)}
-                    </span>
-                    <h4 className='font-display text-lg font-bold text-card-foreground line-clamp-2'>
-                      {title || t('blogManagement.create.preview.titlePlaceholder')}
-                    </h4>
-                    <p className='mt-1 line-clamp-2 text-sm text-muted-foreground'>
-                      {excerpt || t('blogManagement.create.preview.excerptPlaceholder')}
-                    </p>
-                    <div className='mt-3 flex items-center gap-2 text-xs text-muted-foreground'>
-                      <MaterialIcon name='person' className='text-[12px]' />
-                      <span>{author || 'Author name'}</span>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <section className='rounded-3xl bg-primary p-6 text-primary-foreground shadow-sm'>
-                <MaterialIcon name='lightbulb' className='text-2xl' />
-                <h3 className='mt-3 text-base font-extrabold'>{t('blogManagement.create.tip.title')}</h3>
-                <p className='mt-2 text-sm leading-relaxed text-primary-foreground/90'>
-                  {t('blogManagement.create.tip.text')}
-                </p>
-              </section>
-
-              <section className='rounded-3xl border border-border bg-card p-6 shadow-sm'>
-                <div className='flex items-center gap-3'>
-                  <div className='flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground'>
-                    <MaterialIcon name='pets' className='text-2xl' />
-                  </div>
-                  <div>
-                    <p className='text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>
-                      {t('blogManagement.create.accent.label')}
-                    </p>
-                    <h3 className='text-lg font-extrabold text-card-foreground'>
-                      {t('blogManagement.create.accent.title')}
-                    </h3>
-                  </div>
-                </div>
-                <p className='mt-4 text-sm text-muted-foreground'>{t('blogManagement.create.accent.text')}</p>
-              </section>
+              <BlogMarkdownTips />
             </aside>
           </div>
         </div>

@@ -8,7 +8,7 @@ export interface BlogPost {
   id: string
   title: string
   excerpt: string
-  category: string
+  label: string
   author: string
   date: string
   imageUrl: string
@@ -27,7 +27,7 @@ export function AdminBlogPostTable({ posts, onEdit, onDelete }: AdminBlogPostTab
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
   const filteredPosts =
-    selectedCategory === 'all' ? posts : posts.filter((post) => post.category === selectedCategory)
+    selectedCategory === 'all' ? posts : posts.filter((post) => post.label === selectedCategory)
 
   return (
     <div className='space-y-4'>
@@ -59,7 +59,7 @@ export function AdminBlogPostTable({ posts, onEdit, onDelete }: AdminBlogPostTab
                 {t('blogManagement.table.columns.post')}
               </th>
               <th className='px-5 py-4 text-left text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>
-                {t('blogManagement.table.columns.category')}
+                {t('blogManagement.table.columns.label')}
               </th>
               <th className='px-5 py-4 text-left text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>
                 {t('blogManagement.table.columns.author')}
@@ -111,7 +111,7 @@ export function AdminBlogPostTable({ posts, onEdit, onDelete }: AdminBlogPostTab
                   </td>
                   <td className='px-5 py-4'>
                     <span className='inline-block rounded-full bg-secondary/20 px-3 py-1 text-xs font-semibold text-secondary-foreground'>
-                      {t(`blogManagement.sidebar.${post.category}`)}
+                      {post.label}
                     </span>
                   </td>
                   <td className='px-5 py-4'>

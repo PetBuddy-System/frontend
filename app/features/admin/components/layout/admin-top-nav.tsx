@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
+import { useAuth } from '~/providers/auth-provider'
 
 export interface AdminTopNavProps {
   titleKey?: string
@@ -9,6 +10,7 @@ export interface AdminTopNavProps {
 
 export function AdminTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashboard.subtitle' }: AdminTopNavProps) {
   const { t } = useTranslation('admin')
+  const { user } = useAuth()
 
   return (
     <header className='flex h-20 shrink-0 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:px-8'>
@@ -47,7 +49,7 @@ export function AdminTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashb
 
         <div className='flex items-center gap-3'>
           <div className='hidden text-right sm:block'>
-            <p className='text-sm font-semibold'>{t('admin.name')}</p>
+            <p className='text-sm font-semibold'>{user?.fullName || t('admin.name')}</p>
             <p className='text-xs text-muted-foreground'>{t('admin.role')}</p>
           </div>
           <div className='flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary bg-primary text-primary-foreground shrink-0'>

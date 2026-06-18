@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/shared/lib/cn'
-import type { BlogPost } from '~/features/landing/data/posts'
+
 
 interface AuthorCardProps {
   author: string

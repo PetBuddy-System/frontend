@@ -21,7 +21,9 @@
     "supportChat": "Trò chuyện hỗ trợ",
     "callNow": "Gọi ngay",
     "login": "Đăng nhập",
-    "register": "Đăng ký"
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
+    "profile": "Tài khoản của tôi"
   },
   "chatModal": {
     "eyebrow": "Hỗ trợ trực tuyến",

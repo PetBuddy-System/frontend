@@ -19,6 +19,23 @@
     "author": "Bởi",
     "date": "ngày"
   },
+  "search": {
+    "placeholder": "Tìm kiếm bài viết...",
+    "clear": "Xóa tìm kiếm"
+  },
+  "pagination": {
+    "posts": "bài viết",
+    "prev": "Trang trước",
+    "next": "Trang sau"
+  },
+  "error": {
+    "fetch": "Không thể tải bài viết. Vui lòng thử lại.",
+    "retry": "Thử lại",
+    "fallback": "Không thể tải bài viết mới nhất. Đang hiển thị bài viết mẫu.",
+    "authTitle": "Yêu cầu đăng nhập",
+    "authDescription": "Vui lòng đăng nhập để xem bài viết.",
+    "loginButton": "Đăng nhập"
+  },
   "empty": {
     "title": "Không tìm thấy bài viết",
     "description": "Chưa có bài viết nào trong danh mục này."

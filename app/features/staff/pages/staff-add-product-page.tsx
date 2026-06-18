@@ -83,7 +83,7 @@ export function StaffAddProductPage() {
   const isConfirmDisabled = !currentProduct.name.trim()
 
   return (
-    <div className='flex min-h-screen bg-background'>
+    <div className='flex min-h-dvh items-start bg-background'>
       <StaffSidebar activeItem='inventory' />
 
       <div className='min-w-0 flex-1'>

@@ -22,19 +22,25 @@
       "editTitle": "Chỉnh sửa bài viết",
       "fields": {
         "author": "Tác giả",
-        "category": "Danh mục",
+        "label": "Danh mục",
         "content": "Nội dung Markdown",
+        "coverImage": "Ảnh bìa",
         "excerpt": "Mô tả ngắn",
-        "imageUrl": "URL ảnh bìa",
         "publish": "Xuất bản ngay",
         "title": "Tiêu đề"
+      },
+      "imageUpload": {
+        "currentImage": "Ảnh bìa hiện tại",
+        "invalidType": "Chỉ chấp nhận file JPEG, PNG, GIF hoặc WebP.",
+        "placeholder": "Nhấn để tải ảnh lên hoặc kéo thả vào đây",
+        "remove": "Xóa ảnh bìa",
+        "tooLarge": "Kích thước file tối đa {{max}}MB."
       },
       "importMd": "Nhập .md",
       "placeholders": {
         "author": "ví dụ: Đội ngũ PetBuddy",
         "content": "# Tiêu đề của bạn\n\nViết nội dung bài viết bằng định dạng Markdown tại đây...",
         "excerpt": "Một mô tả ngắn được hiển thị trên thẻ bài viết...",
-        "imageUrl": "https://example.com/image.jpg",
         "title": "Tiêu đề bài viết của bạn"
       },
       "preview": {
@@ -87,7 +93,7 @@
       "columns": {
         "actions": "Hành động",
         "author": "Tác giả",
-        "category": "Danh mục",
+        "label": "Danh mục",
         "date": "Ngày",
         "post": "Bài viết",
         "status": "Trạng thái"

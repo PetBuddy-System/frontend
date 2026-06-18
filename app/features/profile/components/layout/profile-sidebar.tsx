@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { useSidebar } from '~/providers/sidebar-provider'
+import { useAuth } from '~/providers/auth-provider'
 
 const MAIN_NAV = [
   { key: 'profile', icon: 'person', href: '/profile' },
@@ -22,6 +24,8 @@ export interface ProfileSidebarProps {
 export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) {
   const { t } = useTranslation('profile')
   const { isCollapsed, toggleSidebar } = useSidebar()
+  const { logout } = useAuth()
+  const navigate = useNavigate()
 
   return (
     <aside
@@ -73,6 +77,10 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
       <div className='flex flex-col gap-1 border-t border-border pt-4'>
         <button
           type='button'
+          onClick={async () => {
+            await logout()
+            void navigate('/')
+          }}
           className={cn(
             'flex items-center rounded-xl font-bold text-destructive transition-colors hover:bg-destructive/10',
             isCollapsed ? 'w-full justify-center p-2.5' : 'gap-2 px-3.5 py-2.5'

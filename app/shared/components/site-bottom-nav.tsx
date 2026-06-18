@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
+import { useAuth } from '~/providers/auth-provider'
+import { getDashboardPathByRole } from '~/shared/lib/auth'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
@@ -12,13 +14,14 @@ const NAV_ITEMS = [
 
 export function SiteBottomNav() {
   const { t } = useTranslation('landing')
+  const { user } = useAuth()
 
   return (
     <nav className='fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-border bg-card px-4 py-2 shadow-lg md:hidden'>
       {NAV_ITEMS.map((navItem) => (
         <a
           key={navItem.key}
-          href={navItem.href}
+          href={navItem.key === 'account' ? getDashboardPathByRole(user?.role) : navItem.href}
           className={cn(
             'relative flex flex-col items-center justify-center rounded-xl px-4 py-1 text-xs font-semibold transition-transform',
             navItem.active ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-muted'

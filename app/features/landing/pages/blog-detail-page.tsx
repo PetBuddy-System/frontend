@@ -1,22 +1,188 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router'
-
 import { useTranslation } from 'react-i18next'
 
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
+import { fetchBlogByIdApi, fetchBlogsApi } from '~/shared/lib/blog'
+import type { BlogResponse } from '~/shared/lib/blog'
 import { MaterialIcon } from '~/shared/ui'
 
 import { AuthorCard } from '../components/blog/blog-author-card'
 import { BlogArticleContent } from '../components/blog/blog-article-content'
 import { RelatedPosts } from '../components/blog/blog-related-posts'
-import { MOCK_POSTS } from '../data/posts'
-import type { BlogPostDetail } from '../data/post-details'
+import { BlogShareSection } from '../components/blog/blog-share-section'
+import { BlogCommentsSection } from '../components/blog/blog-comments-section'
+import { BlogDetailSkeleton } from '../components/blog/blog-detail-skeleton'
+import type { BlogPost } from '../data/posts'
 
 export interface BlogDetailPageProps {
-  post: BlogPostDetail
+  postId: string
 }
 
-export function BlogDetailPage({ post }: BlogDetailPageProps) {
+function mapToBlogPost(blog: BlogResponse): BlogPost {
+  return {
+    id: blog.blogId,
+    title: blog.title,
+    excerpt: blog.snippet || blog.content?.slice(0, 150) + '...' || '',
+    category: blog.label?.toLowerCase() ?? 'all',
+    categoryLabel: blog.label ?? '',
+    author: blog.userId ? `User ${blog.userId.slice(0, 8)}` : 'PetBuddy',
+    date: new Date(blog.createdAt).toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }),
+    imageUrl: blog.imageUrls?.[0] || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80'
+  }
+}
+
+export function BlogDetailPage({ postId }: BlogDetailPageProps) {
   const { t } = useTranslation('blog')
+
+  const [post, setPost] = useState<BlogResponse | null>(null)
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMsg, setErrorMsg] = useState('')
+
+  const loadPostData = useCallback(async () => {
+    setIsLoading(true)
+    setErrorMsg('')
+    try {
+      const [detailRes, listRes] = await Promise.all([
+        fetchBlogByIdApi(postId),
+        fetchBlogsApi({ size: 10 }).catch(() => null)
+      ])
+
+      if (detailRes.success && detailRes.data) {
+        setPost(detailRes.data)
+        document.title = `${detailRes.data.title} - PetBuddy`
+      } else {
+        setErrorMsg('Failed to load post detail')
+      }
+
+      if (listRes && listRes.success && listRes.data) {
+        const mapped = listRes.data.content.map(mapToBlogPost)
+        setRelatedPosts(mapped)
+      }
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Unknown error'
+      setErrorMsg(msg)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [postId])
+
+  useEffect(() => {
+    void loadPostData()
+  }, [loadPostData])
+
+  if (isLoading) {
+    return <BlogDetailSkeleton />
+  }
+
+  if (errorMsg) {
+    const isAuthError =
+      errorMsg.includes('401') ||
+      errorMsg.includes('unauthorized') ||
+      errorMsg.includes('authenticated') ||
+      errorMsg.toLowerCase().includes('đăng nhập')
+
+    return (
+      <div className='flex min-h-screen flex-col bg-background text-foreground'>
+        <SiteHeader activeItem='blog' />
+        <main className='flex-1 flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto'>
+          {isAuthError ? (
+            <div className='space-y-6'>
+              <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent/20 text-primary'>
+                <MaterialIcon name='lock' className='text-3xl' />
+              </div>
+              <div>
+                <h1 className='font-display text-2xl font-bold'>{t('error.authTitle')}</h1>
+                <p className='mt-2 text-muted-foreground text-sm'>{t('error.authDescription')}</p>
+              </div>
+              <Link
+                to='/login'
+                className='inline-flex h-11 w-full items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 shadow-md'
+              >
+                {t('error.loginButton')}
+              </Link>
+            </div>
+          ) : (
+            <div className='space-y-6'>
+              <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10 text-destructive'>
+                <MaterialIcon name='error' className='text-3xl' />
+              </div>
+              <div>
+                <h1 className='font-display text-2xl font-bold'>{t('detail.notFound.title')}</h1>
+                <p className='mt-2 text-muted-foreground text-sm'>{errorMsg}</p>
+              </div>
+              <div className='flex flex-col gap-3 w-full'>
+                <button
+                  type='button'
+                  onClick={() => void loadPostData()}
+                  className='inline-flex h-11 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 shadow-md'
+                >
+                  {t('error.retry')}
+                </button>
+                <Link
+                  to='/blog'
+                  className='inline-flex h-11 items-center justify-center rounded-full border border-border bg-card text-sm font-bold text-foreground transition-colors hover:bg-muted'
+                >
+                  {t('detail.notFound.backLink')}
+                </Link>
+              </div>
+            </div>
+          )}
+        </main>
+        <SiteFooter />
+        <SiteBottomNav />
+        <SiteFab />
+      </div>
+    )
+  }
+
+  if (!post) {
+    return (
+      <div className='flex min-h-screen flex-col bg-background text-foreground'>
+        <SiteHeader activeItem='blog' />
+        <main className='flex-1 flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto'>
+          <div className='space-y-6'>
+            <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground'>
+              <MaterialIcon name='description' className='text-3xl' />
+            </div>
+            <div>
+              <h1 className='font-display text-2xl font-bold'>{t('detail.notFound.title')}</h1>
+            </div>
+            <Link
+              to='/blog'
+              className='inline-flex h-11 w-full items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 shadow-md'
+            >
+              {t('detail.notFound.backLink')}
+            </Link>
+          </div>
+        </main>
+        <SiteFooter />
+        <SiteBottomNav />
+        <SiteFab />
+      </div>
+    )
+  }
+
+  const categoryLabel = post.label
+    ? post.label.charAt(0).toUpperCase() + post.label.slice(1)
+    : ''
+
+  const formattedDate = new Date(post.createdAt).toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  })
+
+  // Estimate read time based on word count
+  const wordsPerMinute = 200
+  const words = post.content ? post.content.split(/\s+/).length : 0
+  const estimatedReadTime = Math.max(1, Math.ceil(words / wordsPerMinute))
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
@@ -30,7 +196,7 @@ export function BlogDetailPage({ post }: BlogDetailPageProps) {
               {t('detail.nav.blog')}
             </Link>
             <MaterialIcon name='chevron_right' className='text-base' />
-            <span className='text-primary font-semibold'>{post.categoryLabel}</span>
+            <span className='text-primary font-semibold'>{categoryLabel}</span>
           </nav>
         </div>
 
@@ -41,17 +207,17 @@ export function BlogDetailPage({ post }: BlogDetailPageProps) {
           </h1>
 
           <div className='mt-6 flex flex-wrap items-center gap-6'>
-            <AuthorCard author={post.author} authorRole={post.authorRole} />
+            <AuthorCard author={post.userId ? `User ${post.userId.slice(0, 8)}` : 'PetBuddy'} authorRole='Author' />
 
             <div className='flex items-center gap-4 text-sm text-muted-foreground'>
               <div className='flex items-center gap-1.5'>
                 <MaterialIcon name='calendar_today' className='text-base' />
-                <span>{post.date}</span>
+                <span>{formattedDate}</span>
               </div>
               <div className='flex items-center gap-1.5'>
                 <MaterialIcon name='schedule' className='text-base' />
                 <span>
-                  {post.readTime} {t('detail.readTime')}
+                  {estimatedReadTime} {t('detail.readTime')}
                 </span>
               </div>
             </div>
@@ -61,88 +227,34 @@ export function BlogDetailPage({ post }: BlogDetailPageProps) {
         {/* Hero Image */}
         <div className='mx-auto max-w-5xl px-4 md:px-6'>
           <div className='aspect-[21/9] overflow-hidden rounded-2xl shadow-lg'>
-            <img src={post.imageUrl} alt={post.title} className='h-full w-full object-cover' />
+            <img
+              src={
+                post.imageUrls?.[0] ||
+                'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80'
+              }
+              alt={post.title}
+              className='h-full w-full object-cover'
+            />
           </div>
         </div>
 
         {/* Content Area - Full Width */}
         <div className='mx-auto mt-12 max-w-4xl px-4 md:px-6'>
           <article>
-            <BlogArticleContent content={post.markdownContent} />
+            <BlogArticleContent content={post.content} />
           </article>
         </div>
 
         {/* Related Posts Section */}
-        <div className='mx-auto mt-16 max-w-5xl px-4 md:px-6'>
-          <RelatedPosts posts={MOCK_POSTS} currentPostId={post.id} />
-        </div>
-
-        {/* Share Section */}
-        <div className='mx-auto mt-12 max-w-4xl px-4 md:px-6'>
-          <div className='rounded-2xl border border-border/60 bg-card p-6'>
-            <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-              <div className='flex items-center gap-3'>
-                <span className='text-sm font-semibold text-muted-foreground'>{t('detail.share')}</span>
-                <div className='flex gap-2'>
-                  <button
-                    type='button'
-                    className='flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary hover:text-primary'
-                    aria-label='Share on Facebook'
-                  >
-                    <MaterialIcon name='share' className='text-lg' />
-                  </button>
-                  <button
-                    type='button'
-                    className='flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary hover:text-primary'
-                    aria-label='Share on Twitter'
-                  >
-                    <MaterialIcon name='alternate_email' className='text-lg' />
-                  </button>
-                  <button
-                    type='button'
-                    className='flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary hover:text-primary'
-                    aria-label='Copy link'
-                  >
-                    <MaterialIcon name='link' className='text-lg' />
-                  </button>
-                </div>
-              </div>
-              <div className='flex flex-wrap gap-2'>
-                <span className='rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground'>
-                  #PetCare
-                </span>
-                <span className='rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground'>
-                  #{post.categoryLabel}
-                </span>
-                <span className='rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground'>
-                  #Health
-                </span>
-              </div>
-            </div>
+        {relatedPosts.length > 0 && (
+          <div className='mx-auto mt-16 max-w-5xl px-4 md:px-6'>
+            <RelatedPosts posts={relatedPosts} currentPostId={post.blogId} />
           </div>
-        </div>
+        )}
 
-        {/* Comments Section */}
-        <div className='mx-auto mt-8 max-w-4xl px-4 pb-12 md:px-6'>
-          <div className='rounded-2xl border border-border/60 bg-card p-6'>
-            <h3 className='font-display text-xl font-bold text-foreground'>{t('detail.comments')}</h3>
-            <div className='mt-5 space-y-4'>
-              <textarea
-                rows={4}
-                placeholder={t('detail.commentPlaceholder')}
-                className='w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-ring'
-              />
-              <div className='flex justify-end'>
-                <button
-                  type='button'
-                  className='inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring'
-                >
-                  {t('detail.postComment')}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <BlogShareSection categoryLabel={categoryLabel} />
+
+        <BlogCommentsSection />
       </main>
 
       <SiteFooter />

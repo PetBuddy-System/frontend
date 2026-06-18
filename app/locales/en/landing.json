@@ -21,7 +21,9 @@
     "supportChat": "Support chat",
     "callNow": "Call now",
     "login": "Log in",
-    "register": "Sign up"
+    "register": "Sign up",
+    "logout": "Log out",
+    "profile": "My account"
   },
   "chatModal": {
     "eyebrow": "Live support",

@@ -1,9 +1,55 @@
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import logo from '../assets/cho-login.jpg'
+
+import { useAuth } from '~/providers/auth-provider'
+import { STORAGE_KEYS } from '~/shared/config/site'
+import { ROLE_REDIRECT_MAP } from '~/shared/lib/auth'
+import { readStorage } from '~/shared/lib/storage'
 import { MaterialIcon } from '~/shared/ui'
+
+import logo from '../assets/cho-login.jpg'
+
+function getRedirectPathByRole(): string {
+  const storedUser = readStorage(STORAGE_KEYS.user)
+  if (storedUser) {
+    try {
+      const parsed = JSON.parse(storedUser) as { role?: string }
+      const role = parsed.role?.toUpperCase() ?? ''
+      return ROLE_REDIRECT_MAP[role] ?? '/'
+    } catch {
+      // Fallback nếu parse lỗi
+    }
+  }
+  return '/'
+}
 
 export function LoginPage() {
   const { t } = useTranslation('auth')
+  const { login } = useAuth()
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setErrorMessage('')
+    setIsSubmitting(true)
+
+    try {
+      await login(email, password)
+      // Redirect theo role sau khi login thành công
+      window.location.href = getRedirectPathByRole()
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : t('login.error')
+      setErrorMessage(message)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <main className='relative flex min-h-screen items-center justify-center bg-background px-4 py-12 md:px-6'>
@@ -22,7 +68,14 @@ export function LoginPage() {
             <p className='mt-2 text-sm text-muted-foreground md:text-base'>{t('login.welcomeSubtitle')}</p>
           </div>
 
-          <form className='space-y-6'>
+          {errorMessage && (
+            <div className='mb-6 flex items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
+              <MaterialIcon name='error' className='shrink-0 text-[20px]' />
+              <p>{errorMessage}</p>
+            </div>
+          )}
+
+          <form className='space-y-6' onSubmit={handleSubmit}>
             <div className='space-y-2'>
               <label htmlFor='login_id' className='text-sm font-semibold text-foreground'>
                 {t('login.fields.loginId.label')}
@@ -30,8 +83,12 @@ export function LoginPage() {
               <input
                 id='login_id'
                 type='text'
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder={t('login.fields.loginId.placeholder')}
                 className='w-full rounded-xl border border-border bg-muted px-4 py-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
+                disabled={isSubmitting}
               />
             </div>
 
@@ -40,15 +97,19 @@ export function LoginPage() {
                 <label htmlFor='password' className='text-sm font-semibold text-foreground'>
                   {t('fields.password.label')}
                 </label>
-                <a className='text-sm font-semibold text-primary hover:underline' href='#'>
+                <a className='text-sm font-semibold text-primary hover:underline' href='/forgot-password'>
                   {t('login.forgot')}
                 </a>
               </div>
               <input
                 id='password'
                 type='password'
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder={t('fields.password.placeholder')}
                 className='w-full rounded-xl border border-border bg-muted px-4 py-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
+                disabled={isSubmitting}
               />
             </div>
 
@@ -63,9 +124,17 @@ export function LoginPage() {
 
             <button
               type='submit'
-              className='w-full rounded-xl bg-secondary px-4 py-4 text-base font-semibold text-secondary-foreground shadow-md transition-opacity hover:opacity-90 active:scale-[0.99]'
+              disabled={isSubmitting}
+              className='w-full rounded-xl bg-secondary px-4 py-4 text-base font-semibold text-secondary-foreground shadow-md transition-opacity hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60'
             >
-              {t('login.submit')}
+              {isSubmitting ? (
+                <span className='flex items-center justify-center gap-2'>
+                  <MaterialIcon name='progress_activity' className='animate-spin text-[20px]' />
+                  {t('login.loading')}
+                </span>
+              ) : (
+                t('login.submit')
+              )}
             </button>
           </form>
 

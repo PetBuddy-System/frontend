@@ -5,6 +5,7 @@
 /.react-router/
 /.claude/
 /.kiro/
+/.cursor/
 /build/
 AGENTS.md
 DESIGN.md

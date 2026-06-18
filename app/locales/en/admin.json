@@ -22,19 +22,25 @@
       "editTitle": "Edit blog post",
       "fields": {
         "author": "Author",
-        "category": "Category",
+        "label": "Category",
         "content": "Markdown content",
+        "coverImage": "Cover image",
         "excerpt": "Excerpt",
-        "imageUrl": "Cover image URL",
         "publish": "Publish now",
         "title": "Title"
+      },
+      "imageUpload": {
+        "currentImage": "Current cover image",
+        "invalidType": "Only JPEG, PNG, GIF, or WebP files are accepted.",
+        "placeholder": "Click to upload or drag and drop here",
+        "remove": "Remove cover image",
+        "tooLarge": "File size must not exceed {{max}}MB."
       },
       "importMd": "Import .md",
       "placeholders": {
         "author": "e.g. PetBuddy Team",
         "content": "# Your title\n\nWrite your blog post content in Markdown here...",
         "excerpt": "A short summary shown on blog cards...",
-        "imageUrl": "https://example.com/image.jpg",
         "title": "Your blog post title"
       },
       "preview": {
@@ -87,7 +93,7 @@
       "columns": {
         "actions": "Actions",
         "author": "Author",
-        "category": "Category",
+        "label": "Category",
         "date": "Date",
         "post": "Post",
         "status": "Status"

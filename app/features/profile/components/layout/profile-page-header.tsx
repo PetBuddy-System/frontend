@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
+import { useAuth } from '~/providers/auth-provider'
 
 const PROFILE_AVATAR_URL =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuBYPki0QBRVMSU_gWuywGYHn2MGY0cy3c-I4AAJ1_AGgnsJhDdnUw4dxmNLwCruTAGeNIlHm_hINFhjIHPh_xLPeWBEkHAY9W3t97tqqozH0jF0ksRy6LmXQuVxlAph8P4-UpAphk1wILD996LWc4UhSdrZasTcPSzgFTGdqusfTOZY73gIJMLsF51IhPqG41XlPiHaolRIBOrT5HUwMwS6M80kSFL6PJwyJMATjUpg9fHXI58YLmNXqBV78v1g6YrkqOFUGOvXWJg'
@@ -12,6 +13,7 @@ export interface ProfilePageHeaderProps {
 
 export function ProfilePageHeader({ titleKey = 'header.title', subtitleKey }: ProfilePageHeaderProps) {
   const { t } = useTranslation('profile')
+  const { user } = useAuth()
 
   return (
     <header className='flex h-20 shrink-0 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:px-8'>
@@ -52,7 +54,7 @@ export function ProfilePageHeader({ titleKey = 'header.title', subtitleKey }: Pr
 
         <div className='flex items-center gap-3'>
           <div className='hidden text-right sm:block'>
-            <p className='text-sm font-semibold'>{t('user.name')}</p>
+            <p className='text-sm font-semibold'>{user?.fullName || t('user.name')}</p>
             <p className='text-xs text-muted-foreground'>{t('user.tier')}</p>
           </div>
           <img

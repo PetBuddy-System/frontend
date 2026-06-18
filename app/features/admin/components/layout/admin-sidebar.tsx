@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 
 import { useSidebar } from '~/providers/sidebar-provider'
+import { useAuth } from '~/providers/auth-provider'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
@@ -24,6 +26,8 @@ export interface AdminSidebarProps {
 export function AdminSidebar({ activeItem = 'reports' }: AdminSidebarProps) {
   const { t } = useTranslation('admin')
   const { isCollapsed, toggleSidebar } = useSidebar()
+  const { logout } = useAuth()
+  const navigate = useNavigate()
 
   return (
     <aside
@@ -85,6 +89,10 @@ export function AdminSidebar({ activeItem = 'reports' }: AdminSidebarProps) {
       <div className='shrink-0 border-t border-border p-3'>
         <button
           type='button'
+          onClick={async () => {
+            await logout()
+            void navigate('/')
+          }}
           className={cn(
             'flex w-full items-center rounded-xl font-bold text-destructive transition-colors hover:bg-destructive/10',
             isCollapsed ? 'justify-center p-2.5' : 'gap-2 px-3.5 py-2.5'

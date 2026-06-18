@@ -1,80 +1,119 @@
-import { useState } from 'react'
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { fetchBlogsApi, createBlogApi, updateBlogApi } from '~/shared/lib/blog'
+import type { BlogResponse } from '~/shared/lib/blog'
+import { MaterialIcon } from '~/shared/ui'
 
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
-import { MaterialIcon } from '~/shared/ui'
-
 import { AdminBlogPostTable, type BlogPost } from '../components/blog/admin-blog-post-table'
-import { AdminCreateBlogPostModal, type BlogPostFormData } from '../components/blog/admin-create-blog-post-modal'
+import { AdminCreateBlogPostModal } from '../components/blog/admin-create-blog-post-modal'
+import type { BlogPostFormData } from '../components/blog/admin-create-blog-post-modal'
 
-const MOCK_POSTS: BlogPost[] = [
-  {
-    id: '1',
-    title: 'Top 10 Essential Supplies Every New Pet Owner Needs',
-    excerpt: 'Bringing a new pet home is exciting...',
-    category: 'featured',
-    author: 'PetBuddy Team',
-    date: 'Jan 15, 2026',
-    imageUrl: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80',
+function mapToBlogPost(blog: BlogResponse): BlogPost & { markdownContent: string } {
+  return {
+    id: blog.blogId,
+    title: blog.title,
+    excerpt: blog.snippet || blog.content?.slice(0, 100) || '',
+    label: blog.label?.toLowerCase() ?? 'all',
+    author: blog.userId ? `User ${blog.userId.slice(0, 8)}` : 'PetBuddy',
+    date: new Date(blog.createdAt).toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }),
+    imageUrl: blog.imageUrls?.[0] || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80',
     isPublished: true,
-    views: 1250
-  },
-  {
-    id: '2',
-    title: 'Understanding Your Dog Body Language',
-    excerpt: 'Dogs communicate through body language...',
-    category: 'training',
-    author: 'Dr. Minh Tran',
-    date: 'Jan 12, 2026',
-    imageUrl: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80',
-    isPublished: true,
-    views: 980
-  },
-  {
-    id: '3',
-    title: 'The Best Diet Plan for Puppies',
-    excerpt: 'Puppies have different nutritional needs...',
-    category: 'nutrition',
-    author: 'Dr. Lan Nguyen',
-    date: 'Jan 10, 2026',
-    imageUrl: 'https://images.unsplash.com/photo-1560807707-8cc77767d783?w=600&q=80',
-    isPublished: false,
-    views: 0
+    views: 0,
+    markdownContent: blog.content || ''
   }
-]
+}
 
 export function AdminBlogManagementPage() {
   const { t } = useTranslation('admin')
-  const [posts, setPosts] = useState<BlogPost[]>(MOCK_POSTS)
+  const [posts, setPosts] = useState<BlogPost[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [errorMsg, setErrorMsg] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingPost, setEditingPost] = useState<BlogPost | null>(null)
+  const [editingPost, setEditingPost] = useState<(BlogPost & { markdownContent: string }) | null>(null)
 
-  const handleCreate = (data: BlogPostFormData) => {
-    const newPost: BlogPost = {
-      id: String(Date.now()),
-      title: data.title,
-      excerpt: data.excerpt,
-      category: data.category,
-      author: data.author,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      imageUrl: data.imageUrl,
-      isPublished: data.isPublished,
-      views: 0
+  const loadPosts = useCallback(async () => {
+    setIsLoading(true)
+    setErrorMsg('')
+    try {
+      const res = await fetchBlogsApi({ size: 100 })
+      if (res.success && res.data) {
+        setPosts(res.data.content.map(mapToBlogPost))
+      } else {
+        setPosts([])
+      }
+    } catch (error: unknown) {
+      setErrorMsg(error instanceof Error ? error.message : 'Failed to fetch blogs')
+    } finally {
+      setIsLoading(false)
     }
-    setPosts((prev) => [newPost, ...prev])
-    setIsModalOpen(false)
+  }, [])
+
+  useEffect(() => {
+    void loadPosts()
+  }, [loadPosts])
+
+  const handleCreate = async (data: BlogPostFormData) => {
+    try {
+      const res = await createBlogApi(
+        {
+          title: data.title,
+          content: data.markdownContent,
+          label: data.label,
+          snippet: data.excerpt
+        },
+        data.imageFiles.length > 0 ? data.imageFiles : undefined
+      )
+
+      if (res.success && res.data) {
+        setPosts((prev) => [mapToBlogPost(res.data), ...prev])
+        setIsModalOpen(false)
+      }
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Failed to create blog')
+    }
+  }
+
+  const handleUpdate = async (data: BlogPostFormData) => {
+    if (!editingPost) return
+    try {
+      const res = await updateBlogApi(
+        editingPost.id,
+        {
+          title: data.title,
+          content: data.markdownContent,
+          label: data.label,
+          snippet: data.excerpt
+        },
+        data.imageFiles.length > 0 ? data.imageFiles : undefined
+      )
+
+      if (res.success && res.data) {
+        setPosts((prev) =>
+          prev.map((p) => (p.id === editingPost.id ? mapToBlogPost(res.data) : p))
+        )
+        setIsModalOpen(false)
+        setEditingPost(null)
+      }
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Failed to update blog')
+    }
   }
 
   const handleEdit = (post: BlogPost) => {
-    setEditingPost(post)
+    setEditingPost(post as BlogPost & { markdownContent: string })
     setIsModalOpen(true)
   }
 
-  const handleDelete = (post: BlogPost) => {
-    if (window.confirm(t('blogManagement.confirmDelete'))) {
-      setPosts((prev) => prev.filter((p) => p.id !== post.id))
-    }
+  const handleDelete = () => {
+    alert(t('blogManagement.actions.deleteNotSupported') || 'API backend chưa hỗ trợ xóa bài viết')
   }
 
   return (
@@ -104,7 +143,30 @@ export function AdminBlogManagementPage() {
               </button>
             </section>
 
-            <AdminBlogPostTable posts={posts} onEdit={handleEdit} onDelete={handleDelete} />
+            {errorMsg && (
+              <div className='flex items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
+                <MaterialIcon name='error' className='shrink-0 text-[20px]' />
+                <p>{errorMsg}</p>
+                <button
+                  type='button'
+                  onClick={() => void loadPosts()}
+                  className='ml-auto shrink-0 text-sm font-semibold underline'
+                >
+                  {t('error.retry') || 'Retry'}
+                </button>
+              </div>
+            )}
+
+            {isLoading ? (
+              <div className='rounded-3xl border border-border bg-card p-8 shadow-sm space-y-4 animate-pulse'>
+                <div className='h-8 bg-muted w-1/4 rounded' />
+                <div className='h-12 bg-muted w-full rounded' />
+                <div className='h-12 bg-muted w-full rounded' />
+                <div className='h-12 bg-muted w-full rounded' />
+              </div>
+            ) : (
+              <AdminBlogPostTable posts={posts} onEdit={handleEdit} onDelete={handleDelete} />
+            )}
           </div>
         </main>
       </div>
@@ -115,39 +177,19 @@ export function AdminBlogManagementPage() {
           setIsModalOpen(false)
           setEditingPost(null)
         }}
-        onSubmit={
-          editingPost
-            ? (data) => {
-                setPosts((prev) =>
-                  prev.map((p) =>
-                    p.id === editingPost.id
-                      ? {
-                          ...p,
-                          title: data.title,
-                          excerpt: data.excerpt,
-                          category: data.category,
-                          author: data.author,
-                          imageUrl: data.imageUrl,
-                          isPublished: data.isPublished
-                        }
-                      : p
-                  )
-                )
-                setIsModalOpen(false)
-                setEditingPost(null)
-              }
-            : handleCreate
-        }
+        onSubmit={editingPost ? handleUpdate : handleCreate}
         initialData={
           editingPost
             ? {
-                title: editingPost.title,
-                excerpt: editingPost.excerpt,
-                category: editingPost.category,
-                author: editingPost.author,
-                imageUrl: editingPost.imageUrl,
-                isPublished: editingPost.isPublished
-              }
+              title: editingPost.title,
+              excerpt: editingPost.excerpt,
+              label: editingPost.label,
+              author: editingPost.author,
+              imageFiles: [],
+              existingImageUrl: editingPost.imageUrl,
+              markdownContent: editingPost.markdownContent,
+              isPublished: true
+            }
             : undefined
         }
       />

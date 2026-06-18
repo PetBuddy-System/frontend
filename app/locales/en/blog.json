@@ -19,6 +19,23 @@
     "author": "By",
     "date": "on"
   },
+  "search": {
+    "placeholder": "Search blog posts...",
+    "clear": "Clear search"
+  },
+  "pagination": {
+    "posts": "posts",
+    "prev": "Previous page",
+    "next": "Next page"
+  },
+  "error": {
+    "fetch": "Failed to load blog posts. Please try again.",
+    "retry": "Retry",
+    "fallback": "Could not load latest posts. Showing sample articles instead.",
+    "authTitle": "Login required",
+    "authDescription": "Please log in to view blog posts.",
+    "loginButton": "Log in"
+  },
   "empty": {
     "title": "No posts found",
     "description": "There are no posts in this category yet."
