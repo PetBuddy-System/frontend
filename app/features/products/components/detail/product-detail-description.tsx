@@ -1,9 +1,16 @@
 import { useTranslation } from 'react-i18next'
 
-const HIGHLIGHTS = ['kibble', 'coat', 'dental'] as const
-const SPECS = ['brand', 'type', 'weight', 'age'] as const
+export interface ProductDetailDescriptionProps {
+  description: string
+  brandName: string
+  categoryName: string
+}
 
-export function ProductDetailDescription() {
+export function ProductDetailDescription({
+  description,
+  brandName,
+  categoryName
+}: ProductDetailDescriptionProps) {
   const { t } = useTranslation('products')
 
   return (
@@ -20,31 +27,28 @@ export function ProductDetailDescription() {
         <h2 className='mb-4 text-2xl font-semibold text-foreground font-display'>
           {t('detail.description.highlightsTitle')}
         </h2>
-        <ul className='mb-8 list-disc space-y-2 pl-6'>
-          {HIGHLIGHTS.map((highlight) => (
-            <li key={highlight}>{t(`detail.description.highlights.${highlight}`)}</li>
-          ))}
-        </ul>
-
-        <h2 className='mb-4 text-2xl font-semibold text-foreground font-display'>
-          {t('detail.description.benefitsTitle')}
-        </h2>
-        <p className='mb-8'>{t('detail.description.benefits')}</p>
+        <div className='mb-8 whitespace-pre-line text-sm md:text-base text-muted-foreground'>
+          {description || 'Chưa có thông tin mô tả chi tiết cho sản phẩm này.'}
+        </div>
 
         <h2 className='mb-4 text-2xl font-semibold text-foreground font-display'>
           {t('detail.description.specsTitle')}
         </h2>
         <div className='overflow-x-auto rounded-xl border border-border/60'>
-          <table className='w-full border-collapse text-left'>
+          <table className='w-full border-collapse text-left text-sm md:text-base'>
             <tbody>
-              {SPECS.map((spec) => (
-                <tr key={spec} className='border-b border-border/60 last:border-b-0'>
-                  <th className='w-1/3 bg-muted px-6 py-4 font-semibold text-foreground'>
-                    {t(`detail.specs.${spec}.label`)}
-                  </th>
-                  <td className='px-6 py-4 text-muted-foreground'>{t(`detail.specs.${spec}.value`)}</td>
-                </tr>
-              ))}
+              <tr className='border-b border-border/60'>
+                <th className='w-1/3 bg-muted px-6 py-4 font-semibold text-foreground'>
+                  Thương hiệu
+                </th>
+                <td className='px-6 py-4 text-muted-foreground'>{brandName || 'N/A'}</td>
+              </tr>
+              <tr className='border-b border-border/60 last:border-b-0'>
+                <th className='w-1/3 bg-muted px-6 py-4 font-semibold text-foreground'>
+                  Danh mục
+                </th>
+                <td className='px-6 py-4 text-muted-foreground'>{categoryName || 'N/A'}</td>
+              </tr>
             </tbody>
           </table>
         </div>

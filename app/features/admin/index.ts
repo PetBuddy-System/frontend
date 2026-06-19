@@ -1,7 +1,6 @@
 export { AdminBlogManagementPage } from './pages/admin-blog-management-page'
 export { AdminDashboardPage } from './pages/admin-dashboard-page'
 export { AdminEmployeesPage } from './pages/admin-employees-page'
-export { AdminProductsPage } from './pages/admin-products-page'
 export { AdminServiceBookingsPage } from './pages/admin-service-bookings-page'
 export { AdminServicesPage } from './pages/admin-services-page'
 export { AdminUsersPage } from './pages/admin-users-page'

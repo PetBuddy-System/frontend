@@ -43,7 +43,6 @@ export default [
     route('admin/dashboard', 'routes/admin-dashboard.tsx'),
     route('admin/blog', 'routes/admin-blog-management.tsx'),
     route('admin/employees', 'routes/admin-employees.tsx'),
-    route('admin/products', 'routes/admin-products.tsx'),
     route('admin/services', 'routes/admin-services.tsx'),
     route('admin/service-bookings', 'routes/admin-service-bookings.tsx'),
     route('admin/users', 'routes/admin-users.tsx'),
@@ -53,6 +52,7 @@ export default [
   // ─── Manager Only Routes ──────────────────────────────────────────────────
   layout('routes/manager-layout.tsx', [
     route('manager/dashboard', 'routes/manager-dashboard.tsx'),
+    route('manager/products', 'routes/manager-products.tsx'),
     route('manager/inventory-transactions', 'routes/manager-inventory-transactions.tsx'),
     route('manager/disposal-approvals', 'routes/manager-disposal-approvals.tsx'),
     route('manager/return-requests', 'routes/manager-return-requests.tsx'),

@@ -155,7 +155,7 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
               <a
                 href='/login'
                 aria-label={t('actions.account')}
-                className='rounded-full p-2 transition-colors hover:bg-muted'
+                className='rounded-full p-2 transition-colors hover:bg-muted md:hidden'
               >
                 <MaterialIcon name='account_circle' className='text-[22px]' />
               </a>

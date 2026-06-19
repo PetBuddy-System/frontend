@@ -144,6 +144,7 @@
     "nav": {
       "dashboard": "Tổng quan vận hành",
       "inventory": "Kiểm soát kho",
+      "products": "Quản lý sản phẩm",
       "staff": "Điều phối nhân sự",
       "returnRequests": "Duyệt đổi trả",
       "disposalApprovals": "Duyệt hủy hàng"
@@ -220,6 +221,7 @@
       "description": "Đơn hàng có trạng thái Chờ phân công cần được ưu tiên điều phối nhân sự để đảm bảo tiến độ phục vụ khách hàng.",
       "title": "Mẹo nhanh"
     },
+    "quickTipTitle": "Mẹo nhanh",
     "searchPlaceholder": "Tìm đơn đặt chỗ...",
     "staffStatus": {
       "groups": {
@@ -471,5 +473,82 @@
       "yesterday1430": "Hôm qua, 14:30"
     },
     "title": "Yêu cầu tiêu hủy"
+  },
+  "productManagement": {
+    "title": "Quản lý sản phẩm",
+    "actions": {
+      "add": "Thêm sản phẩm mới",
+      "delete": "Xóa sản phẩm",
+      "edit": "Chỉnh sửa sản phẩm",
+      "view": "Xem sản phẩm"
+    },
+    "categories": {
+      "accessories": "Phụ kiện",
+      "food": "Thức ăn"
+    },
+    "filters": {
+      "categories": {
+        "accessories": "Phụ kiện",
+        "all": "Tất cả",
+        "food": "Thức ăn",
+        "medicine": "Thuốc thú y",
+        "toys": "Đồ chơi"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "all": "Trạng thái: Tất cả",
+        "inactive": "Ngừng kinh doanh",
+        "deleted": "Đã xóa"
+      }
+    },
+    "pagination": {
+      "showing": "Hiển thị {{from}} đến {{to}} trong {{total}} sản phẩm"
+    },
+    "searchPlaceholder": "Tìm kiếm sản phẩm...",
+    "stats": {
+      "available": "Sẵn hàng",
+      "lowStock": "Sắp hết hàng",
+      "total": "Tổng sản phẩm"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng kinh doanh",
+      "deleted": "Đã xóa"
+    },
+    "stock": {
+      "low": "Sắp hết"
+    },
+    "subtitle": "Theo dõi danh mục, giá bán, tồn kho và trạng thái kinh doanh của sản phẩm.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "category": "Danh mục",
+        "name": "Tên sản phẩm",
+        "price": "Giá bán",
+        "status": "Trạng thái",
+        "stock": "Tồn kho",
+        "updatedAt": "Cập nhật"
+      }
+    },
+    "editModal": {
+      "title": "Chỉnh sửa sản phẩm",
+      "code": "Mã sản phẩm",
+      "name": "Tên sản phẩm",
+      "price": "Đơn giá",
+      "brand": "Thương hiệu",
+      "category": "Danh mục",
+      "stock": "Tồn kho",
+      "status": "Trạng thái",
+      "description": "Mô tả sản phẩm",
+      "imageUrls": "Hình ảnh sản phẩm",
+      "currentImages": "Hình ảnh hiện tại",
+      "uploadNew": "Tải lên hình ảnh mới",
+      "newImagesPreview": "Xem trước hình ảnh mới",
+      "save": "Lưu thay đổi",
+      "cancel": "Hủy",
+      "loading": "Đang tải thông tin sản phẩm...",
+      "success": "Cập nhật sản phẩm thành công",
+      "error": "Cập nhật sản phẩm thất bại"
+    }
   }
 }

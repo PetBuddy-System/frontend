@@ -144,6 +144,7 @@
     "nav": {
       "dashboard": "Operations overview",
       "inventory": "Inventory Control",
+      "products": "Product Management",
       "staff": "Staff Coordination",
       "returnRequests": "Return approvals",
       "disposalApprovals": "Disposal approvals"
@@ -471,5 +472,85 @@
       "yesterday1430": "Yesterday, 14:30"
     },
     "title": "Disposal Requests"
+  },
+  "productManagement": {
+    "title": "Product Management",
+    "subtitle": "Track categories, pricing, stock levels, and product availability.",
+    "searchPlaceholder": "Search products...",
+    "actions": {
+      "add": "Add new product",
+      "delete": "Delete product",
+      "edit": "Edit product",
+      "view": "View product"
+    },
+    "categories": {
+      "accessories": "Accessories",
+      "food": "Food"
+    },
+    "filters": {
+      "categories": {
+        "accessories": "Accessories",
+        "all": "All",
+        "food": "Food",
+        "medicine": "Veterinary Medicine",
+        "toys": "Toys"
+      },
+      "status": {
+        "active": "Active",
+        "all": "Status: All",
+        "inactive": "Inactive",
+        "deleted": "Deleted"
+      }
+    },
+    "pagination": {
+      "showing": "Showing {{from}} to {{to}} of {{total}} products"
+    },
+    "stats": {
+      "available": "Available",
+      "lowStock": "Low Stock",
+      "total": "Total Products"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleted": "Deleted"
+    },
+    "stock": {
+      "low": "Low stock"
+    },
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "category": "Category",
+        "name": "Product Name",
+        "brand": "Brand",
+        "price": "Price",
+        "status": "Status",
+        "stock": "Stock",
+        "updatedAt": "Updated"
+      },
+      "noProducts": "No products found",
+      "noProductsDesc": "Try adjusting your filters or keyword query"
+    },
+    "editModal": {
+      "title": "Edit Product",
+      "code": "Product Code",
+      "name": "Product Name",
+      "price": "Unit Price",
+      "brand": "Brand Name",
+      "category": "Category",
+      "stock": "Total Stock",
+      "status": "Status",
+      "description": "Description",
+      "imageUrls": "Product Images",
+      "currentImages": "Current Images",
+      "uploadNew": "Upload New Images",
+      "newImagesPreview": "New Images Preview",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "loading": "Loading product details...",
+      "success": "Product updated successfully",
+      "error": "Failed to update product"
+    }
   }
 }

@@ -8,8 +8,8 @@ const PRODUCT_STATS = [
   { key: 'lowStock', icon: 'warning', value: '14' }
 ] as const
 
-export function AdminProductsStatsGrid() {
-  const { t } = useTranslation('admin')
+export function ManagerProductsStatsGrid() {
+  const { t } = useTranslation('manager')
 
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-3'>
