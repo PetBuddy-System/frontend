@@ -5,7 +5,7 @@ import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
 import { MaterialIcon } from '~/shared/ui'
 import { fetchProductByIdApi, type ProductDetailData } from '~/shared/lib/product'
-import { fetchProductBatchesApi, type ProductBatchItem, type BatchSortBy } from '~/shared/lib/batch'
+import { fetchProductBatchesApi, createBatchesApi, type ProductBatchItem, type BatchSortBy, type CreateBatchPayload } from '~/shared/lib/batch'
 
 export function ManagerProductDetailPage() {
     console.log('🔵 [1] Component rendered')
@@ -27,6 +27,12 @@ export function ManagerProductDetailPage() {
     const [totalPages, setTotalPages] = useState(0)
     const [totalElements, setTotalElements] = useState(0)
     const [sortBy, setSortBy] = useState<BatchSortBy>('date_desc')
+
+    // ─── Submit status states ──────────────────────────────────
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [submitError, setSubmitError] = useState<string | null>(null)
+    const [showSuccess, setShowSuccess] = useState(false)
+    const [refreshKey, setRefreshKey] = useState(0)
 
     // ─── New Batch Form State ──────────────────────────────────
     const [newBatches, setNewBatches] = useState<{ quantity: number; expiryDate: string }[]>([
@@ -116,7 +122,7 @@ export function ManagerProductDetailPage() {
         }
 
         void loadBatches()
-    }, [productId, batchSearch, batchStatus, batchPage, sortBy])
+    }, [productId, batchSearch, batchStatus, batchPage, sortBy, refreshKey])
 
     // ─── Calculate days remaining ──────────────────────────────
     const getDaysRemaining = (expiryDate: string) => {
@@ -146,8 +152,46 @@ export function ManagerProductDetailPage() {
 
     // ─── Submit new batches ─────────────────────────────────────
     const handleSubmitBatches = async () => {
-        // TODO: Gọi API createMultipleBatchesApi
-        console.log('Submit batches:', newBatches)
+        setSubmitError(null)
+        setShowSuccess(false)
+
+        const validBatches = newBatches.filter(
+            (batch) => batch.quantity > 0 && batch.expiryDate.trim() !== ''
+        )
+
+        if (validBatches.length === 0) {
+            setSubmitError('Vui lòng nhập ít nhất 1 lô hàng')
+            return
+        }
+
+        if (!productId) {
+            setSubmitError('Không tìm thấy mã sản phẩm')
+            return
+        }
+
+        setIsSubmitting(true)
+        try {
+            const payload: CreateBatchPayload[] = validBatches.map((batch) => ({
+                stockQuantity: batch.quantity,
+                expiryDate: batch.expiryDate
+            }))
+
+            const response = await createBatchesApi(productId, payload)
+            if (response.success) {
+                setNewBatches([{ quantity: 0, expiryDate: '' }])
+                setRefreshKey((prev) => prev + 1)
+                setShowSuccess(true)
+                setTimeout(() => setShowSuccess(false), 3000)
+            } else {
+                setSubmitError(response.message || 'Không thể nhập lô hàng')
+            }
+        } catch (err) {
+            console.error('Submit batches error:', err)
+            const errMsg = err instanceof Error ? err.message : 'Có lỗi xảy ra khi nhập lô hàng'
+            setSubmitError(errMsg)
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     // ─── Format date ────────────────────────────────────────────
@@ -395,16 +439,22 @@ export function ManagerProductDetailPage() {
                                                 <div className='flex items-center gap-3'>
                                                     <button
                                                         onClick={addBatchRow}
-                                                        className='px-4 py-2 bg-card hover:bg-muted text-primary border border-border rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors'
+                                                        disabled={isSubmitting}
+                                                        className='px-4 py-2 bg-card hover:bg-muted text-primary border border-border rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
                                                     >
                                                         <MaterialIcon name='add' className='text-lg' />
                                                         Thêm dòng
                                                     </button>
                                                     <button
                                                         onClick={handleSubmitBatches}
-                                                        className='px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors shadow-sm'
+                                                        disabled={isSubmitting}
+                                                        className='px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed'
                                                     >
-                                                        <MaterialIcon name='check_circle' className='text-lg' />
+                                                        {isSubmitting ? (
+                                                            <MaterialIcon name='hourglass_empty' className='animate-spin text-lg' />
+                                                        ) : (
+                                                            <MaterialIcon name='check_circle' className='text-lg' />
+                                                        )}
                                                         Xác nhận nhập lô
                                                     </button>
                                                 </div>
@@ -432,6 +482,7 @@ export function ManagerProductDetailPage() {
                                                                         onChange={(e) => updateBatchRow(index, 'quantity', Number(e.target.value))}
                                                                         className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
                                                                         placeholder='0'
+                                                                        disabled={isSubmitting}
                                                                     />
                                                                 </td>
                                                                 <td className='px-4 py-3'>
@@ -440,12 +491,13 @@ export function ManagerProductDetailPage() {
                                                                         value={batch.expiryDate}
                                                                         onChange={(e) => updateBatchRow(index, 'expiryDate', e.target.value)}
                                                                         className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
+                                                                        disabled={isSubmitting}
                                                                     />
                                                                 </td>
                                                                 <td className='px-4 py-3 text-center'>
                                                                     <button
                                                                         onClick={() => removeBatchRow(index)}
-                                                                        disabled={newBatches.length === 1}
+                                                                        disabled={newBatches.length === 1 || isSubmitting}
                                                                         className='p-1.5 text-destructive hover:bg-destructive/10 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors'
                                                                     >
                                                                         <MaterialIcon name='delete_outline' className='text-lg' />
@@ -456,6 +508,20 @@ export function ManagerProductDetailPage() {
                                                     </tbody>
                                                 </table>
                                             </div>
+
+                                            {/* Error & Success Messages */}
+                                            {submitError && (
+                                                <div className='mt-2 flex items-center gap-2 text-destructive text-sm font-semibold bg-destructive/10 p-3 rounded-lg'>
+                                                    <MaterialIcon name='error_outline' className='text-lg shrink-0' />
+                                                    <span>{submitError}</span>
+                                                </div>
+                                            )}
+                                            {showSuccess && (
+                                                <div className='mt-2 flex items-center gap-2 text-success text-sm font-semibold bg-success/10 p-3 rounded-lg'>
+                                                    <MaterialIcon name='check_circle_outline' className='text-lg shrink-0' />
+                                                    <span>Nhập lô hàng thành công!</span>
+                                                </div>
+                                            )}
                                         </div>
 
                                         <hr className='border-border' />

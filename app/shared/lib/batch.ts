@@ -102,3 +102,40 @@ export async function fetchProductBatchesApi(
         }
     })
 }
+
+// ============================================================
+// CREATE BATCH (TẠO LÔ HÀNG MỚI)
+// ============================================================
+
+export interface CreateBatchPayload {
+  stockQuantity: number
+  expiryDate: string  // format: YYYY-MM-DD
+}
+
+export interface CreateBatchResponse {
+  code: number
+  message: string
+  success: boolean
+  data: ProductBatchItem  // Dữ liệu trả về giống ProductBatchItem
+  timestamp: string
+}
+
+/**
+ * Tạo một hoặc nhiều lô hàng cho sản phẩm
+ * POST /api/products/{productId}/batches
+ * Giới hạn tối đa 10 batch/lần tạo
+ * 
+ * @param productId - ID của sản phẩm
+ * @param payload - Mảng các lô hàng cần tạo
+ * @returns Danh sách lô hàng đã tạo
+ */
+export async function createBatchesApi(
+  productId: string,
+  payload: CreateBatchPayload[]
+): Promise<CreateBatchResponse> {
+  return customFetch<CreateBatchResponse>({
+    url: `/api/products/${productId}/batches`,
+    method: 'POST',
+    data: payload  // payload là mảng các batch
+  })
+}
