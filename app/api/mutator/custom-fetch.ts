@@ -16,7 +16,7 @@ export const axiosInstance = axios.create({
 
 // ─── Interceptors ────────────────────────────────────────────────────────────
 
-// Request Interceptor: Inject Bearer Token for non-auth requests
+// Request Interceptor: Inject Bearer Token + strip Content-Type for FormData
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = readStorage(STORAGE_KEYS.accessToken)
@@ -24,6 +24,14 @@ axiosInstance.interceptors.request.use(
     if (token && config.headers && !config.url?.includes('/api/auth/')) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
+
+    // When sending FormData, delete Content-Type so Axios auto-sets
+    // 'multipart/form-data; boundary=...' correctly. Without this,
+    // the instance-level 'application/json' default wins and causes 415.
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type']
+    }
+
     return config
   },
   (error) => {
