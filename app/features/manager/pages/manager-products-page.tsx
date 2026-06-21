@@ -109,7 +109,7 @@ export function ManagerProductsPage() {
   }
 
   const handleView = (productId: string) => {
-    window.location.href = `/products/${productId}`
+    window.location.href = `/manager/products/${productId}`
   }
 
   return (

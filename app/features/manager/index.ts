@@ -4,4 +4,4 @@ export { ManagerDisposalApprovalsPage } from './pages/manager-disposal-approvals
 export { ManagerReturnRequestsPage } from './pages/manager-return-requests-page'
 export { ManagerStaffSchedulePage } from './pages/manager-staff-schedule-page'
 export { ManagerProductsPage } from './pages/manager-products-page'
-
+export { ManagerProductDetailPage } from './pages/manager-product-detail'
