@@ -139,3 +139,44 @@ export async function createBatchesApi(
     data: payload  // payload là mảng các batch
   })
 }
+
+// ============================================================
+// UPDATE BATCH (CẬP NHẬT LÔ HÀNG)
+// ============================================================
+
+/**
+ * Payload để cập nhật một lô hàng.
+ * Tất cả field đều optional — chỉ truyền field muốn thay đổi.
+ */
+export interface UpdateBatchPayload {
+    stockQuantity?: number
+    expiryDate?: string        // format: YYYY-MM-DD
+    status?: 'ACTIVE' | 'INACTIVE' | 'DELETED'
+}
+
+export interface UpdateBatchResponse {
+    code: number
+    message: string
+    success: boolean
+    data: ProductBatchItem
+    timestamp: string
+}
+
+/**
+ * Cập nhật thông tin một lô hàng (chỉnh sửa inline / xóa mềm)
+ * PATCH /api/batches/{batchId}
+ *
+ * @param batchId - ID của lô hàng cần cập nhật
+ * @param payload - Các trường muốn cập nhật
+ * @returns Lô hàng sau khi cập nhật
+ */
+export async function updateBatchApi(
+    batchId: string,
+    payload: UpdateBatchPayload
+): Promise<UpdateBatchResponse> {
+    return customFetch<UpdateBatchResponse>({
+        url: `/api/batches/${batchId}`,
+        method: 'PATCH',
+        data: payload
+    })
+}

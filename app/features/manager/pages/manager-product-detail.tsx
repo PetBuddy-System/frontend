@@ -4,8 +4,9 @@ import { useParams, useNavigate } from 'react-router'
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
 import { MaterialIcon } from '~/shared/ui'
-import { fetchProductByIdApi, type ProductDetailData } from '~/shared/lib/product'
-import { fetchProductBatchesApi, createBatchesApi, type ProductBatchItem, type BatchSortBy, type CreateBatchPayload } from '~/shared/lib/batch'
+import { fetchProductByIdApi, fetchCategoriesApi, updateProductApi, type ProductDetailData, type CategoryData } from '~/shared/lib/product'
+import { fetchProductBatchesApi, createBatchesApi, updateBatchApi, type ProductBatchItem, type BatchSortBy, type CreateBatchPayload, type UpdateBatchPayload } from '~/shared/lib/batch'
+import { ManagerEditProductModal } from '../components/products/manager-edit-product-modal'
 
 export function ManagerProductDetailPage() {
     console.log('🔵 [1] Component rendered')
@@ -33,6 +34,24 @@ export function ManagerProductDetailPage() {
     const [submitError, setSubmitError] = useState<string | null>(null)
     const [showSuccess, setShowSuccess] = useState(false)
     const [refreshKey, setRefreshKey] = useState(0)
+
+    // ─── Categories (cho Edit Modal) ────────────────────────────
+    const [categories, setCategories] = useState<CategoryData[]>([])
+
+    // ─── Modal / Dialog states ──────────────────────────────────
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
+    const [isDeletingProduct, setIsDeletingProduct] = useState(false)
+    const [deleteError, setDeleteError] = useState<string | null>(null)
+
+    // ─── Batch interactive operations states ───────────────────
+    const [expandedBatchIds, setExpandedBatchIds] = useState<string[]>([])
+    const [editingBatchId, setEditingBatchId] = useState<string | null>(null)
+    const [editQuantity, setEditQuantity] = useState<number>(0)
+    const [editExpiryDate, setEditExpiryDate] = useState<string>('')
+    const [editStatus, setEditStatus] = useState<'ACTIVE' | 'INACTIVE' | 'DELETED'>('ACTIVE')
+    const [editError, setEditError] = useState<string | null>(null)
+    const [isSavingEdit, setIsSavingEdit] = useState<boolean>(false)
 
     // ─── New Batch Form State ──────────────────────────────────
     const [newBatches, setNewBatches] = useState<{ quantity: number; expiryDate: string }[]>([
@@ -74,6 +93,19 @@ export function ManagerProductDetailPage() {
 
         void loadProduct()
     }, [productId])
+
+    // ─── Load Categories (một lần, cho Edit Modal) ──────────────
+    useEffect(() => {
+        async function loadCategories() {
+            try {
+                const res = await fetchCategoriesApi()
+                if (res.success) setCategories(res.data)
+            } catch (err) {
+                console.error('Load categories error:', err)
+            }
+        }
+        void loadCategories()
+    }, [])
 
     // ─── Load Batches ───────────────────────────────────────────
     useEffect(() => {
@@ -194,6 +226,113 @@ export function ManagerProductDetailPage() {
         }
     }
 
+    // ─── Toggle detail expansion ────────────────────────────────
+    const toggleExpandBatch = (batchId: string) => {
+        setExpandedBatchIds((prev) =>
+            prev.includes(batchId)
+                ? prev.filter((id) => id !== batchId)
+                : [...prev, batchId]
+        )
+    }
+
+    // ─── Start editing inline ──────────────────────────────────
+    const handleStartEdit = (batch: ProductBatchItem) => {
+        setEditingBatchId(batch.batchId)
+        setEditQuantity(batch.stockQuantity)
+        setEditExpiryDate(batch.expiryDate ? batch.expiryDate.substring(0, 10) : '')
+        setEditStatus(batch.status)
+        setEditError(null)
+    }
+
+    // ─── Cancel editing ────────────────────────────────────────
+    const handleCancelEdit = () => {
+        setEditingBatchId(null)
+        setEditError(null)
+    }
+
+    // ─── Save inline editing changes ───────────────────────────
+    const handleSaveEdit = async () => {
+        setEditError(null)
+        if (editQuantity < 0) {
+            setEditError('Số lượng phải từ 0 trở lên')
+            return
+        }
+        if (!editExpiryDate.trim()) {
+            setEditError('Ngày hết hạn không được trống')
+            return
+        }
+        if (!editingBatchId) return
+
+        setIsSavingEdit(true)
+        try {
+            const response = await updateBatchApi(editingBatchId, {
+                stockQuantity: editQuantity,
+                expiryDate: editExpiryDate,
+                status: editStatus
+            })
+            if (response.success) {
+                setEditingBatchId(null)
+                setRefreshKey((prev) => prev + 1)
+            } else {
+                setEditError(response.message || 'Không thể cập nhật lô hàng')
+            }
+        } catch (err) {
+            console.error('Update batch error:', err)
+            const errMsg = err instanceof Error ? err.message : 'Có lỗi xảy ra khi cập nhật lô hàng'
+            setEditError(errMsg)
+        } finally {
+            setIsSavingEdit(false)
+        }
+    }
+
+    // ─── Soft delete batch ──────────────────────────────────────
+    const handleDeleteBatch = async (batchId: string) => {
+        if (!confirm('Bạn có chắc chắn muốn xóa lô hàng này?')) return
+        try {
+            const response = await updateBatchApi(batchId, {
+                status: 'DELETED'
+            })
+            if (response.success) {
+                setRefreshKey((prev) => prev + 1)
+            } else {
+                alert(response.message || 'Không thể xóa lô hàng')
+            }
+        } catch (err) {
+            console.error('Delete batch error:', err)
+            const errMsg = err instanceof Error ? err.message : 'Có lỗi xảy ra khi xóa lô hàng'
+            alert(errMsg)
+        }
+    }
+
+    // ─── Soft-delete product ────────────────────────────────────
+    const handleDeleteProduct = async () => {
+        if (!productId) return
+        setIsDeletingProduct(true)
+        setDeleteError(null)
+        try {
+            const response = await updateProductApi(
+                productId,
+                {
+                    name: product?.name ?? '',
+                    price: product?.price ?? 0,
+                    brandName: product?.brandName ?? '',
+                    status: 'DELETED'
+                }
+            )
+            if (response.success) {
+                // Điều hướng về danh sách sau khi xóa thành công
+                navigate('/manager/products')
+            } else {
+                setDeleteError(response.message || 'Không thể xóa sản phẩm')
+            }
+        } catch (err) {
+            console.error('Delete product error:', err)
+            setDeleteError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi xóa sản phẩm')
+        } finally {
+            setIsDeletingProduct(false)
+        }
+    }
+
     // ─── Format date ────────────────────────────────────────────
     const formatDate = (dateStr: string) => {
         if (!dateStr) return 'N/A'
@@ -254,11 +393,19 @@ export function ManagerProductDetailPage() {
                                         Quay lại danh sách
                                     </button>
                                     <div className='flex items-center gap-3 self-end sm:self-auto'>
-                                        <button className='flex items-center gap-2 px-4 py-2 bg-card hover:bg-muted text-foreground border border-border rounded-lg text-sm font-semibold transition-colors'>
+                                        {/* 🗑️ Nút Xóa sản phẩm — mở confirm dialog */}
+                                        <button
+                                            onClick={() => { setDeleteError(null); setIsDeleteConfirmOpen(true) }}
+                                            className='flex items-center gap-2 px-4 py-2 bg-card hover:bg-destructive/10 text-destructive border border-destructive/40 rounded-lg text-sm font-semibold transition-colors'
+                                        >
                                             <MaterialIcon name='delete' className='text-lg' />
                                             Xóa sản phẩm
                                         </button>
-                                        <button className='flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold transition-colors shadow-sm'>
+                                        {/* ✏️ Nút Chỉnh sửa — mở ManagerEditProductModal */}
+                                        <button
+                                            onClick={() => setIsEditModalOpen(true)}
+                                            className='flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold transition-colors shadow-sm'
+                                        >
                                             <MaterialIcon name='edit' className='text-lg' />
                                             Chỉnh sửa
                                         </button>
@@ -627,9 +774,13 @@ export function ManagerProductDetailPage() {
                                                                     const daysRemaining = getDaysRemaining(batch.expiryDate)
                                                                     const isExpiringSoon = daysRemaining <= 45 && daysRemaining > 0
                                                                     const isExpired = daysRemaining <= 0
+                                                                    const isExpanded = expandedBatchIds.includes(batch.batchId)
+                                                                    const isEditing = editingBatchId === batch.batchId
 
                                                                     return (
-                                                                        <tr key={batch.batchId} className='hover:bg-muted/10 transition-colors'>
+                                                                        <>
+                                                                        {/* ── Main data row ── */}
+                                                                        <tr key={`row-${batch.batchId}`} className='hover:bg-muted/10 transition-colors'>
                                                                             <td className='px-4 py-3.5 text-center text-muted-foreground font-medium'>
                                                                                 {index + 1 + batchPage * 10}
                                                                             </td>
@@ -658,8 +809,10 @@ export function ManagerProductDetailPage() {
                                                                             </td>
                                                                             <td className='px-4 py-3.5'>
                                                                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                                                                                    batch.status === 'ACTIVE' 
-                                                                                        ? 'bg-success/15 text-success' 
+                                                                                    batch.status === 'ACTIVE'
+                                                                                        ? 'bg-success/15 text-success'
+                                                                                        : batch.status === 'DELETED'
+                                                                                        ? 'bg-destructive/15 text-destructive'
                                                                                         : 'bg-muted-foreground/15 text-muted-foreground'
                                                                                 }`}>
                                                                                     {batch.status}
@@ -667,18 +820,152 @@ export function ManagerProductDetailPage() {
                                                                             </td>
                                                                             <td className='px-4 py-3.5 text-center'>
                                                                                 <div className='flex items-center justify-center gap-1.5'>
-                                                                                    <button className='p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors' title='Chi tiết'>
+                                                                                    {/* 👁️ Chi tiết — toggle audit info */}
+                                                                                    <button
+                                                                                        onClick={() => toggleExpandBatch(batch.batchId)}
+                                                                                        className={`p-1.5 rounded-lg transition-colors ${
+                                                                                            isExpanded
+                                                                                                ? 'text-primary bg-primary/10'
+                                                                                                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                                                                                        }`}
+                                                                                        title='Chi tiết'
+                                                                                    >
                                                                                         <MaterialIcon name='visibility' className='text-lg' />
                                                                                     </button>
-                                                                                    <button className='p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors' title='Sửa'>
+                                                                                    {/* ✏️ Sửa — toggle inline edit */}
+                                                                                    <button
+                                                                                        onClick={() => isEditing ? handleCancelEdit() : handleStartEdit(batch)}
+                                                                                        className={`p-1.5 rounded-lg transition-colors ${
+                                                                                            isEditing
+                                                                                                ? 'text-primary bg-primary/10'
+                                                                                                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                                                                                        }`}
+                                                                                        title='Sửa'
+                                                                                    >
                                                                                         <MaterialIcon name='edit' className='text-lg' />
                                                                                     </button>
-                                                                                    <button className='p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors' title='Xóa'>
+                                                                                    {/* 🗑️ Xóa — soft delete */}
+                                                                                    <button
+                                                                                        onClick={() => handleDeleteBatch(batch.batchId)}
+                                                                                        disabled={batch.status === 'DELETED'}
+                                                                                        className='p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed'
+                                                                                        title='Xóa'
+                                                                                    >
                                                                                         <MaterialIcon name='delete' className='text-lg' />
                                                                                     </button>
                                                                                 </div>
                                                                             </td>
                                                                         </tr>
+
+                                                                        {/* ── 👁️ Audit detail expansion row ── */}
+                                                                        {isExpanded && (
+                                                                            <tr key={`expand-${batch.batchId}`} className='bg-muted/20 border-b border-border/50'>
+                                                                                <td colSpan={7} className='px-6 py-3'>
+                                                                                    <div className='flex flex-wrap gap-x-8 gap-y-2 text-xs'>
+                                                                                        <div className='flex items-center gap-2 text-muted-foreground'>
+                                                                                            <MaterialIcon name='calendar_month' className='text-sm' />
+                                                                                            <span className='font-bold uppercase tracking-wide'>Ngày tạo:</span>
+                                                                                            <span className='font-semibold text-foreground'>{formatDate(batch.createdAt)}</span>
+                                                                                        </div>
+                                                                                        <div className='flex items-center gap-2 text-muted-foreground'>
+                                                                                            <MaterialIcon name='history' className='text-sm' />
+                                                                                            <span className='font-bold uppercase tracking-wide'>Cập nhật:</span>
+                                                                                            <span className='font-semibold text-foreground'>{formatDate(batch.updatedAt)}</span>
+                                                                                        </div>
+                                                                                        <div className='flex items-center gap-2 text-muted-foreground'>
+                                                                                            <MaterialIcon name='delete_outline' className='text-sm' />
+                                                                                            <span className='font-bold uppercase tracking-wide'>Ngày xóa:</span>
+                                                                                            <span className={`font-semibold ${batch.deletedAt ? 'text-destructive' : 'text-foreground'}`}>
+                                                                                                {batch.deletedAt ? formatDate(batch.deletedAt) : '—'}
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        )}
+
+                                                                        {/* ── ✏️ Inline edit form row ── */}
+                                                                        {isEditing && (
+                                                                            <tr key={`edit-${batch.batchId}`} className='bg-primary/5 border-b border-border'>
+                                                                                <td colSpan={7} className='px-6 py-4'>
+                                                                                    <div className='flex flex-col gap-3'>
+                                                                                        <span className='text-xs font-bold text-muted-foreground uppercase tracking-wide'>Chỉnh sửa lô hàng: {batch.batchCode}</span>
+                                                                                        <div className='flex flex-wrap gap-3'>
+                                                                                            {/* Số lượng */}
+                                                                                            <div className='flex flex-col gap-1 min-w-[140px]'>
+                                                                                                <label className='text-xs font-bold text-muted-foreground uppercase'>Tồn kho</label>
+                                                                                                <input
+                                                                                                    type='number'
+                                                                                                    min={0}
+                                                                                                    value={editQuantity}
+                                                                                                    onChange={(e) => setEditQuantity(Number(e.target.value))}
+                                                                                                    disabled={isSavingEdit}
+                                                                                                    className='bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all w-full disabled:opacity-50'
+                                                                                                />
+                                                                                            </div>
+                                                                                            {/* Ngày hết hạn */}
+                                                                                            <div className='flex flex-col gap-1 min-w-[160px]'>
+                                                                                                <label className='text-xs font-bold text-muted-foreground uppercase'>Ngày hết hạn</label>
+                                                                                                <input
+                                                                                                    type='date'
+                                                                                                    value={editExpiryDate}
+                                                                                                    onChange={(e) => setEditExpiryDate(e.target.value)}
+                                                                                                    disabled={isSavingEdit}
+                                                                                                    className='bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all w-full disabled:opacity-50'
+                                                                                                />
+                                                                                            </div>
+                                                                                            {/* Trạng thái */}
+                                                                                            <div className='flex flex-col gap-1 min-w-[170px]'>
+                                                                                                <label className='text-xs font-bold text-muted-foreground uppercase'>Trạng thái</label>
+                                                                                                <div className='relative'>
+                                                                                                    <select
+                                                                                                        value={editStatus}
+                                                                                                        onChange={(e) => setEditStatus(e.target.value as typeof editStatus)}
+                                                                                                        disabled={isSavingEdit}
+                                                                                                        className='w-full appearance-none bg-background border border-input rounded-lg px-3 py-1.5 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all disabled:opacity-50'
+                                                                                                    >
+                                                                                                        <option value='ACTIVE'>ACTIVE</option>
+                                                                                                        <option value='INACTIVE'>INACTIVE</option>
+                                                                                                        <option value='DELETED'>DELETED</option>
+                                                                                                    </select>
+                                                                                                    <MaterialIcon name='expand_more' className='absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none text-base' />
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        {/* Error message */}
+                                                                                        {editError && (
+                                                                                            <div className='flex items-center gap-1.5 text-destructive text-xs font-semibold'>
+                                                                                                <MaterialIcon name='error_outline' className='text-base' />
+                                                                                                {editError}
+                                                                                            </div>
+                                                                                        )}
+                                                                                        {/* Action buttons */}
+                                                                                        <div className='flex items-center gap-2 pt-1'>
+                                                                                            <button
+                                                                                                onClick={handleSaveEdit}
+                                                                                                disabled={isSavingEdit}
+                                                                                                className='flex items-center gap-1.5 px-4 py-1.5 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed'
+                                                                                            >
+                                                                                                {isSavingEdit
+                                                                                                    ? <MaterialIcon name='hourglass_empty' className='animate-spin text-base' />
+                                                                                                    : <MaterialIcon name='save' className='text-base' />
+                                                                                                }
+                                                                                                Lưu
+                                                                                            </button>
+                                                                                            <button
+                                                                                                onClick={handleCancelEdit}
+                                                                                                disabled={isSavingEdit}
+                                                                                                className='flex items-center gap-1.5 px-4 py-1.5 bg-card hover:bg-muted text-foreground border border-border rounded-lg text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+                                                                                            >
+                                                                                                <MaterialIcon name='close' className='text-base' />
+                                                                                                Hủy
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        )}
+                                                                        </>
                                                                     )
                                                                 })}
                                                             </tbody>
@@ -738,6 +1025,96 @@ export function ManagerProductDetailPage() {
                     </div>
                 </main>
             </div>
+
+            {/* ══════════════════════════════════════════════════════════
+                ✏️  EDIT PRODUCT MODAL
+                Truyền productId hiện tại + danh sách categories.
+                onSaveSuccess → re-fetch thông tin sản phẩm.
+            ══════════════════════════════════════════════════════════ */}
+            {isEditModalOpen && productId && (
+                <ManagerEditProductModal
+                    productId={productId}
+                    categories={categories}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onSaveSuccess={async () => {
+                        setIsEditModalOpen(false)
+                        // Re-fetch để hiển thị thông tin mới nhất
+                        setIsLoading(true)
+                        try {
+                            const res = await fetchProductByIdApi(productId)
+                            if (res.success) setProduct(res.data)
+                        } catch (err) {
+                            console.error('Reload product after edit error:', err)
+                        } finally {
+                            setIsLoading(false)
+                        }
+                    }}
+                />
+            )}
+
+            {/* ══════════════════════════════════════════════════════════
+                🗑️  DELETE CONFIRM DIALOG
+                Xóa mềm sản phẩm (status → DELETED) rồi điều hướng về.
+            ══════════════════════════════════════════════════════════ */}
+            {isDeleteConfirmOpen && (
+                <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
+                    {/* Backdrop */}
+                    <button
+                        type='button'
+                        aria-label='Đóng'
+                        className='absolute inset-0 bg-foreground/45 backdrop-blur-sm'
+                        onClick={() => !isDeletingProduct && setIsDeleteConfirmOpen(false)}
+                    />
+
+                    {/* Dialog panel */}
+                    <div className='relative z-10 w-full max-w-sm rounded-2xl border border-border bg-card shadow-2xl p-6 flex flex-col gap-5'>
+                        {/* Icon + Title */}
+                        <div className='flex flex-col items-center gap-3 text-center'>
+                            <div className='flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10'>
+                                <MaterialIcon name='delete_forever' className='text-3xl text-destructive' />
+                            </div>
+                            <h2 className='text-lg font-bold text-foreground'>Xóa sản phẩm?</h2>
+                            <p className='text-sm text-muted-foreground'>
+                                Sản phẩm <span className='font-semibold text-foreground'>{product?.name}</span> sẽ bị
+                                chuyển sang trạng thái <span className='font-semibold text-destructive'>DELETED</span>.
+                                Bạn có thể khôi phục bằng cách chỉnh sửa trạng thái sau.
+                            </p>
+                        </div>
+
+                        {/* Error message */}
+                        {deleteError && (
+                            <div className='flex items-center gap-2 rounded-lg bg-destructive/10 px-3 py-2 text-sm font-semibold text-destructive'>
+                                <MaterialIcon name='error_outline' className='shrink-0 text-lg' />
+                                <span>{deleteError}</span>
+                            </div>
+                        )}
+
+                        {/* Action buttons */}
+                        <div className='flex gap-3'>
+                            <button
+                                type='button'
+                                disabled={isDeletingProduct}
+                                onClick={() => setIsDeleteConfirmOpen(false)}
+                                className='flex-1 h-10 rounded-full border border-border bg-card text-sm font-bold text-foreground hover:bg-muted transition-colors disabled:opacity-50'
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                type='button'
+                                disabled={isDeletingProduct}
+                                onClick={handleDeleteProduct}
+                                className='flex-1 h-10 inline-flex items-center justify-center gap-2 rounded-full bg-destructive text-sm font-bold text-white hover:opacity-90 transition-all disabled:opacity-50'
+                            >
+                                {isDeletingProduct
+                                    ? <div className='h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
+                                    : <MaterialIcon name='delete' className='text-base' />
+                                }
+                                Xác nhận xóa
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
