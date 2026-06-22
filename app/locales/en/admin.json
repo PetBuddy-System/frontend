@@ -218,7 +218,8 @@
       "serviceBookings": "Service Bookings",
       "services": "Services",
       "users": "Users",
-      "vouchers": "Vouchers"
+      "vouchers": "Vouchers",
+      "shipping": "Shipping Config"
     },
     "toggle": "Toggle sidebar"
   },
@@ -688,5 +689,7 @@
       "title": "Success!"
     },
     "title": "Voucher & Reward Management"
-  }
+  },
+  "shippingTitle": "Shipping Fee Configuration",
+  "shippingSubtitle": "Set up fee configuration based on geographical distance to optimize operational costs."
 }

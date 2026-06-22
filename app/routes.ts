@@ -25,6 +25,9 @@ export default [
     route('profile/services', 'routes/profile-services.tsx'),
     route('profile/returns', 'routes/profile-returns.tsx'),
     route('checkout', 'routes/checkout.tsx'),
+    route('order', 'routes/order.tsx'),
+    route('order/address', 'routes/order-address.tsx'),
+    route('order/voucher', 'routes/order-voucher.tsx'),
     route('order-success', 'routes/order-success.tsx'),
     route('services/:serviceId/book', 'routes/service-booking.tsx')
   ]),
@@ -35,7 +38,8 @@ export default [
     route('staff/attendance', 'routes/staff-attendance.tsx'),
     route('staff/disposal-request', 'routes/staff-disposal-request.tsx'),
     route('staff/shift-request', 'routes/staff-shift-request.tsx'),
-    route('staff/add-product', 'routes/staff-add-product.tsx')
+    route('staff/add-product', 'routes/staff-add-product.tsx'),
+    route('staff/orders', 'routes/staff-orders.tsx')
   ]),
 
   // ─── Admin Only Routes ────────────────────────────────────────────────────
@@ -46,7 +50,8 @@ export default [
     route('admin/services', 'routes/admin-services.tsx'),
     route('admin/service-bookings', 'routes/admin-service-bookings.tsx'),
     route('admin/users', 'routes/admin-users.tsx'),
-    route('admin/vouchers', 'routes/admin-vouchers.tsx')
+    route('admin/vouchers', 'routes/admin-vouchers.tsx'),
+    route('admin/shipping', 'routes/admin-shipping.tsx')
   ]),
 
   // ─── Manager Only Routes ──────────────────────────────────────────────────

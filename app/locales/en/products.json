@@ -110,6 +110,7 @@
     }
   },
   "cart": {
+    "addedToCart": "Product added to cart!",
     "title": "Your cart",
     "continueShopping": "Continue shopping",
     "categoryLabel": "Category: {{category}}",

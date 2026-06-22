@@ -218,7 +218,8 @@
       "serviceBookings": "Lịch đặt dịch vụ",
       "services": "Dịch vụ",
       "users": "Người dùng",
-      "vouchers": "Voucher"
+      "vouchers": "Voucher",
+      "shipping": "Cấu hình vận chuyển"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
@@ -688,5 +689,7 @@
       "title": "Thành công!"
     },
     "title": "Quản lý ưu đãi & điểm thưởng"
-  }
+  },
+  "shippingTitle": "Cấu hình phí vận chuyển",
+  "shippingSubtitle": "Thiết lập biểu phí dựa trên khoảng cách địa lý để tối ưu hóa chi phí vận hành."
 }

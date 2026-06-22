@@ -4,44 +4,65 @@ import { MaterialIcon } from '~/shared/ui'
 
 export interface OrderSuccessSidebarProps {
   subtotal: number
+  shippingFee: number
+  isFreeShipping: boolean
+  discount: number
+  finalAmount: number
   formatPrice: (value: number) => string
 }
 
-export function OrderSuccessSidebar({ subtotal, formatPrice }: OrderSuccessSidebarProps) {
+export function OrderSuccessSidebar({
+  subtotal,
+  shippingFee,
+  isFreeShipping,
+  discount,
+  finalAmount,
+  formatPrice
+}: OrderSuccessSidebarProps) {
   const { t } = useTranslation('products')
 
   return (
     <aside className='space-y-6'>
       <section className='rounded-3xl border border-accent bg-card p-6 shadow-sm md:p-8'>
-        <h2 className='mb-6 font-display text-lg font-semibold text-foreground'>{t('orderSuccess.payment.title')}</h2>
+        <h2 className='mb-6 font-display text-lg font-semibold text-foreground'>{t('orderSuccess.payment.title', 'Tổng cộng')}</h2>
         <div className='mb-6 space-y-4'>
           <div className='flex justify-between gap-4 text-muted-foreground'>
-            <span>{t('orderSuccess.payment.subtotal')}</span>
+            <span>{t('orderSuccess.payment.subtotal', 'Tạm tính')}</span>
             <span>{formatPrice(subtotal)}</span>
           </div>
+          {discount > 0 && (
+            <div className='flex justify-between gap-4 text-muted-foreground'>
+              <span>Giảm giá</span>
+              <span className='font-bold text-success'>-{formatPrice(discount)}</span>
+            </div>
+          )}
           <div className='flex justify-between gap-4 text-muted-foreground'>
-            <span>{t('orderSuccess.payment.shipping')}</span>
-            <span className='font-bold text-success'>{t('orderSuccess.payment.freeShipping')}</span>
+            <span>{t('orderSuccess.payment.shipping', 'Phí vận chuyển')}</span>
+            {isFreeShipping ? (
+              <span className='font-bold text-success'>{t('orderSuccess.payment.freeShipping', 'Miễn phí')}</span>
+            ) : (
+              <span>{formatPrice(shippingFee)}</span>
+            )}
           </div>
           <div className='flex items-center justify-between gap-4 border-t border-border pt-4'>
-            <span className='font-bold text-foreground'>{t('orderSuccess.payment.total')}</span>
-            <span className='font-display text-3xl font-bold text-primary'>{formatPrice(subtotal)}</span>
+            <span className='font-bold text-foreground'>{t('orderSuccess.payment.total', 'Tổng tiền')}</span>
+            <span className='font-display text-3xl font-bold text-primary'>{formatPrice(finalAmount)}</span>
           </div>
         </div>
 
         <div className='space-y-3'>
           <a
-            href='#'
+            href='/profile/orders'
             className='flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 font-display font-semibold text-primary-foreground transition-transform active:scale-95'
           >
             <MaterialIcon name='track_changes' className='text-[22px]' />
-            {t('orderSuccess.payment.trackOrder')}
+            {t('orderSuccess.payment.trackOrder', 'Theo dõi đơn hàng')}
           </a>
           <a
             href='/products'
             className='flex w-full items-center justify-center rounded-xl border-2 border-primary bg-background px-6 py-4 font-display font-semibold text-primary transition-colors hover:bg-accent'
           >
-            {t('orderSuccess.payment.continueShopping')}
+            {t('orderSuccess.payment.continueShopping', 'Tiếp tục mua sắm')}
           </a>
         </div>
       </section>

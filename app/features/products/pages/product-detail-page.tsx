@@ -115,6 +115,7 @@ export function ProductDetailPage() {
         <div className='mb-16 grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16'>
           <ProductDetailGallery imageUrls={product.imageUrls} productName={product.name} />
           <ProductDetailInfo
+            productId={product.productId}
             name={product.name}
             price={product.price}
             brandName={product.brandName}

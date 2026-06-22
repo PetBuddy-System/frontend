@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
+import { addToCartApi } from '~/shared/lib/cart'
 import { MaterialIcon } from '~/shared/ui'
 import type { ProductResponse } from '~/shared/lib/product'
 
@@ -10,9 +12,31 @@ export interface ProductsGridProps {
 
 export function ProductsGrid({ products, isLoading = false }: ProductsGridProps) {
   const { t } = useTranslation('products')
+  const [addingMap, setAddingMap] = useState<Record<string, boolean>>({})
+  const [showSuccessToast, setShowSuccessToast] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const formatPrice = (price: number) => {
     return price.toLocaleString('vi-VN') + 'đ'
+  }
+
+  const handleAddToCart = async (productId: string) => {
+    if (addingMap[productId]) return
+    setAddingMap((prev) => ({ ...prev, [productId]: true }))
+    setError(null)
+    setShowSuccessToast(false)
+
+    try {
+      await addToCartApi({ productId, quantity: 1 })
+      setShowSuccessToast(true)
+      // Tự động ẩn toast sau 3 giây
+      setTimeout(() => setShowSuccessToast(false), 3000)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Lỗi thêm vào giỏ hàng')
+      setTimeout(() => setError(null), 3000)
+    } finally {
+      setAddingMap((prev) => ({ ...prev, [productId]: false }))
+    }
   }
 
   if (isLoading) {
@@ -47,7 +71,7 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
   }
 
   return (
-    <div className='grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-3 xl:grid-cols-4'>
+    <div className='grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-3 xl:grid-cols-4 relative'>
       {products.map((product) => (
         <article
           key={product.productId}
@@ -72,9 +96,15 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
             </div>
             <button
               type='button'
-              className='mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm font-semibold text-secondary-foreground transition-colors hover:opacity-90'
+              disabled={addingMap[product.productId]}
+              onClick={() => handleAddToCart(product.productId)}
+              className='mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm font-semibold text-secondary-foreground transition-colors hover:opacity-90 disabled:opacity-50'
             >
-              <MaterialIcon name='add_shopping_cart' className='text-[18px]' />
+              {addingMap[product.productId] ? (
+                <MaterialIcon name='progress_activity' className='text-[18px] animate-spin' />
+              ) : (
+                <MaterialIcon name='add_shopping_cart' className='text-[18px]' />
+              )}
               {t('actions.addToCart')}
             </button>
             <Link
@@ -87,6 +117,26 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
           </div>
         </article>
       ))}
+
+      {/* Floating success toast */}
+      {showSuccessToast && (
+        <div className='fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-xl bg-success px-4 py-3 text-success-foreground shadow-lg animate-in fade-in slide-in-from-bottom-4'>
+          <MaterialIcon name='check_circle' className='text-[20px]' />
+          <div className='text-left'>
+            <p className='text-sm font-bold'>{t('cart.addedToCart', 'Đã thêm sản phẩm vào giỏ hàng!')}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Floating error toast */}
+      {error && (
+        <div className='fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-xl bg-destructive px-4 py-3 text-destructive-foreground shadow-lg animate-in fade-in slide-in-from-bottom-4'>
+          <MaterialIcon name='error' className='text-[20px]' />
+          <div className='text-left'>
+            <p className='text-sm font-bold'>{error}</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

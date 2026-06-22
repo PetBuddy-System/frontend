@@ -1,17 +1,30 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
+import { addToCartApi } from '~/shared/lib/cart'
 import { MaterialIcon } from '~/shared/ui'
 
 export interface ProductDetailInfoProps {
+  productId: string
   name: string
   price: number
   brandName: string
   totalStock: number
 }
 
-export function ProductDetailInfo({ name, price, brandName, totalStock }: ProductDetailInfoProps) {
+export function ProductDetailInfo({
+  productId,
+  name,
+  price,
+  brandName,
+  totalStock
+}: ProductDetailInfoProps) {
   const { t } = useTranslation('products')
+  const navigate = useNavigate()
   const [quantity, setQuantity] = useState(1)
+  const [isAdding, setIsAdding] = useState(false)
+  const [showSuccessToast, setShowSuccessToast] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
 
   const safePrice = price || 0
   const safeTotalStock = totalStock || 0
@@ -33,8 +46,40 @@ export function ProductDetailInfo({ name, price, brandName, totalStock }: Produc
     }
   }
 
+  const handleAddToCart = async () => {
+    if (isAdding) return
+    setIsAdding(true)
+    setAddError(null)
+    setShowSuccessToast(false)
+
+    try {
+      await addToCartApi({ productId, quantity })
+      setShowSuccessToast(true)
+      // Tự động ẩn toast sau 3 giây
+      setTimeout(() => setShowSuccessToast(false), 3000)
+    } catch (err: unknown) {
+      setAddError(err instanceof Error ? err.message : 'Lỗi khi thêm vào giỏ hàng')
+    } finally {
+      setIsAdding(false)
+    }
+  }
+
+  const handleBuyNow = async () => {
+    if (isAdding) return
+    setIsAdding(true)
+    setAddError(null)
+
+    try {
+      await addToCartApi({ productId, quantity })
+      navigate('/checkout')
+    } catch (err: unknown) {
+      setAddError(err instanceof Error ? err.message : 'Lỗi xử lý mua ngay')
+      setIsAdding(false)
+    }
+  }
+
   return (
-    <section className='flex flex-col justify-start'>
+    <section className='flex flex-col justify-start relative'>
       <h1 className='text-3xl font-bold text-foreground md:text-4xl font-display'>{name}</h1>
 
       <div className='mt-4 flex items-center gap-3'>
@@ -62,6 +107,13 @@ export function ProductDetailInfo({ name, price, brandName, totalStock }: Produc
         </span>
       </div>
 
+      {addError && (
+        <div className='mt-4 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive flex items-center gap-2'>
+          <MaterialIcon name='error' className='text-[20px] text-destructive shrink-0' />
+          <span>{addError}</span>
+        </div>
+      )}
+
       <div className='mt-8 flex flex-col gap-3'>
         <label className='text-sm font-semibold text-foreground' htmlFor='quantity'>
           {t('detail.quantity.label')}
@@ -72,6 +124,7 @@ export function ProductDetailInfo({ name, price, brandName, totalStock }: Produc
             onClick={handleDecrease}
             className='px-4 py-3 text-muted-foreground transition-colors hover:bg-muted'
             aria-label={t('detail.quantity.decrease')}
+            disabled={isAdding}
           >
             <MaterialIcon name='remove' className='text-[20px]' />
           </button>
@@ -87,7 +140,7 @@ export function ProductDetailInfo({ name, price, brandName, totalStock }: Produc
             onClick={handleIncrease}
             className='px-4 py-3 text-muted-foreground transition-colors hover:bg-muted'
             aria-label={t('detail.quantity.increase')}
-            disabled={quantity >= safeTotalStock}
+            disabled={quantity >= safeTotalStock || isAdding}
           >
             <MaterialIcon name='add' className='text-[20px]' />
           </button>
@@ -97,20 +150,36 @@ export function ProductDetailInfo({ name, price, brandName, totalStock }: Produc
       <div className='mt-10 flex flex-col gap-4 sm:flex-row'>
         <button
           type='button'
-          disabled={safeTotalStock <= 0}
+          disabled={safeTotalStock <= 0 || isAdding}
+          onClick={handleAddToCart}
           className='flex flex-1 items-center justify-center gap-2 rounded-xl bg-secondary px-8 py-4 text-base font-semibold text-secondary-foreground shadow-sm transition-colors hover:opacity-90 disabled:opacity-50 disabled:pointer-events-none'
         >
-          <MaterialIcon name='shopping_cart' className='text-[22px]' />
+          {isAdding ? (
+            <MaterialIcon name='progress_activity' className='text-[22px] animate-spin' />
+          ) : (
+            <MaterialIcon name='shopping_cart' className='text-[22px]' />
+          )}
           {t('detail.actions.addToCart')}
         </button>
         <button
           type='button'
-          disabled={safeTotalStock <= 0}
+          disabled={safeTotalStock <= 0 || isAdding}
+          onClick={handleBuyNow}
           className='flex-1 rounded-xl border-2 border-primary px-8 py-4 text-base font-semibold text-primary shadow-sm transition-colors hover:bg-primary hover:text-primary-foreground disabled:opacity-50 disabled:pointer-events-none'
         >
           {t('detail.actions.buyNow')}
         </button>
       </div>
+
+      {/* Floating success toast */}
+      {showSuccessToast && (
+        <div className='fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-xl bg-success px-4 py-3 text-success-foreground shadow-lg animate-in fade-in slide-in-from-bottom-4'>
+          <MaterialIcon name='check_circle' className='text-[20px]' />
+          <div className='text-left'>
+            <p className='text-sm font-bold'>{t('cart.addedToCart', 'Đã thêm sản phẩm vào giỏ hàng!')}</p>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

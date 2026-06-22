@@ -47,6 +47,7 @@
     "logoAlt": "Logo PetBuddy",
     "logout": "Đăng xuất",
     "nav": {
+      "orders": "Quản lý đơn hàng",
       "attendanceHistory": "Lịch sử chấm công",
       "shiftRequest": "Tạo yêu cầu đổi ca",
       "violations": "Xem các lần vi phạm",

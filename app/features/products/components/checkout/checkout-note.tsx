@@ -12,6 +12,7 @@ export function CheckoutNote() {
         <h2 className='font-display text-2xl font-semibold text-primary'>{t('checkout.note.title')}</h2>
       </div>
       <textarea
+        name='note'
         className='w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-foreground transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
         placeholder={t('checkout.note.placeholder')}
         rows={3}

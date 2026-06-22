@@ -13,7 +13,8 @@ const ADMIN_NAV_ITEMS = [
   { icon: 'event_note', key: 'serviceBookings', href: '/admin/service-bookings' },
   { icon: 'group', key: 'users', href: '/admin/users' },
   { icon: 'confirmation_number', key: 'vouchers', href: '/admin/vouchers' },
-  { icon: 'article', key: 'blog', href: '/admin/blog' }
+  { icon: 'article', key: 'blog', href: '/admin/blog' },
+  { icon: 'local_shipping', key: 'shipping', href: '/admin/shipping' }
 ] as const
 
 export type AdminNavKey = (typeof ADMIN_NAV_ITEMS)[number]['key']

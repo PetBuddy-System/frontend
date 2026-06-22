@@ -110,6 +110,7 @@
     }
   },
   "cart": {
+    "addedToCart": "Đã thêm sản phẩm vào giỏ hàng!",
     "title": "Giỏ hàng của bạn",
     "continueShopping": "Tiếp tục mua sắm",
     "categoryLabel": "Danh mục: {{category}}",

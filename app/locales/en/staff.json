@@ -47,6 +47,7 @@
     "logoAlt": "PetBuddy logo",
     "logout": "Log out",
     "nav": {
+      "orders": "Manage Orders",
       "attendanceHistory": "Attendance history",
       "shiftRequest": "Create shift request",
       "violations": "View violations",

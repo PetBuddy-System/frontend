@@ -2,7 +2,14 @@ import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
 
-export function OrderSuccessInfoCards() {
+export interface OrderSuccessInfoCardsProps {
+  userName: string
+  phoneNumber: string
+  address: string
+  paymentMethod: string
+}
+
+export function OrderSuccessInfoCards({ userName, phoneNumber, address, paymentMethod }: OrderSuccessInfoCardsProps) {
   const { t } = useTranslation('products')
 
   return (
@@ -10,32 +17,32 @@ export function OrderSuccessInfoCards() {
       <article className='rounded-3xl border border-border/60 bg-card p-6 shadow-sm md:p-8'>
         <div className='mb-6 flex items-center gap-3 text-primary'>
           <MaterialIcon name='local_shipping' className='text-[24px]' />
-          <h3 className='font-display text-lg font-semibold text-foreground'>{t('orderSuccess.delivery.title')}</h3>
+          <h3 className='font-display text-lg font-semibold text-foreground'>{t('orderSuccess.delivery.title', 'Thông tin nhận hàng')}</h3>
         </div>
         <div className='space-y-3'>
-          <p className='font-bold text-foreground'>{t('orderSuccess.delivery.name')}</p>
-          <p className='text-muted-foreground'>{t('orderSuccess.delivery.phone')}</p>
-          <p className='text-muted-foreground'>{t('orderSuccess.delivery.address')}</p>
+          <p className='font-bold text-foreground'>{userName}</p>
+          <p className='text-muted-foreground'>{phoneNumber}</p>
+          <p className='text-muted-foreground'>{address}</p>
         </div>
       </article>
 
       <article className='rounded-3xl border border-border/60 bg-card p-6 shadow-sm md:p-8'>
         <div className='mb-6 flex items-center gap-3 text-primary'>
           <MaterialIcon name='payments' className='text-[24px]' />
-          <h3 className='font-display text-lg font-semibold text-foreground'>{t('orderSuccess.method.title')}</h3>
+          <h3 className='font-display text-lg font-semibold text-foreground'>{t('orderSuccess.method.title', 'Phương thức vận chuyển & Thanh toán')}</h3>
         </div>
         <div className='space-y-4'>
           <div>
             <p className='mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-              {t('orderSuccess.method.shippingLabel')}
+              {t('orderSuccess.method.shippingLabel', 'Vận chuyển')}
             </p>
-            <p className='font-medium text-foreground'>{t('orderSuccess.method.shipping')}</p>
+            <p className='font-medium text-foreground'>{t('orderSuccess.method.shipping', 'Giao hàng nhanh (2-3 ngày)')}</p>
           </div>
           <div>
             <p className='mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-              {t('orderSuccess.method.paymentLabel')}
+              {t('orderSuccess.method.paymentLabel', 'Thanh toán')}
             </p>
-            <p className='font-medium text-foreground'>{t('orderSuccess.method.payment')}</p>
+            <p className='font-medium text-foreground'>{paymentMethod}</p>
           </div>
         </div>
       </article>
