@@ -10,7 +10,8 @@ import { RelatedProducts } from '../components/detail/related-products'
 import { MaterialIcon } from '~/shared/ui'
 import { SiteFooter } from '~/shared/components'
 import { SiteHeader } from '~/shared/components'
-import { fetchProductByIdApi, type ProductDetailData } from '~/shared/lib/product'
+import { fetchProductByIdApi } from '../services/products'
+import type { ProductDetailData } from '~/shared/lib/product'
 
 export function ProductDetailPage() {
   const { t } = useTranslation('products')
@@ -32,9 +33,14 @@ export function ProductDetailPage() {
           setProduct(response.data)
           setError(null)
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message)
+        } else {
+          setError('Lỗi tải chi tiết sản phẩm')
+        }
         if (active) {
-          setError(err.message || 'Lỗi tải chi tiết sản phẩm')
+          setIsLoading(false)
         }
       } finally {
         if (active) {

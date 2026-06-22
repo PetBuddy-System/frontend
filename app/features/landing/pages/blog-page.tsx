@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { fetchBlogsApi } from '~/shared/lib/blog'
+import { fetchBlogsApi } from '../services/blog'
 import type { BlogResponse, PageMeta } from '~/shared/lib/blog'
 import { MaterialIcon } from '~/shared/ui'
 

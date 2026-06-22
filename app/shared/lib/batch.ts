@@ -1,5 +1,7 @@
-// app/shared/lib/batch.ts
-import { customFetch } from '~/api/mutator/custom-fetch'
+/**
+ * Batch types — chỉ chứa types/interfaces, không có API functions.
+ * API functions nằm trong features/services/.
+ */
 
 export interface ProductBatchItem {
     batchId: string
@@ -51,12 +53,12 @@ export interface PagedProductBatchResponse {
 }
 
 export type BatchSortBy =
-    | 'date_desc'    // Mặc định - sắp xếp theo ngày tạo mới nhất
-    | 'date_asc'     // Sắp xếp theo ngày tạo cũ nhất
-    | 'stock_asc'    // Sắp xếp theo tồn kho tăng dần
-    | 'stock_desc'   // Sắp xếp theo tồn kho giảm dần
-    | 'expiry_asc'   // Sắp xếp theo ngày hết hạn gần nhất (sắp hết hạn)
-    | 'expiry_desc'  // Sắp xếp theo ngày hết hạn xa nhất
+    | 'date_desc'
+    | 'date_asc'
+    | 'stock_asc'
+    | 'stock_desc'
+    | 'expiry_asc'
+    | 'expiry_desc'
 
 export interface FetchProductBatchesParams {
     keyword?: string
@@ -66,91 +68,22 @@ export interface FetchProductBatchesParams {
     sortBy?: BatchSortBy
 }
 
-// ============================================================
-// API FUNCTION
-// ============================================================
-
-/**
- * Lấy danh sách lô hàng của sản phẩm
- * GET /api/products/{productId}/batches
- * 
- * @param productId - ID của sản phẩm
- * @param params - Các tham số filter, phân trang
- * @returns Danh sách lô hàng có phân trang
- */
-export async function fetchProductBatchesApi(
-    productId: string,
-    params: FetchProductBatchesParams = {}
-): Promise<PagedProductBatchResponse> {
-    const {
-        keyword,
-        status,
-        page = 0,
-        size = 10,
-        sortBy = 'date_desc'
-    } = params
-
-    return customFetch<PagedProductBatchResponse>({
-        url: `/api/products/${productId}/batches`,
-        method: 'GET',
-        params: {
-            keyword: keyword || undefined,
-            status: status || undefined,
-            page,
-            size,
-            sortBy
-        }
-    })
-}
-
-// ============================================================
-// CREATE BATCH (TẠO LÔ HÀNG MỚI)
-// ============================================================
-
 export interface CreateBatchPayload {
   stockQuantity: number
-  expiryDate: string  // format: YYYY-MM-DD
+  expiryDate: string
 }
 
 export interface CreateBatchResponse {
   code: number
   message: string
   success: boolean
-  data: ProductBatchItem  // Dữ liệu trả về giống ProductBatchItem
+  data: ProductBatchItem
   timestamp: string
 }
 
-/**
- * Tạo một hoặc nhiều lô hàng cho sản phẩm
- * POST /api/products/{productId}/batches
- * Giới hạn tối đa 10 batch/lần tạo
- * 
- * @param productId - ID của sản phẩm
- * @param payload - Mảng các lô hàng cần tạo
- * @returns Danh sách lô hàng đã tạo
- */
-export async function createBatchesApi(
-  productId: string,
-  payload: CreateBatchPayload[]
-): Promise<CreateBatchResponse> {
-  return customFetch<CreateBatchResponse>({
-    url: `/api/products/${productId}/batches`,
-    method: 'POST',
-    data: payload  // payload là mảng các batch
-  })
-}
-
-// ============================================================
-// UPDATE BATCH (CẬP NHẬT LÔ HÀNG)
-// ============================================================
-
-/**
- * Payload để cập nhật một lô hàng.
- * Tất cả field đều optional — chỉ truyền field muốn thay đổi.
- */
 export interface UpdateBatchPayload {
     stockQuantity?: number
-    expiryDate?: string        // format: YYYY-MM-DD
+    expiryDate?: string
     status?: 'ACTIVE' | 'INACTIVE' | 'DELETED'
 }
 
@@ -160,23 +93,4 @@ export interface UpdateBatchResponse {
     success: boolean
     data: ProductBatchItem
     timestamp: string
-}
-
-/**
- * Cập nhật thông tin một lô hàng (chỉnh sửa inline / xóa mềm)
- * PATCH /api/batches/{batchId}
- *
- * @param batchId - ID của lô hàng cần cập nhật
- * @param payload - Các trường muốn cập nhật
- * @returns Lô hàng sau khi cập nhật
- */
-export async function updateBatchApi(
-    batchId: string,
-    payload: UpdateBatchPayload
-): Promise<UpdateBatchResponse> {
-    return customFetch<UpdateBatchResponse>({
-        url: `/api/batches/${batchId}`,
-        method: 'PATCH',
-        data: payload
-    })
 }

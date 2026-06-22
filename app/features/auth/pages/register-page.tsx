@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { signupApi } from '~/shared/lib/auth'
+import { signupApi } from '~/features/auth/services/auth'
 import { MaterialIcon } from '~/shared/ui'
 
 import logo from '../assets/cho-signup.jpg'

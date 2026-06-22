@@ -1,5 +1,7 @@
-import { env } from '~/shared/config/env'
-import { customFetch } from '~/api/mutator/custom-fetch'
+/**
+ * Order types — chỉ chứa types/interfaces, không có API functions.
+ * API functions nằm trong features/services/.
+ */
 
 export type OrderStatus =
   | 'PENDING'
@@ -76,60 +78,4 @@ export interface StaffOrderResponse {
   status: string
   totalAmount: number
   createdAt: string
-}
-
-const ORDER_BASE_URL = `${env.API_URL}/api/orders`
-
-export async function createOrderApi(data: CreateOrderRequest): Promise<ApiResponse<OrderResponse>> {
-  return customFetch<ApiResponse<OrderResponse>>({
-    url: ORDER_BASE_URL,
-    method: 'POST',
-    data
-  })
-}
-
-export async function fetchMyOrdersApi(
-  params: PageableParams = {}
-): Promise<ApiResponse<PageResponse<OrderResponse>>> {
-  const { page, size, sort } = params
-
-  return customFetch<ApiResponse<PageResponse<OrderResponse>>>({
-    url: ORDER_BASE_URL,
-    method: 'GET',
-    params: { page, size, sort }
-  })
-}
-
-export async function fetchOrderByIdApi(orderId: number): Promise<ApiResponse<OrderResponse>> {
-  return customFetch<ApiResponse<OrderResponse>>({
-    url: `${ORDER_BASE_URL}/${orderId}`,
-    method: 'GET'
-  })
-}
-
-export async function updateOrderStatusApi(orderId: number, status: OrderStatus): Promise<ApiResponse<null>> {
-  return customFetch<ApiResponse<null>>({
-    url: `${ORDER_BASE_URL}/${orderId}/status`,
-    method: 'PATCH',
-    params: { status }
-  })
-}
-
-export async function fetchPickingListApi(orderId: number): Promise<ApiResponse<PickingItemResponse[]>> {
-  return customFetch<ApiResponse<PickingItemResponse[]>>({
-    url: `${ORDER_BASE_URL}/${orderId}/picking-list`,
-    method: 'GET'
-  })
-}
-
-export async function fetchAllOrdersApi(
-  params: PageableParams = {}
-): Promise<ApiResponse<PageResponse<StaffOrderResponse>>> {
-  const { page, size, sort } = params
-
-  return customFetch<ApiResponse<PageResponse<StaffOrderResponse>>>({
-    url: `${ORDER_BASE_URL}/all`,
-    method: 'GET',
-    params: { page, size, sort }
-  })
 }

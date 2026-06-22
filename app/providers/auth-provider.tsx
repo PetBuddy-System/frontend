@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 import { STORAGE_KEYS } from '~/shared/config/site'
-import { loginApi, logoutApi } from '~/shared/lib/auth'
+import { loginApi, logoutApi } from '~/features/auth/services/auth'
 import type { UserResponse } from '~/shared/lib/auth'
 import { readStorage, writeStorage, removeStorage } from '~/shared/lib/storage'
 

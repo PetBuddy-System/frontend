@@ -1,5 +1,7 @@
-import { env } from '~/shared/config/env'
-import { customFetch } from '~/api/mutator/custom-fetch'
+/**
+ * Voucher types — chỉ chứa types/interfaces, không có API functions.
+ * API functions nằm trong features/services/.
+ */
 
 export interface ApiResponse<T> {
   code?: number
@@ -51,62 +53,4 @@ export interface PageResponse<T> {
   first: boolean
   last: boolean
   empty: boolean
-}
-
-const VOUCHER_BASE_URL = `${env.API_URL}/api/vouchers`
-
-/** Admin: Get all vouchers (requires ADMIN role) */
-export async function fetchAllVouchersApi(params?: {
-  page?: number
-  size?: number
-  sortBy?: string
-}): Promise<ApiResponse<PageResponse<VoucherResponse>>> {
-  return customFetch<ApiResponse<PageResponse<VoucherResponse>>>({
-    url: VOUCHER_BASE_URL,
-    method: 'GET',
-    params: {
-      page: params?.page ?? 0,
-      size: params?.size ?? 20,
-      sortBy: params?.sortBy ?? 'createdAt',
-    },
-  })
-}
-
-/** Customer: Get active vouchers only (public endpoint) */
-export async function fetchActiveVouchersApi(params?: {
-  page?: number
-  size?: number
-}): Promise<ApiResponse<PageResponse<VoucherResponse>>> {
-  return customFetch<ApiResponse<PageResponse<VoucherResponse>>>({
-    url: `${VOUCHER_BASE_URL}/active`,
-    method: 'GET',
-    params: {
-      page: params?.page ?? 0,
-      size: params?.size ?? 100,
-      sortBy: 'createdAt',
-    },
-  })
-}
-
-/** Admin: Create new voucher */
-export async function createVoucherApi(
-  data: VoucherRequest
-): Promise<ApiResponse<VoucherResponse>> {
-  return customFetch<ApiResponse<VoucherResponse>>({
-    url: VOUCHER_BASE_URL,
-    method: 'POST',
-    data,
-  })
-}
-
-/** Admin: Update voucher by ID */
-export async function updateVoucherApi(
-  id: string,
-  data: VoucherRequest
-): Promise<ApiResponse<VoucherResponse>> {
-  return customFetch<ApiResponse<VoucherResponse>>({
-    url: `${VOUCHER_BASE_URL}/${id}`,
-    method: 'PUT',
-    data,
-  })
 }

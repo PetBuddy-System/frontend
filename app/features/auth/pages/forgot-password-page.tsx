@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { forgotPasswordApi } from '~/shared/lib/auth'
+import { forgotPasswordApi } from '~/features/auth/services/password'
 import { MaterialIcon } from '~/shared/ui'
 
 export function ForgotPasswordPage() {

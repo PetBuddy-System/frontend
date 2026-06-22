@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFooter, SiteHeader } from '~/shared/components'
-import { fetchActiveVouchersApi, type VoucherResponse } from '~/shared/lib/voucher'
+import { fetchActiveVouchersApi } from '../services/voucher'
+import type { VoucherResponse } from '~/shared/lib/voucher'
 
 export const SESSION_KEY_VOUCHER_CODE = 'petbuddy_checkout_voucher_code'
 export const SESSION_KEY_VOUCHER_NAME = 'petbuddy_checkout_voucher_name'

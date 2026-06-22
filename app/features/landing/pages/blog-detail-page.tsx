@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { fetchBlogByIdApi, fetchBlogsApi } from '~/shared/lib/blog'
+import { fetchBlogByIdApi, fetchBlogsApi } from '../services/blog'
 import type { BlogResponse } from '~/shared/lib/blog'
 import { MaterialIcon } from '~/shared/ui'
 

@@ -22,7 +22,7 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const token = readStorage(STORAGE_KEYS.accessToken)
     // Only inject Bearer token if it exists and we're not hitting auth endpoints
-    if (token && config.headers && !config.url?.includes('/api/auth/')) {
+    if (token && config.headers && !config.url?.includes('/auth/')) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
 
@@ -66,8 +66,8 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Do not try to refresh if it's already an auth endpoint
       if (
-        originalRequest.url?.includes('/api/auth/login') ||
-        originalRequest.url?.includes('/api/auth/refresh')
+        originalRequest.url?.includes('/auth/login') ||
+        originalRequest.url?.includes('/auth/refresh')
       ) {
         return Promise.reject(error)
       }
@@ -100,8 +100,8 @@ axiosInstance.interceptors.response.use(
       }
 
       try {
-        // Use basic axios to prevent interceptor loop on /api/auth/refresh
-        const refreshResponse = await axios.post(`${env.API_URL}/api/auth/refresh`, {
+        // Use basic axios to prevent interceptor loop on /auth/refresh
+        const refreshResponse = await axios.post(`${env.API_URL}${env.API_AUTH_PATH}/refresh`, {
           refreshToken
         })
 

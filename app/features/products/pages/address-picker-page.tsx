@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { calculateShippingFeeApi } from '~/shared/lib/shipping'
+import { calculateShippingFeeApi } from '../services/shipping'
 
 const STORE_LAT = 10.776889
 const STORE_LON = 106.700806
@@ -49,11 +50,17 @@ export function AddressPickerPage() {
   // Restore previous selection
   useEffect(() => {
     const savedAddress = sessionStorage.getItem(SESSION_KEY_ADDRESS) ?? ''
-    if (savedAddress) setSelectedAddress(savedAddress)
-    const savedLat = sessionStorage.getItem(SESSION_KEY_LAT)
-    const savedLng = sessionStorage.getItem(SESSION_KEY_LNG)
+    if (savedAddress) {
+      setTimeout(() => {
+        setSelectedAddress(savedAddress)
+      }, 0)
+    }
+    const savedLat = sessionStorage.getItem(SESSION_KEY_LAT) ?? ''
+    const savedLng = sessionStorage.getItem(SESSION_KEY_LNG) ?? ''
     if (savedLat && savedLng) {
-      setCurrentCoords({ lat: parseFloat(savedLat), lng: parseFloat(savedLng) })
+      setTimeout(() => {
+        setCurrentCoords({ lat: parseFloat(savedLat), lng: parseFloat(savedLng) })
+      }, 0)
     }
   }, [])
 
@@ -61,21 +68,14 @@ export function AddressPickerPage() {
   useEffect(() => {
     if (typeof window === 'undefined') return
     if ((window as any).L) {
-      setIsLeafletLoaded(true)
+      setTimeout(() => {
+        setIsLeafletLoaded(true)
+      }, 0)
       return
     }
-
-    const link = document.createElement('link')
-    link.rel = 'stylesheet'
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
-    link.crossOrigin = ''
-    document.head.appendChild(link)
-
-    const script = document.createElement('script')
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-    script.crossOrigin = ''
-    script.onload = () => setIsLeafletLoaded(true)
-    document.head.appendChild(script)
+    setTimeout(() => {
+      setIsLeafletLoaded(true)
+    }, 0)
   }, [])
 
   // Initialize Map

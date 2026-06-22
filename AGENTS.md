@@ -53,6 +53,8 @@ petbuddy-web/
 │   │       ├── components/            # Component nội bộ chỉ feature này dùng
 │   │       │   ├── welcome-header.tsx
 │   │       │   └── welcome-resources.tsx
+│   │       ├── services/              # API functions theo domain con
+│   │       │   └── welcome-api.ts
 │   │       ├── welcome-page.tsx       # Trang chính của feature (export ra cho route)
 │   │       └── index.ts               # Public API barrel của feature
 │   │
@@ -421,6 +423,7 @@ Theo thứ tự ưu tiên:
 - Bọc localStorage/window trong `useEffect` hoặc check `typeof window !== "undefined"`. Hoặc dùng helper `~/shared/lib/storage`.
 - Dùng `cn()` cho mọi class merge có điều kiện.
 - Chạy `npm run typecheck` trước khi báo done.
+- Tách logic API vào `app/features/<feature>/services/<domain>/`. Types và constants giữ trong `app/shared/lib/<name>.ts`.
 
 ### ❌ DON'T
 - **Không** tạo `tailwind.config.js` / `tailwind.config.ts` — Tailwind v4 không cần.
@@ -432,6 +435,7 @@ Theo thứ tự ưu tiên:
 - **Không** import chéo giữa các feature (`features/auth` ↔ `features/courses`). Cần share thì kéo lên `shared/`.
 - **Không** import `features/*` từ `shared/*` (vi phạm dependency rule).
 - **Không** import `mocks/*` hay `api/operations/*` từ `features/*` hay `shared/*` — mock code chỉ tồn tại trong `mocks/` và `entry.client.tsx`. Fetch functions từ `api/operations/` chỉ được gọi từ route loader/action.
+- **Không** đặt API functions trong `components/` hay `pages/`. Dùng `services/` đúng cấu trúc.
 - **Không** tạo `*.md` linh tinh / README phụ.
 - **Không** đụng vào `Dockerfile`, `react-router.config.ts`, `vite.config.ts` trừ khi task yêu cầu.
 - **Không** commit khi user chưa yêu cầu.
@@ -446,15 +450,18 @@ Theo thứ tự ưu tiên:
    app/features/auth/
    ├── components/
    │   └── login-form.tsx
-   ├── hooks/                  (nếu cần, vd use-login.ts)
-   ├── api/                    (nếu cần, vd auth-api.ts)
-   ├── types.ts                (nếu cần)
-   ├── auth-page.tsx
-   └── index.ts                # export { AuthPage } from "./auth-page";
+   ├── pages/
+   ├── services/                  # API functions theo domain con
+   │   ├── auth/
+   │   │   ├── auth-api.ts
+   │   │   └── index.ts
+   │   └── index.ts
+   └── index.ts
    ```
 2. Tạo locale: `app/locales/{en,vi}/auth.json`, đăng ký vào `app/shared/lib/i18n/resources.ts`.
 3. Tạo route entry: `app/routes/login.tsx` import `AuthPage` từ `~/features/auth`.
 4. Đăng ký trong `app/routes.ts`: `route("login", "routes/login.tsx")`.
+5. Types và constants (nếu cần) đặt trong `app/shared/lib/<name>.ts`, không đặt trong feature.
 
 ### Thêm 1 trang đơn (vd `/about`)
 1. `app/routes/about.tsx` viết component (hoặc compose feature).

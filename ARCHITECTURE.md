@@ -45,7 +45,8 @@ Hãy xem dự án như **một toà nhà**:
 | `shared/ui/`         | **Đồ nội thất tiêu chuẩn** — ghế, bàn ai cũng dùng được  | Button, Input, Card (generic)                |
 | `shared/components/` | **Đồ đã ráp** — bộ bàn ăn = bàn + ghế gắn liền           | ThemeToggle, LanguageSwitcher (đã ráp)       |
 | `shared/lib/`        | **Dụng cụ** — kéo, búa, thước                            | `cn()`, `storage`, i18n init                 |
-| `features/<x>/lib/`  | **Ngăn phụ trong từng phòng** — đồ chỉ phòng đó dùng     | visual mapping, helper nội bộ của feature    |
+| `features/<x>/services/` | **Dụng cụ trong phòng** — chỉ phòng đó dùng | API calls, service functions nội bộ của feature |
+| `features/<x>/lib/`      | **Ngăn phụ trong từng phòng** — đồ chỉ phòng đó dùng | visual mapping, helper nội bộ của feature |
 | `shared/config/`     | **Bảng địa chỉ, danh bạ**                                | `SITE.name`, `STORAGE_KEYS`, env vars        |
 | `providers/`         | **Hệ thống điện/nước cấp toàn nhà**                      | Theme, i18n, sau này: Auth, Toast, Query     |
 | `styles/`            | **Bảng màu sơn** của cả toà nhà                          | `theme.css` — đổi 1 chỗ áp cả nhà            |
@@ -86,11 +87,15 @@ Khi feature lớn dần, đừng để mọi file nằm phẳng ở root của f
 
 ```text
 app/features/<feature>/
-├── pages/                  # entry page của feature
+├── pages/
 ├── components/
-│   ├── layout/             # layout/shared within feature
-│   ├── <screen-a>/         # component riêng cho màn A
-│   └── <screen-b>/         # component riêng cho màn B
+│   ├── layout/
+│   ├── <screen-a>/
+│   └── <screen-b>/
+├── services/         ← API functions theo domain con
+│   └── <domain>/
+│       ├── <name>-api.ts
+│       └── index.ts
 ├── hooks/
 ├── lib/
 └── index.ts
@@ -583,6 +588,7 @@ Khi tắt, code MSW bị **tree-shake** khỏi production bundle (dynamic import
 | Thêm namespace mới                      | `app/shared/lib/i18n/resources.ts`                        |
 | Thêm trang mới                          | `app/routes/<name>.tsx` + `app/routes.ts`                 |
 | Thêm feature mới                        | tạo `app/features/<name>/` (xem mục 3)                    |
+| Tách API logic vào feature service      | `app/features/<name>/services/<domain>/`                   |
 | Thêm UI primitive (Button, Input...)    | `app/shared/ui/`                                          |
 | Thêm provider mới (Toast, Query...)     | `app/providers/` + ráp vào `app-providers.tsx`            |
 | Thêm env var                            | `.env.local` (+ `.env.example`) + `app/shared/config/env.ts` |
