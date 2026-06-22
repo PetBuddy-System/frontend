@@ -8,6 +8,7 @@ import { ManagerProductsStatsGrid } from '../components/products/manager-product
 import { ManagerProductsTable } from '../components/products/manager-products-table'
 import { ManagerProductsToolbar } from '../components/products/manager-products-toolbar'
 import { ManagerEditProductModal } from '../components/products/manager-edit-product-modal'
+import { ManagerImportProductsModal } from '../components/products/manager-import-products-modal'
 import {
   fetchProductsManagementApi,
   fetchCategoriesApi,
@@ -37,6 +38,9 @@ export function ManagerProductsPage() {
   // Edit & Refresh states
   const [editingProductId, setEditingProductId] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
+
+  // Import Excel states
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false)
 
   // Create states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -271,6 +275,14 @@ export function ManagerProductsPage() {
                 </div>
                 <button
                   type='button'
+                  onClick={() => setIsImportModalOpen(true)}
+                  className='inline-flex h-11 shrink-0 whitespace-nowrap items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 text-sm font-bold text-card-foreground shadow-sm transition-all hover:border-primary hover:text-primary focus:outline-none focus:ring-2 focus:ring-ring'
+                >
+                  <MaterialIcon name='upload_file' className='text-lg' />
+                  <span>Import Excel</span>
+                </button>
+                <button
+                  type='button'
                   onClick={handleCreateProduct}
                   className='inline-flex h-11 shrink-0 whitespace-nowrap items-center justify-center gap-2 rounded-xl bg-secondary px-5 text-sm font-bold text-secondary-foreground shadow-sm transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring'
                 >
@@ -319,6 +331,16 @@ export function ManagerProductsPage() {
               onClose={() => setEditingProductId(null)}
               onSaveSuccess={() => setRefreshKey((prev) => prev + 1)}
             />
+
+            {isImportModalOpen && (
+              <ManagerImportProductsModal
+                onClose={() => setIsImportModalOpen(false)}
+                onImportSuccess={() => {
+                  setIsImportModalOpen(false)
+                  setRefreshKey((prev) => prev + 1)
+                }}
+              />
+            )}
 
             {isCreateModalOpen && (
               <div className='fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto'>

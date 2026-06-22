@@ -259,3 +259,42 @@ export async function createProductApi(
     data: formData
   })
 }
+
+// ============================================================
+// IMPORT PRODUCTS FROM EXCEL
+// ============================================================
+
+export interface ImportProductsResult {
+  canImport: boolean
+  createdProducts: number
+  createdBatches: number
+  warnings: string[]
+  errors: string[]
+}
+
+export interface ImportProductsResponse {
+  code: number
+  message: string
+  success: boolean
+  data: ImportProductsResult
+  timestamp: string
+}
+
+/**
+ * Import sản phẩm từ file Excel
+ * POST /api/products/import?confirm=false  → preview (kiểm tra lỗi / cảnh báo)
+ * POST /api/products/import?confirm=true   → xác nhận import thực tế
+ */
+export async function importProductsApi(
+  file: File,
+  confirm: boolean = false
+): Promise<ImportProductsResponse> {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  return customFetch<ImportProductsResponse>({
+    url: `/api/products/import?confirm=${confirm}`,
+    method: 'POST',
+    data: formData
+  })
+}
