@@ -208,11 +208,93 @@ export async function updateProductApi(
   return customFetch<UpdateProductResponse>({
     url: `/api/products/${productId}`,
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    },
+    data: formData
+  })
+}
+// ============================================================
+// CREATE PRODUCT (TẠO SẢN PHẨM MỚI)
+// ============================================================
+
+export interface CreateProductPayload {
+  name: string
+  price: number
+  brandName: string
+  categoryId: number
+  description?: string
+  // status không gửi lên khi tạo — BE tự set ACTIVE
+}
+
+export interface CreateProductResponse {
+  code: number
+  message: string
+  success: boolean
+  data: ProductManagementItem
+  timestamp: string
+}
+
+/**
+ * Tạo sản phẩm mới
+ * POST /api/products
+ *
+ * BE dùng @RequestPart nên LUÔN gửi multipart/form-data.
+ * - field `data`: JSON string chứa thông tin sản phẩm
+ * - field `images` (optional): file ảnh
+ */
+export async function createProductApi(
+  payload: CreateProductPayload,
+  images?: File[]
+): Promise<CreateProductResponse> {
+  const formData = new FormData()
+  formData.append('data', JSON.stringify(payload))
+
+  if (images && images.length > 0) {
+    for (const file of images) {
+      formData.append('images', file)
+    }
+  }
+
+  return customFetch<CreateProductResponse>({
+    url: '/api/products',
+    method: 'POST',
     data: formData
   })
 }
 
+// ============================================================
+// IMPORT PRODUCTS FROM EXCEL
+// ============================================================
 
+export interface ImportProductsResult {
+  canImport: boolean
+  createdProducts: number
+  createdBatches: number
+  warnings: string[]
+  errors: string[]
+}
+
+export interface ImportProductsResponse {
+  code: number
+  message: string
+  success: boolean
+  data: ImportProductsResult
+  timestamp: string
+}
+
+/**
+ * Import sản phẩm từ file Excel
+ * POST /api/products/import?confirm=false  → preview (kiểm tra lỗi / cảnh báo)
+ * POST /api/products/import?confirm=true   → xác nhận import thực tế
+ */
+export async function importProductsApi(
+  file: File,
+  confirm: boolean = false
+): Promise<ImportProductsResponse> {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  return customFetch<ImportProductsResponse>({
+    url: `/api/products/import?confirm=${confirm}`,
+    method: 'POST',
+    data: formData
+  })
+}

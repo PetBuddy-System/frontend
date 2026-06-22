@@ -61,6 +61,7 @@ export default [
     route('manager/inventory-transactions', 'routes/manager-inventory-transactions.tsx'),
     route('manager/disposal-approvals', 'routes/manager-disposal-approvals.tsx'),
     route('manager/return-requests', 'routes/manager-return-requests.tsx'),
-    route('manager/staff-schedule', 'routes/manager-staff-schedule.tsx')
+    route('manager/staff-schedule', 'routes/manager-staff-schedule.tsx'),
+    route('manager/products/:productId', 'routes/manager-product-detail.tsx')
   ])
 ] satisfies RouteConfig
