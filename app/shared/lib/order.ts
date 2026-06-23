@@ -44,11 +44,6 @@ export interface PageableParams {
   sort?: string
 }
 
-export interface CreateOrderItemRequest {
-  productId: string
-  price: number
-  quantity: number
-}
 
 export interface CreateOrderRequest {
   userName: string
@@ -56,7 +51,6 @@ export interface CreateOrderRequest {
   address: string
   note?: string
   voucherCode?: string
-  items?: CreateOrderItemRequest[]
 }
 
 export interface OrderResponse {

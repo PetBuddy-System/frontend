@@ -63,9 +63,9 @@ export async function updateCartItemApi(
   })
 }
 
-export async function removeCartItemApi(productId: string): Promise<void> {
+export async function removeCartItemApi(cartItemId: string): Promise<void> {
   await customFetch<ApiResponse<void>>({
-    url: `${CART_BASE_URL}/items/${productId}`,
+    url: `${CART_BASE_URL}/items/${cartItemId}`,
     method: 'DELETE',
   })
 }

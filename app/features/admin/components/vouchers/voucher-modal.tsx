@@ -45,6 +45,21 @@ const INITIAL_FORM: VoucherRequest = {
   status: 'ACTIVE',
 }
 
+/** Derive status from date range vs current time */
+function deriveStatus(
+  startAt: string,
+  expiredAt: string,
+  currentStatus: string
+): 'ACTIVE' | 'INACTIVE' | 'EXPIRED' {
+  if (!startAt || !expiredAt) return currentStatus as 'ACTIVE' | 'INACTIVE' | 'EXPIRED'
+  const now = Date.now()
+  const start = new Date(startAt).getTime()
+  const end = new Date(expiredAt).getTime()
+  if (now > end) return 'EXPIRED'
+  if (now < start) return 'INACTIVE'
+  return 'ACTIVE'
+}
+
 export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: VoucherModalProps) {
   const [form, setForm] = useState<VoucherRequest>(INITIAL_FORM)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -52,9 +67,19 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
 
   const isEditMode = editingVoucher !== null
 
+  // Recompute derived status whenever dates change
+  const derivedStatus = deriveStatus(form.startAt, form.expiredAt, form.status)
+  const isExpired = derivedStatus === 'EXPIRED'
+  // When derived is EXPIRED we lock status to EXPIRED; otherwise use form.status (ACTIVE/INACTIVE)
+  const displayStatus = isExpired ? 'EXPIRED' : form.status
+  const isToggleActive = displayStatus === 'ACTIVE'
+
+
   useEffect(() => {
     if (!isOpen) return
     if (editingVoucher) {
+      const startAtLocal = toDateTimeLocal(editingVoucher.startAt)
+      const expiredAtLocal = toDateTimeLocal(editingVoucher.expiredAt)
       setForm({
         voucherCode: editingVoucher.voucherCode,
         voucherName: editingVoucher.voucherName,
@@ -65,8 +90,8 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
         applyScope: editingVoucher.applyScope ?? 'ALL',
         usageLimit: editingVoucher.usageLimit,
         perUserLimit: editingVoucher.perUserLimit,
-        startAt: toDateTimeLocal(editingVoucher.startAt),
-        expiredAt: toDateTimeLocal(editingVoucher.expiredAt),
+        startAt: startAtLocal,
+        expiredAt: expiredAtLocal,
         status: editingVoucher.status,
       })
     } else {
@@ -79,18 +104,38 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
     const { name, value } = e.target
-    setForm((prev) => ({
-      ...prev,
-      [name]:
-        ['discountValue', 'maxDiscount', 'minOrderValue', 'usageLimit', 'perUserLimit'].includes(
-          name
-        )
-          ? value === ''
-            ? null
-            : Number(value)
-          : value,
-    }))
+    setForm((prev) => {
+      const updated = {
+        ...prev,
+        [name]:
+          ['discountValue', 'maxDiscount', 'minOrderValue', 'usageLimit', 'perUserLimit'].includes(
+            name
+          )
+            ? value === ''
+              ? null
+              : Number(value)
+            : value,
+      }
+      // Auto-sync status when dates change
+      if (name === 'startAt' || name === 'expiredAt') {
+        const newStart = name === 'startAt' ? value : prev.startAt
+        const newEnd = name === 'expiredAt' ? value : prev.expiredAt
+        if (newStart && newEnd) {
+          const derived = deriveStatus(newStart, newEnd, prev.status)
+          if (derived === 'EXPIRED') {
+            updated.status = 'EXPIRED'
+          } else if (derived === 'INACTIVE' && prev.status !== 'INACTIVE') {
+            updated.status = 'INACTIVE'
+          } else if (derived === 'ACTIVE' && prev.status === 'EXPIRED') {
+            updated.status = 'ACTIVE'
+          }
+        }
+      }
+      return updated
+    })
   }
+
+
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -348,22 +393,66 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
               />
             </div>
 
-            {/* Status */}
+            {/* Status — smart toggle / expired badge */}
             <div className='flex flex-col gap-1.5 md:col-span-2'>
-              <label className='text-sm font-semibold text-foreground' htmlFor='modal-status'>
-                Trạng thái
-              </label>
-              <select
-                id='modal-status'
-                name='status'
-                value={form.status}
-                onChange={handleChange}
-                className='rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
-              >
-                <option value='ACTIVE'>Đang hoạt động</option>
-                <option value='INACTIVE'>Tạm dừng</option>
-                <option value='EXPIRED'>Hết hạn</option>
-              </select>
+              <label className='text-sm font-semibold text-foreground'>Trạng thái</label>
+
+              {isExpired ? (
+                /* Expired: show read-only badge only, no toggle */
+                <div className='flex items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/8 px-4 py-3'>
+                  <span className='flex h-7 w-7 items-center justify-center rounded-full bg-destructive/15'>
+                    <MaterialIcon name='schedule' className='text-destructive text-[16px]' />
+                  </span>
+                  <div>
+                    <p className='text-sm font-bold text-destructive'>Hết hạn</p>
+                    <p className='text-xs text-muted-foreground'>Voucher đã quá ngày hết hạn và không thể kích hoạt lại.</p>
+                  </div>
+                </div>
+              ) : (
+                /* Not expired: show toggle button */
+                <div className='flex items-center gap-4 rounded-xl border border-border bg-background px-4 py-3'>
+                  <button
+                    id='modal-status-toggle'
+                    type='button'
+                    role='switch'
+                    aria-checked={isToggleActive}
+                    onClick={() =>
+                      setForm((prev) => ({
+                        ...prev,
+                        status: prev.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE',
+                      }))
+                    }
+                    className={cn(
+                      'relative flex h-7 w-14 shrink-0 cursor-pointer rounded-full p-0.5 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+                      isToggleActive ? 'bg-success' : 'bg-muted-foreground/40'
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        'block h-6 w-6 rounded-full bg-white shadow-md transition-transform duration-200',
+                        isToggleActive ? 'translate-x-7' : 'translate-x-0'
+                      )}
+                    />
+                  </button>
+                  <div>
+                    <p
+                      className={cn(
+                        'text-sm font-bold',
+                        isToggleActive ? 'text-success' : 'text-muted-foreground'
+                      )}
+                    >
+                      {isToggleActive ? 'Hoạt động' : 'Tạm dừng'}
+                    </p>
+                    <p className='text-xs text-muted-foreground'>
+                      {isToggleActive
+                        ? 'Voucher đang được kích hoạt cho khách hàng sử dụng.'
+                        : displayStatus === 'INACTIVE' && form.startAt && new Date(form.startAt) > new Date()
+                          ? 'Ngày bắt đầu chưa tới — voucher sẽ tự động kích hoạt đúng hẹn.'
+                          : 'Voucher đang tạm dừng, khách hàng không thể sử dụng.'}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

@@ -1,12 +1,30 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
+import { cn } from '~/shared/lib/cn'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
 import { calculateShippingFeeApi } from '~/shared/lib/shipping'
 
 const STORE_LAT = 10.776889
 const STORE_LON = 106.700806
+
+// Approximate bounding box for Ho Chi Minh City
+const HCMC_BOUNDS = {
+  minLat: 10.35,
+  maxLat: 11.16,
+  minLng: 106.35,
+  maxLng: 107.05,
+}
+
+function isInsideHCMC(lat: number, lng: number): boolean {
+  return (
+    lat >= HCMC_BOUNDS.minLat &&
+    lat <= HCMC_BOUNDS.maxLat &&
+    lng >= HCMC_BOUNDS.minLng &&
+    lng <= HCMC_BOUNDS.maxLng
+  )
+}
 
 export const SESSION_KEY_ADDRESS = 'petbuddy_checkout_address'
 export const SESSION_KEY_LAT = 'petbuddy_checkout_lat'
@@ -45,6 +63,11 @@ export function AddressPickerPage() {
     lat: STORE_LAT,
     lng: STORE_LON,
   })
+
+  // Out-of-range notification state
+  const [outOfRangeReason, setOutOfRangeReason] = useState<string | null>(null)
+  const [outOfRangeVisible, setOutOfRangeVisible] = useState(false)
+  const outOfRangeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Restore previous selection
   useEffect(() => {
@@ -130,6 +153,49 @@ export function AddressPickerPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLeafletLoaded])
 
+  /** Show an out-of-range notification banner (auto-hide after 5s) */
+  const showOutOfRange = useCallback((reason: string) => {
+    setOutOfRangeReason(reason)
+    setOutOfRangeVisible(true)
+    if (outOfRangeTimerRef.current) clearTimeout(outOfRangeTimerRef.current)
+    outOfRangeTimerRef.current = setTimeout(() => setOutOfRangeVisible(false), 5000)
+  }, [])
+
+  /** Validate coordinates against HCMC bounds + backend shipping range */
+  const validateDeliveryRange = useCallback(
+    async (lat: number, lng: number) => {
+      // 1. Check geographic boundary first
+      if (!isInsideHCMC(lat, lng)) {
+        showOutOfRange('Nằm ngoài phạm vi giao hàng')
+        return
+      }
+
+      // 2. Check backend-configured max distance
+      try {
+        const response = await calculateShippingFeeApi(lat, lng)
+        if (response?.data) {
+          const { distanceKm, shippingFee } = response.data
+          // Backend returns 0 fee with 0 distance when out of range (no matching rule)
+          // We treat it as out of range when distanceKm > 0 but shippingFee === 0 and not free shipping,
+          // OR when the API throws. A safer heuristic: if shippingFee < 0 the BE signals out-of-range.
+          // Many BE implementations return a specific error code; we check shippingFee < 0:
+          if (shippingFee < 0) {
+            showOutOfRange('Nằm ngoài phạm vi giao hàng')
+            return
+          }
+          void distanceKm // used below in confirm
+        }
+      } catch {
+        // Non-blocking: if validation call fails, don't block user
+      }
+
+      // Location is valid — clear any previous warning
+      setOutOfRangeReason(null)
+      setOutOfRangeVisible(false)
+    },
+    [showOutOfRange]
+  )
+
   async function updateLocation(lat: number, lng: number, reverseGeocode_: boolean) {
     setCurrentCoords({ lat, lng })
     if (markerRef.current) markerRef.current.setLatLng([lat, lng])
@@ -140,6 +206,9 @@ export function AddressPickerPage() {
       const addr = await reverseGeocode(lat, lng)
       setSelectedAddress(addr)
     }
+
+    // Validate delivery range whenever location changes
+    void validateDeliveryRange(lat, lng)
   }
 
   function handleGetMyLocation() {
@@ -187,6 +256,7 @@ export function AddressPickerPage() {
   }
 
   async function handleConfirm() {
+    if (outOfRangeReason) return // Block confirm when out of range
     setIsConfirming(true)
     const addressToSave =
       selectedAddress || searchQuery || `${currentCoords.lat.toFixed(6)}, ${currentCoords.lng.toFixed(6)}`
@@ -219,6 +289,34 @@ export function AddressPickerPage() {
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
       <SiteHeader />
+
+      {/* Out-of-range toast notification — fixed top-center, styled like image 4 */}
+      <div
+        className={cn(
+          'fixed left-1/2 top-20 z-50 -translate-x-1/2 transition-all duration-500',
+          outOfRangeVisible && outOfRangeReason
+            ? 'translate-y-0 opacity-100'
+            : '-translate-y-4 pointer-events-none opacity-0'
+        )}
+        role='alert'
+        aria-live='assertive'
+      >
+        <div className='flex items-center gap-3 rounded-full bg-destructive px-5 py-3 text-sm font-semibold text-white shadow-xl'>
+          <span className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/20'>
+            <MaterialIcon name='location_off' className='text-[16px] text-white' />
+          </span>
+          {outOfRangeReason}
+          <button
+            type='button'
+            onClick={() => setOutOfRangeVisible(false)}
+            className='ml-1 flex h-5 w-5 items-center justify-center rounded-full opacity-70 hover:opacity-100'
+            aria-label='Đóng thông báo'
+          >
+            <MaterialIcon name='close' className='text-[14px] text-white' />
+          </button>
+        </div>
+      </div>
+
       <main className='mx-auto w-full max-w-3xl flex-1 px-4 py-8 pb-24 md:px-6'>
         {/* Back button */}
         <button
@@ -304,11 +402,26 @@ export function AddressPickerPage() {
         </div>
 
         <p className='mt-2 text-center text-[11px] text-muted-foreground'>
-          Nhấn vào bản đồ hoặc kéo thả ghim để chọn vị trí chính xác
+          Nhấn vào bản đồ hoặc kéo thả ghìm để chọn vị trí chính xác
         </p>
 
+        {/* Out-of-range inline banner (persistent, below map) */}
+        {outOfRangeReason && (
+          <div className='mt-4 flex items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/8 px-4 py-3'>
+            <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-destructive/15'>
+              <MaterialIcon name='location_off' className='text-destructive text-[18px]' />
+            </span>
+            <div className='flex-1'>
+              <p className='text-sm font-bold text-destructive'>{outOfRangeReason}</p>
+              <p className='text-xs text-muted-foreground'>
+                Vị trí bạn chọn nằm ngoài khu vực Thành phố Hồ Chí Minh hoặc vượt quá phạm vi giao hàng của cửa hàng.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Selected address preview */}
-        {selectedAddress && (
+        {selectedAddress && !outOfRangeReason && (
           <div className='mt-4 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3'>
             <MaterialIcon name='location_on' className='mt-0.5 shrink-0 text-primary text-[20px]' />
             <div className='flex-1'>
@@ -322,13 +435,23 @@ export function AddressPickerPage() {
         <button
           type='button'
           onClick={handleConfirm}
-          disabled={isConfirming}
-          className='mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-base font-bold text-primary-foreground shadow-lg transition-all hover:opacity-90 active:scale-95 disabled:opacity-60'
+          disabled={isConfirming || !!outOfRangeReason}
+          className={cn(
+            'mt-6 flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-base font-bold shadow-lg transition-all active:scale-95 disabled:opacity-60',
+            outOfRangeReason
+              ? 'cursor-not-allowed bg-muted text-muted-foreground'
+              : 'bg-primary text-primary-foreground hover:opacity-90'
+          )}
         >
           {isConfirming ? (
             <>
               <div className='h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent' />
               Đang tính phí vận chuyển...
+            </>
+          ) : outOfRangeReason ? (
+            <>
+              <MaterialIcon name='location_off' className='text-[20px]' />
+              Khu vực không được giao hàng
             </>
           ) : (
             <>

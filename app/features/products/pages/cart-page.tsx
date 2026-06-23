@@ -7,7 +7,6 @@ import { CartSuggestions, type CartSuggestion } from '../components/cart/cart-su
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
 import {
   getCartApi,
-  addToCartApi,
   updateCartItemApi,
   removeCartItemApi,
   clearCartApi,
@@ -137,7 +136,7 @@ export function CartPage() {
     setIsMutating(true)
 
     try {
-      await removeCartItemApi(item.cartItemId)
+      await removeCartItemApi(item.productId)
       await fetchCart()
     } catch {
       setError('Không thể xoá sản phẩm.')
