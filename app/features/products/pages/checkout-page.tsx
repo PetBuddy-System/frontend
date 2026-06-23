@@ -11,9 +11,10 @@ import {
 import { CheckoutPaymentMethods } from '../components/checkout/checkout-payment-methods'
 import { CheckoutShippingForm } from '../components/checkout/checkout-shipping-form'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { createOrderApi } from '~/shared/lib/order'
+import { createOrderApi } from '../services/order'
 import type { CreateOrderRequest } from '~/shared/lib/order'
-import { getCartApi, type CartItemResponse } from '~/shared/lib/cart'
+import { getCartApi } from '../services/cart'
+import type { CartItemResponse } from '~/shared/lib/cart'
 import { MaterialIcon } from '~/shared/ui'
 
 const CART_PLACEHOLDER_IMAGE = 'https://placehold.co/300x300?text=PetBuddy'

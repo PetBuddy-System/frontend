@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
-import { updateOrderStatusApi } from '~/shared/lib/order'
+import { updateOrderStatusApi } from '~/features/profile/services'
 
 export interface OrderHistoryCardProps {
   order: {

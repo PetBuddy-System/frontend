@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '~/providers/auth-provider'
-import { getDashboardPathByRole } from '~/shared/lib/auth'
+import { getDashboardPathByRole } from '~/features/auth/services/auth'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 

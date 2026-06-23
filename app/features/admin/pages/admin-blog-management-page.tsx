@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { fetchBlogsApi, createBlogApi, updateBlogApi } from '~/shared/lib/blog'
+import { fetchBlogsApi, createBlogApi, updateBlogApi } from '../services/blog'
 import type { BlogResponse } from '~/shared/lib/blog'
 import { MaterialIcon } from '~/shared/ui'
 

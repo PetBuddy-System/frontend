@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { addToCartApi } from '~/shared/lib/cart'
+import { addToCartApi } from '../../services/cart'
 import { MaterialIcon } from '~/shared/ui'
 import type { ProductResponse } from '~/shared/lib/product'
 

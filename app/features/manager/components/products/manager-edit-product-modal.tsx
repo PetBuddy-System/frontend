@@ -4,8 +4,8 @@ import { MaterialIcon } from '~/shared/ui'
 import {
   fetchProductByIdApi,
   updateProductApi,
-  type CategoryData
-} from '~/shared/lib/product'
+} from '../../services/product'
+import type { CategoryData } from '~/shared/lib/product'
 import { ManagerProductImageUploader } from './manager-product-image-uploader'
 
 export interface ManagerEditProductModalProps {

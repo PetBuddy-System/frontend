@@ -5,8 +5,8 @@ import { MaterialIcon } from '~/shared/ui'
 import {
   fetchAllVouchersApi,
   updateVoucherApi,
-  type VoucherResponse,
-} from '~/shared/lib/voucher'
+} from '../../services/voucher'
+import type { VoucherResponse } from '~/shared/lib/voucher'
 import { VoucherModal } from './voucher-modal'
 
 const PAGE_SIZE = 10

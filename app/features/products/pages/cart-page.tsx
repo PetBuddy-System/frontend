@@ -10,8 +10,8 @@ import {
   updateCartItemApi,
   removeCartItemApi,
   clearCartApi,
-  type CartItemResponse,
-} from '~/shared/lib/cart'
+} from '../services/cart'
+import type { CartItemResponse } from '~/shared/lib/cart'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 

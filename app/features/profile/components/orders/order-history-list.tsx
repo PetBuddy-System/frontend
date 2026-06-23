@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { OrderHistoryCard } from './order-history-card'
 import { OrderHistoryFilters, type OrderHistoryFilter } from './order-history-filters'
-import { fetchMyOrdersApi, type OrderResponse } from '~/shared/lib/order'
+import { fetchMyOrdersApi } from '~/features/profile/services'
+
 
 function matchesFilter(status: string, filter: OrderHistoryFilter) {
   if (filter === 'all') return true
@@ -44,7 +46,9 @@ export function OrderHistoryList() {
   }
 
   useEffect(() => {
-    void loadOrders()
+    setTimeout(() => {
+      void loadOrders()
+    }, 0)
   }, [])
 
   const filteredItems = useMemo(

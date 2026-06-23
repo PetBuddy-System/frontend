@@ -3,7 +3,7 @@ import type { FormEvent, KeyboardEvent, ClipboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
 
-import { verifyEmailApi, resendOtpApi } from '~/shared/lib/auth'
+import { verifyEmailApi, resendOtpApi } from '~/features/auth/services/otp'
 import { MaterialIcon } from '~/shared/ui'
 
 const OTP_LENGTH = 6

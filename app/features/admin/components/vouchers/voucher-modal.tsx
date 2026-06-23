@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
-import {
-  createVoucherApi,
-  updateVoucherApi,
-  type VoucherResponse,
-  type VoucherRequest,
-} from '~/shared/lib/voucher'
+import { createVoucherApi, updateVoucherApi } from '../../services/voucher'
+import type { VoucherResponse, VoucherRequest } from '~/shared/lib/voucher'
 
 export interface VoucherModalProps {
   isOpen: boolean

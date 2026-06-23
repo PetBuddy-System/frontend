@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import { MaterialIcon } from '~/shared/ui'
-import { fetchAllVouchersApi } from '~/shared/lib/voucher'
+import { fetchAllVouchersApi } from '../services/voucher'
 import type { VoucherResponse } from '~/shared/lib/voucher'
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
@@ -39,6 +39,7 @@ export function AdminVouchersPage() {
     void loadStats()
   }, [tableKey])
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleCreateSuccess(_voucher: VoucherResponse) {
     setTableKey((k) => k + 1)
     setIsCreateModalOpen(false)

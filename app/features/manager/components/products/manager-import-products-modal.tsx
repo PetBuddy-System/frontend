@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
-import { importProductsApi } from '~/shared/lib/product'
+import { importProductsApi } from '../../services/product'
 import type { ImportProductsResult } from '~/shared/lib/product'
 
 // ─── Types ───────────────────────────────────────────────────────────────────

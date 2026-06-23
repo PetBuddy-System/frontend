@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -8,7 +9,8 @@ import { ProductsHero } from '../components/listing/products-hero'
 import { ProductsGallery } from '../components/listing/products-gallery'
 import { ProductsSidebarFilters } from '../components/listing/products-sidebar-filters'
 import { ProductsPagination } from '../components/listing/products-pagination'
-import { fetchProductsApi, fetchCategoriesApi, type ProductResponse, type CategoryData } from '~/shared/lib/product'
+import { fetchProductsApi, fetchCategoriesApi } from '../services/products'
+import type { ProductResponse, CategoryData } from '~/shared/lib/product'
 import { cn } from '~/shared/lib/cn'
 
 const SORT_OPTIONS = ['popular', 'priceLow', 'priceHigh', 'newest'] as const

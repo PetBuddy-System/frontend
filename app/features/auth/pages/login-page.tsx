@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '~/providers/auth-provider'
 import { STORAGE_KEYS } from '~/shared/config/site'
-import { ROLE_REDIRECT_MAP } from '~/shared/lib/auth'
+import { getDashboardPathByRole } from '~/features/auth/services/auth'
 import { readStorage } from '~/shared/lib/storage'
 import { MaterialIcon } from '~/shared/ui'
 
@@ -15,8 +15,7 @@ function getRedirectPathByRole(): string {
   if (storedUser) {
     try {
       const parsed = JSON.parse(storedUser) as { role?: string }
-      const role = parsed.role?.toUpperCase() ?? ''
-      return ROLE_REDIRECT_MAP[role] ?? '/'
+      return getDashboardPathByRole(parsed.role)
     } catch {
       // Fallback nếu parse lỗi
     }
