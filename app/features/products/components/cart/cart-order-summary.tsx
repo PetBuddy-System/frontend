@@ -34,34 +34,6 @@ export function CartOrderSummary({
             <span>{t('cart.summary.products', { count: itemCount })}</span>
             <span className='font-bold'>{formatPrice(subtotal)}</span>
           </div>
-
-          <div className='flex justify-between gap-4 text-muted-foreground'>
-            <span>{t('cart.summary.shipping')}</span>
-            <span className='font-bold text-success'>{t('cart.summary.freeShipping')}</span>
-          </div>
-        </div>
-
-        <div className='mb-6'>
-          <label className='mb-2 block text-sm font-semibold text-foreground' htmlFor='cart-coupon'>
-            {t('cart.summary.couponLabel')}
-          </label>
-
-          <div className='flex gap-2'>
-            <input
-              id='cart-coupon'
-              className='min-w-0 flex-1 rounded-lg border border-border bg-background px-4 py-2 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
-              placeholder={t('cart.summary.couponPlaceholder')}
-              type='text'
-              disabled={isEmpty || isMutating}
-            />
-            <button
-              type='button'
-              disabled={isEmpty || isMutating}
-              className='rounded-lg bg-accent px-4 py-2 text-sm font-bold text-accent-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-60'
-            >
-              {t('cart.summary.applyCoupon')}
-            </button>
-          </div>
         </div>
 
         <div className='mb-6 border-t border-border pt-6'>

@@ -26,3 +26,6 @@ export interface UpdateCartItemRequest {
   quantity: number
   acceptPriceChange?: boolean
 }
+export interface MergeCartRequest {
+  items: AddToCartRequest[]
+}

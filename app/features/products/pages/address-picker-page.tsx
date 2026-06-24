@@ -9,12 +9,22 @@ import { calculateShippingFeeApi } from '../services/shipping'
 const STORE_LAT = 10.776889
 const STORE_LON = 106.700806
 
+// TODO: thay bằng giá trị lấy từ API cấu hình của admin khi có (ví dụ: getDeliveryConfigApi())
+const MAX_DELIVERY_RADIUS_KM = 15
+
 export const SESSION_KEY_ADDRESS = 'petbuddy_checkout_address'
 export const SESSION_KEY_LAT = 'petbuddy_checkout_lat'
 export const SESSION_KEY_LNG = 'petbuddy_checkout_lng'
 export const SESSION_KEY_SHIPPING_FEE = 'petbuddy_checkout_shipping_fee'
 export const SESSION_KEY_IS_FREE_SHIPPING = 'petbuddy_checkout_is_free'
 export const SESSION_KEY_DISTANCE_KM = 'petbuddy_checkout_distance'
+
+type ToastVariant = 'success' | 'error'
+
+interface ToastData {
+  message: string
+  variant: ToastVariant
+}
 
 async function reverseGeocode(lat: number, lng: number): Promise<string> {
   try {
@@ -27,6 +37,60 @@ async function reverseGeocode(lat: number, lng: number): Promise<string> {
     // fallback below
   }
   return `${lat.toFixed(6)}, ${lng.toFixed(6)}`
+}
+
+// Tính khoảng cách (km) giữa 2 toạ độ theo công thức Haversine
+function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const toRad = (value: number) => (value * Math.PI) / 180
+  const R = 6371
+  const dLat = toRad(lat2 - lat1)
+  const dLon = toRad(lon2 - lon1)
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+// Ép .leaflet-container luôn bám 100% kích thước của div bọc ngoài và kế thừa
+// border-radius của nó — không để Leaflet tự set width/height/shape riêng,
+// đây chính là nguyên nhân khiến map "tràn" ra ngoài khung bo góc.
+const LEAFLET_OVERRIDE_STYLES = `
+  .pb-map-wrapper {
+    position: relative !important;
+    overflow: hidden !important;
+  }
+  .pb-map-wrapper .leaflet-container {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    border-radius: inherit;
+  }
+`
+
+function Toast({ toast, onClose }: { toast: ToastData | null; onClose: () => void }) {
+  useEffect(() => {
+    if (!toast) return
+    const timer = setTimeout(onClose, 3000)
+    return () => clearTimeout(timer)
+  }, [toast, onClose])
+
+  if (!toast) return null
+
+  const isSuccess = toast.variant === 'success'
+
+  return (
+    <div className='fixed top-20 left-1/2 z-[100] -translate-x-1/2 px-4'>
+      <div
+        className={`flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white shadow-lg ${
+          isSuccess ? 'bg-green-600' : 'bg-destructive'
+        }`}
+      >
+        <MaterialIcon name={isSuccess ? 'check_circle' : 'location_off'} className='text-[20px]' />
+        {toast.message}
+      </div>
+    </div>
+  )
 }
 
 export function AddressPickerPage() {
@@ -42,10 +106,15 @@ export function AddressPickerPage() {
   const [isConfirming, setIsConfirming] = useState(false)
   const [searchError, setSearchError] = useState('')
   const [selectedAddress, setSelectedAddress] = useState('')
+  const [toast, setToast] = useState<ToastData | null>(null)
   const [currentCoords, setCurrentCoords] = useState<{ lat: number; lng: number }>({
     lat: STORE_LAT,
     lng: STORE_LON,
   })
+
+  function showToast(message: string, variant: ToastVariant = 'success') {
+    setToast({ message, variant })
+  }
 
   // Restore previous selection
   useEffect(() => {
@@ -67,15 +136,52 @@ export function AddressPickerPage() {
   // Load Leaflet dynamically
   useEffect(() => {
     if (typeof window === 'undefined') return
+
     if ((window as any).L) {
-      setTimeout(() => {
-        setIsLeafletLoaded(true)
-      }, 0)
+      setIsLeafletLoaded(true)
       return
     }
-    setTimeout(() => {
-      setIsLeafletLoaded(true)
-    }, 0)
+
+    let cssLoaded = false
+    let jsLoaded = false
+
+    const checkBothLoaded = () => {
+      if (cssLoaded && jsLoaded) setIsLeafletLoaded(true)
+    }
+
+    // Tránh chèn lại link/script nhiều lần khi component remount (StrictMode/HMR)
+    let link = document.querySelector<HTMLLinkElement>('link[data-leaflet]')
+    if (!link) {
+      link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+      link.crossOrigin = ''
+      link.setAttribute('data-leaflet', 'true')
+      link.onload = () => {
+        cssLoaded = true
+        checkBothLoaded()
+      }
+      document.head.appendChild(link)
+    } else {
+      cssLoaded = true
+    }
+
+    let script = document.querySelector<HTMLScriptElement>('script[data-leaflet]')
+    if (!script) {
+      script = document.createElement('script')
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+      script.crossOrigin = ''
+      script.setAttribute('data-leaflet', 'true')
+      script.onload = () => {
+        jsLoaded = true
+        checkBothLoaded()
+      }
+      document.head.appendChild(script)
+    } else if ((window as any).L) {
+      jsLoaded = true
+    }
+
+    checkBothLoaded()
   }, [])
 
   // Initialize Map
@@ -85,10 +191,40 @@ export function AddressPickerPage() {
     const L = (window as any).L
     if (!L || mapInstanceRef.current) return
 
+    // Clean up previous leaflet instance if any (StrictMode/HMR)
+    const container: any = mapContainerRef.current
+    if (container._leaflet_id) {
+      container._leaflet_id = null
+    }
+
     const map = L.map(mapContainerRef.current, {
       center: [currentCoords.lat, currentCoords.lng],
       zoom: 13,
       scrollWheelZoom: true,
+    })
+
+    // Ép cứng các thuộc tính box-model quan trọng bằng inline style !important
+    // ngay trên node mà Leaflet quản lý (.leaflet-container). Inline !important
+    // luôn thắng mọi CSS global khác (ví dụ 1 rule .leaflet-container { position:
+    // fixed; width: 100vw } dùng cho trang bản đồ full-screen nào đó trong app
+    // mà vô tình áp luôn vào đây) — đây là nguyên nhân khiến map "tràn" khỏi
+    // khung bo viền và đè lên header.
+    const leafletEl = map.getContainer()
+    const forcedStyles: Record<string, string> = {
+      position: 'relative',
+      top: 'auto',
+      left: 'auto',
+      right: 'auto',
+      bottom: 'auto',
+      inset: 'auto',
+      width: '100%',
+      height: '100%',
+      'max-width': '100%',
+      'max-height': '100%',
+      'z-index': '0',
+    }
+    Object.entries(forcedStyles).forEach(([prop, value]) => {
+      leafletEl.style.setProperty(prop, value, 'important')
     })
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -121,7 +257,16 @@ export function AddressPickerPage() {
     mapInstanceRef.current = map
     markerRef.current = marker
 
+    // Luôn đồng bộ kích thước thật của khung chứa với Leaflet, tránh tình
+    // trạng map bị "tràn" ra ngoài khung bo góc khi layout cha thay đổi
+    // (resize cửa sổ, sidebar bật/tắt, font/scrollbar load xong, v.v.)
+    const resizeObserver = new ResizeObserver(() => {
+      map.invalidateSize()
+    })
+    resizeObserver.observe(mapContainerRef.current)
+
     return () => {
+      resizeObserver.disconnect()
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove()
         mapInstanceRef.current = null
@@ -187,6 +332,19 @@ export function AddressPickerPage() {
   }
 
   async function handleConfirm() {
+    // Kiểm tra vị trí đã chọn có nằm trong bán kính giao hàng cho phép không
+    const distanceFromStore = getDistanceKm(
+      STORE_LAT,
+      STORE_LON,
+      currentCoords.lat,
+      currentCoords.lng
+    )
+
+    if (distanceFromStore > MAX_DELIVERY_RADIUS_KM) {
+      showToast('Nằm ngoài khu vực giao hàng', 'error')
+      return
+    }
+
     setIsConfirming(true)
     const addressToSave =
       selectedAddress || searchQuery || `${currentCoords.lat.toFixed(6)}, ${currentCoords.lng.toFixed(6)}`
@@ -218,8 +376,9 @@ export function AddressPickerPage() {
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
+      <Toast toast={toast} onClose={() => setToast(null)} />
       <SiteHeader />
-      <main className='mx-auto w-full max-w-3xl flex-1 px-4 py-8 pb-24 md:px-6'>
+      <main className='mx-auto w-full min-w-0 max-w-3xl flex-1 px-4 py-8 pb-24 md:px-6'>
         {/* Back button */}
         <button
           type='button'
@@ -293,14 +452,15 @@ export function AddressPickerPage() {
         </div>
 
         {/* Map */}
-        <div className='relative h-[55vh] w-full overflow-hidden rounded-2xl border border-border shadow-md'>
+        <style>{LEAFLET_OVERRIDE_STYLES}</style>
+        <div className='pb-map-wrapper relative h-[55vh] w-full max-w-full min-w-0 overflow-hidden rounded-2xl border border-border shadow-md'>
           {!isLeafletLoaded && (
             <div className='absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-card text-muted-foreground'>
               <MaterialIcon name='map' className='text-[48px] animate-bounce text-primary' />
               <span className='text-sm animate-pulse'>Đang tải bản đồ...</span>
             </div>
           )}
-          <div ref={mapContainerRef} className='h-full w-full' />
+          <div ref={mapContainerRef} className='h-full w-full max-w-full' />
         </div>
 
         <p className='mt-2 text-center text-[11px] text-muted-foreground'>

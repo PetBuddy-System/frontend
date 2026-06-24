@@ -10,7 +10,7 @@ import type {
   ApiResponse
 } from '~/shared/lib/shipping'
 
-const SHIPPING_BASE_URL = `${env.LOCALHOST_API_URL || env.API_URL}${env.API_SHIPPING_PATH}`
+const SHIPPING_BASE_URL = `${env.API_URL}${env.API_SHIPPING_PATH}`
 
 export async function calculateShippingFeeApi(latitude: number, longitude: number): Promise<ApiResponse<ShippingFeeResponse>> {
   return customFetch<ApiResponse<ShippingFeeResponse>>({

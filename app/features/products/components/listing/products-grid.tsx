@@ -20,24 +20,28 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
     return price.toLocaleString('vi-VN') + 'đ'
   }
 
-  const handleAddToCart = async (productId: string) => {
-    if (addingMap[productId]) return
-    setAddingMap((prev) => ({ ...prev, [productId]: true }))
-    setError(null)
-    setShowSuccessToast(false)
+  const handleAddToCart = async (product: ProductResponse) => {
+  if (addingMap[product.productId]) return
+  setAddingMap((prev) => ({ ...prev, [product.productId]: true }))
+  setError(null)
+  setShowSuccessToast(false)
 
-    try {
-      await addToCartApi({ productId, quantity: 1 })
-      setShowSuccessToast(true)
-      // Tự động ẩn toast sau 3 giây
-      setTimeout(() => setShowSuccessToast(false), 3000)
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Lỗi thêm vào giỏ hàng')
-      setTimeout(() => setError(null), 3000)
-    } finally {
-      setAddingMap((prev) => ({ ...prev, [productId]: false }))
-    }
+  try {
+    await addToCartApi({
+      productId: product.productId,
+      quantity: 1,
+      productName: product.name,
+      price: product.price,
+    })
+    setShowSuccessToast(true)
+    setTimeout(() => setShowSuccessToast(false), 3000)
+  } catch (err: unknown) {
+    setError(err instanceof Error ? err.message : 'Lỗi thêm vào giỏ hàng')
+    setTimeout(() => setError(null), 3000)
+  } finally {
+    setAddingMap((prev) => ({ ...prev, [product.productId]: false }))
   }
+}
 
   if (isLoading) {
     return (
@@ -97,7 +101,7 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
             <button
               type='button'
               disabled={addingMap[product.productId]}
-              onClick={() => handleAddToCart(product.productId)}
+              onClick={() => handleAddToCart(product)}
               className='mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm font-semibold text-secondary-foreground transition-colors hover:opacity-90 disabled:opacity-50'
             >
               {addingMap[product.productId] ? (

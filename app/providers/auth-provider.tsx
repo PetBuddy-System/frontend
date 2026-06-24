@@ -4,6 +4,7 @@ import { STORAGE_KEYS } from '~/shared/config/site'
 import { loginApi, logoutApi } from '~/features/auth/services/auth'
 import type { UserResponse } from '~/shared/lib/auth'
 import { readStorage, writeStorage, removeStorage } from '~/shared/lib/storage'
+import { mergeCartApi } from '~/features/products/services/cart/cart-api'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -69,6 +70,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Cập nhật state
     setAccessToken(token)
     setUser(userResponse)
+    try {
+      await mergeCartApi()
+    } catch (err) {
+      console.error('Merge cart failed:', err)
+    }
   }, [])
 
   const logout = useCallback(async () => {

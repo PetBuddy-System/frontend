@@ -134,11 +134,6 @@
     "summary": {
       "title": "Tóm tắt đơn hàng",
       "products": "Sản phẩm ({{count}})",
-      "shipping": "Phí vận chuyển ước tính",
-      "freeShipping": "Miễn phí",
-      "couponLabel": "Mã giảm giá",
-      "couponPlaceholder": "Nhập mã...",
-      "applyCoupon": "Áp dụng",
       "total": "Tổng cộng",
       "checkout": "Thanh toán ngay",
       "securePayment": "Thanh toán an toàn và bảo mật"

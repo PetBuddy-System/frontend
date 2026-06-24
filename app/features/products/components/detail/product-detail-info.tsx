@@ -47,36 +47,35 @@ export function ProductDetailInfo({
   }
 
   const handleAddToCart = async () => {
-    if (isAdding) return
-    setIsAdding(true)
-    setAddError(null)
-    setShowSuccessToast(false)
+  if (isAdding) return
+  setIsAdding(true)
+  setAddError(null)
+  setShowSuccessToast(false)
 
-    try {
-      await addToCartApi({ productId, quantity })
-      setShowSuccessToast(true)
-      // Tự động ẩn toast sau 3 giây
-      setTimeout(() => setShowSuccessToast(false), 3000)
-    } catch (err: unknown) {
-      setAddError(err instanceof Error ? err.message : 'Lỗi khi thêm vào giỏ hàng')
-    } finally {
-      setIsAdding(false)
-    }
+  try {
+    await addToCartApi({ productId, quantity, productName: name, price: safePrice })
+    setShowSuccessToast(true)
+    setTimeout(() => setShowSuccessToast(false), 3000)
+  } catch (err: unknown) {
+    setAddError(err instanceof Error ? err.message : 'Lỗi khi thêm vào giỏ hàng')
+  } finally {
+    setIsAdding(false)
   }
+}
 
-  const handleBuyNow = async () => {
-    if (isAdding) return
-    setIsAdding(true)
-    setAddError(null)
+const handleBuyNow = async () => {
+  if (isAdding) return
+  setIsAdding(true)
+  setAddError(null)
 
-    try {
-      await addToCartApi({ productId, quantity })
-      navigate('/checkout')
-    } catch (err: unknown) {
-      setAddError(err instanceof Error ? err.message : 'Lỗi xử lý mua ngay')
-      setIsAdding(false)
-    }
+  try {
+    await addToCartApi({ productId, quantity, productName: name, price: safePrice })
+    navigate('/checkout')
+  } catch (err: unknown) {
+    setAddError(err instanceof Error ? err.message : 'Lỗi xử lý mua ngay')
+    setIsAdding(false)
   }
+}
 
   return (
     <section className='flex flex-col justify-start relative'>

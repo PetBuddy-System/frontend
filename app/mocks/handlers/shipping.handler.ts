@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw'
 import { env } from '~/shared/config/env'
 import type { ShippingRule } from '~/shared/lib/shipping'
 
-const BASE = env.LOCALHOST_API_URL || env.API_URL || ''
+const BASE = env.API_URL || ''
 const STORE_LAT = 10.776889
 const STORE_LON = 106.700806
 const FREE_SHIP_RADIUS = 5.0

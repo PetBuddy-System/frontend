@@ -31,100 +31,123 @@ export function CheckoutMap({
   })
 
   // Load Leaflet dynamically
-  useEffect(() => {
-    if (typeof window === 'undefined') return
+useEffect(() => {
+  if (typeof window === 'undefined') return
 
-    // Check if Leaflet is already loaded
-    if ((window as any).L) {
-      setIsLeafletLoaded(true)
-      return
-    }
+  if ((window as any).L) {
+    setIsLeafletLoaded(true)
+    return
+  }
 
-    // Load Leaflet CSS
-    const link = document.createElement('link')
+  let cssLoaded = false
+  let jsLoaded = false
+
+  const checkBothLoaded = () => {
+    if (cssLoaded && jsLoaded) setIsLeafletLoaded(true)
+  }
+
+  // Tránh chèn lại link/script nhiều lần khi component remount (StrictMode/HMR)
+  let link = document.querySelector<HTMLLinkElement>('link[data-leaflet]')
+  if (!link) {
+    link = document.createElement('link')
     link.rel = 'stylesheet'
     link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
     link.crossOrigin = ''
+    link.setAttribute('data-leaflet', 'true')
+    link.onload = () => {
+      cssLoaded = true
+      checkBothLoaded()
+    }
     document.head.appendChild(link)
+  } else {
+    cssLoaded = true
+  }
 
-    // Load Leaflet JS
-    const script = document.createElement('script')
+  let script = document.querySelector<HTMLScriptElement>('script[data-leaflet]')
+  if (!script) {
+    script = document.createElement('script')
     script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
     script.crossOrigin = ''
+    script.setAttribute('data-leaflet', 'true')
     script.onload = () => {
-      setIsLeafletLoaded(true)
+      jsLoaded = true
+      checkBothLoaded()
     }
     document.head.appendChild(script)
+  } else if ((window as any).L) {
+    jsLoaded = true
+  }
 
-    return () => {
-      // Clean up scripts/stylesheets if needed, but usually fine to keep
-    }
-  }, [])
+  checkBothLoaded()
+}, [])
 
-  // Initialize Map
-  useEffect(() => {
-    if (!isLeafletLoaded || !mapContainerRef.current || typeof window === 'undefined') return
+// Initialize Map
+useEffect(() => {
+  if (!isLeafletLoaded || !mapContainerRef.current || typeof window === 'undefined') return
 
-    const L = (window as any).L
-    if (!L) return
+  const L = (window as any).L
+  if (!L) return
 
-    // If map already initialized, just update marker or view
+  if (mapInstanceRef.current) return
+
+  // FIX: dọn _leaflet_id còn sót lại từ lần mount trước (StrictMode/HMR)
+  // tránh lỗi "Map container is already initialized."
+  const container: any = mapContainerRef.current
+  if (container._leaflet_id) {
+    container._leaflet_id = null
+  }
+
+  const map = L.map(mapContainerRef.current, {
+    center: [currentCoords.lat, currentCoords.lng],
+    zoom: 13,
+    scrollWheelZoom: false
+  })
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map)
+
+  const DefaultIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  })
+
+  const marker = L.marker([currentCoords.lat, currentCoords.lng], {
+    draggable: true,
+    icon: DefaultIcon
+  }).addTo(map)
+
+  marker.on('dragend', () => {
+    const position = marker.getLatLng()
+    updateLocation(position.lat, position.lng)
+  })
+
+  map.on('click', (e: any) => {
+    const position = e.latlng
+    updateLocation(position.lat, position.lng)
+  })
+
+  mapInstanceRef.current = map
+  markerRef.current = marker
+
+  onLocationSelect(currentCoords.lat, currentCoords.lng)
+
+  // FIX: đảm bảo map tính đúng kích thước nếu container chưa có size ổn định lúc init
+  setTimeout(() => {
+    map.invalidateSize()
+  }, 100)
+
+  return () => {
     if (mapInstanceRef.current) {
-      return
+      mapInstanceRef.current.remove()
+      mapInstanceRef.current = null
     }
-
-    // Create Leaflet map instance
-    const map = L.map(mapContainerRef.current, {
-      center: [currentCoords.lat, currentCoords.lng],
-      zoom: 13,
-      scrollWheelZoom: false // disable scrolling inside checkout page unless active
-    })
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map)
-
-    // Create marker icon customization if desired, or use default
-    // Default Leaflet icon has shadow alignment issues sometimes when dynamically loaded, fix it:
-    const DefaultIcon = L.icon({
-      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    })
-
-    const marker = L.marker([currentCoords.lat, currentCoords.lng], {
-      draggable: true,
-      icon: DefaultIcon
-    }).addTo(map)
-
-    // Event: marker drag
-    marker.on('dragend', () => {
-      const position = marker.getLatLng()
-      updateLocation(position.lat, position.lng)
-    })
-
-    // Event: map click to relocate pin
-    map.on('click', (e: any) => {
-      const position = e.latlng
-      updateLocation(position.lat, position.lng)
-    })
-
-    mapInstanceRef.current = map
-    markerRef.current = marker
-
-    // Initial notify of selected location
-    onLocationSelect(currentCoords.lat, currentCoords.lng)
-
-    return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove()
-        mapInstanceRef.current = null
-      }
-    }
-  }, [isLeafletLoaded])
+  }
+}, [isLeafletLoaded])
 
   function updateLocation(lat: number, lng: number) {
     setCurrentCoords({ lat, lng })

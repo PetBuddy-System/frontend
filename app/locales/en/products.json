@@ -134,11 +134,6 @@
     "summary": {
       "title": "Order summary",
       "products": "Products ({{count}})",
-      "shipping": "Estimated shipping",
-      "freeShipping": "Free",
-      "couponLabel": "Discount code",
-      "couponPlaceholder": "Enter code...",
-      "applyCoupon": "Apply",
       "total": "Total",
       "checkout": "Checkout now",
       "securePayment": "Safe and secure payment"

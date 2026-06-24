@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect, useCallback } from 'react'
 import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
+import { STORAGE_KEYS } from '~/shared/config/site'
 
 import { CheckoutNote } from '../components/checkout/checkout-note'
 import {
@@ -16,6 +17,7 @@ import type { CreateOrderRequest } from '~/shared/lib/order'
 import { getCartApi } from '../services/cart'
 import type { CartItemResponse } from '~/shared/lib/cart'
 import { MaterialIcon } from '~/shared/ui'
+import { readStorage } from '~/shared/lib/storage'
 
 const CART_PLACEHOLDER_IMAGE = 'https://placehold.co/300x300?text=PetBuddy'
 
@@ -68,6 +70,13 @@ export function CheckoutPage() {
     window.addEventListener('focus', syncFromSession)
     return () => window.removeEventListener('focus', syncFromSession)
   }, [])
+
+  useEffect(() => {
+  const token = readStorage(STORAGE_KEYS.accessToken)
+  if (!token) {
+    navigate('/login?redirect=/checkout')
+  }
+}, [navigate])
 
   const fetchCart = useCallback(async () => {
     try {
