@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { createVoucherApi, updateVoucherApi } from '../../services/voucher'
@@ -14,8 +14,16 @@ export interface VoucherModalProps {
 function toDateTimeLocal(isoString: string) {
   if (!isoString) return ''
   try {
-    // Convert ISO → "YYYY-MM-DDTHH:mm" for datetime-local input
-    return isoString.slice(0, 16)
+    // Backend returns ISO without Z (e.g. "2026-06-24T13:15:00")
+    // JavaScript parses this as local time, but it's actually UTC.
+    // Append "Z" to ensure correct UTC parsing, then convert to local.
+    const date = new Date(isoString.endsWith('Z') ? isoString : isoString + 'Z')
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    return `${year}-${month}-${day}T${hours}:${minutes}`
   } catch {
     return ''
   }
@@ -57,11 +65,32 @@ function deriveStatus(
 }
 
 export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: VoucherModalProps) {
-  const [form, setForm] = useState<VoucherRequest>(INITIAL_FORM)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
   const isEditMode = editingVoucher !== null
+
+  // Derive initial form from editingVoucher (React 19 pattern: compute from props)
+  const initialForm = useMemo(() => {
+    if (!editingVoucher) return INITIAL_FORM
+    return {
+      voucherCode: editingVoucher.voucherCode,
+      voucherName: editingVoucher.voucherName,
+      discountType: editingVoucher.discountType,
+      discountValue: editingVoucher.discountValue,
+      maxDiscount: editingVoucher.maxDiscount,
+      minOrderValue: editingVoucher.minOrderValue,
+      applyScope: editingVoucher.applyScope ?? 'ALL',
+      usageLimit: editingVoucher.usageLimit,
+      perUserLimit: editingVoucher.perUserLimit,
+      startAt: toDateTimeLocal(editingVoucher.startAt),
+      expiredAt: toDateTimeLocal(editingVoucher.expiredAt),
+      status: editingVoucher.status,
+    }
+  }, [editingVoucher])
+
+  // Initialize form with derived value, sync when editingVoucher changes
+  const [form, setForm] = useState(initialForm)
 
   // Recompute derived status whenever dates change
   const derivedStatus = deriveStatus(form.startAt, form.expiredAt, form.status)
@@ -70,37 +99,11 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
   const displayStatus = isExpired ? 'EXPIRED' : form.status
   const isToggleActive = displayStatus === 'ACTIVE'
 
-
-  useEffect(() => {
-    if (!isOpen) return
-    if (editingVoucher) {
-      const startAtLocal = toDateTimeLocal(editingVoucher.startAt)
-      const expiredAtLocal = toDateTimeLocal(editingVoucher.expiredAt)
-      setForm({
-        voucherCode: editingVoucher.voucherCode,
-        voucherName: editingVoucher.voucherName,
-        discountType: editingVoucher.discountType,
-        discountValue: editingVoucher.discountValue,
-        maxDiscount: editingVoucher.maxDiscount,
-        minOrderValue: editingVoucher.minOrderValue,
-        applyScope: editingVoucher.applyScope ?? 'ALL',
-        usageLimit: editingVoucher.usageLimit,
-        perUserLimit: editingVoucher.perUserLimit,
-        startAt: startAtLocal,
-        expiredAt: expiredAtLocal,
-        status: editingVoucher.status,
-      })
-    } else {
-      setForm(INITIAL_FORM)
-    }
-    setError('')
-  }, [isOpen, editingVoucher])
-
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
     const { name, value } = e.target
-    setForm((prev) => {
+    setForm((prev: VoucherRequest) => {
       const updated = {
         ...prev,
         [name]:
@@ -413,7 +416,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                     role='switch'
                     aria-checked={isToggleActive}
                     onClick={() =>
-                      setForm((prev) => ({
+                      setForm((prev: VoucherRequest) => ({
                         ...prev,
                         status: prev.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE',
                       }))

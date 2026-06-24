@@ -147,6 +147,7 @@ export function AdminVoucherTable({ onOpenCreate }: AdminVoucherTableProps) {
   return (
     <>
       <VoucherModal
+        key={editingVoucher?.voucherId ?? 'new'}
         isOpen={isModalOpen}
         editingVoucher={editingVoucher}
         onClose={handleModalClose}
