@@ -28,7 +28,7 @@ export const guestCart = {
    * request cần kèm productName + price vì guest cart không gọi BE để tự tính —
    * FE phải tự truyền vào lúc gọi (lấy từ data sản phẩm đang hiển thị).
    */
-  add(request: AddToCartRequest & { productName: string; price: number }) {
+  add(request: AddToCartRequest & { productName: string; price: number; imageUrl: string }) {
     const items = readRaw()
     const existing = items.find((i) => i.productId === request.productId)
 
@@ -37,11 +37,12 @@ export const guestCart = {
       existing.subtotal = buildSubtotal(existing.price, existing.quantity)
     } else {
       items.push({
-        cartItemId: request.productId, // guest chưa có cartItemId riêng, dùng productId tạm
+        cartItemId: request.productId, 
         productId: request.productId,
         productName: request.productName,
         price: request.price,
         quantity: request.quantity,
+        imageUrl: request.imageUrl,
         subtotal: buildSubtotal(request.price, request.quantity),
       })
     }

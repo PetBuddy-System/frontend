@@ -29,7 +29,7 @@ export async function getCartApi(): Promise<CartResponse> {
 }
 
 export async function addToCartApi(
-  request: AddToCartRequest & { productName?: string; price?: number }
+  request: AddToCartRequest & { productName?: string; price?: number; imageUrl?: string }
 ): Promise<void> {
   if (!isLoggedIn()) {
     if (request.productName === undefined || request.price === undefined) {
@@ -40,6 +40,7 @@ export async function addToCartApi(
       quantity: request.quantity,
       productName: request.productName,
       price: request.price,
+      imageUrl: request.imageUrl ?? '',
     })
     return
   }

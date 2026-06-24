@@ -72,11 +72,11 @@ export function CheckoutPage() {
   }, [])
 
   useEffect(() => {
-  const token = readStorage(STORAGE_KEYS.accessToken)
-  if (!token) {
-    navigate('/login?redirect=/checkout')
-  }
-}, [navigate])
+    const token = readStorage(STORAGE_KEYS.accessToken)
+    if (!token) {
+      navigate('/login?redirect=/checkout')
+    }
+  }, [navigate])
 
   const fetchCart = useCallback(async () => {
     try {
@@ -86,7 +86,7 @@ export function CheckoutPage() {
       setCartItems(
         items.map((item) => ({
           key: item.cartItemId,
-          image: CART_PLACEHOLDER_IMAGE,
+          image: item.imageUrl || CART_PLACEHOLDER_IMAGE,
           price: item.price,
           quantity: item.quantity,
           title: item.productName,
@@ -166,7 +166,7 @@ export function CheckoutPage() {
           name: item.productName,
           price: item.price,
           quantity: item.quantity,
-          imageUrl: CART_PLACEHOLDER_IMAGE,
+          imageUrl: item.imageUrl || CART_PLACEHOLDER_IMAGE,
         })),
       }
 

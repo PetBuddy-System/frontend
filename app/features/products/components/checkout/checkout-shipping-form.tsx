@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
 
-const SESSION_KEY_ADDRESS = 'petbuddy_checkout_address'
-
 export interface CheckoutShippingFormProps {
   addressValue: string
 }
@@ -58,7 +56,6 @@ export function CheckoutShippingForm({ addressValue }: CheckoutShippingFormProps
           />
         </div>
 
-        {/* Phone */}
         <div className='flex flex-col gap-2'>
           <label className='text-sm font-semibold text-foreground' htmlFor='phone'>
             Số điện thoại
@@ -76,7 +73,6 @@ export function CheckoutShippingForm({ addressValue }: CheckoutShippingFormProps
         </div>
       </div>
 
-      {/* Address display (shown after selection) */}
       {addressValue && (
         <div className='mt-4 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3'>
           <MaterialIcon name='location_on' className='mt-0.5 shrink-0 text-primary text-[20px]' />
