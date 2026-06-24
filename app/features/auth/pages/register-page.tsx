@@ -4,6 +4,12 @@ import { useTranslation } from 'react-i18next'
 
 import { signupApi } from '~/features/auth/services/auth'
 import { MaterialIcon } from '~/shared/ui'
+import {
+  validateEmail,
+  validateStrongPassword,
+  validateConfirmPassword,
+  validateFullName,
+} from '~/shared/lib/validation'
 
 import logo from '../assets/cho-signup.jpg'
 
@@ -13,25 +19,147 @@ export function RegisterPage() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [gender, setGender] = useState('')
   const [dateOfBirth, setDateOfBirth] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
 
+  const [fieldErrors, setFieldErrors] = useState<{
+    fullName?: string
+    email?: string
+    password?: string
+    confirmPassword?: string
+  }>({})
+
+  const [touched, setTouched] = useState<{
+    fullName?: boolean
+    email?: boolean
+    password?: boolean
+    confirmPassword?: boolean
+  }>({})
+
+  function handleBlur(field: 'fullName' | 'email' | 'password' | 'confirmPassword') {
+    setTouched((prev) => ({ ...prev, [field]: true }))
+
+    switch (field) {
+      case 'fullName': {
+        const result = validateFullName(fullName)
+        setFieldErrors((prev) => ({
+          ...prev,
+          fullName: result.valid ? undefined : result.message,
+        }))
+        break
+      }
+      case 'email': {
+        const result = validateEmail(email)
+        setFieldErrors((prev) => ({
+          ...prev,
+          email: result.valid ? undefined : result.message,
+        }))
+        break
+      }
+      case 'password': {
+        const result = validateStrongPassword(password)
+        setFieldErrors((prev) => ({
+          ...prev,
+          password: result.valid ? undefined : result.message,
+        }))
+        break
+      }
+      case 'confirmPassword': {
+        const result = validateConfirmPassword(password, confirmPassword)
+        setFieldErrors((prev) => ({
+          ...prev,
+          confirmPassword: result.valid ? undefined : result.message,
+        }))
+        break
+      }
+    }
+  }
+
+  function handleFullNameChange(value: string) {
+    setFullName(value)
+    if (touched.fullName) {
+      const result = validateFullName(value)
+      setFieldErrors((prev) => ({
+        ...prev,
+        fullName: result.valid ? undefined : result.message,
+      }))
+    }
+  }
+
+  function handleEmailChange(value: string) {
+    setEmail(value)
+    if (touched.email) {
+      const result = validateEmail(value)
+      setFieldErrors((prev) => ({
+        ...prev,
+        email: result.valid ? undefined : result.message,
+      }))
+    }
+  }
+
+  function handlePasswordChange(value: string) {
+    setPassword(value)
+    if (touched.password) {
+      const result = validateStrongPassword(value)
+      setFieldErrors((prev) => ({
+        ...prev,
+        password: result.valid ? undefined : result.message,
+      }))
+    }
+    // Also revalidate confirm password if it was touched
+    if (touched.confirmPassword && confirmPassword) {
+      const result = validateConfirmPassword(value, confirmPassword)
+      setFieldErrors((prev) => ({
+        ...prev,
+        confirmPassword: result.valid ? undefined : result.message,
+      }))
+    }
+  }
+
+  function handleConfirmPasswordChange(value: string) {
+    setConfirmPassword(value)
+    if (touched.confirmPassword) {
+      const result = validateConfirmPassword(password, value)
+      setFieldErrors((prev) => ({
+        ...prev,
+        confirmPassword: result.valid ? undefined : result.message,
+      }))
+    }
+  }
+
+  function hasFieldError(field: 'fullName' | 'email' | 'password' | 'confirmPassword') {
+    return touched[field] && fieldErrors[field]
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setErrorMessage('')
 
-    // Validate mật khẩu khớp
-    if (password !== confirmPassword) {
-      setErrorMessage(t('register.passwordMismatch'))
-      return
-    }
+    // Validate all fields before submit
+    const fullNameResult = validateFullName(fullName)
+    const emailResult = validateEmail(email)
+    const passwordResult = validateStrongPassword(password)
+    const confirmPasswordResult = validateConfirmPassword(password, confirmPassword)
 
-    // Validate mật khẩu ít nhất 8 ký tự
-    if (password.length < 8) {
-      setErrorMessage(t('register.passwordTooShort'))
+    setFieldErrors({
+      fullName: fullNameResult.valid ? undefined : fullNameResult.message,
+      email: emailResult.valid ? undefined : emailResult.message,
+      password: passwordResult.valid ? undefined : passwordResult.message,
+      confirmPassword: confirmPasswordResult.valid ? undefined : confirmPasswordResult.message,
+    })
+    setTouched({ fullName: true, email: true, password: true, confirmPassword: true })
+
+    if (
+      !fullNameResult.valid ||
+      !emailResult.valid ||
+      !passwordResult.valid ||
+      !confirmPasswordResult.valid
+    ) {
       return
     }
 
@@ -86,7 +214,8 @@ export function RegisterPage() {
             </div>
           )}
 
-          <form className='space-y-6' onSubmit={handleSubmit}>
+          <form className='space-y-5' onSubmit={handleSubmit}>
+            {/* Full Name */}
             <div className='space-y-2'>
               <label htmlFor='full_name' className='text-sm font-semibold text-foreground'>
                 {t('fields.fullName.label')}
@@ -101,36 +230,57 @@ export function RegisterPage() {
                   type='text'
                   required
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  onChange={(e) => handleFullNameChange(e.target.value)}
+                  onBlur={() => handleBlur('fullName')}
                   placeholder={t('fields.fullName.placeholder')}
-                  className='w-full rounded-xl border border-border bg-muted py-3 pl-12 pr-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
+                  className={`w-full rounded-xl border bg-muted py-3 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:ring-2 ${
+                    hasFieldError('fullName')
+                      ? 'border-destructive focus:border-destructive focus:ring-destructive/30'
+                      : 'border-border focus:border-primary focus:ring-ring'
+                  }`}
                   disabled={isSubmitting}
                 />
               </div>
+              {hasFieldError('fullName') && (
+                <p className='mt-1 text-xs text-destructive flex items-center gap-1'>
+                  <MaterialIcon name='error' className='text-[14px]' />
+                  {fieldErrors.fullName}
+                </p>
+              )}
             </div>
 
-            <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-              <div className='space-y-2'>
-                <label htmlFor='email' className='text-sm font-semibold text-foreground'>
-                  {t('fields.email.label')}
-                </label>
-                <div className='relative'>
-                  <MaterialIcon
-                    name='mail'
-                    className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground'
-                  />
-                  <input
-                    id='email'
-                    type='email'
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t('fields.email.placeholder')}
-                    className='w-full rounded-xl border border-border bg-muted py-3 pl-12 pr-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
-                    disabled={isSubmitting}
-                  />
-                </div>
+            {/* Email */}
+            <div className='space-y-2'>
+              <label htmlFor='email' className='text-sm font-semibold text-foreground'>
+                {t('fields.email.label')}
+              </label>
+              <div className='relative'>
+                <MaterialIcon
+                  name='mail'
+                  className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground'
+                />
+                <input
+                  id='email'
+                  type='email'
+                  required
+                  value={email}
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  onBlur={() => handleBlur('email')}
+                  placeholder={t('fields.email.placeholder')}
+                  className={`w-full rounded-xl border bg-muted py-3 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:ring-2 ${
+                    hasFieldError('email')
+                      ? 'border-destructive focus:border-destructive focus:ring-destructive/30'
+                      : 'border-border focus:border-primary focus:ring-ring'
+                  }`}
+                  disabled={isSubmitting}
+                />
               </div>
+              {hasFieldError('email') && (
+                <p className='mt-1 text-xs text-destructive flex items-center gap-1'>
+                  <MaterialIcon name='error' className='text-[14px]' />
+                  {fieldErrors.email}
+                </p>
+              )}
             </div>
 
             {/* Gender + Date of Birth */}
@@ -182,6 +332,7 @@ export function RegisterPage() {
               </div>
             </div>
 
+            {/* Password */}
             <div className='space-y-2'>
               <label htmlFor='password' className='text-sm font-semibold text-foreground'>
                 {t('fields.password.label')}
@@ -190,18 +341,44 @@ export function RegisterPage() {
                 <MaterialIcon name='lock' className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground' />
                 <input
                   id='password'
-                  type='password'
+                  type={showPassword ? 'text' : 'password'}
                   required
                   minLength={8}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => handlePasswordChange(e.target.value)}
+                  onBlur={() => handleBlur('password')}
                   placeholder={t('fields.password.placeholder')}
-                  className='w-full rounded-xl border border-border bg-muted py-3 pl-12 pr-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
+                  className={`w-full rounded-xl border bg-muted py-3 pl-12 pr-12 text-sm text-foreground focus:outline-none focus:ring-2 ${
+                    hasFieldError('password')
+                      ? 'border-destructive focus:border-destructive focus:ring-destructive/30'
+                      : 'border-border focus:border-primary focus:ring-ring'
+                  }`}
                   disabled={isSubmitting}
                 />
+                <button
+                  type='button'
+                  onClick={() => setShowPassword(!showPassword)}
+                  className='absolute inset-y-0 right-0 flex items-center justify-center px-4 text-muted-foreground transition-colors hover:text-foreground'
+                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
+                >
+                  <MaterialIcon name={showPassword ? 'visibility_off' : 'visibility'} className='text-xl' />
+                </button>
               </div>
+              {hasFieldError('password') && (
+                <p className='mt-1 text-xs text-destructive flex items-center gap-1'>
+                  <MaterialIcon name='error' className='text-[14px]' />
+                  {fieldErrors.password}
+                </p>
+              )}
+              {/* Password strength hint */}
+              {!touched.password && !fieldErrors.password && (
+                <p className='mt-1 text-xs text-muted-foreground'>
+                  Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số
+                </p>
+              )}
             </div>
 
+            {/* Confirm Password */}
             <div className='space-y-2'>
               <label htmlFor='confirm_password' className='text-sm font-semibold text-foreground'>
                 {t('fields.confirmPassword.label')}
@@ -213,16 +390,35 @@ export function RegisterPage() {
                 />
                 <input
                   id='confirm_password'
-                  type='password'
+                  type={showConfirmPassword ? 'text' : 'password'}
                   required
                   minLength={8}
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => handleConfirmPasswordChange(e.target.value)}
+                  onBlur={() => handleBlur('confirmPassword')}
                   placeholder={t('fields.confirmPassword.placeholder')}
-                  className='w-full rounded-xl border border-border bg-muted py-3 pl-12 pr-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
+                  className={`w-full rounded-xl border bg-muted py-3 pl-12 pr-12 text-sm text-foreground focus:outline-none focus:ring-2 ${
+                    hasFieldError('confirmPassword')
+                      ? 'border-destructive focus:border-destructive focus:ring-destructive/30'
+                      : 'border-border focus:border-primary focus:ring-ring'
+                  }`}
                   disabled={isSubmitting}
                 />
+                <button
+                  type='button'
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className='absolute inset-y-0 right-0 flex items-center justify-center px-4 text-muted-foreground transition-colors hover:text-foreground'
+                  aria-label={showConfirmPassword ? t('hidePassword') : t('showPassword')}
+                >
+                  <MaterialIcon name={showConfirmPassword ? 'visibility_off' : 'visibility'} className='text-xl' />
+                </button>
               </div>
+              {hasFieldError('confirmPassword') && (
+                <p className='mt-1 text-xs text-destructive flex items-center gap-1'>
+                  <MaterialIcon name='error' className='text-[14px]' />
+                  {fieldErrors.confirmPassword}
+                </p>
+              )}
             </div>
 
             <label className='flex items-start gap-3 text-sm text-muted-foreground'>
