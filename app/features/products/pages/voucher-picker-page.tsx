@@ -124,7 +124,7 @@ export function VoucherPickerPage() {
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
       <SiteHeader />
 
-      <main className='mx-auto w-full max-w-2xl flex-1 px-4 py-8 pb-36 md:px-6'>
+      <main className='mx-auto w-full max-w-2xl flex-1 px-4 py-8 md:px-6'>
         {/* Back button */}
         <button
           type='button'
@@ -180,6 +180,9 @@ export function VoucherPickerPage() {
                     className='peer hidden'
                     checked={isSelected}
                     onChange={() => setSelectedCode(voucher.voucherCode)}
+                    onClick={() => {
+                      if (isSelected) setSelectedCode('')
+                    }}
                   />
                   <div
                     className={`flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-md md:p-5 ${isSelected
@@ -282,53 +285,53 @@ export function VoucherPickerPage() {
               </div>
             )}
 
+            
+
+  {/* Action bar */}
+            <div className='mt-4 flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4'>
+              <div className='min-w-0 flex-1'>
+                {selectedVoucher ? (
+                  <>
+                    <p className='text-xs text-muted-foreground'>Đang chọn:</p>
+                    <p className='truncate text-sm font-bold text-primary'>{selectedVoucher.voucherName}</p>
+                  </>
+                ) : (
+                  <p className='text-sm text-muted-foreground'>Chưa chọn mã giảm giá</p>
+                )}
+              </div>
+              <div className='flex shrink-0 items-center gap-2'>
+                {selectedVoucher && (
+                  <button
+                    type='button'
+                    onClick={handleRemoveVoucher}
+                    className='rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted'
+                  >
+                    Bỏ chọn
+                  </button>
+                )}
+                <button
+                  type='button'
+                  onClick={handleConfirm}
+                  className='flex items-center gap-2 rounded-full bg-secondary px-8 py-2.5 text-sm font-bold text-secondary-foreground shadow-md transition hover:opacity-90 active:scale-95'
+                >
+                  Xác nhận
+                  <MaterialIcon name='arrow_forward' className='text-[18px]' />
+                </button>
+              </div>
+            </div>
+
             {/* Divider */}
             <div className='mt-6 border-t border-dashed border-border py-4 text-center'>
               <p className='text-sm italic text-muted-foreground'>
                 Không còn mã giảm giá nào khác
               </p>
             </div>
-          </div>
+          </div> 
         )}
       </main>
 
       <SiteFooter />
       <SiteBottomNav />
-
-      {/* Sticky footer confirm bar */}
-      <div className='fixed bottom-0 left-0 z-50 w-full border-t border-border bg-card px-4 py-4 shadow-xl md:px-6'>
-        <div className='mx-auto flex max-w-2xl items-center justify-between gap-4'>
-          <div className='min-w-0 flex-1'>
-            {selectedVoucher ? (
-              <>
-                <p className='text-xs text-muted-foreground'>Đang chọn:</p>
-                <p className='truncate text-sm font-bold text-primary'>{selectedVoucher.voucherName}</p>
-              </>
-            ) : (
-              <p className='text-sm text-muted-foreground'>Chưa chọn mã giảm giá</p>
-            )}
-          </div>
-          <div className='flex shrink-0 items-center gap-2'>
-            {selectedVoucher && (
-              <button
-                type='button'
-                onClick={handleRemoveVoucher}
-                className='rounded-full border border-border px-4 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted'
-              >
-                Bỏ chọn
-              </button>
-            )}
-            <button
-              type='button'
-              onClick={handleConfirm}
-              className='flex items-center gap-2 rounded-full bg-secondary px-8 py-2.5 text-sm font-bold text-secondary-foreground shadow-md transition hover:opacity-90 active:scale-95'
-            >
-              Xác nhận
-              <MaterialIcon name='arrow_forward' className='text-[18px]' />
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }

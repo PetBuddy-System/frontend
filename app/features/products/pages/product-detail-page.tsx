@@ -126,6 +126,7 @@ export function ProductDetailPage() {
             price={product.price}
             brandName={product.brandName}
             totalStock={product.totalStock}
+            imageUrl={product.imageUrls?.[0]}
           />
         </div>
 

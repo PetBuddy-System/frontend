@@ -4,94 +4,18 @@ import { useEffect, useState } from 'react'
 import { StaffSidebar } from '../components/layout/staff-sidebar'
 import { StaffTopNav } from '../components/layout/staff-top-nav'
 import { fetchAllOrdersApi, updateOrderStatusApi } from '../services/order'
-import type { StaffOrderResponse, OrderStatus } from '~/shared/lib/order'
+import type { OrderResponse, OrderStatus } from '~/shared/lib/order'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { StaffOrdersStats } from '../components/orders/staff-orders-stats'
 import { StaffOrdersTable } from '../components/orders/staff-orders-table'
 import { StaffOrderPickingDialog } from '../components/orders/staff-order-picking-dialog'
+import { OrderDetailModal } from '~/shared/components'
 
-function formatPrice(value: number) {
-    if (value == null || isNaN(Number(value))) return '—'
-    return `${new Intl.NumberFormat('vi-VN').format(Number(value))}đ`
-}
 
-function formatDate(dateStr: string) {
-    if (!dateStr) return '—'
-    const normalized = dateStr.includes('Z') || dateStr.includes('+') ? dateStr : dateStr + 'Z'
-    const d = new Date(normalized)
-    if (isNaN(d.getTime())) return dateStr
-    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1)
-        .toString()
-        .padStart(2, '0')}/${d.getFullYear()} - ${d.getHours().toString().padStart(2, '0')}:${d
-        .getMinutes()
-        .toString()
-        .padStart(2, '0')}`
-}
-
-function renderStatusBadge(status: string) {
-    switch (status) {
-        case 'PENDING':
-            return (
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-orange-100 px-3 py-1 text-xs font-bold uppercase text-orange-700 dark:bg-orange-950/40 dark:text-orange-400'>
-                    <span className='h-1.5 w-1.5 rounded-full bg-orange-700 dark:bg-orange-400' />
-                    Đang xử lý
-                </span>
-            )
-        case 'CONFIRMED':
-            return (
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase text-blue-700 dark:bg-blue-950/40 dark:text-blue-400'>
-                    <span className='h-1.5 w-1.5 rounded-full bg-blue-700 dark:bg-blue-400' />
-                    Đã xác nhận
-                </span>
-            )
-        case 'PICKING':
-            return (
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-cyan-100 px-3 py-1 text-xs font-bold uppercase text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400'>
-                    <span className='h-1.5 w-1.5 rounded-full bg-cyan-700 dark:bg-cyan-400' />
-                    Đang lấy hàng
-                </span>
-            )
-        case 'SHIPPING':
-            return (
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-teal-100 px-3 py-1 text-xs font-bold uppercase text-teal-700 dark:bg-teal-950/40 dark:text-teal-400'>
-                    <span className='h-1.5 w-1.5 rounded-full bg-teal-700 dark:bg-teal-400' />
-                    Đang giao hàng
-                </span>
-            )
-        case 'DELIVERED':
-            return (
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-purple-100 px-3 py-1 text-xs font-bold uppercase text-purple-700 dark:bg-purple-950/40 dark:text-purple-400'>
-                    <span className='h-1.5 w-1.5 rounded-full bg-purple-700 dark:bg-purple-400' />
-                    Đã giao (Chờ nhận)
-                </span>
-            )
-        case 'COMPLETED':
-            return (
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-xs font-bold uppercase text-green-700 dark:bg-green-950/40 dark:text-green-400'>
-                    <span className='h-1.5 w-1.5 rounded-full bg-green-700 dark:bg-green-400' />
-                    Hoàn thành
-                </span>
-            )
-        case 'CANCELED':
-            return (
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-xs font-bold uppercase text-red-700 dark:bg-red-950/40 dark:text-red-400'>
-                    <span className='h-1.5 w-1.5 rounded-full bg-red-700 dark:bg-red-400' />
-                    Đã hủy
-                </span>
-            )
-        default:
-            return (
-                <span className='inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-bold uppercase text-gray-700'>
-                    <span className='h-1.5 w-1.5 rounded-full bg-gray-700' />
-                    {status}
-                </span>
-            )
-    }
-}
 
 export function StaffOrdersPage() {
-    const [orders, setOrders] = useState<StaffOrderResponse[]>([])
+    const [orders, setOrders] = useState<OrderResponse[]>([])
     const [stats, setStats] = useState({
         pending: 0,
         confirmed: 0,
@@ -111,10 +35,10 @@ export function StaffOrdersPage() {
     const [statusFilter, setStatusFilter] = useState<string>('ALL')
 
     // Detail Modal state
-    const [selectedOrderForDetail, setSelectedOrderForDetail] = useState<StaffOrderResponse | null>(null)
+    const [selectedOrderForDetail, setSelectedOrderForDetail] = useState<OrderResponse | null>(null)
 
     // Picking Modal state
-    const [selectedOrderForPicking, setSelectedOrderForPicking] = useState<StaffOrderResponse | null>(null)
+    const [selectedOrderForPicking, setSelectedOrderForPicking] = useState<OrderResponse | null>(null)
 
     // Load orders & recalculate counters
     async function loadData() {
@@ -155,6 +79,7 @@ export function StaffOrdersPage() {
         setTimeout(() => {
             void loadData()
         }, 0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage])
 
     // Handle status transitions
@@ -171,7 +96,7 @@ export function StaffOrdersPage() {
         }
     }
 
-    function handleOpenPicking(order: StaffOrderResponse) {
+    function handleOpenPicking(order: OrderResponse) {
         setSelectedOrderForPicking(order)
     }
 
@@ -211,7 +136,6 @@ export function StaffOrdersPage() {
                             onTransition={handleTransition}
                             onOpenPicking={handleOpenPicking}
                             onTransitionToShipped={(orderId) => handleTransition(orderId, 'DELIVERED')}
-                            onTransitionToCompleted={(orderId) => handleTransition(orderId, 'COMPLETED')}
                         />
 
                         {/* Pagination */}
@@ -264,110 +188,12 @@ export function StaffOrdersPage() {
 
             {/* Order Detail Modal */}
             {selectedOrderForDetail && (
-                <div
-                    className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm'
-                    onClick={(e) => { if (e.target === e.currentTarget) setSelectedOrderForDetail(null) }}
-                >
-                    <div className='w-full max-w-md overflow-hidden rounded-2xl border border-border bg-card shadow-2xl animate-in fade-in zoom-in-95 duration-200'>
-                        <div className='flex items-center justify-between border-b border-border bg-muted/40 px-6 py-4'>
-                            <div>
-                                <h4 className='font-display text-lg font-bold text-foreground'>Chi tiết đơn hàng</h4>
-                                <p className='text-xs text-muted-foreground mt-0.5'>#{selectedOrderForDetail.orderCode}</p>
-                            </div>
-                            <button
-                                onClick={() => setSelectedOrderForDetail(null)}
-                                className='rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
-                            >
-                                <MaterialIcon name='close' />
-                            </button>
-                        </div>
-
-                        <div className='p-6 space-y-4'>
-                            <div className='flex items-center justify-between'>
-                                <span className='text-sm text-muted-foreground'>Trạng thái</span>
-                                {renderStatusBadge(selectedOrderForDetail.status)}
-                            </div>
-
-                            <div className='h-px bg-border' />
-
-                            <div className='space-y-3'>
-                                <div className='flex items-center justify-between'>
-                                    <span className='text-sm text-muted-foreground flex items-center gap-2'>
-                                        <MaterialIcon name='tag' className='text-[16px]' />
-                                        Mã đơn hàng
-                                    </span>
-                                    <span className='text-sm font-semibold text-foreground'>#{selectedOrderForDetail.orderCode}</span>
-                                </div>
-
-                                {selectedOrderForDetail.recipientName && (
-                                    <div className='flex items-center justify-between'>
-                                        <span className='text-sm text-muted-foreground flex items-center gap-2'>
-                                            <MaterialIcon name='person' className='text-[16px]' />
-                                            Tên khách hàng
-                                        </span>
-                                        <span className='text-sm font-semibold text-foreground'>{selectedOrderForDetail.recipientName}</span>
-                                    </div>
-                                )}
-
-                                {selectedOrderForDetail.phoneNumber && (
-                                    <div className='flex items-center justify-between'>
-                                        <span className='text-sm text-muted-foreground flex items-center gap-2'>
-                                            <MaterialIcon name='phone' className='text-[16px]' />
-                                            Số điện thoại
-                                        </span>
-                                        <span className='text-sm font-semibold text-foreground'>{selectedOrderForDetail.phoneNumber}</span>
-                                    </div>
-                                )}
-
-                                {selectedOrderForDetail.address && (
-                                    <div className='flex items-start justify-between gap-4'>
-                                        <span className='text-sm text-muted-foreground flex items-center gap-2 shrink-0'>
-                                            <MaterialIcon name='location_on' className='text-[16px]' />
-                                            Địa chỉ
-                                        </span>
-                                        <span className='text-sm font-semibold text-foreground text-right'>{selectedOrderForDetail.address}</span>
-                                    </div>
-                                )}
-
-                                <div className='flex items-center justify-between'>
-                                    <span className='text-sm text-muted-foreground flex items-center gap-2'>
-                                        <MaterialIcon name='calendar_today' className='text-[16px]' />
-                                        Ngày đặt hàng
-                                    </span>
-                                    <span className='text-sm font-semibold text-foreground'>
-                                        {formatDate(selectedOrderForDetail.createdAt)}
-                                    </span>
-                                </div>
-
-                                <div className='flex items-center justify-between'>
-                                    <span className='text-sm text-muted-foreground flex items-center gap-2'>
-                                        <MaterialIcon name='payments' className='text-[16px]' />
-                                        Tổng thanh toán
-                                    </span>
-                                    <span className='text-base font-bold text-primary'>
-                                        {formatPrice(selectedOrderForDetail.totalAmount)}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className='h-px bg-border' />
-
-                            <div className='rounded-xl bg-muted/50 px-4 py-3 text-xs text-muted-foreground'>
-                                ID đơn hàng: <span className='font-mono font-semibold text-foreground'>{selectedOrderForDetail.orderId}</span>
-                            </div>
-                        </div>
-
-                        <div className='flex items-center justify-end border-t border-border bg-muted/40 px-6 py-4'>
-                            <button
-                                type='button'
-                                onClick={() => setSelectedOrderForDetail(null)}
-                                className='rounded-xl border border-border px-5 py-2.5 text-sm font-semibold hover:bg-muted'
-                            >
-                                Đóng
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <OrderDetailModal
+                    orderId={selectedOrderForDetail.orderId}
+                    orderCode={selectedOrderForDetail.orderCode}
+                    isStaff={true}
+                    onClose={() => setSelectedOrderForDetail(null)}
+                />
             )}
         </div>
     )

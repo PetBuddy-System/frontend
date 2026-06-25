@@ -10,6 +10,7 @@ export interface ProductDetailInfoProps {
   price: number
   brandName: string
   totalStock: number
+  imageUrl?: string
 }
 
 export function ProductDetailInfo({
@@ -17,7 +18,8 @@ export function ProductDetailInfo({
   name,
   price,
   brandName,
-  totalStock
+  totalStock,
+  imageUrl
 }: ProductDetailInfoProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
@@ -53,7 +55,7 @@ export function ProductDetailInfo({
   setShowSuccessToast(false)
 
   try {
-    await addToCartApi({ productId, quantity, productName: name, price: safePrice })
+    await addToCartApi({ productId, quantity, productName: name, price: safePrice, imageUrl })
     setShowSuccessToast(true)
     setTimeout(() => setShowSuccessToast(false), 3000)
   } catch (err: unknown) {
@@ -69,7 +71,7 @@ const handleBuyNow = async () => {
   setAddError(null)
 
   try {
-    await addToCartApi({ productId, quantity, productName: name, price: safePrice })
+    await addToCartApi({ productId, quantity, productName: name, price: safePrice, imageUrl })
     navigate('/checkout')
   } catch (err: unknown) {
     setAddError(err instanceof Error ? err.message : 'Lỗi xử lý mua ngay')

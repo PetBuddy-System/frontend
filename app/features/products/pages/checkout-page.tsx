@@ -19,8 +19,6 @@ import type { CartItemResponse } from '~/shared/lib/cart'
 import { MaterialIcon } from '~/shared/ui'
 import { readStorage } from '~/shared/lib/storage'
 
-const CART_PLACEHOLDER_IMAGE = 'https://placehold.co/300x300?text=PetBuddy'
-
 const SESSION_KEY_ADDRESS = 'petbuddy_checkout_address'
 const SESSION_KEY_LAT = 'petbuddy_checkout_lat'
 const SESSION_KEY_LNG = 'petbuddy_checkout_lng'
@@ -86,7 +84,7 @@ export function CheckoutPage() {
       setCartItems(
         items.map((item) => ({
           key: item.cartItemId,
-          image: item.imageUrl || CART_PLACEHOLDER_IMAGE,
+          image: item.imageUrl,
           price: item.price,
           quantity: item.quantity,
           title: item.productName,
@@ -166,7 +164,7 @@ export function CheckoutPage() {
           name: item.productName,
           price: item.price,
           quantity: item.quantity,
-          imageUrl: item.imageUrl || CART_PLACEHOLDER_IMAGE,
+          imageUrl: item.imageUrl,
         })),
       }
 

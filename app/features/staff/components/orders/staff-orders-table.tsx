@@ -1,7 +1,6 @@
 // app/features/staff/components/orders/staff-orders-table.tsx
 import { MaterialIcon } from '~/shared/ui'
-import { cn } from '~/shared/lib/cn'
-import type { StaffOrderResponse, OrderStatus } from '~/shared/lib/order'
+import type { OrderResponse, OrderStatus } from '~/shared/lib/order'
 
 function formatPrice(value: number) {
     if (value == null || isNaN(Number(value))) return '—'
@@ -83,17 +82,16 @@ function renderStatusBadge(status: string) {
 }
 
 interface StaffOrdersTableProps {
-    orders: StaffOrderResponse[]
+    orders: OrderResponse[]
     isLoading: boolean
     searchQuery: string
     statusFilter: string
     onSearchChange: (query: string) => void
     onStatusFilterChange: (status: string) => void
-    onViewDetail: (order: StaffOrderResponse) => void
+    onViewDetail: (order: OrderResponse) => void
     onTransition: (orderId: number, nextStatus: OrderStatus) => void
-    onOpenPicking: (order: StaffOrderResponse) => void
+    onOpenPicking: (order: OrderResponse) => void
     onTransitionToShipped: (orderId: number) => void
-    onTransitionToCompleted: (orderId: number) => void
 }
 
 export function StaffOrdersTable({
@@ -106,8 +104,7 @@ export function StaffOrdersTable({
     onViewDetail,
     onTransition,
     onOpenPicking,
-    onTransitionToShipped,
-    onTransitionToCompleted
+    onTransitionToShipped
 }: StaffOrdersTableProps) {
     // Filter orders locally
     const filteredOrders = orders.filter((o) => {
@@ -201,32 +198,30 @@ export function StaffOrdersTable({
                                     </td>
                                     <td className='px-6 py-4 text-muted-foreground'>{order.phoneNumber || '—'}</td>
                                     <td className='px-6 py-4 text-muted-foreground'>{formatDate(order.createdAt)}</td>
-                                    <td className='px-6 py-4 font-bold text-foreground'>{formatPrice(order.totalAmount)}</td>
+                                    <td className='px-6 py-4 font-bold text-foreground'>{formatPrice(order.finalAmount)}</td>
                                     <td className='px-6 py-4'>{renderStatusBadge(order.status)}</td>
                                     <td className='px-6 py-4 text-right'>
-                                        <button
-                                            onClick={() => onViewDetail(order)}
-                                            className='mr-1 rounded-lg p-2 text-muted-foreground hover:bg-muted'
-                                            title='Xem chi tiết đơn hàng'
-                                        >
-                                            <MaterialIcon name='visibility' className='text-[20px]' />
-                                        </button>
-                                        <div className='flex items-center justify-end gap-1 opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity'>
+                                        <div className='flex items-center justify-end gap-2 flex-wrap'>
+                                            <button
+                                                onClick={() => onViewDetail(order)}
+                                                className='rounded-xl border border-border px-3 py-1.5 text-xs font-bold text-foreground bg-card hover:bg-muted transition-colors active:scale-95 shadow-sm'
+                                            >
+                                                Xem
+                                            </button>
+
                                             {order.status === 'PENDING' && (
                                                 <>
                                                     <button
                                                         onClick={() => onTransition(order.orderId, 'CONFIRMED')}
-                                                        className='rounded-lg p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/20'
-                                                        title='Xác nhận đơn hàng'
+                                                        className='rounded-xl bg-blue-600 hover:bg-blue-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
                                                     >
-                                                        <MaterialIcon name='check' className='text-[20px]' />
+                                                        Duyệt
                                                     </button>
                                                     <button
                                                         onClick={() => onTransition(order.orderId, 'CANCELED')}
-                                                        className='rounded-lg p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20'
-                                                        title='Hủy đơn hàng'
+                                                        className='rounded-xl bg-red-600 hover:bg-red-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
                                                     >
-                                                        <MaterialIcon name='close' className='text-[20px]' />
+                                                        Hủy
                                                     </button>
                                                 </>
                                             )}
@@ -234,40 +229,27 @@ export function StaffOrdersTable({
                                             {order.status === 'CONFIRMED' && (
                                                 <button
                                                     onClick={() => onTransition(order.orderId, 'PICKING')}
-                                                    className='rounded-lg p-2 text-cyan-600 hover:bg-cyan-50 dark:hover:bg-cyan-950/20'
-                                                    title='Bắt đầu lấy hàng'
+                                                    className='rounded-xl bg-cyan-600 hover:bg-cyan-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
                                                 >
-                                                    <MaterialIcon name='inventory' className='text-[20px]' />
+                                                    Lấy hàng
                                                 </button>
                                             )}
 
                                             {order.status === 'PICKING' && (
                                                 <button
                                                     onClick={() => onOpenPicking(order)}
-                                                    className='rounded-lg p-2 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-950/20'
-                                                    title='Lấy hàng'
+                                                    className='rounded-xl bg-teal-600 hover:bg-teal-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
                                                 >
-                                                    <MaterialIcon name='inventory_2' className='text-[20px]' />
+                                                    Lấy hàng
                                                 </button>
                                             )}
 
                                             {order.status === 'SHIPPING' && (
                                                 <button
                                                     onClick={() => onTransitionToShipped(order.orderId)}
-                                                    className='rounded-lg p-2 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950/20'
-                                                    title='Đã giao hàng'
+                                                    className='rounded-xl bg-purple-600 hover:bg-purple-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
                                                 >
-                                                    <MaterialIcon name='done' className='text-[20px]' />
-                                                </button>
-                                            )}
-
-                                            {order.status === 'DELIVERED' && (
-                                                <button
-                                                    onClick={() => onTransitionToCompleted(order.orderId)}
-                                                    className='rounded-lg p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-950/20'
-                                                    title='Xác nhận hoàn thành'
-                                                >
-                                                    <MaterialIcon name='task_alt' className='text-[20px]' />
+                                                    Đã giao
                                                 </button>
                                             )}
                                         </div>

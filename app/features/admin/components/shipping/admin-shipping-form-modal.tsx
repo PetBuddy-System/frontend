@@ -1,4 +1,3 @@
-// app/features/admin/components/shipping/admin-shipping-form-modal.tsx
 import { useState } from 'react'
 import { MaterialIcon } from '~/shared/ui'
 import type { ShippingRule } from '~/shared/lib/shipping'

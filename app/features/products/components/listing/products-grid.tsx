@@ -32,6 +32,7 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
       quantity: 1,
       productName: product.name,
       price: product.price,
+      imageUrl: product.imageUrls?.[0] || product.thumbnail,
     })
     setShowSuccessToast(true)
     setTimeout(() => setShowSuccessToast(false), 3000)

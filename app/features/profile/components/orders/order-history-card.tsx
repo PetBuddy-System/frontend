@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { updateOrderStatusApi } from '~/features/profile/services'
+import { OrderDetailModal } from '~/shared/components'
 
 export interface OrderHistoryCardProps {
   order: {
@@ -70,7 +71,6 @@ function getStatusLabel(status: string) {
 
 function formatDate(dateStr: string) {
   if (!dateStr) return '—'
-  // Handle both "2024-10-25T14:30:00" and "2024-10-25T14:30:00Z"
   const normalized = dateStr.includes('Z') || dateStr.includes('+') ? dateStr : dateStr + 'Z'
   const d = new Date(normalized)
   if (isNaN(d.getTime())) return dateStr
@@ -113,8 +113,8 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
       } else {
         alert(res.message || 'Xác nhận nhận hàng thất bại')
       }
-    } catch (err: any) {
-      alert(err.message || 'Lỗi khi cập nhật trạng thái')
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Lỗi khi cập nhật trạng thái')
     } finally {
       setIsConfirming(false)
     }
@@ -207,108 +207,12 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
 
       {/* Order Detail Modal */}
       {showDetailModal && (
-        <div
-          className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm'
-          onClick={(e) => { if (e.target === e.currentTarget) setShowDetailModal(false) }}
-        >
-          <div className='w-full max-w-md overflow-hidden rounded-2xl border border-border bg-card shadow-2xl animate-in fade-in zoom-in-95 duration-200'>
-            {/* Modal header */}
-            <div className='flex items-center justify-between border-b border-border bg-muted/40 px-6 py-4'>
-              <div>
-                <h4 className='font-display text-lg font-bold text-foreground'>Chi tiết đơn hàng</h4>
-                <p className='text-xs text-muted-foreground mt-0.5'>#{order.orderCode}</p>
-              </div>
-              <button
-                onClick={() => setShowDetailModal(false)}
-                className='rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground'
-              >
-                <MaterialIcon name='close' />
-              </button>
-            </div>
-
-            {/* Modal body */}
-            <div className='p-6 space-y-4'>
-              {/* Status badge */}
-              <div className='flex items-center justify-between'>
-                <span className='text-sm text-muted-foreground'>Trạng thái</span>
-                <span className={cn(
-                  'flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold',
-                  getStatusClassName(order.status)
-                )}>
-                  <MaterialIcon
-                    name={STATUS_ICON[order.status] || 'schedule'}
-                    filled={order.status === 'COMPLETED'}
-                    className='text-sm'
-                  />
-                  {getStatusLabel(order.status)}
-                </span>
-              </div>
-
-              <div className='h-px bg-border' />
-
-              {/* Info rows */}
-              <div className='space-y-3'>
-                <div className='flex items-center justify-between'>
-                  <span className='text-sm text-muted-foreground flex items-center gap-2'>
-                    <MaterialIcon name='tag' className='text-[16px]' />
-                    Mã đơn hàng
-                  </span>
-                  <span className='text-sm font-semibold text-foreground'>#{order.orderCode}</span>
-                </div>
-
-                <div className='flex items-center justify-between'>
-                  <span className='text-sm text-muted-foreground flex items-center gap-2'>
-                    <MaterialIcon name='calendar_today' className='text-[16px]' />
-                    Ngày đặt hàng
-                  </span>
-                  <span className='text-sm font-semibold text-foreground'>
-                    {formatDateTime(order.createdAt)}
-                  </span>
-                </div>
-
-                <div className='flex items-center justify-between'>
-                  <span className='text-sm text-muted-foreground flex items-center gap-2'>
-                    <MaterialIcon name='payments' className='text-[16px]' />
-                    Tổng thanh toán
-                  </span>
-                  <span className={cn(
-                    'text-base font-bold',
-                    order.status === 'CANCELED' ? 'text-muted-foreground' : 'text-primary'
-                  )}>
-                    {formatPrice(order.finalAmount)}
-                  </span>
-                </div>
-              </div>
-
-              <div className='h-px bg-border' />
-
-              {/* Order ID (internal) */}
-              <div className='rounded-xl bg-muted/50 px-4 py-3 text-xs text-muted-foreground'>
-                ID đơn hàng: <span className='font-mono font-semibold text-foreground'>{order.orderId}</span>
-              </div>
-            </div>
-
-            {/* Modal footer */}
-            <div className='flex items-center justify-end gap-3 border-t border-border bg-muted/40 px-6 py-4'>
-              {order.status === 'DELIVERED' && (
-                <button
-                  type='button'
-                  onClick={() => { setShowDetailModal(false); setShowConfirmModal(true) }}
-                  className='rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-sm hover:opacity-90'
-                >
-                  Đã nhận được hàng
-                </button>
-              )}
-              <button
-                type='button'
-                onClick={() => setShowDetailModal(false)}
-                className='rounded-xl border border-border px-5 py-2.5 text-sm font-semibold hover:bg-muted'
-              >
-                Đóng
-              </button>
-            </div>
-          </div>
-        </div>
+        <OrderDetailModal
+          orderId={order.orderId}
+          orderCode={order.orderCode}
+          isStaff={false}
+          onClose={() => setShowDetailModal(false)}
+        />
       )}
 
       {/* Confirmation Modal */}

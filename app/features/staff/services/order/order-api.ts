@@ -11,17 +11,17 @@ import type {
   ApiResponse,
   PageResponse,
   PageableParams,
-  StaffOrderResponse
+  OrderResponse
 } from '~/shared/lib/order'
 
 const ORDER_BASE_URL = `${env.API_URL}${env.API_ORDERS_PATH}`
 
 export async function fetchAllOrdersApi(
   params: PageableParams = {}
-): Promise<ApiResponse<PageResponse<StaffOrderResponse>>> {
+): Promise<ApiResponse<PageResponse<OrderResponse>>> {
   const { page, size, sort } = params
 
-  return customFetch<ApiResponse<PageResponse<StaffOrderResponse>>>({
+  return customFetch<ApiResponse<PageResponse<OrderResponse>>>({
     url: `${ORDER_BASE_URL}/all`,
     method: 'GET',
     params: { page, size, sort }
@@ -39,6 +39,13 @@ export async function updateOrderStatusApi(orderId: number, status: OrderStatus)
 export async function fetchPickingListApi(orderId: number): Promise<ApiResponse<PickingItemResponse[]>> {
   return customFetch<ApiResponse<PickingItemResponse[]>>({
     url: `${ORDER_BASE_URL}/${orderId}/picking-list`,
+    method: 'GET'
+  })
+}
+
+export async function fetchOrderDetailApi(orderId: number): Promise<ApiResponse<unknown>> {
+  return customFetch<ApiResponse<unknown>>({
+    url: `${ORDER_BASE_URL}/${orderId}`,
     method: 'GET'
   })
 }
