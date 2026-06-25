@@ -248,10 +248,10 @@ export const orderHandlers = [
         },
         timestamp: new Date().toISOString()
       })
-    } catch (err: any) {
+    } catch (err: unknown) {
       return HttpResponse.json({
         code: 400,
-        message: err.message || 'Lỗi tạo đơn hàng',
+        message: err instanceof Error ? err.message : 'Lỗi tạo đơn hàng',
         success: false,
         data: null,
         timestamp: new Date().toISOString()
@@ -307,7 +307,16 @@ export const orderHandlers = [
 
     const start = page * size
     const end = start + size
-    const pageOrders = orders.slice(start, end)
+    const pageOrders = orders.slice(start, end).map(o => ({
+      orderId: o.orderId,
+      orderCode: o.orderCode,
+      recipientName: o.userName,
+      phoneNumber: o.phoneNumber,
+      address: o.address,
+      status: o.status,
+      totalAmount: o.finalAmount, // Set totalAmount to the finalAmount (reduced/final price)
+      createdAt: o.createdAt
+    }))
 
     return HttpResponse.json({
       code: 200,
@@ -348,12 +357,36 @@ export const orderHandlers = [
       code: 200,
       message: 'Lấy chi tiết đơn hàng thành công',
       success: true,
-      data: order,
+      data: {
+        orderId: order.orderId,
+        orderCode: order.orderCode,
+        status: order.status,
+        finalAmount: order.finalAmount,
+        createdAt: order.createdAt,
+        updatedAt: order.createdAt,
+        // shipping / recipient info (extra fields not in Java DTO but needed for UI)
+        userName: order.userName,
+        recipientName: order.userName,
+        phoneNumber: order.phoneNumber,
+        address: order.address,
+        note: order.note,
+        voucherCode: order.voucherCode,
+        // Java-compatible orderDetails list
+        orderDetails: order.items.map((item, idx) => ({
+          orderDetailId: order.orderId * 100 + idx,
+          productId: item.productId,
+          productName: item.name,
+          productImage: item.imageUrl,
+          unitPrice: item.price,
+          quantity: item.quantity,
+          totalPrice: item.price * item.quantity,
+          createdAt: order.createdAt
+        }))
+      },
       timestamp: new Date().toISOString()
     })
   }),
 
-  // PATCH /api/orders/:id/status
   http.patch(`${BASE}/api/orders/:id/status`, ({ params, request }) => {
     const orderId = Number(params.id)
     const url = new URL(request.url)
@@ -421,7 +454,8 @@ export const orderHandlers = [
         productId: item.productId,
         name: item.name,
         expiryDate: expiryDateStr,
-        quantityToPick: item.quantity
+        quantityToPick: item.quantity,
+        imageUrl: item.imageUrl // Add this so frontend can display the product image
       }
     })
 

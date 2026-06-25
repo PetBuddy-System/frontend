@@ -2,10 +2,10 @@
 import { useState, useEffect } from 'react'
 import { MaterialIcon } from '~/shared/ui'
 import { fetchPickingListApi, updateOrderStatusApi } from '../../services/order'
-import type { StaffOrderResponse, PickingItemResponse } from '~/shared/lib/order'
+import type { OrderResponse, PickingItemResponse } from '~/shared/lib/order'
 
 interface StaffOrderPickingDialogProps {
-    order: StaffOrderResponse | null
+    order: OrderResponse | null
     onClose: () => void
     onSuccess: () => void
 }
@@ -33,7 +33,7 @@ export function StaffOrderPickingDialog({ order, onClose, onSuccess }: StaffOrde
             }
         }
         void loadPickingList()
-    }, [order?.orderId])
+    }, [order])
 
     async function handleConfirmPicking() {
         if (!order) return
@@ -94,19 +94,29 @@ export function StaffOrderPickingDialog({ order, onClose, onSuccess }: StaffOrde
                                     className='flex items-center justify-between rounded-xl border border-border bg-muted/20 p-4'
                                 >
                                     <div className='flex items-center gap-3'>
-                                        <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-sm'>
+                                        <div className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-sm'>
                                             {index + 1}
                                         </div>
+                                        <img
+                                            src={item.imageUrl || ''}
+                                            alt={item.name}
+                                            className="w-30 h-30 object-cover rounded-lg bg-gray-200 flex-shrink-0"
+                                            onError={(e) => {
+                                                const target = e.currentTarget
+                                                target.onerror = null
+                                                target.src = '/placeholder-product.png'
+                                            }}
+                    />
                                         <div>
-                                            <p className='font-semibold text-foreground'>{item.name}</p>
-                                            <p className='text-xs text-muted-foreground'>
+                                            <p className='font-semibold text-foreground text-sm line-clamp-1'>{item.name}</p>
+                                            <p className='text-xs text-muted-foreground mt-0.5'>
                                                 HSD: {item.expiryDate ? new Date(item.expiryDate).toLocaleDateString('vi-VN') : 'N/A'}
                                             </p>
                                         </div>
                                     </div>
-                                    <div className='text-right'>
-                                        <p className='text-lg font-bold text-primary'>{item.quantityToPick}</p>
+                                    <div className='text-right flex-shrink-0'>
                                         <p className='text-xs text-muted-foreground'>cần lấy</p>
+                                        <p className='text-lg font-bold text-primary text-center'>{item.quantityToPick}</p>
                                     </div>
                                 </div>
                             ))}

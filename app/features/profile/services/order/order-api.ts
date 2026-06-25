@@ -1,13 +1,9 @@
-/**
- * Profile feature — order API service.
- * Chứa tất cả order-related API functions cho profile pages.
- */
-
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type {
   OrderStatus,
   OrderResponse,
+  OrderDetailFull,
   ApiResponse,
   PageResponse,
   PageableParams
@@ -32,5 +28,12 @@ export async function updateOrderStatusApi(orderId: number, status: OrderStatus)
     url: `${ORDER_BASE_URL}/${orderId}/status`,
     method: 'PATCH',
     params: { status }
+  })
+}
+
+export async function fetchOrderDetailApi(orderId: number): Promise<ApiResponse<OrderDetailFull>> {
+  return customFetch<ApiResponse<OrderDetailFull>>({
+    url: `${ORDER_BASE_URL}/${orderId}`,
+    method: 'GET'
   })
 }

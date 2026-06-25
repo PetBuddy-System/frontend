@@ -15,42 +15,40 @@ import type { CartItemResponse } from '~/shared/lib/cart'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const SUGGESTIONS: CartSuggestion[] = [
-  {
-    key: 'treats',
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAh0Mt6FVKZtoZIl8hmpDSsxvCx6L1TKQ5qRwm5_xTvWTzzLlj7EtK3CNi6AhdkRuvKbRyHbsNB5dztwxU6jm02uBewG26QLu7OaxUSiIlAJQhPWrynOSWUA-Guyf10N2WqYv6P0vlXRH3ysKcNaOJBqtpA7ps8SkLZ29t0qWni6O08YfwgfbBj6D9iUa_dJVW_LiuRiafZIH6qH5mFE8QScPIBVwX4X7DD3UlqQ7WMB018sLlXjvONm_qgeSyKre1OEWq3cTz_WmA',
-    price: 85000,
-  },
-  {
-    key: 'ropeToy',
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBDBudYeLKEdmwXy5PdXabk8pPTMta8e7woVqNCjuh0usqTa-LdUolvcpn5xIp58m9-fxYDg08HC25OVOyyTm0A2P_U0dRcnxqkxwD_WtCIvzYhi1TVXgsy4mCCR1rsaneVLsb5s-oMVCr_odxoOmtulAccheNytvG_cCo3qodaRqZANN4eWvDe3OlQyuVCcPHDxF_w18oepm-IbIcQbT4ISlc6pN7JkE3-kjBUuMPHrU0Z-vgFVaLNCV4UP6OXv_LPiE3iAP9Z4GQ',
-    price: 120000,
-  },
-  {
-    key: 'leatherCollar',
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuArwBf7UHSiWPAQRs5-02N0HWuz9jmofJ_e9rICLQSIynaGrkRm9_wTgtmtrUBWscRJQBd43haD1tm4ioBGU3qorsnaVx-RU2hrwsR9bExWLMF9T3KAAdNWnO5lb9VCEEjWW2YWulkiJCzGmt2aFEpp8c9b0uZ90TVH1aWMEv8okZogchwFlsgE2NCJchSJwde3eWVXTeXJ4ZCaxtoPSt067ALgjO05337NHrAsSMiLZnRfB742vKPXoFcDPA6JYNGPnNKU9Vg8VFU',
-    price: 350000,
-  },
-  {
-    key: 'ceramicBowl',
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCdf_YqJ2ZfNOBKzXiCy-IHUrXjgLClIzIZjWt5VdZeJxG7bQlU1PbcRbDZ_zQmH3aWpJk4irp1xMUeoZ-pLONJMBYzQU85Cx31mmUHkr-Ur007CEVRPFOeLH0NFcFrzVyac31YUC7kd1mygBsnJN4RgRnDeuKsaVJqQ1fLiJVw0jBLAG1W86sfcWk5SbeJSd3zAC_IOHm2n9qFzekhtpmKkDRD_svrOvkyrva-DYE377-MJDQEghzzAuGlG2rlLxoLZDNvaatDSfM',
-    price: 215000,
-  },
-]
+// const SUGGESTIONS: CartSuggestion[] = [
+//   {
+//     key: 'treats',
+//     image:
+//       'https://lh3.googleusercontent.com/aida-public/AB6AXuAh0Mt6FVKZtoZIl8hmpDSsxvCx6L1TKQ5qRwm5_xTvWTzzLlj7EtK3CNi6AhdkRuvKbRyHbsNB5dztwxU6jm02uBewG26QLu7OaxUSiIlAJQhPWrynOSWUA-Guyf10N2WqYv6P0vlXRH3ysKcNaOJBqtpA7ps8SkLZ29t0qWni6O08YfwgfbBj6D9iUa_dJVW_LiuRiafZIH6qH5mFE8QScPIBVwX4X7DD3UlqQ7WMB018sLlXjvONm_qgeSyKre1OEWq3cTz_WmA',
+//     price: 85000,
+//   },
+//   {
+//     key: 'ropeToy',
+//     image:
+//       'https://lh3.googleusercontent.com/aida-public/AB6AXuBDBudYeLKEdmwXy5PdXabk8pPTMta8e7woVqNCjuh0usqTa-LdUolvcpn5xIp58m9-fxYDg08HC25OVOyyTm0A2P_U0dRcnxqkxwD_WtCIvzYhi1TVXgsy4mCCR1rsaneVLsb5s-oMVCr_odxoOmtulAccheNytvG_cCo3qodaRqZANN4eWvDe3OlQyuVCcPHDxF_w18oepm-IbIcQbT4ISlc6pN7JkE3-kjBUuMPHrU0Z-vgFVaLNCV4UP6OXv_LPiE3iAP9Z4GQ',
+//     price: 120000,
+//   },
+//   {
+//     key: 'leatherCollar',
+//     image:
+//       'https://lh3.googleusercontent.com/aida-public/AB6AXuArwBf7UHSiWPAQRs5-02N0HWuz9jmofJ_e9rICLQSIynaGrkRm9_wTgtmtrUBWscRJQBd43haD1tm4ioBGU3qorsnaVx-RU2hrwsR9bExWLMF9T3KAAdNWnO5lb9VCEEjWW2YWulkiJCzGmt2aFEpp8c9b0uZ90TVH1aWMEv8okZogchwFlsgE2NCJchSJwde3eWVXTeXJ4ZCaxtoPSt067ALgjO05337NHrAsSMiLZnRfB742vKPXoFcDPA6JYNGPnNKU9Vg8VFU',
+//     price: 350000,
+//   },
+//   {
+//     key: 'ceramicBowl',
+//     image:
+//       'https://lh3.googleusercontent.com/aida-public/AB6AXuCdf_YqJ2ZfNOBKzXiCy-IHUrXjgLClIzIZjWt5VdZeJxG7bQlU1PbcRbDZ_zQmH3aWpJk4irp1xMUeoZ-pLONJMBYzQU85Cx31mmUHkr-Ur007CEVRPFOeLH0NFcFrzVyac31YUC7kd1mygBsnJN4RgRnDeuKsaVJqQ1fLiJVw0jBLAG1W86sfcWk5SbeJSd3zAC_IOHm2n9qFzekhtpmKkDRD_svrOvkyrva-DYE377-MJDQEghzzAuGlG2rlLxoLZDNvaatDSfM',
+//     price: 215000,
+//   },
+// ]
 
 const CART_PLACEHOLDER_IMAGE = 'https://placehold.co/300x300?text=PetBuddy'
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatPrice(value: number) {
   return `${new Intl.NumberFormat('vi-VN').format(value)}đ`
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
 
 export function CartPage() {
   const { t } = useTranslation('products')
@@ -60,7 +58,6 @@ export function CartPage() {
   const [isMutating, setIsMutating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // ─── Fetch cart từ API ──────────────────────────────────────────────────
 
   const fetchCart = useCallback(async () => {
     try {
@@ -78,8 +75,6 @@ export function CartPage() {
     fetchCart()
   }, [fetchCart])
 
-  // ─── Map sang CartItem cho UI ───────────────────────────────────────────
-
   const items = useMemo<CartItem[]>(() => {
     return cartItems.map((item) => ({
       key: item.cartItemId,
@@ -87,7 +82,7 @@ export function CartPage() {
       productId: item.productId,
       title: item.productName,
       category: '',
-      image: CART_PLACEHOLDER_IMAGE,
+      image: item.imageUrl || CART_PLACEHOLDER_IMAGE,
       price: item.price,
       quantity: item.quantity,
     }))
@@ -101,7 +96,6 @@ export function CartPage() {
     return cartItems.reduce((total, item) => total + item.quantity, 0)
   }, [cartItems])
 
-  // ─── Handlers ──────────────────────────────────────────────────────────
 
   async function handleDecrease(item: CartItem) {
     if (item.quantity <= 1 || isMutating) return
@@ -224,7 +218,7 @@ export function CartPage() {
           </div>
         </div>
 
-        <CartSuggestions items={SUGGESTIONS} formatPrice={formatPrice} />
+        {/* <CartSuggestions items={SUGGESTIONS} formatPrice={formatPrice} /> */}
       </main>
 
       <SiteFooter />

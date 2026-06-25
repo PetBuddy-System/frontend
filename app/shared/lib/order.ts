@@ -18,6 +18,7 @@ export interface PickingItemResponse {
   name: string
   expiryDate: string
   quantityToPick: number
+  imageUrl?: string
 }
 
 export interface ApiResponse<T> {
@@ -55,21 +56,43 @@ export interface CreateOrderRequest {
   voucherCode?: string
 }
 
-export interface OrderResponse {
+export interface OrderDetailResponse {
+  orderDetailId: number
+  productId: string
+  productName: string
+  productImage?: string
+  unitPrice: number
+  quantity: number
+  totalPrice: number
+  createdAt: string
+}
+
+
+export interface OrderDetailFull {
   orderId: number
   orderCode: string
   status: string
   finalAmount: number
   createdAt: string
+  updatedAt?: string
+  orderDetails: OrderDetailResponse[]
+  userName?: string
+  recipientName?: string
+  phoneNumber?: string
+  address?: string
+  note?: string
+  voucherCode?: string
 }
 
-export interface StaffOrderResponse {
+export interface OrderResponse {
   orderId: number
   orderCode: string
   recipientName?: string
   phoneNumber?: string
   address?: string
-  status: string
-  totalAmount: number
+  status: OrderStatus
+  finalAmount: number
   createdAt: string
+  updatedAt?: string
+  orderDetails?: OrderDetailResponse[]
 }

@@ -1,16 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { calculateShippingFeeApi } from '../services/shipping'
+import { calculateShippingFeeApi  } from '../services/shipping'
+import { fetchAllShippingRulesApi } from '~/features/admin/services/shipping'
+import type { ShippingRule } from '~/shared/lib/shipping'
 
 const STORE_LAT = 10.776889
 const STORE_LON = 106.700806
-
-// TODO: thay bằng giá trị lấy từ API cấu hình của admin khi có (ví dụ: getDeliveryConfigApi())
-const MAX_DELIVERY_RADIUS_KM = 15
 
 export const SESSION_KEY_ADDRESS = 'petbuddy_checkout_address'
 export const SESSION_KEY_LAT = 'petbuddy_checkout_lat'
@@ -49,6 +47,13 @@ function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): 
     Math.sin(dLat / 2) ** 2 +
     Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+// Tìm rule phù hợp với khoảng cách — null nếu ngoài vùng phủ
+function findMatchingRule(rules: ShippingRule[], distanceKm: number): ShippingRule | null {
+  return (
+    rules.find((r) => distanceKm >= r.minDistance && distanceKm < r.maxDistance) ?? null
+  )
 }
 
 // Ép .leaflet-container luôn bám 100% kích thước của div bọc ngoài và kế thừa
@@ -111,6 +116,8 @@ export function AddressPickerPage() {
     lat: STORE_LAT,
     lng: STORE_LON,
   })
+  const [shippingRules, setShippingRules] = useState<ShippingRule[]>([])
+  const [isLoadingRules, setIsLoadingRules] = useState(true)
 
   function showToast(message: string, variant: ToastVariant = 'success') {
     setToast({ message, variant })
@@ -131,6 +138,18 @@ export function AddressPickerPage() {
         setCurrentCoords({ lat: parseFloat(savedLat), lng: parseFloat(savedLng) })
       }, 0)
     }
+  }, [])
+
+  // Fetch shipping rules từ admin config
+  useEffect(() => {
+    fetchAllShippingRulesApi()
+      .then((res) => {
+        if (res?.data) setShippingRules(res.data)
+      })
+      .catch(() => {
+        // rules rỗng → handleConfirm sẽ block và hiện lỗi
+      })
+      .finally(() => setIsLoadingRules(false))
   }, [])
 
   // Load Leaflet dynamically
@@ -332,7 +351,6 @@ export function AddressPickerPage() {
   }
 
   async function handleConfirm() {
-    // Kiểm tra vị trí đã chọn có nằm trong bán kính giao hàng cho phép không
     const distanceFromStore = getDistanceKm(
       STORE_LAT,
       STORE_LON,
@@ -340,20 +358,29 @@ export function AddressPickerPage() {
       currentCoords.lng
     )
 
-    if (distanceFromStore > MAX_DELIVERY_RADIUS_KM) {
-      showToast('Nằm ngoài khu vực giao hàng', 'error')
+    const matchedRule = findMatchingRule(shippingRules, distanceFromStore)
+
+    if (!matchedRule) {
+      showToast('Địa chỉ này nằm ngoài khu vực giao hàng', 'error')
       return
     }
 
+    const inHCMC = await isInHoChiMinhCity(currentCoords.lat, currentCoords.lng)
+      if (!inHCMC) {
+        showToast('Chỉ giao hàng trong phạm vi TP. Hồ Chí Minh', 'error')
+        return
+      }
+
     setIsConfirming(true)
     const addressToSave =
-      selectedAddress || searchQuery || `${currentCoords.lat.toFixed(6)}, ${currentCoords.lng.toFixed(6)}`
+      selectedAddress ||
+      searchQuery ||
+      `${currentCoords.lat.toFixed(6)}, ${currentCoords.lng.toFixed(6)}`
 
     sessionStorage.setItem(SESSION_KEY_ADDRESS, addressToSave)
     sessionStorage.setItem(SESSION_KEY_LAT, String(currentCoords.lat))
     sessionStorage.setItem(SESSION_KEY_LNG, String(currentCoords.lng))
 
-    // Calculate shipping fee
     try {
       const response = await calculateShippingFeeApi(currentCoords.lat, currentCoords.lng)
       if (response?.data) {
@@ -363,16 +390,48 @@ export function AddressPickerPage() {
         sessionStorage.setItem(SESSION_KEY_DISTANCE_KM, String(distanceKm))
       }
     } catch {
-      // Non-blocking: if shipping calc fails, default to free
-      sessionStorage.setItem(SESSION_KEY_SHIPPING_FEE, '0')
-      sessionStorage.setItem(SESSION_KEY_IS_FREE_SHIPPING, 'true')
-      sessionStorage.setItem(SESSION_KEY_DISTANCE_KM, '0')
+      sessionStorage.setItem(SESSION_KEY_SHIPPING_FEE, String(matchedRule.fee))
+      sessionStorage.setItem(SESSION_KEY_IS_FREE_SHIPPING, String(matchedRule.fee === 0))
+      sessionStorage.setItem(SESSION_KEY_DISTANCE_KM, String(distanceFromStore))
     } finally {
       setIsConfirming(false)
     }
 
     navigate('/order')
   }
+
+  async function isInHoChiMinhCity(lat: number, lng: number): Promise<boolean> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=vi`
+    )
+    const data = await res.json()
+    const addr = data?.address ?? {}
+    const fields = [
+      addr.city,
+      addr.state,
+      addr.province,
+      addr.county,
+      addr.municipality,
+    ]
+      .filter(Boolean)
+      .map((s: string) => s.toLowerCase())
+
+    const hcmcKeywords = [
+      'hồ chí minh',
+      'ho chi minh',
+      'thành phố hồ chí minh',
+      'tp. hồ chí minh',
+      'tp hcm',
+    ]
+
+    return fields.some((field) =>
+      hcmcKeywords.some((kw) => field.includes(kw))
+    )
+  } catch {
+    return true
+  }
+}
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
@@ -482,10 +541,15 @@ export function AddressPickerPage() {
         <button
           type='button'
           onClick={handleConfirm}
-          disabled={isConfirming}
+          disabled={isConfirming || isLoadingRules}
           className='mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-base font-bold text-primary-foreground shadow-lg transition-all hover:opacity-90 active:scale-95 disabled:opacity-60'
         >
-          {isConfirming ? (
+          {isLoadingRules ? (
+            <>
+              <div className='h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent' />
+              Đang tải cấu hình...
+            </>
+          ) : isConfirming ? (
             <>
               <div className='h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent' />
               Đang tính phí vận chuyển...

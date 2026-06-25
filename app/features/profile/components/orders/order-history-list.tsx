@@ -9,7 +9,6 @@ import { fetchMyOrdersApi } from '~/features/profile/services'
 
 function matchesFilter(status: string, filter: OrderHistoryFilter) {
   if (filter === 'all') return true
-  // Match lowercased statuses
   const filterLower = filter.toLowerCase()
   const statusLower = status.toLowerCase()
 
