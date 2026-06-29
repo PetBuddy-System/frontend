@@ -18,6 +18,8 @@
   "dependencies": {
     "@react-router/node": "7.14.0",
     "@react-router/serve": "7.14.0",
+    "@stripe/react-stripe-js": "^6.6.0",
+    "@stripe/stripe-js": "^9.8.0",
     "axios": "^1.18.0",
     "clsx": "^2.1.1",
     "i18next": "^26.0.8",

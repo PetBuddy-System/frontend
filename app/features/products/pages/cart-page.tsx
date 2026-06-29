@@ -63,7 +63,7 @@ export function CartPage() {
     try {
       setError(null)
       const cart = await getCartApi()
-      setCartItems(cart.items ?? [])
+      setCartItems(cart.cartItems ?? [])
     } catch {
       setError('Không thể tải giỏ hàng. Vui lòng thử lại.')
     } finally {
@@ -130,7 +130,7 @@ export function CartPage() {
     setIsMutating(true)
 
     try {
-      await removeCartItemApi(item.productId)
+      await removeCartItemApi(item.cartItemId)
       await fetchCart()
     } catch {
       setError('Không thể xoá sản phẩm.')

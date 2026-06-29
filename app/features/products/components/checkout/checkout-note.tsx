@@ -1,9 +1,21 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
 
 export function CheckoutNote() {
   const { t } = useTranslation('products')
+  const [note, setNote] = useState('')
+
+  useEffect(() => {
+    setNote(sessionStorage.getItem('petbuddy_checkout_note') ?? '')
+  }, [])
+
+  function handleNoteChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const value = e.target.value
+    setNote(value)
+    sessionStorage.setItem('petbuddy_checkout_note', value)
+  }
 
   return (
     <section className='rounded-xl border border-border/60 bg-card p-6 shadow-sm md:p-8'>
@@ -13,6 +25,8 @@ export function CheckoutNote() {
       </div>
       <textarea
         name='note'
+        value={note}
+        onChange={handleNoteChange}
         className='w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-foreground transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
         placeholder={t('checkout.note.placeholder')}
         rows={3}

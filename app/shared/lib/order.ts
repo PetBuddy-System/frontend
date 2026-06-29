@@ -49,11 +49,12 @@ export interface PageableParams {
 
 
 export interface CreateOrderRequest {
-  userName: string
+  recipientName: string
   phoneNumber: string
   address: string
   note?: string
   voucherCode?: string
+  paymentMethod?: 'CASH' | 'CARD'
 }
 
 export interface OrderDetailResponse {
@@ -71,17 +72,21 @@ export interface OrderDetailResponse {
 export interface OrderDetailFull {
   orderId: number
   orderCode: string
-  status: string
-  finalAmount: number
-  createdAt: string
-  updatedAt?: string
-  orderDetails: OrderDetailResponse[]
-  userName?: string
   recipientName?: string
   phoneNumber?: string
   address?: string
+  status: string
+  finalAmount: number
+  clientSecret?: string
+  createdAt: string
+  updatedAt?: string
+  orderDetails: OrderDetailResponse[]
+  // extra fields stored in mock (not in Java DTO) for backward compat
+  userName?: string
   note?: string
   voucherCode?: string
+  paymentMethod?: 'CASH' | 'CARD'
+  paymentStatus?: 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | 'PROCESSING'
 }
 
 export interface OrderResponse {
@@ -92,7 +97,10 @@ export interface OrderResponse {
   address?: string
   status: OrderStatus
   finalAmount: number
+  clientSecret?: string
   createdAt: string
   updatedAt?: string
   orderDetails?: OrderDetailResponse[]
+  paymentMethod?: 'CASH' | 'CARD'
+  paymentStatus?: 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | 'PROCESSING'
 }

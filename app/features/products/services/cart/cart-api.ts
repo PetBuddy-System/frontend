@@ -19,7 +19,7 @@ function isLoggedIn(): boolean {
 
 export async function getCartApi(): Promise<CartResponse> {
   if (!isLoggedIn()) {
-    return { userId: '', items: guestCart.getAll() }
+    return { userId: '', cartItems: guestCart.getAll() }
   }
   const response = await customFetch<ApiResponse<CartResponse>>({
     url: CART_BASE_URL,
@@ -66,13 +66,13 @@ export async function updateCartItemApi(
   })
 }
 
-export async function removeCartItemApi(productId: string): Promise<void> {
+export async function removeCartItemApi(cartItemId: string): Promise<void> {
   if (!isLoggedIn()) {
-    guestCart.remove(productId)
+    guestCart.remove(cartItemId)
     return
   }
   await customFetch<ApiResponse<void>>({
-    url: `${CART_BASE_URL}/items/${productId}`,
+    url: `${CART_BASE_URL}/items/${cartItemId}`,
     method: 'DELETE',
   })
 }

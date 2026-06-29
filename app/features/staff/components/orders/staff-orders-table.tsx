@@ -81,6 +81,43 @@ function renderStatusBadge(status: string) {
     }
 }
 
+function renderPaymentStatusBadge(status?: string) {
+    const val = status || 'PENDING'
+    switch (val) {
+        case 'PAID':
+            return (
+                <span className='inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-bold uppercase text-green-700 dark:bg-green-950/35 dark:text-green-400 border border-green-200/30 w-fit'>
+                    Đã thanh toán
+                </span>
+            )
+        case 'FAILED':
+            return (
+                <span className='inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-bold uppercase text-red-700 dark:bg-red-950/35 dark:text-red-400 border border-red-200/30 w-fit'>
+                    Thất bại
+                </span>
+            )
+        case 'CANCELLED':
+        case 'CANCELED':
+            return (
+                <span className='inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase text-gray-600 dark:bg-gray-800 dark:text-gray-400 border border-gray-200/30 w-fit'>
+                    Đã hủy
+                </span>
+            )
+        case 'PROCESSING':
+            return (
+                <span className='inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase text-blue-700 dark:bg-blue-950/35 dark:text-blue-400 border border-blue-200/30 w-fit animate-pulse'>
+                    Đang xử lý
+                </span>
+            )
+        default:
+            return (
+                <span className='inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase text-amber-700 dark:bg-amber-950/35 dark:text-amber-400 border border-amber-200/30 w-fit'>
+                    Chưa thanh toán
+                </span>
+            )
+    }
+}
+
 interface StaffOrdersTableProps {
     orders: OrderResponse[]
     isLoading: boolean
@@ -164,10 +201,10 @@ export function StaffOrdersTable({
                         <tr>
                             <th className='px-6 py-4'>Mã đơn hàng</th>
                             <th className='px-6 py-4'>Khách hàng</th>
-                            <th className='px-6 py-4'>Số điện thoại</th>
                             <th className='px-6 py-4'>Ngày đặt</th>
                             <th className='px-6 py-4'>Tổng tiền</th>
-                            <th className='px-6 py-4'>Trạng thái</th>
+                            <th className='px-6 py-4'>Thanh toán</th>
+                            <th className='px-6 py-4'>Trạng thái đơn</th>
                             <th className='px-6 py-4 text-right'>Thao tác</th>
                         </tr>
                     </thead>
@@ -193,12 +230,26 @@ export function StaffOrdersTable({
                                             <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 font-bold text-primary text-xs uppercase'>
                                                 {order.recipientName?.slice(0, 2) || 'KH'}
                                             </div>
-                                            <p className='font-semibold text-foreground'>{order.recipientName || '—'}</p>
+                                            <div>
+                                                <p className='font-semibold text-foreground'>{order.recipientName || '—'}</p>
+                                                <p className='text-xs text-muted-foreground'>{order.phoneNumber || '—'}</p>
+                                            </div>
                                         </div>
                                     </td>
-                                    <td className='px-6 py-4 text-muted-foreground'>{order.phoneNumber || '—'}</td>
                                     <td className='px-6 py-4 text-muted-foreground'>{formatDate(order.createdAt)}</td>
                                     <td className='px-6 py-4 font-bold text-foreground'>{formatPrice(order.finalAmount)}</td>
+                                    <td className='px-6 py-4'>
+                                        <div className='flex flex-col gap-1'>
+                                            <span className='inline-flex items-center gap-1 text-xs font-semibold text-foreground'>
+                                                <MaterialIcon
+                                                    name={order.paymentMethod === 'CARD' ? 'credit_card' : 'payments'}
+                                                    className='text-[16px] text-muted-foreground'
+                                                />
+                                                {order.paymentMethod === 'CARD' ? 'Thẻ (Stripe)' : 'Tiền mặt (COD)'}
+                                            </span>
+                                            {renderPaymentStatusBadge(order.paymentStatus)}
+                                        </div>
+                                    </td>
                                     <td className='px-6 py-4'>{renderStatusBadge(order.status)}</td>
                                     <td className='px-6 py-4 text-right'>
                                         <div className='flex items-center justify-end gap-2 flex-wrap'>
@@ -211,12 +262,14 @@ export function StaffOrdersTable({
 
                                             {order.status === 'PENDING' && (
                                                 <>
-                                                    <button
-                                                        onClick={() => onTransition(order.orderId, 'CONFIRMED')}
-                                                        className='rounded-xl bg-blue-600 hover:bg-blue-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
-                                                    >
-                                                        Duyệt
-                                                    </button>
+                                                    {((order.paymentMethod === 'CARD' && order.paymentStatus === 'PAID') || order.paymentMethod !== 'CARD') && (
+                                                        <button
+                                                            onClick={() => onTransition(order.orderId, 'CONFIRMED')}
+                                                            className='rounded-xl bg-blue-600 hover:bg-blue-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
+                                                        >
+                                                            Duyệt
+                                                        </button>
+                                                    )}
                                                     <button
                                                         onClick={() => onTransition(order.orderId, 'CANCELED')}
                                                         className='rounded-xl bg-red-600 hover:bg-red-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'

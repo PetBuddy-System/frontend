@@ -267,9 +267,6 @@ useEffect(() => {
       </div>
 
       <div className='mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground'>
-        {/* <span>Tọa độ đã chọn:</span>
-        <span className='font-semibold text-foreground'>{currentCoords.lat.toFixed(6)}, {currentCoords.lng.toFixed(6)}</span>
-        <span className='hidden sm:inline'>|</span> */}
         <span>(Nhấn đúp hoặc kéo thả ghim đỏ để chọn vị trí chính xác)</span>
       </div>
     </div>

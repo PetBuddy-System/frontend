@@ -9,7 +9,7 @@ import {
   CheckoutOrderSummary,
   type CheckoutOrderItem,
 } from '../components/checkout/checkout-order-summary'
-import { CheckoutPaymentMethods } from '../components/checkout/checkout-payment-methods'
+import { CheckoutPaymentMethods, type SelectedPaymentMethod } from '../components/checkout/checkout-payment-methods'
 import { CheckoutShippingForm } from '../components/checkout/checkout-shipping-form'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
 import { createOrderApi } from '../services/order'
@@ -18,6 +18,8 @@ import { getCartApi } from '../services/cart'
 import type { CartItemResponse } from '~/shared/lib/cart'
 import { MaterialIcon } from '~/shared/ui'
 import { readStorage } from '~/shared/lib/storage'
+import { useAuth } from '~/providers/auth-provider'
+import { getPaymentByOrderIdApi } from '../services/payment/payment-api'
 
 const SESSION_KEY_ADDRESS = 'petbuddy_checkout_address'
 const SESSION_KEY_LAT = 'petbuddy_checkout_lat'
@@ -40,6 +42,7 @@ function getFormString(formData: FormData, key: string) {
 export function CheckoutPage() {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -53,6 +56,9 @@ export function CheckoutPage() {
   const [voucherCode, setVoucherCode] = useState('')
   const [voucherName, setVoucherName] = useState('')
   const [voucherDiscount, setVoucherDiscount] = useState(0)
+
+  // State phương thức thanh toán (mặc định là CASH/COD)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<SelectedPaymentMethod>('CASH')
 
   function syncFromSession() {
     setSelectedAddress(sessionStorage.getItem(SESSION_KEY_ADDRESS) ?? '')
@@ -79,7 +85,7 @@ export function CheckoutPage() {
   const fetchCart = useCallback(async () => {
     try {
       const cart = await getCartApi()
-      const items = cart.items ?? []
+      const items = cart.cartItems ?? []
       setRawCartItems(items)
       setCartItems(
         items.map((item) => ({
@@ -127,27 +133,27 @@ export function CheckoutPage() {
     }
 
     const request: CreateOrderRequest = {
-      userName: getFormString(formData, 'userName'),
+      recipientName: getFormString(formData, 'recipientName'),
       phoneNumber: getFormString(formData, 'phoneNumber'),
       address: finalAddress,
       note: getFormString(formData, 'note') || undefined,
       voucherCode: voucherCode || undefined,
-      // items: rawCartItems.map((item) => ({
-      //   productId: item.productId,
-      //   price: item.price,
-      //   quantity: item.quantity,
-      // })),
+      paymentMethod: selectedPaymentMethod,
     }
 
     try {
       const response = await createOrderApi(request)
+      const orderId = response.data?.orderId
 
-      const paymentMethodKey = getFormString(formData, 'payment') || 'cod'
-      const paymentMethodLabel = paymentMethodKey === 'momo' ? 'Ví MoMo' : 'Tiền mặt (COD)'
+      if (!orderId) {
+        throw new Error('Không nhận được mã đơn hàng từ hệ thống.')
+      }
+
+      const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế / Stripe' : 'Tiền mặt (COD)'
 
       const lastOrderDetails = {
-        orderCode: response.data?.orderCode || `PET-${response.data?.orderId || 'SUCCESS'}`,
-        userName: request.userName,
+        orderCode: response.data?.orderCode || `PET-${orderId}`,
+        recipientName: request.recipientName,
         phoneNumber: request.phoneNumber,
         address: request.address,
         note: request.note,
@@ -176,10 +182,32 @@ export function CheckoutPage() {
         SESSION_KEY_VOUCHER_CODE, SESSION_KEY_VOUCHER_NAME, SESSION_KEY_VOUCHER_DISCOUNT,
         'petbuddy_checkout_name', 'petbuddy_checkout_phone',
         'petbuddy_checkout_subtotal', 'petbuddy_checkout_distance',
+        'petbuddy_checkout_note',
       ]
       keysToRemove.forEach((k) => sessionStorage.removeItem(k))
+      if (selectedPaymentMethod === 'CARD') {
+        let clientSecret = response.data?.clientSecret || ''
 
-      navigate('/order-success')
+        if (!clientSecret) {
+          try {
+            const paymentRes = await getPaymentByOrderIdApi(orderId)
+            clientSecret = paymentRes.data?.stripeClientSecret || paymentRes.data?.clientSecret || ''
+          } catch (payErr) {
+            console.error('Lỗi lấy thông tin PaymentIntent:', payErr)
+          }
+        }
+
+        navigate('/payment', {
+          state: {
+            orderId,
+            clientSecret,
+            amount: lastOrderDetails.finalAmount,
+          }
+        })
+      } else {
+        // Tiền mặt (COD) -> Hiện luôn là đặt hàng thành công
+        navigate('/order-success')
+      }
     } catch (error: unknown) {
       setErrorMessage(error instanceof Error ? error.message : t('checkout.createError'))
     } finally {
@@ -220,8 +248,15 @@ export function CheckoutPage() {
               </div>
             )}
 
-            <CheckoutShippingForm addressValue={selectedAddress} />
-            <CheckoutPaymentMethods />
+            {/* Điền tự động tên từ tài khoản đã login qua prop defaultName */}
+            <CheckoutShippingForm addressValue={selectedAddress} defaultName={user?.fullName} />
+            
+            {/* Chọn phương thức thanh toán (controlled) */}
+            <CheckoutPaymentMethods
+              selectedMethod={selectedPaymentMethod}
+              onMethodChange={setSelectedPaymentMethod}
+            />
+            
             <CheckoutNote />
           </div>
 

@@ -5,17 +5,25 @@ import { MaterialIcon } from '~/shared/ui'
 
 export interface CheckoutShippingFormProps {
   addressValue: string
+  defaultName?: string
 }
 
-export function CheckoutShippingForm({ addressValue }: CheckoutShippingFormProps) {
+export function CheckoutShippingForm({ addressValue, defaultName }: CheckoutShippingFormProps) {
   const navigate = useNavigate()
   const [savedName, setSavedName] = useState('')
   const [savedPhone, setSavedPhone] = useState('')
 
   useEffect(() => {
-    setSavedName(sessionStorage.getItem('petbuddy_checkout_name') ?? '')
+    // Ưu tiên: sessionStorage → defaultName từ tài khoản đăng nhập
+    const storedName = sessionStorage.getItem('petbuddy_checkout_name')
+    if (storedName) {
+      setSavedName(storedName)
+    } else if (defaultName) {
+      setSavedName(defaultName)
+      sessionStorage.setItem('petbuddy_checkout_name', defaultName)
+    }
     setSavedPhone(sessionStorage.getItem('petbuddy_checkout_phone') ?? '')
-  }, [])
+  }, [defaultName])
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     sessionStorage.setItem('petbuddy_checkout_name', e.target.value)

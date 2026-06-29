@@ -18,6 +18,7 @@ import type { RequestHandler } from 'msw'
 import { exampleHandlers } from './example.handler'
 import { shippingHandlers } from './shipping.handler'
 import { orderHandlers } from './order.handler'
+import { cartHandlers } from './cart.handler'
 
 // ─── Orval generated handlers (uncomment khi có swagger) ──────────────────────
 // import { getCoursesHandlers } from "~/api/operations/course-endpoints/course-endpoints.msw";
@@ -27,7 +28,8 @@ import { orderHandlers } from './order.handler'
 export const handlers: RequestHandler[] = [
   ...exampleHandlers,
   ...shippingHandlers,
-  ...orderHandlers
+  ...orderHandlers,
+  ...cartHandlers,
 
   // ...getCoursesHandlers(),
   // ...getUsersHandlers(),

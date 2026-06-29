@@ -1,7 +1,7 @@
-// app/shared/components/order-detail-modal.tsx
 import { useState, useEffect } from 'react'
 import { fetchOrderDetailApi } from '~/features/profile/services/order/order-api'
 import type { OrderDetailFull } from '~/shared/lib/order'
+import { MaterialIcon } from '~/shared/ui'
 
 interface OrderDetailModalProps {
   orderId: number
@@ -213,65 +213,98 @@ export function OrderDetailModal({ orderId, orderCode, isStaff, onClose }: Order
                 <div className="space-y-4">
                   {order.orderDetails?.length ? order.orderDetails.map((detail) => (
                     <div className="flex items-center gap-3 py-2">
-                    <img
-                      src={detail.productImage || ''}
-                      alt={detail.productName}
-                      className="w-50 h-50 object-cover rounded-lg bg-gray-200 flex-shrink-0"
-                      onError={(e) => {
-                        const target = e.currentTarget
-                        target.onerror = null
-                        target.src = '/placeholder-product.png'
-                      }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-gray-800 dark:text-slate-200 line-clamp-1">{detail.productName}</h4>
-                      <p className="text-xs text-gray-500 mt-0.5">Số lượng: {detail.quantity}</p>
+                      <img
+                        src={detail.productImage || ''}
+                        alt={detail.productName}
+                        className="w-50 h-50 object-cover rounded-lg bg-gray-200 flex-shrink-0"
+                        onError={(e) => {
+                          const target = e.currentTarget
+                          target.onerror = null
+                          target.src = '/placeholder-product.png'
+                        }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-medium text-gray-800 dark:text-slate-200 line-clamp-1">{detail.productName}</h4>
+                        <p className="text-xs text-gray-500 mt-0.5">Số lượng: {detail.quantity}</p>
+                      </div>
+                      <span className="text-sm font-semibold text-gray-900 dark:text-slate-100 flex-shrink-0">{formatPrice(detail.totalPrice)}</span>
                     </div>
-                    <span className="text-sm font-semibold text-gray-900 dark:text-slate-100 flex-shrink-0">{formatPrice(detail.totalPrice)}</span>
-                  </div>
                   )) : (
                     <p className="text-sm text-gray-400 dark:text-slate-500 text-center py-4">Không có sản phẩm nào.</p>
                   )}
                 </div>
               </section>
 
-              {/* Shipping Info */}
-              {/* Shipping Info */}
-<section className="space-y-6" data-purpose="additional-details">
-  <div className="p-4 bg-gray-50 dark:bg-slate-800/20 rounded-xl">
-    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Thông tin giao hàng</p>
-    <div className="space-y-2">
-      {recipientName && (
-        <div className="flex items-center gap-2">
-          <svg className="h-4 w-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-          </svg>
-          <p className="text-sm font-semibold text-gray-800 dark:text-slate-200">{recipientName}</p>
-        </div>
-      )}
-      {order.phoneNumber && (
-        <div className="flex items-center gap-2">
-          <svg className="h-4 w-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-          </svg>
-          <p className="text-sm text-gray-600 dark:text-slate-400">{order.phoneNumber}</p>
-        </div>
-      )}
-      {order.address && (
-        <div className="flex items-start gap-2">
-          <svg className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          <p className="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">{order.address}</p>
-        </div>
-      )}
-      {order.note && (
-        <p className="text-sm text-gray-500 dark:text-slate-500 italic pl-6">Ghi chú: {order.note}</p>
-      )}
-    </div>
-  </div>
-</section>
+              {/* Shipping & Payment Info */}
+              <section className="grid grid-cols-1 md:grid-cols-2 gap-4" data-purpose="additional-details">
+                {/* Shipping Info */}
+                <div className="p-4 bg-gray-50 dark:bg-slate-800/20 rounded-xl">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Thông tin giao hàng</p>
+                  <div className="space-y-2">
+                    {recipientName && (
+                      <div className="flex items-center gap-2">
+                        <svg className="h-4 w-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <p className="text-sm font-semibold text-gray-800 dark:text-slate-200">{recipientName}</p>
+                      </div>
+                    )}
+                    {order.phoneNumber && (
+                      <div className="flex items-center gap-2">
+                        <svg className="h-4 w-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                        <p className="text-sm text-gray-600 dark:text-slate-400">{order.phoneNumber}</p>
+                      </div>
+                    )}
+                    {order.address && (
+                      <div className="flex items-start gap-2">
+                        <svg className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <p className="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">{order.address}</p>
+                      </div>
+                    )}
+                    {order.note && (
+                      <p className="text-sm text-gray-500 dark:text-slate-500 italic pl-6">Ghi chú: {order.note}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Payment Info */}
+                <div className="p-4 bg-gray-50 dark:bg-slate-800/20 rounded-xl">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Thông tin thanh toán</p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <MaterialIcon
+                        name={order.paymentMethod === 'CARD' ? 'credit_card' : 'payments'}
+                        className="text-blue-500 text-[18px] flex-shrink-0"
+                      />
+                      <p className="text-sm font-semibold text-gray-800 dark:text-slate-200">
+                        {order.paymentMethod === 'CARD' ? 'Thẻ quốc tế / Stripe' : 'Tiền mặt (COD)'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 pl-6">
+                      <span className="text-xs text-gray-500">Trạng thái:</span>
+                      {(() => {
+                        switch (order.paymentStatus) {
+                          case 'PAID':
+                            return <span className="text-xs font-bold text-green-600 dark:text-green-400 uppercase">Đã thanh toán</span>
+                          case 'FAILED':
+                            return <span className="text-xs font-bold text-red-600 dark:text-red-400 uppercase">Thất bại</span>
+                          case 'CANCELLED':
+                            return <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Đã hủy</span>
+                          case 'PROCESSING':
+                            return <span className="text-xs font-bold text-blue-500 animate-pulse uppercase">Đang xử lý</span>
+                          default:
+                            return <span className="text-xs font-bold text-amber-500 uppercase">Chưa thanh toán</span>
+                        }
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              </section>
 
               {/* Payment Summary */}
               <section className="space-y-3 pt-6 border-t border-dashed border-gray-200 dark:border-slate-800">

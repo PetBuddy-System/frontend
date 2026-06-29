@@ -24,6 +24,8 @@ export interface MockOrder {
   note?: string
   voucherCode?: string
   items: MockOrderItem[]
+  paymentMethod?: string
+  paymentStatus?: string
 }
 
 const INITIAL_ORDERS: MockOrder[] = [
@@ -36,6 +38,8 @@ const INITIAL_ORDERS: MockOrder[] = [
     userName: 'Nguyễn Hoàng Nam',
     phoneNumber: '0901234567',
     address: '123 Đường Lê Lợi, Phường Bến Thành, Quận 1, TP. Hồ Chí Minh',
+    paymentMethod: 'CARD',
+    paymentStatus: 'PROCESSING',
     items: [
       {
         productId: 'prod-1',
@@ -62,6 +66,8 @@ const INITIAL_ORDERS: MockOrder[] = [
     userName: 'Lê Thu Trang',
     phoneNumber: '0912345678',
     address: '456 Đường Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh',
+    paymentMethod: 'CASH',
+    paymentStatus: 'PENDING',
     items: [
       {
         productId: 'prod-3',
@@ -81,6 +87,8 @@ const INITIAL_ORDERS: MockOrder[] = [
     userName: 'Phạm Văn Mạnh',
     phoneNumber: '0987654321',
     address: '789 Đường Láng, Quận Đống Đa, Hà Nội',
+    paymentMethod: 'CASH',
+    paymentStatus: 'PENDING',
     items: [
       {
         productId: 'prod-4',
@@ -107,6 +115,8 @@ const INITIAL_ORDERS: MockOrder[] = [
     userName: 'Trần Diệu Linh',
     phoneNumber: '0976543210',
     address: '12 Đường Trần Phú, Quận Hải Châu, Đà Nẵng',
+    paymentMethod: 'CARD',
+    paymentStatus: 'PAID',
     items: [
       {
         productId: 'prod-6',
@@ -126,6 +136,8 @@ const INITIAL_ORDERS: MockOrder[] = [
     userName: 'Hoàng Thanh Tùng',
     phoneNumber: '0965432109',
     address: '45 Đường Cách Mạng Tháng Tám, Quận 3, TP. Hồ Chí Minh',
+    paymentMethod: 'CARD',
+    paymentStatus: 'PAID',
     items: [
       {
         productId: 'prod-7',
@@ -152,6 +164,8 @@ const INITIAL_ORDERS: MockOrder[] = [
     userName: 'Đỗ Bảo Ngọc',
     phoneNumber: '0954321098',
     address: '89 Đường Hoàng Diệu, Quận Phú Nhuận, TP. Hồ Chí Minh',
+    paymentMethod: 'CARD',
+    paymentStatus: 'FAILED',
     items: [
       {
         productId: 'prod-5',
@@ -164,7 +178,7 @@ const INITIAL_ORDERS: MockOrder[] = [
   }
 ]
 
-function getStoredOrders(): MockOrder[] {
+export function getStoredOrders(): MockOrder[] {
   if (typeof window === 'undefined') return INITIAL_ORDERS
   const raw = localStorage.getItem(LOCAL_STORAGE_ORDERS_KEY)
   if (!raw) {
@@ -178,7 +192,7 @@ function getStoredOrders(): MockOrder[] {
   }
 }
 
-function saveOrders(orders: MockOrder[]) {
+export function saveOrders(orders: MockOrder[]) {
   if (typeof window !== 'undefined') {
     localStorage.setItem(LOCAL_STORAGE_ORDERS_KEY, JSON.stringify(orders))
   }
@@ -194,17 +208,18 @@ export const orderHandlers = [
         address: string
         note?: string
         voucherCode?: string
-        items: { productId: string; price: number; quantity: number }[]
+        items?: { productId: string; price: number; quantity: number }[]
+        paymentMethod?: 'CASH' | 'CARD'
       }
 
       const orders = getStoredOrders()
       const newId = orders.length > 0 ? Math.max(...orders.map((o) => o.orderId)) + 1 : 2001
       const orderCode = `PET-${newId}`
 
-      // For mock items, we need name and image. We can fetch names from local products if we had a catalog,
-      // or we can generic-label them based on what was passed or standard placeholders.
-      // Let's create mock descriptions for them
-      const items: MockOrderItem[] = body.items.map((item, idx) => ({
+      // For mock items, we need name and image. If not provided, fallback to dummy items.
+      const items: MockOrderItem[] = (body.items || [
+        { productId: 'prod-1', price: 250000, quantity: 1 }
+      ]).map((item, idx) => ({
         productId: item.productId,
         name: `Sản phẩm PetCare #${idx + 1}`,
         price: item.price,
@@ -218,6 +233,10 @@ export const orderHandlers = [
       const discount = body.voucherCode ? 50000 : 0
       const finalAmount = Math.max(0, subtotal + shippingFee - discount)
 
+      const payMethod = body.paymentMethod || 'CASH'
+      // Nếu là thẻ (Stripe), ban đầu trạng thái thanh toán là PROCESSING
+      const payStatus = payMethod === 'CARD' ? 'PROCESSING' : 'PENDING'
+
       const newOrder: MockOrder = {
         orderId: newId,
         orderCode,
@@ -229,6 +248,8 @@ export const orderHandlers = [
         address: body.address,
         note: body.note,
         voucherCode: body.voucherCode,
+        paymentMethod: payMethod,
+        paymentStatus: payStatus,
         items
       }
 
@@ -315,7 +336,9 @@ export const orderHandlers = [
       address: o.address,
       status: o.status,
       totalAmount: o.finalAmount, // Set totalAmount to the finalAmount (reduced/final price)
-      createdAt: o.createdAt
+      createdAt: o.createdAt,
+      paymentMethod: o.paymentMethod || 'CASH',
+      paymentStatus: o.paymentStatus || 'PENDING'
     }))
 
     return HttpResponse.json({
@@ -371,6 +394,8 @@ export const orderHandlers = [
         address: order.address,
         note: order.note,
         voucherCode: order.voucherCode,
+        paymentMethod: order.paymentMethod || 'CASH',
+        paymentStatus: order.paymentStatus || 'PENDING',
         // Java-compatible orderDetails list
         orderDetails: order.items.map((item, idx) => ({
           orderDetailId: order.orderId * 100 + idx,
@@ -415,7 +440,19 @@ export const orderHandlers = [
       }, { status: 404 })
     }
 
-    orders[orderIndex].status = status.toUpperCase()
+    const nextStatus = status.toUpperCase()
+    orders[orderIndex].status = nextStatus
+
+    // CASH: when staff confirms delivered (DELIVERED), payment status automatically updates to PAID
+    if (orders[orderIndex].paymentMethod === 'CASH' && nextStatus === 'DELIVERED') {
+      orders[orderIndex].paymentStatus = 'PAID'
+    }
+
+    // If staff cancels the order (CANCELED), payment status becomes CANCELLED
+    if (nextStatus === 'CANCELED') {
+      orders[orderIndex].paymentStatus = 'CANCELLED'
+    }
+
     saveOrders(orders)
 
     return HttpResponse.json({

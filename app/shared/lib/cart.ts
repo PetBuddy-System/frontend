@@ -15,7 +15,7 @@ export interface CartItemResponse {
 
 export interface CartResponse {
   userId: string
-  items: CartItemResponse[]
+  cartItems: CartItemResponse[]
 }
 
 export interface AddToCartRequest {

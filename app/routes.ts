@@ -25,6 +25,8 @@ export default [
     route('profile/services', 'routes/profile-services.tsx'),
     route('profile/returns', 'routes/profile-returns.tsx'),
     route('checkout', 'routes/checkout.tsx'),
+    route('payment', 'routes/payment.tsx'),
+    route('payment-failed', 'routes/payment-failed.tsx'),
     route('order', 'routes/order.tsx'),
     route('order/address', 'routes/order-address.tsx'),
     route('order/voucher', 'routes/order-voucher.tsx'),

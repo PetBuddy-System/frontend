@@ -407,15 +407,9 @@ export function AddressPickerPage() {
     )
     const data = await res.json()
     const addr = data?.address ?? {}
-    const fields = [
-      addr.city,
-      addr.state,
-      addr.province,
-      addr.county,
-      addr.municipality,
-    ]
-      .filter(Boolean)
-      .map((s: string) => s.toLowerCase())
+
+     const isoCode = addr['ISO3166-2-lvl4'] ?? ''
+    if (isoCode === 'VN-SG') return true
 
     const hcmcKeywords = [
       'hồ chí minh',
@@ -425,11 +419,22 @@ export function AddressPickerPage() {
       'tp hcm',
     ]
 
-    return fields.some((field) =>
-      hcmcKeywords.some((kw) => field.includes(kw))
-    )
+    const stateLevel = [addr.state, addr.province, addr.municipality]
+      .filter(Boolean)
+      .map((s: string) => s.toLowerCase())
+
+    if (stateLevel.some((f) => hcmcKeywords.some((kw) => f.includes(kw)))) {
+      return true
+    }
+
+    // Fallback: check city/county nếu state không có
+    const cityLevel = [addr.city, addr.county]
+      .filter(Boolean)
+      .map((s: string) => s.toLowerCase())
+
+    return cityLevel.some((f) => hcmcKeywords.some((kw) => f.includes(kw)))
   } catch {
-    return true
+    return true // fail-open
   }
 }
 

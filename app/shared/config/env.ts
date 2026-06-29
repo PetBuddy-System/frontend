@@ -14,9 +14,12 @@ export interface ImportMetaEnv {
   readonly VITE_APP_ENV?: 'development' | 'staging' | 'production'
   /** "true" de bat MSW mock. Chi dung trong moi truong dev. */
   readonly VITE_ENABLE_MOCK?: string
+  // ─── Stripe ───────────────────────────────────────────────────────────────
+  readonly VITE_STRIPE_PK?: string
   // ─── API Paths ────────────────────────────────────────────────────────────
   readonly VITE_API_AUTH_PATH?: string
   readonly VITE_API_ORDERS_PATH?: string
+  readonly VITE_API_PAYMENTS_PATH?: string
   readonly VITE_API_PRODUCTS_PATH?: string
   readonly VITE_API_CATEGORIES_PATH?: string
   readonly VITE_API_CART_PATH?: string
@@ -37,9 +40,12 @@ export const env = {
   IS_DEV: import.meta.env.DEV,
   IS_PROD: import.meta.env.PROD,
   IS_SSR: import.meta.env.SSR,
+  // ─── Stripe ─────────────────────────────────────────────────────────────────
+  STRIPE_PK: import.meta.env.VITE_STRIPE_PK ?? '',
   // ─── API Paths ─────────────────────────────────────────────────────────────
   API_AUTH_PATH: import.meta.env.VITE_API_AUTH_PATH ?? '/api/auth',
   API_ORDERS_PATH: import.meta.env.VITE_API_ORDERS_PATH ?? '/api/orders',
+  API_PAYMENTS_PATH: import.meta.env.VITE_API_PAYMENTS_PATH ?? '/api/payments',
   API_PRODUCTS_PATH: import.meta.env.VITE_API_PRODUCTS_PATH ?? '/api/products',
   API_CATEGORIES_PATH: import.meta.env.VITE_API_CATEGORIES_PATH ?? '/api/categories',
   API_CART_PATH: import.meta.env.VITE_API_CART_PATH ?? '/api/cart',
