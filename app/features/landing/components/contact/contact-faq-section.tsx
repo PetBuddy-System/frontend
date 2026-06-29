@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
-const FAQ_ITEMS = ['booking', 'delivery', 'returns', 'loyalty', 'vet'] as const
+const FAQ_ITEMS = ['booking', 'delivery', 'returns', 'loyalty'] as const
 
 export function ContactFaqSection() {
   const { t } = useTranslation('landing')

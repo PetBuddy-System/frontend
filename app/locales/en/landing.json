@@ -69,36 +69,7 @@
   },
   "products": {
     "title": "Featured products",
-    "filters": {
-      "all": "All",
-      "food": "Food",
-      "accessories": "Accessories",
-      "toys": "Toys"
-    },
-    "badgeHot": "HOT",
-    "viewAll": "View all products",
-    "items": {
-      "royalCanin": {
-        "title": "Royal Canin Mini Puppy 2kg dry food",
-        "price": "350,000 VND",
-        "imageAlt": "Royal Canin dry food"
-      },
-      "ganador": {
-        "title": "Ganador Adult chicken flavor",
-        "price": "120,000 VND",
-        "imageAlt": "Ganador dry food"
-      },
-      "bone": {
-        "title": "Natural cowhide dental chew for medium dogs",
-        "price": "45,000 VND",
-        "imageAlt": "Cowhide chew"
-      },
-      "carrier": {
-        "title": "Airline pet carrier size M",
-        "price": "450,000 VND",
-        "imageAlt": "Pet carrier"
-      }
-    }
+    "viewAll": "View all products"
   },
   "trust": {
     "title": "Why choose Pet Store?",
@@ -137,7 +108,8 @@
     "policies": {
       "purchaseTab": "Purchase policy",
       "shippingTab": "Shipping policy",
-      "purchaseDescription": "At PetBuddy, we are committed to a safe, transparent shopping experience. Every food, accessory, and care item is reviewed carefully before reaching your pet, because we know pets are family.",
+      "returnTab": "Return policy",
+      "purchaseDescription": "At PetBuddy, we are committed to a safe, transparent shopping experience. Every food, accessory, and care item is reviewed carefully before reaching your pet.",
       "purchaseCards": {
         "verified": {
           "title": "Verified origins",
@@ -149,13 +121,21 @@
         },
         "support": {
           "title": "24/7 support",
-          "description": "Our team is ready to help you choose the right care for your pet."
+          "description": "Our team is ready to help you choose the right products and services."
         }
       },
+      "purchaseConditions": {
+        "title": "Return conditions",
+        "items": [
+          "Products with manufacturer defects",
+          "Products delivered incorrectly (wrong code, size, color, quantity)",
+          "Products damaged during shipping (dented, broken, torn packaging)",
+          "Products in original condition with receipt and tags"
+        ]
+      },
       "shippingHero": {
-        "title": "Inner HCM City free shipping",
-        "description": "Orders within central districts enjoy complimentary shipping from our team.",
-        "imageAlt": "PetBuddy delivery staff handing a package to a customer"
+        "title": "Free shipping in inner city",
+        "description": "Orders within central HCM City districts enjoy complimentary delivery."
       },
       "shippingItems": {
         "fast": {
@@ -164,12 +144,56 @@
         },
         "safe": {
           "title": "Safe packaging",
-          "description": "Careful packaging keeps food fresh and products protected during transit."
+          "description": "Careful packaging keeps products protected during transit."
         },
         "schedule": {
           "title": "Flexible schedule",
-          "description": "Choose a delivery window that fits your pet-parent routine."
+          "description": "Choose a delivery window that fits your routine."
         }
+      },
+      "return": {
+        "intro": "PetBuddy is committed to providing the best quality products for your pets. If any issues arise, we are ready to support returns and exchanges according to our policy.",
+        "applicable": {
+          "title": "Eligible for return",
+          "items": [
+            "Products with manufacturer defects",
+            "Products delivered incorrectly",
+            "Products damaged during shipping",
+            "Unused products in original condition"
+          ]
+        },
+        "notApplicable": {
+          "title": "Not eligible for return",
+          "items": [
+            "Used products or opened seals",
+            "Products damaged due to improper storage",
+            "Scratched or broken products from impact",
+            "Custom-made orders (special sizes, colors, personalized items)",
+            "Expired products"
+          ]
+        },
+        "fees": {
+          "title": "Return shipping fees",
+          "petbuddyFault": {
+            "title": "PetBuddy's fault",
+            "description": "PetBuddy covers outbound shipping. Customer pays return shipping."
+          },
+          "customerFault": {
+            "title": "Customer's fault",
+            "description": "Customer pays all shipping fees for both directions."
+          }
+        },
+        "process": {
+          "title": "Return process",
+          "steps": [
+            { "title": "Contact us", "description": "Email, call hotline, or chat directly on website" },
+            { "title": "Provide information", "description": "Order ID, photos/videos of defects, detailed description" },
+            { "title": "PetBuddy confirms", "description": "Response within 24-48 business hours" },
+            { "title": "Ship item back (if needed)", "description": "Send product to PetBuddy address" },
+            { "title": "Process completed", "description": "Exchange or refund within 2 business days" }
+          ]
+        },
+        "note": "Contact hotline 092 199 9319 or email hotro@petbuddy.vn for quick support."
       }
     },
     "faq": {
@@ -190,10 +214,6 @@
         "loyalty": {
           "question": "Do you have benefits for loyal customers?",
           "answer": "Yes. Our member rewards program lets you collect points for discount vouchers, gifts, and exclusive perks for returning customers."
-        },
-        "vet": {
-          "question": "Is there a veterinarian available at the store?",
-          "answer": "PetBuddy has advisors and veterinarians available for pet health guidance, and they support scheduled in-store basic care services."
         }
       }
     },
@@ -239,5 +259,8 @@
     "services": "Services",
     "cart": "Cart",
     "account": "Account"
+  },
+  "toast": {
+    "addedToCart": "Added to cart!"
   }
 }
