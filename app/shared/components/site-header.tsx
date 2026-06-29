@@ -5,6 +5,8 @@ import { useAuth } from '~/providers/auth-provider'
 import { getDashboardPathByRole } from '~/features/auth/services/auth'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
+import { LanguageSwitcher } from './language-switcher'
+import { ThemeToggle } from './theme-toggle'
 
 const NAV_ITEMS = [
   { key: 'store', href: '/' },
@@ -36,7 +38,9 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
   const { user, isAuthenticated, isLoading, logout } = useAuth()
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isLangOpen, setIsLangOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const langRef = useRef<HTMLDivElement>(null)
 
   // Đóng dropdown khi click bên ngoài
   useEffect(() => {
@@ -44,14 +48,17 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false)
       }
+      if (langRef.current && !langRef.current.contains(event.target as Node)) {
+        setIsLangOpen(false)
+      }
     }
 
-    if (isMenuOpen) {
+    if (isMenuOpen || isLangOpen) {
       document.addEventListener('mousedown', handleClickOutside)
     }
 
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [isMenuOpen])
+  }, [isMenuOpen, isLangOpen])
 
   async function handleLogout() {
     setIsMenuOpen(false)
@@ -88,10 +95,32 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
           ))}
         </nav>
 
-        <div className='flex items-center gap-2 text-primary'>
-          <a href='/cart' aria-label={t('actions.cart')} className='rounded-full p-2 transition-colors hover:bg-muted'>
-            <MaterialIcon name='shopping_cart' className='text-[22px]' />
-          </a>
+        <div className='flex items-center gap-2'>
+          {/* ─── Theme Toggle ─── */}
+          <ThemeToggle />
+
+          {/* ─── Language Switcher: Desktop pill / Mobile dropdown ─── */}
+          <div className='relative' ref={langRef}>
+            {/* Desktop: hiển thị inline pill */}
+            <div className='hidden md:block'>
+              <LanguageSwitcher />
+            </div>
+            {/* Mobile: hiển thị icon globe + dropdown */}
+            <button
+              type='button'
+              onClick={() => setIsLangOpen((prev) => !prev)}
+              aria-label={t('actions.language')}
+              aria-expanded={isLangOpen}
+              className='rounded-full p-2 transition-colors hover:bg-muted md:hidden'
+            >
+              <MaterialIcon name='language' className='text-[22px]' />
+            </button>
+            {isLangOpen && (
+              <div className='absolute right-0 top-full mt-2 w-40 overflow-hidden rounded-xl border border-border bg-card shadow-lg'>
+                <LanguageSwitcher />
+              </div>
+            )}
+          </div>
 
           {/* ─── Auth state: loading → skeleton, logged in → avatar, guest → login/register ─── */}
           {isLoading ? (
@@ -150,39 +179,53 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
               )}
             </div>
           ) : (
-            /* ── Chưa đăng nhập: icon placeholder + nút login/register ── */
-            <>
+            /* ── Chưa đăng nhập: nút login/register ── */
+            <div className='hidden items-center gap-2 md:flex'>
+              <a
+                href='/login'
+                className='rounded-full border border-primary px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground'
+              >
+                {t('actions.login')}
+              </a>
+              <a
+                href='/register'
+                className='rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90'
+              >
+                {t('actions.register')}
+              </a>
+            </div>
+          )}
+
+          {/* ─── Cart icon ─── */}
+          <a
+            href='/cart'
+            aria-label={t('actions.cart')}
+            className='inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted'
+          >
+            <MaterialIcon name='shopping_cart' className='text-[22px]' />
+          </a>
+
+          {/* ─── Mobile: Auth + Menu button ─── */}
+          <div className='flex items-center md:hidden'>
+            {/* Chưa đăng nhập: icon account */}
+            {!isLoading && !isAuthenticated && (
               <a
                 href='/login'
                 aria-label={t('actions.account')}
-                className='rounded-full p-2 transition-colors hover:bg-muted md:hidden'
+                className='rounded-full p-2 transition-colors hover:bg-muted'
               >
                 <MaterialIcon name='account_circle' className='text-[22px]' />
               </a>
-              <div className='hidden items-center gap-2 md:flex'>
-                <a
-                  href='/login'
-                  className='rounded-full border border-primary px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground'
-                >
-                  {t('actions.login')}
-                </a>
-                <a
-                  href='/register'
-                  className='rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:opacity-90'
-                >
-                  {t('actions.register')}
-                </a>
-              </div>
-            </>
-          )}
-
-          <button
-            type='button'
-            aria-label={t('actions.menu')}
-            className='rounded-full p-2 transition-colors hover:bg-muted md:hidden'
-          >
-            <MaterialIcon name='menu' className='text-[22px]' />
-          </button>
+            )}
+            {/* Menu button */}
+            <button
+              type='button'
+              aria-label={t('actions.menu')}
+              className='rounded-full p-2 transition-colors hover:bg-muted'
+            >
+              <MaterialIcon name='menu' className='text-[22px]' />
+            </button>
+          </div>
         </div>
       </div>
     </header>

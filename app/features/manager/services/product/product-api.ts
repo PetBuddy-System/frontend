@@ -110,3 +110,48 @@ export async function importProductsApi(
     data: formData
   })
 }
+
+export async function fetchProductStatsApi(
+  params: {
+    keyword?: string
+    categoryId?: number
+    status?: 'ACTIVE' | 'INACTIVE' | 'DELETED'
+  } = {}
+): Promise<{ inStock: number; lowStock: number; total: number }> {
+  const firstResponse = await fetchProductsManagementApi({
+    keyword: params.keyword,
+    categoryId: params.categoryId,
+    status: params.status,
+    page: 0,
+    size: 1,
+  })
+
+  if (!firstResponse.success) {
+    throw new Error(firstResponse.message || 'Failed to fetch product stats')
+  }
+
+  const totalElements = firstResponse.data.totalElements
+
+  const fullResponse = await fetchProductsManagementApi({
+    keyword: params.keyword,
+    categoryId: params.categoryId,
+    status: params.status,
+    page: 0,
+    size: totalElements,
+  })
+
+  if (!fullResponse.success) {
+    throw new Error(fullResponse.message || 'Failed to fetch product stats')
+  }
+
+  const allProducts = fullResponse.data.content
+
+  const inStock = allProducts.filter(p => p.totalStock > 0).length
+  const lowStock = allProducts.filter(p => p.totalStock > 0 && p.totalStock <= 5).length
+
+  return {
+    total: totalElements,
+    inStock,
+    lowStock
+  }
+}

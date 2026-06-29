@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 
@@ -275,10 +277,7 @@ export function AddressPickerPage() {
 
     mapInstanceRef.current = map
     markerRef.current = marker
-
-    // Luôn đồng bộ kích thước thật của khung chứa với Leaflet, tránh tình
-    // trạng map bị "tràn" ra ngoài khung bo góc khi layout cha thay đổi
-    // (resize cửa sổ, sidebar bật/tắt, font/scrollbar load xong, v.v.)
+    
     const resizeObserver = new ResizeObserver(() => {
       map.invalidateSize()
     })

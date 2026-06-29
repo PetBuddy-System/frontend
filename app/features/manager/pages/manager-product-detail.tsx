@@ -99,6 +99,23 @@ export function ManagerProductDetailPage() {
         }
     }
 
+    // ✅ Hàm lấy label status tiếng Việt
+    const getStatusLabel = (status: string) => {
+        switch (status) {
+            case 'ACTIVE':
+                return 'Đang hoạt động'
+            case 'INACTIVE':
+                return 'Ngừng kinh doanh'
+            case 'DELETED':
+                return 'Đã xóa'
+            default:
+                return status
+        }
+    }
+
+    // ✅ Kiểm tra sản phẩm đã xóa chưa
+    const isDeleted = product?.status === 'DELETED'
+
     return (
         <div className='flex h-screen overflow-hidden bg-background text-foreground'>
             <ManagerSidebar activeItem='products' />
@@ -138,20 +155,26 @@ export function ManagerProductDetailPage() {
                                         Quay lại danh sách
                                     </button>
                                     <div className='flex items-center gap-3 self-end sm:self-auto'>
-                                        <button
-                                            onClick={() => { setDeleteError(null); setIsDeleteConfirmOpen(true) }}
-                                            className='flex items-center gap-2 px-4 py-2 bg-card hover:bg-destructive/10 text-destructive border border-destructive/40 rounded-lg text-sm font-semibold transition-colors'
-                                        >
-                                            <MaterialIcon name='delete' className='text-lg' />
-                                            Xóa sản phẩm
-                                        </button>
-                                        <button
-                                            onClick={() => setIsEditModalOpen(true)}
-                                            className='flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold transition-colors shadow-sm'
-                                        >
-                                            <MaterialIcon name='edit' className='text-lg' />
-                                            Chỉnh sửa
-                                        </button>
+                                        {/* ✅ Chỉ hiển thị nút Xóa nếu chưa bị xóa */}
+                                        {!isDeleted && (
+                                            <button
+                                                onClick={() => { setDeleteError(null); setIsDeleteConfirmOpen(true) }}
+                                                className='flex items-center gap-2 px-4 py-2 bg-card hover:bg-destructive/10 text-destructive border border-destructive/40 rounded-lg text-sm font-semibold transition-colors'
+                                            >
+                                                <MaterialIcon name='delete' className='text-lg' />
+                                                Xóa sản phẩm
+                                            </button>
+                                        )}
+                                        {/* ✅ Chỉ hiển thị nút Chỉnh sửa nếu chưa bị xóa */}
+                                        {!isDeleted && (
+                                            <button
+                                                onClick={() => setIsEditModalOpen(true)}
+                                                className='flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold transition-colors shadow-sm'
+                                            >
+                                                <MaterialIcon name='edit' className='text-lg' />
+                                                Chỉnh sửa
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
@@ -169,9 +192,9 @@ export function ManagerProductDetailPage() {
                                         <div>
                                             <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Trạng thái</span>
                                             <div className='flex items-center gap-1.5 mt-0.5'>
-                                                <span className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-success' : 'bg-muted-foreground'}`}></span>
-                                                <span className={`text-sm font-semibold ${product.status === 'ACTIVE' ? 'text-success' : 'text-muted-foreground'}`}>
-                                                    {product.status}
+                                                <span className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-success' : product.status === 'DELETED' ? 'bg-destructive' : 'bg-muted-foreground'}`}></span>
+                                                <span className={`text-sm font-semibold ${product.status === 'ACTIVE' ? 'text-success' : product.status === 'DELETED' ? 'text-destructive' : 'text-muted-foreground'}`}>
+                                                    {getStatusLabel(product.status)}
                                                 </span>
                                             </div>
                                         </div>
@@ -261,9 +284,12 @@ export function ManagerProductDetailPage() {
                                     </div>
                                 </div>
 
-                                {/* Batch Management Section - Extracted Component */}
+                                {/* ✅ Batch Management Section - Luôn hiển thị, truyền isDeleted vào component */}
                                 {productId && (
-                                    <ManagerProductBatchSection productId={productId} />
+                                    <ManagerProductBatchSection
+                                        productId={productId}
+                                        isDeleted={isDeleted}
+                                    />
                                 )}
                             </>
                         )}

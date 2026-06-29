@@ -1,3 +1,4 @@
+// app/features/manager/pages/manager-products-page.tsx
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
@@ -10,9 +11,12 @@ import { ManagerProductsToolbar } from '../components/products/manager-products-
 import { ManagerCreateProductModal } from '../components/products/manager-create-product-modal'
 import { ManagerEditProductModal } from '../components/products/manager-edit-product-modal'
 import { ManagerImportProductsModal } from '../components/products/manager-import-products-modal'
+import { ManagerProductDeleteDialog } from '../components/products/manager-product-delete-dialog' // ✅ Import thêm
 import {
   fetchProductsManagementApi,
   fetchCategoriesApi,
+  fetchProductStatsApi, // ✅ Import thêm
+  updateProductApi, // ✅ Import thêm
 } from '../services/product'
 import type { ProductManagementItem, CategoryData } from '~/shared/lib/product'
 
@@ -34,9 +38,20 @@ export function ManagerProductsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Stats State
+  const [stats, setStats] = useState({ inStock: 0, lowStock: 0 })
+  const [isStatsLoading, setIsStatsLoading] = useState(true)
+
   // Edit & Refresh states
   const [editingProductId, setEditingProductId] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
+
+  // ✅ Delete Dialog states
+  const [deletingProductId, setDeletingProductId] = useState<string | null>(null)
+  const [deletingProductName, setDeletingProductName] = useState('')
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
+  const [isDeletingProduct, setIsDeletingProduct] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   // Modal states
   const [isImportModalOpen, setIsImportModalOpen] = useState(false)
@@ -69,6 +84,37 @@ export function ManagerProductsPage() {
     }, 400)
     return () => clearTimeout(handler)
   }, [searchInput])
+
+  // Fetch PRODUCT STATS
+  useEffect(() => {
+    let active = true
+    async function loadStats() {
+      setIsStatsLoading(true)
+      try {
+        const statsData = await fetchProductStatsApi({
+          keyword,
+          categoryId: category !== 'all' ? Number(category) : undefined,
+          status: status !== 'all' ? (status as 'ACTIVE' | 'INACTIVE' | 'DELETED') : undefined,
+        })
+        if (active) {
+          setStats({
+            inStock: statsData.inStock,
+            lowStock: statsData.lowStock
+          })
+        }
+      } catch (err) {
+        console.error('Failed to load stats:', err)
+      } finally {
+        if (active) {
+          setIsStatsLoading(false)
+        }
+      }
+    }
+    void loadStats()
+    return () => {
+      active = false
+    }
+  }, [keyword, category, status, refreshKey])
 
   // Fetch management products list
   useEffect(() => {
@@ -110,8 +156,45 @@ export function ManagerProductsPage() {
     setEditingProductId(productId)
   }
 
+  // ✅ Xử lý mở dialog xóa
   const handleDelete = (productId: string) => {
-    console.log('Delete product:', productId)
+    const product = products.find(p => p.productId === productId)
+    if (product) {
+      setDeletingProductId(productId)
+      setDeletingProductName(product.name)
+      setIsDeleteConfirmOpen(true)
+      setDeleteError(null)
+    }
+  }
+
+  // ✅ Xử lý xóa sản phẩm (soft delete)
+  const handleDeleteProduct = async () => {
+    if (!deletingProductId) return
+
+    setIsDeletingProduct(true)
+    setDeleteError(null)
+
+    try {
+      const product = products.find(p => p.productId === deletingProductId)
+      const response = await updateProductApi(deletingProductId, {
+        name: product?.name ?? '',
+        price: product?.price ?? 0,
+        brandName: product?.brandName ?? '',
+        status: 'DELETED'
+      })
+
+      if (response.success) {
+        setIsDeleteConfirmOpen(false)
+        setDeletingProductId(null)
+        setRefreshKey(prev => prev + 1) // Refresh lại danh sách
+      } else {
+        setDeleteError(response.message || 'Không thể xóa sản phẩm')
+      }
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi xóa sản phẩm')
+    } finally {
+      setIsDeletingProduct(false)
+    }
   }
 
   const handleView = (productId: string) => {
@@ -177,7 +260,13 @@ export function ManagerProductsPage() {
               </div>
             )}
 
-            <ManagerProductsStatsGrid />
+            <ManagerProductsStatsGrid
+              totalProducts={totalElements}
+              inStock={stats.inStock}
+              lowStock={stats.lowStock}
+              isLoading={isStatsLoading}
+            />
+
             <ManagerProductsToolbar
               categories={categories}
               selectedCategory={category}
@@ -191,6 +280,7 @@ export function ManagerProductsPage() {
                 setPage(0)
               }}
             />
+
             <ManagerProductsTable
               products={products}
               isLoading={isLoading}
@@ -199,7 +289,7 @@ export function ManagerProductsPage() {
               totalElements={totalElements}
               onPageChange={setPage}
               onEditClick={handleEdit}
-              onDeleteClick={handleDelete}
+              onDeleteClick={handleDelete} // ✅ Đã sửa
               onViewClick={handleView}
             />
 
@@ -227,6 +317,20 @@ export function ManagerProductsPage() {
                 onSuccess={handleCreateSuccess}
               />
             )}
+
+            {/* ✅ Delete Confirm Dialog */}
+            <ManagerProductDeleteDialog
+              productName={deletingProductName}
+              isOpen={isDeleteConfirmOpen}
+              isDeleting={isDeletingProduct}
+              error={deleteError}
+              onClose={() => {
+                setIsDeleteConfirmOpen(false)
+                setDeletingProductId(null)
+                setDeleteError(null)
+              }}
+              onConfirm={handleDeleteProduct}
+            />
           </div>
         </main>
       </div>

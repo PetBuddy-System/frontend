@@ -5,14 +5,15 @@ import type { CategoryData } from '~/shared/lib/product'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+// ✅ ĐÃ XÓA: totalStock, status
 interface CreateProductFormData {
   name: string
   price: number
   brandName: string
   categoryId: number | undefined
-  status: 'ACTIVE' | 'INACTIVE'
   description: string
-  totalStock: number
+  // ❌ totalStock: number
+  // ❌ status: 'ACTIVE' | 'INACTIVE'
 }
 
 interface ManagerCreateProductModalProps {
@@ -28,14 +29,15 @@ export function ManagerCreateProductModal({
   onClose,
   onSuccess
 }: ManagerCreateProductModalProps) {
+  // ✅ ĐÃ XÓA: totalStock, status
   const [form, setForm] = useState<CreateProductFormData>({
     name: '',
     price: 0,
     brandName: '',
     categoryId: undefined,
-    status: 'ACTIVE',
     description: '',
-    totalStock: 0
+    // ❌ totalStock: 0
+    // ❌ status: 'ACTIVE'
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
@@ -92,6 +94,7 @@ export function ManagerCreateProductModal({
     setError(null)
 
     try {
+      // ✅ Payload không có totalStock và status
       const response = await createProductApi(
         {
           name: form.name.trim(),
@@ -99,6 +102,8 @@ export function ManagerCreateProductModal({
           brandName: form.brandName.trim(),
           categoryId: Number(form.categoryId),
           description: form.description.trim()
+          // ❌ totalStock: form.totalStock,
+          // ❌ status: form.status,
         },
         images
       )
@@ -233,44 +238,7 @@ export function ManagerCreateProductModal({
               </div>
             </div>
 
-            {/* Stock & Status */}
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-              <div className='flex flex-col gap-1.5'>
-                <label htmlFor='create-stock' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                  Tồn kho
-                </label>
-                <input
-                  id='create-stock'
-                  type='number'
-                  min='0'
-                  value={form.totalStock}
-                  onChange={(e) => setForm((prev) => ({ ...prev, totalStock: Number(e.target.value) }))}
-                  className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
-                />
-              </div>
-
-              <div className='flex flex-col gap-1.5'>
-                <label htmlFor='create-status' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                  Trạng thái <span className='text-destructive'>*</span>
-                </label>
-                <div className='relative'>
-                  <select
-                    id='create-status'
-                    required
-                    value={form.status}
-                    onChange={(e) => setForm((prev) => ({ ...prev, status: e.target.value as 'ACTIVE' | 'INACTIVE' }))}
-                    className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
-                  >
-                    <option value='ACTIVE'>ACTIVE (Đang kinh doanh)</option>
-                    <option value='INACTIVE'>INACTIVE (Ngừng kinh doanh)</option>
-                  </select>
-                  <MaterialIcon
-                    name='expand_more'
-                    className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
-                  />
-                </div>
-              </div>
-            </div>
+            {/* ❌ ĐÃ XÓA - Stock & Status */}
 
             {/* Image Upload */}
             <div className='flex flex-col gap-3.5 border-t border-border pt-4'>

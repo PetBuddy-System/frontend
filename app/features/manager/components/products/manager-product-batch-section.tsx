@@ -14,6 +14,7 @@ import type {
 
 interface ManagerProductBatchSectionProps {
     productId: string
+    isDeleted?: boolean // ✅ Thêm prop này
     onRefresh?: () => void
 }
 
@@ -22,7 +23,10 @@ interface NewBatchRow {
     expiryDate: string
 }
 
-export function ManagerProductBatchSection({ productId }: ManagerProductBatchSectionProps) {
+export function ManagerProductBatchSection({
+    productId,
+    isDeleted = false // ✅ Mặc định false
+}: ManagerProductBatchSectionProps) {
     // ─── State ────────────────────────────────────────────
     const [batches, setBatches] = useState<ProductBatchItem[]>([])
     const [isLoading, setIsLoading] = useState(false)
@@ -235,101 +239,105 @@ export function ManagerProductBatchSection({ productId }: ManagerProductBatchSec
             </div>
 
             <div className='p-6 flex flex-col gap-8'>
-                {/* Sub-section 1: Nhập nhiều lô hàng */}
-                <div className='flex flex-col gap-4'>
-                    <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
-                        <h4 className='font-bold text-base text-foreground'>Nhập nhiều lô hàng</h4>
-                        <div className='flex items-center gap-3'>
-                            <button
-                                onClick={addBatchRow}
-                                disabled={isSubmitting}
-                                className='px-4 py-2 bg-card hover:bg-muted text-primary border border-border rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
-                            >
-                                <MaterialIcon name='add' className='text-lg' />
-                                Thêm dòng
-                            </button>
-                            <button
-                                onClick={handleSubmitBatches}
-                                disabled={isSubmitting}
-                                className='px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed'
-                            >
-                                {isSubmitting ? (
-                                    <MaterialIcon name='hourglass_empty' className='animate-spin text-lg' />
-                                ) : (
-                                    <MaterialIcon name='check_circle' className='text-lg' />
-                                )}
-                                Xác nhận nhập lô
-                            </button>
+                {/* ✅ Sub-section 1: Nhập nhiều lô hàng - ẨN KHI ĐÃ XÓA */}
+                {!isDeleted && (
+                    <>
+                        <div className='flex flex-col gap-4'>
+                            <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
+                                <h4 className='font-bold text-base text-foreground'>Nhập nhiều lô hàng</h4>
+                                <div className='flex items-center gap-3'>
+                                    <button
+                                        onClick={addBatchRow}
+                                        disabled={isSubmitting}
+                                        className='px-4 py-2 bg-card hover:bg-muted text-primary border border-border rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+                                    >
+                                        <MaterialIcon name='add' className='text-lg' />
+                                        Thêm dòng
+                                    </button>
+                                    <button
+                                        onClick={handleSubmitBatches}
+                                        disabled={isSubmitting}
+                                        className='px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed'
+                                    >
+                                        {isSubmitting ? (
+                                            <MaterialIcon name='hourglass_empty' className='animate-spin text-lg' />
+                                        ) : (
+                                            <MaterialIcon name='check_circle' className='text-lg' />
+                                        )}
+                                        Xác nhận nhập lô
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Intake Table */}
+                            <div className='border border-border rounded-xl overflow-hidden bg-card'>
+                                <table className='w-full text-sm border-collapse'>
+                                    <thead>
+                                        <tr className='bg-muted/40 border-b border-border'>
+                                            <th className='w-16 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>STT</th>
+                                            <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Số lượng</th>
+                                            <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Ngày hết hạn</th>
+                                            <th className='w-20 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className='divide-y divide-border'>
+                                        {newBatches.map((batch, index) => (
+                                            <tr key={index} className='hover:bg-muted/10'>
+                                                <td className='px-4 py-3 text-center font-medium text-muted-foreground'>{index + 1}</td>
+                                                <td className='px-4 py-3'>
+                                                    <input
+                                                        type='number'
+                                                        value={batch.quantity || ''}
+                                                        onChange={(e) => updateBatchRow(index, 'quantity', Number(e.target.value))}
+                                                        className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
+                                                        placeholder='0'
+                                                        disabled={isSubmitting}
+                                                    />
+                                                </td>
+                                                <td className='px-4 py-3'>
+                                                    <input
+                                                        type='date'
+                                                        value={batch.expiryDate}
+                                                        onChange={(e) => updateBatchRow(index, 'expiryDate', e.target.value)}
+                                                        className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
+                                                        disabled={isSubmitting}
+                                                    />
+                                                </td>
+                                                <td className='px-4 py-3 text-center'>
+                                                    <button
+                                                        onClick={() => removeBatchRow(index)}
+                                                        disabled={newBatches.length === 1 || isSubmitting}
+                                                        className='p-1.5 text-destructive hover:bg-destructive/10 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors'
+                                                    >
+                                                        <MaterialIcon name='delete_outline' className='text-lg' />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Error & Success Messages */}
+                            {submitError && (
+                                <div className='mt-2 flex items-center gap-2 text-destructive text-sm font-semibold bg-destructive/10 p-3 rounded-lg'>
+                                    <MaterialIcon name='error_outline' className='text-lg shrink-0' />
+                                    <span>{submitError}</span>
+                                </div>
+                            )}
+                            {showSuccess && (
+                                <div className='mt-2 flex items-center gap-2 text-success text-sm font-semibold bg-success/10 p-3 rounded-lg'>
+                                    <MaterialIcon name='check_circle_outline' className='text-lg shrink-0' />
+                                    <span>Nhập lô hàng thành công!</span>
+                                </div>
+                            )}
                         </div>
-                    </div>
 
-                    {/* Intake Table */}
-                    <div className='border border-border rounded-xl overflow-hidden bg-card'>
-                        <table className='w-full text-sm border-collapse'>
-                            <thead>
-                                <tr className='bg-muted/40 border-b border-border'>
-                                    <th className='w-16 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>STT</th>
-                                    <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Số lượng</th>
-                                    <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Ngày hết hạn</th>
-                                    <th className='w-20 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody className='divide-y divide-border'>
-                                {newBatches.map((batch, index) => (
-                                    <tr key={index} className='hover:bg-muted/10'>
-                                        <td className='px-4 py-3 text-center font-medium text-muted-foreground'>{index + 1}</td>
-                                        <td className='px-4 py-3'>
-                                            <input
-                                                type='number'
-                                                value={batch.quantity || ''}
-                                                onChange={(e) => updateBatchRow(index, 'quantity', Number(e.target.value))}
-                                                className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
-                                                placeholder='0'
-                                                disabled={isSubmitting}
-                                            />
-                                        </td>
-                                        <td className='px-4 py-3'>
-                                            <input
-                                                type='date'
-                                                value={batch.expiryDate}
-                                                onChange={(e) => updateBatchRow(index, 'expiryDate', e.target.value)}
-                                                className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
-                                                disabled={isSubmitting}
-                                            />
-                                        </td>
-                                        <td className='px-4 py-3 text-center'>
-                                            <button
-                                                onClick={() => removeBatchRow(index)}
-                                                disabled={newBatches.length === 1 || isSubmitting}
-                                                className='p-1.5 text-destructive hover:bg-destructive/10 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors'
-                                            >
-                                                <MaterialIcon name='delete_outline' className='text-lg' />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                        <hr className='border-border' />
+                    </>
+                )}
 
-                    {/* Error & Success Messages */}
-                    {submitError && (
-                        <div className='mt-2 flex items-center gap-2 text-destructive text-sm font-semibold bg-destructive/10 p-3 rounded-lg'>
-                            <MaterialIcon name='error_outline' className='text-lg shrink-0' />
-                            <span>{submitError}</span>
-                        </div>
-                    )}
-                    {showSuccess && (
-                        <div className='mt-2 flex items-center gap-2 text-success text-sm font-semibold bg-success/10 p-3 rounded-lg'>
-                            <MaterialIcon name='check_circle_outline' className='text-lg shrink-0' />
-                            <span>Nhập lô hàng thành công!</span>
-                        </div>
-                    )}
-                </div>
-
-                <hr className='border-border' />
-
-                {/* Sub-section 2: Danh sách lô hàng */}
+                {/* Sub-section 2: Danh sách lô hàng - Luôn hiển thị */}
                 <div className='flex flex-col gap-4'>
                     <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
                         <h4 className='font-bold text-base text-foreground'>Danh sách lô hàng ({totalElements})</h4>
@@ -455,48 +463,52 @@ export function ManagerProductBatchSection({ productId }: ManagerProductBatchSec
                                                             )}
                                                         </td>
                                                         <td className='px-4 py-3.5'>
-                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                                                                batch.status === 'ACTIVE'
-                                                                    ? 'bg-success/15 text-success'
-                                                                    : batch.status === 'DELETED'
+                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${batch.status === 'ACTIVE'
+                                                                ? 'bg-success/15 text-success'
+                                                                : batch.status === 'DELETED'
                                                                     ? 'bg-destructive/15 text-destructive'
                                                                     : 'bg-muted-foreground/15 text-muted-foreground'
-                                                            }`}>
+                                                                }`}>
                                                                 {batch.status}
                                                             </span>
                                                         </td>
                                                         <td className='px-4 py-3.5 text-center'>
                                                             <div className='flex items-center justify-center gap-1.5'>
+                                                                {/* ✅ Nút View - Luôn hiển thị */}
                                                                 <button
                                                                     onClick={() => toggleExpandBatch(batch.batchId)}
-                                                                    className={`p-1.5 rounded-lg transition-colors ${
-                                                                        isExpanded
-                                                                            ? 'text-primary bg-primary/10'
-                                                                            : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                                                                    }`}
+                                                                    className={`p-1.5 rounded-lg transition-colors ${isExpanded
+                                                                        ? 'text-primary bg-primary/10'
+                                                                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                                                                        }`}
                                                                     title='Chi tiết'
                                                                 >
                                                                     <MaterialIcon name='visibility' className='text-lg' />
                                                                 </button>
-                                                                <button
-                                                                    onClick={() => isEditing ? handleCancelEdit() : handleStartEdit(batch)}
-                                                                    className={`p-1.5 rounded-lg transition-colors ${
-                                                                        isEditing
-                                                                            ? 'text-primary bg-primary/10'
-                                                                            : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                                                                    }`}
-                                                                    title='Sửa'
-                                                                >
-                                                                    <MaterialIcon name='edit' className='text-lg' />
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handleDeleteBatch(batch.batchId)}
-                                                                    disabled={batch.status === 'DELETED'}
-                                                                    className='p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed'
-                                                                    title='Xóa'
-                                                                >
-                                                                    <MaterialIcon name='delete' className='text-lg' />
-                                                                </button>
+
+                                                                {/* ✅ Chỉ hiển thị Edit và Delete nếu chưa bị xóa */}
+                                                                {!isDeleted && (
+                                                                    <>
+                                                                        <button
+                                                                            onClick={() => isEditing ? handleCancelEdit() : handleStartEdit(batch)}
+                                                                            className={`p-1.5 rounded-lg transition-colors ${isEditing
+                                                                                ? 'text-primary bg-primary/10'
+                                                                                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                                                                                }`}
+                                                                            title='Sửa'
+                                                                        >
+                                                                            <MaterialIcon name='edit' className='text-lg' />
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => handleDeleteBatch(batch.batchId)}
+                                                                            disabled={batch.status === 'DELETED'}
+                                                                            className='p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed'
+                                                                            title='Xóa'
+                                                                        >
+                                                                            <MaterialIcon name='delete' className='text-lg' />
+                                                                        </button>
+                                                                    </>
+                                                                )}
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -528,8 +540,8 @@ export function ManagerProductBatchSection({ productId }: ManagerProductBatchSec
                                                         </tr>
                                                     )}
 
-                                                    {/* Inline edit form row */}
-                                                    {isEditing && (
+                                                    {/* Inline edit form row - Chỉ hiển thị khi chưa xóa */}
+                                                    {isEditing && !isDeleted && (
                                                         <tr className='bg-primary/5 border-b border-border'>
                                                             <td colSpan={7} className='px-6 py-4'>
                                                                 <div className='flex flex-col gap-3'>
@@ -639,4 +651,4 @@ export function ManagerProductBatchSection({ productId }: ManagerProductBatchSec
             </div>
         </div>
     )
-}
+}   

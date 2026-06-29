@@ -1,15 +1,27 @@
+// app/features/manager/components/products/manager-products-stats-grid.tsx
 import { useTranslation } from 'react-i18next'
-
 import { MaterialIcon } from '~/shared/ui'
 
-const PRODUCT_STATS = [
-  { key: 'total', icon: 'inventory', value: '156' },
-  { key: 'available', icon: 'check_circle', value: '142' },
-  { key: 'lowStock', icon: 'warning', value: '14' }
-] as const
+interface ManagerProductsStatsGridProps {
+  totalProducts: number
+  inStock: number
+  lowStock: number
+  isLoading?: boolean
+}
 
-export function ManagerProductsStatsGrid() {
+export function ManagerProductsStatsGrid({
+  totalProducts,
+  inStock,
+  lowStock,
+  isLoading = false
+}: ManagerProductsStatsGridProps) {
   const { t } = useTranslation('manager')
+
+  const PRODUCT_STATS = [
+    { key: 'total', icon: 'inventory', value: totalProducts },
+    { key: 'available', icon: 'check_circle', value: inStock },
+    { key: 'lowStock', icon: 'warning', value: lowStock }
+  ] as const
 
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-3'>
@@ -22,7 +34,9 @@ export function ManagerProductsStatsGrid() {
             <p className='text-xs font-bold uppercase tracking-wide text-muted-foreground'>
               {t(`productManagement.stats.${stat.key}`)}
             </p>
-            <p className='mt-1 font-display text-3xl font-extrabold text-card-foreground'>{stat.value}</p>
+            <p className='mt-1 font-display text-3xl font-extrabold text-card-foreground'>
+              {isLoading ? '...' : stat.value.toLocaleString()}
+            </p>
           </div>
           <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-primary'>
             <MaterialIcon name={stat.icon} filled className='text-3xl' />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 import {
   fetchProductByIdApi,
@@ -13,6 +14,34 @@ export interface ManagerEditProductModalProps {
   categories: CategoryData[]
   onClose: () => void
   onSaveSuccess: () => void
+}
+
+// ✅ Hàm lấy label status tiếng Việt
+const getStatusLabel = (status: string) => {
+  switch (status) {
+    case 'ACTIVE':
+      return 'Đang hoạt động'
+    case 'INACTIVE':
+      return 'Ngừng kinh doanh'
+    case 'DELETED':
+      return 'Đã xóa'
+    default:
+      return status
+  }
+}
+
+// ✅ Hàm lấy màu cho status
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'ACTIVE':
+      return 'bg-success/15 text-success'
+    case 'INACTIVE':
+      return 'bg-warning/15 text-warning'
+    case 'DELETED':
+      return 'bg-destructive/15 text-destructive'
+    default:
+      return 'bg-muted/15 text-muted-foreground'
+  }
 }
 
 export function ManagerEditProductModal({
@@ -37,6 +66,7 @@ export function ManagerEditProductModal({
   const [status, setStatus] = useState<'ACTIVE' | 'INACTIVE' | 'DELETED'>('ACTIVE')
   const [description, setDescription] = useState('')
   const [productCode, setProductCode] = useState('')
+  const [isDeleted, setIsDeleted] = useState(false)
 
   // Images state
   const [existingImageUrls, setExistingImageUrls] = useState<string[]>([])
@@ -59,7 +89,9 @@ export function ManagerEditProductModal({
           setBrandName(prod.brandName || '')
           setCategoryId(prod.categoryId || undefined)
           setTotalStock(prod.totalStock || 0)
-          setStatus((prod.status as 'ACTIVE' | 'INACTIVE' | 'DELETED') || 'ACTIVE')
+          const prodStatus = (prod.status as 'ACTIVE' | 'INACTIVE' | 'DELETED') || 'ACTIVE'
+          setStatus(prodStatus)
+          setIsDeleted(prodStatus === 'DELETED') // ✅ Check if deleted
           setDescription(prod.description || '')
           setProductCode(prod.productCode || '')
           setExistingImageUrls(prod.imageUrls || [])
@@ -180,6 +212,19 @@ export function ManagerEditProductModal({
                 </div>
               )}
 
+              {/* ✅ Hiển thị status tiếng Việt */}
+              <div className='flex items-center gap-3 rounded-xl bg-muted/30 px-4 py-2.5'>
+                <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                  Trạng thái hiện tại:
+                </span>
+                <span className={cn(
+                  'inline-flex rounded-full px-2.5 py-1 text-xs font-bold',
+                  getStatusColor(status)
+                )}>
+                  {getStatusLabel(status)}
+                </span>
+              </div>
+
               <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
                 <div className='flex flex-col gap-1.5'>
                   <label htmlFor='product-name' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
@@ -189,9 +234,13 @@ export function ManagerEditProductModal({
                     id='product-name'
                     type='text'
                     required
+                    disabled={isDeleted}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
+                    className={cn(
+                      'h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                      isDeleted && 'opacity-60 cursor-not-allowed'
+                    )}
                   />
                 </div>
 
@@ -204,9 +253,13 @@ export function ManagerEditProductModal({
                     type='number'
                     required
                     min='0'
+                    disabled={isDeleted}
                     value={price}
                     onChange={(e) => setPrice(Number(e.target.value))}
-                    className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
+                    className={cn(
+                      'h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                      isDeleted && 'opacity-60 cursor-not-allowed'
+                    )}
                   />
                 </div>
               </div>
@@ -220,9 +273,13 @@ export function ManagerEditProductModal({
                     id='product-brand'
                     type='text'
                     required
+                    disabled={isDeleted}
                     value={brandName}
                     onChange={(e) => setBrandName(e.target.value)}
-                    className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
+                    className={cn(
+                      'h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                      isDeleted && 'opacity-60 cursor-not-allowed'
+                    )}
                   />
                 </div>
 
@@ -233,9 +290,13 @@ export function ManagerEditProductModal({
                   <div className='relative'>
                     <select
                       id='product-category'
+                      disabled={isDeleted}
                       value={categoryId || ''}
                       onChange={(e) => setCategoryId(e.target.value ? Number(e.target.value) : undefined)}
-                      className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
+                      className={cn(
+                        'h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer',
+                        isDeleted && 'opacity-60 cursor-not-allowed'
+                      )}
                     >
                       <option value=''>-- Chọn danh mục --</option>
                       {categories.map((cat) => (
@@ -274,13 +335,17 @@ export function ManagerEditProductModal({
                     <select
                       id='product-status'
                       required
+                      disabled={isDeleted}
                       value={status}
                       onChange={(e) => setStatus(e.target.value as 'ACTIVE' | 'INACTIVE' | 'DELETED')}
-                      className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
+                      className={cn(
+                        'h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer',
+                        isDeleted && 'opacity-60 cursor-not-allowed'
+                      )}
                     >
-                      <option value='ACTIVE'>ACTIVE (Đang hoạt động)</option>
-                      <option value='INACTIVE'>INACTIVE (Ngừng kinh doanh)</option>
-                      <option value='DELETED'>DELETED (Đã xóa)</option>
+                      <option value='ACTIVE'>Đang hoạt động</option>
+                      <option value='INACTIVE'>Ngừng kinh doanh</option>
+                      {/* ❌ Đã xóa option DELETED */}
                     </select>
                     <MaterialIcon
                       name='expand_more'
@@ -304,9 +369,13 @@ export function ManagerEditProductModal({
                 <textarea
                   id='product-desc'
                   rows={4}
+                  disabled={isDeleted}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className='w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors resize-y'
+                  className={cn(
+                    'w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors resize-y',
+                    isDeleted && 'opacity-60 cursor-not-allowed'
+                  )}
                 />
               </div>
             </div>
@@ -320,18 +389,21 @@ export function ManagerEditProductModal({
               >
                 {t('productManagement.editModal.cancel')}
               </button>
-              <button
-                type='submit'
-                disabled={isSaving}
-                className='h-11 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground shadow-sm hover:opacity-90 transition-all disabled:opacity-50'
-              >
-                {isSaving ? (
-                  <div className='h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent' />
-                ) : (
-                  <MaterialIcon name='save' className='text-lg' />
-                )}
-                <span>{t('productManagement.editModal.save')}</span>
-              </button>
+              {/* ✅ Ẩn nút Lưu nếu status = DELETED */}
+              {!isDeleted && (
+                <button
+                  type='submit'
+                  disabled={isSaving}
+                  className='h-11 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground shadow-sm hover:opacity-90 transition-all disabled:opacity-50'
+                >
+                  {isSaving ? (
+                    <div className='h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent' />
+                  ) : (
+                    <MaterialIcon name='save' className='text-lg' />
+                  )}
+                  <span>{t('productManagement.editModal.save')}</span>
+                </button>
+              )}
             </footer>
           </form>
         )}

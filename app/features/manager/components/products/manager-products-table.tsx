@@ -45,6 +45,43 @@ export function ManagerProductsTable({
     }
   }
 
+  // ✅ Hàm lấy trạng thái dựa trên cả status và totalStock
+  const getProductStatus = (product: ProductManagementItem) => {
+    // Ưu tiên: DELETED
+    if (product.status === 'DELETED') {
+      return {
+        label: 'Đã xóa',
+        className: 'bg-destructive/15 text-destructive'
+      }
+    }
+
+    // ACTIVE - xét tồn kho
+    if (product.status === 'ACTIVE') {
+      if (product.totalStock === 0) {
+        return {
+          label: 'Hết hàng',
+          className: 'bg-destructive/15 text-destructive'
+        }
+      }
+      if (product.totalStock <= 5) {
+        return {
+          label: 'Sắp hết hàng',
+          className: 'bg-warning/15 text-warning'
+        }
+      }
+      return {
+        label: 'Đang bán',
+        className: 'bg-success/15 text-success'
+      }
+    }
+
+    // INACTIVE
+    return {
+      label: 'Ngừng bán',
+      className: 'bg-muted-foreground/15 text-muted-foreground'
+    }
+  }
+
   if (isLoading) {
     return (
       <section className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm animate-pulse'>
@@ -127,8 +164,9 @@ export function ManagerProductsTable({
           </thead>
           <tbody className='divide-y divide-border'>
             {products.map((product) => {
-              const isLowStock = product.totalStock <= 10
               const thumbnail = product.imageUrls?.[0] || 'https://placehold.co/100'
+              const status = getProductStatus(product)
+              const isDeleted = product.status === 'DELETED'
 
               return (
                 <tr key={product.productId} className='group transition-colors hover:bg-muted/70'>
@@ -157,37 +195,33 @@ export function ManagerProductsTable({
                   <td className='px-4 py-4 font-bold text-primary'>{formatPrice(product.price)}</td>
                   <td className='px-4 py-4 text-center'>
                     <div className='flex flex-col items-center'>
-                      <span className={isLowStock ? 'font-bold text-destructive' : 'font-semibold text-foreground'}>
+                      <span className={product.totalStock === 0 ? 'font-bold text-destructive' : 'font-semibold text-foreground'}>
                         {product.totalStock}
                       </span>
-                      {isLowStock && (
+                      {product.totalStock === 0 && (
                         <span className='text-[10px] font-bold uppercase tracking-wide text-destructive'>
-                          {t('productManagement.stock.low', 'Tồn thấp')}
+                          Hết hàng
+                        </span>
+                      )}
+                      {product.totalStock > 0 && product.totalStock <= 5 && (
+                        <span className='text-[10px] font-bold uppercase tracking-wide text-warning'>
+                          Sắp hết
                         </span>
                       )}
                     </div>
                   </td>
                   <td className='px-4 py-4'>
-                    <span
-                      className={cn(
-                        'inline-flex rounded-full px-2.5 py-1 text-xs font-bold',
-                        product.status === 'ACTIVE'
-                          ? 'bg-success/15 text-success'
-                          : product.status === 'INACTIVE'
-                            ? 'bg-muted-foreground/15 text-muted-foreground'
-                            : 'bg-destructive/15 text-destructive'
-                      )}
-                    >
-                      {product.status === 'ACTIVE'
-                        ? t('productManagement.status.active', 'Đang bán')
-                        : product.status === 'INACTIVE'
-                          ? t('productManagement.status.inactive', 'Ngừng bán')
-                          : t('productManagement.status.deleted', 'Đã xóa')}
+                    <span className={cn(
+                      'inline-flex rounded-full px-2.5 py-1 text-xs font-bold',
+                      status.className
+                    )}>
+                      {status.label}
                     </span>
                   </td>
                   <td className='px-4 py-4 text-sm text-muted-foreground'>{formatDate(product.updatedAt)}</td>
                   <td className='px-4 py-4'>
                     <div className='flex justify-end gap-2'>
+                      {/* ✅ Luôn hiển thị nút View */}
                       {onViewClick && (
                         <button
                           type='button'
@@ -198,25 +232,31 @@ export function ManagerProductsTable({
                           <MaterialIcon name='visibility' className='text-lg' />
                         </button>
                       )}
-                      {onEditClick && (
-                        <button
-                          type='button'
-                          onClick={() => onEditClick(product.productId)}
-                          aria-label={t('productManagement.actions.edit')}
-                          className='flex h-9 w-9 items-center justify-center rounded-lg text-primary transition-colors hover:bg-primary/10'
-                        >
-                          <MaterialIcon name='edit' className='text-lg' />
-                        </button>
-                      )}
-                      {onDeleteClick && (
-                        <button
-                          type='button'
-                          onClick={() => onDeleteClick(product.productId)}
-                          aria-label={t('productManagement.actions.delete')}
-                          className='flex h-9 w-9 items-center justify-center rounded-lg text-destructive transition-colors hover:bg-destructive/10'
-                        >
-                          <MaterialIcon name='delete' className='text-lg' />
-                        </button>
+
+                      {/* ✅ Chỉ hiển thị Edit và Delete nếu chưa bị xóa */}
+                      {!isDeleted && (
+                        <>
+                          {onEditClick && (
+                            <button
+                              type='button'
+                              onClick={() => onEditClick(product.productId)}
+                              aria-label={t('productManagement.actions.edit')}
+                              className='flex h-9 w-9 items-center justify-center rounded-lg text-primary transition-colors hover:bg-primary/10'
+                            >
+                              <MaterialIcon name='edit' className='text-lg' />
+                            </button>
+                          )}
+                          {onDeleteClick && (
+                            <button
+                              type='button'
+                              onClick={() => onDeleteClick(product.productId)}
+                              aria-label={t('productManagement.actions.delete')}
+                              className='flex h-9 w-9 items-center justify-center rounded-lg text-destructive transition-colors hover:bg-destructive/10'
+                            >
+                              <MaterialIcon name='delete' className='text-lg' />
+                            </button>
+                          )}
+                        </>
                       )}
                     </div>
                   </td>
