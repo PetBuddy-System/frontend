@@ -1,0 +1,695 @@
+{
+  "admin": {
+    "name": "Admin User",
+    "role": "Pet Care Admin"
+  },
+  "blogManagement": {
+    "actions": {
+      "add": "Create new post",
+      "delete": "Delete post",
+      "edit": "Edit post"
+    },
+    "confirmDelete": "Are you sure you want to delete this post?",
+    "create": {
+      "accent": {
+        "label": "Quick guidance",
+        "text": "Import your .md file to auto-fill content. Then refine the title, excerpt, and cover image for the best results.",
+        "title": "Markdown import ready"
+      },
+      "cancel": "Cancel",
+      "close": "Close the create post form",
+      "draftHint": "Save as draft - visible only to admins",
+      "editTitle": "Edit blog post",
+      "fields": {
+        "author": "Author",
+        "label": "Category",
+        "content": "Markdown content",
+        "coverImage": "Cover image",
+        "excerpt": "Excerpt",
+        "publish": "Publish now",
+        "title": "Title"
+      },
+      "imageUpload": {
+        "currentImage": "Current cover image",
+        "invalidType": "Only JPEG, PNG, GIF, or WebP files are accepted.",
+        "placeholder": "Click to upload or drag and drop here",
+        "remove": "Remove cover image",
+        "tooLarge": "File size must not exceed {{max}}MB."
+      },
+      "importMd": "Import .md",
+      "placeholders": {
+        "author": "e.g. PetBuddy Team",
+        "content": "# Your title\n\nWrite your blog post content in Markdown here...",
+        "excerpt": "A short summary shown on blog cards...",
+        "title": "Your blog post title"
+      },
+      "preview": {
+        "excerptPlaceholder": "Short summary of the post...",
+        "subtitle": "Live preview of how the post will appear on the blog page.",
+        "title": "Card preview",
+        "titlePlaceholder": "Your blog post title"
+      },
+      "publishedHint": "Visible to all users on the blog page",
+      "save": "Save post",
+      "subtitle": "Write or import a .md file, preview the rendered output, and publish to the blog page.",
+      "tabs": {
+        "editor": "Editor",
+        "preview": "Preview"
+      },
+      "tip": {
+        "text": "Use Markdown formatting for headings, lists, code blocks, and links. Tables and strikethrough are also supported via GitHub Flavored Markdown.",
+        "title": "Markdown tips"
+      },
+      "title": "Create blog post"
+    },
+    "pagination": {
+      "showing": "Showing {{from}} - {{to}} of {{total}} posts"
+    },
+    "sidebar": {
+      "all": "All posts",
+      "featured": "Featured",
+      "grooming": "Grooming",
+      "health": "Health",
+      "lifestyle": "Lifestyle",
+      "nutrition": "Nutrition",
+      "training": "Training"
+    },
+    "stats": {
+      "drafts": {
+        "label": "Drafts",
+        "note": "Not published"
+      },
+      "published": {
+        "label": "Published",
+        "note": "Live on blog"
+      },
+      "total": {
+        "label": "Total posts",
+        "note": "All time"
+      }
+    },
+    "subtitle": "Manage blog posts, import .md files, and publish content to the blog page.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "author": "Author",
+        "label": "Category",
+        "date": "Date",
+        "post": "Post",
+        "status": "Status"
+      },
+      "draft": "Draft",
+      "empty": "No posts found. Create your first blog post.",
+      "published": "Published"
+    },
+    "title": "Blog Management"
+  },
+  "charts": {
+    "breakdown": {
+      "items": {
+        "grooming": "Spa & Grooming",
+        "medical": "Medical services",
+        "products": "Products"
+      },
+      "primaryLabel": "Products",
+      "title": "Revenue Breakdown"
+    },
+    "revenueTrend": {
+      "days": {
+        "fri": "Fri",
+        "mon": "Mon",
+        "sat": "Sat",
+        "sun": "Sun",
+        "thu": "Thu",
+        "tue": "Tue",
+        "wed": "Wed"
+      },
+      "title": "Revenue Trend",
+      "unit": "Million VND"
+    }
+  },
+  "dashboard": {
+    "subtitle": "View store revenue overview in read-only mode",
+    "title": "Revenue Report"
+  },
+  "employees": {
+    "actions": {
+      "add": "Add new employee",
+      "delete": "Delete",
+      "edit": "Edit"
+    },
+    "pagination": {
+      "next": "Next page",
+      "previous": "Previous page",
+      "showing": "Showing {{from}}-{{to}} of {{total}} employees"
+    },
+    "roles": {
+      "manager": "manager",
+      "staff": "staff"
+    },
+    "status": {
+      "leave": "On leave",
+      "working": "Working"
+    },
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "name": "Full name",
+        "role": "Role",
+        "status": "Status"
+      },
+      "rows": {
+        "leThiMai": {
+          "name": "Le Thi Mai"
+        },
+        "nguyenMinhHoang": {
+          "name": "Nguyen Minh Hoang"
+        },
+        "phamVanHung": {
+          "name": "Pham Van Hung"
+        },
+        "tranVanAn": {
+          "name": "Tran Van An"
+        }
+      }
+    },
+    "title": "Employee Management",
+    "toolbar": {
+      "role": {
+        "all": "All roles"
+      },
+      "searchPlaceholder": "Search by name or employee code..."
+    }
+  },
+  "filters": {
+    "custom": "Custom",
+    "month": "This month",
+    "today": "Today",
+    "week": "This week"
+  },
+  "metrics": {
+    "averageOrder": {
+      "change": "+8.4% vs previous period",
+      "label": "Average Order"
+    },
+    "orders": {
+      "change": "+5.2% vs previous period",
+      "label": "Orders"
+    },
+    "revenue": {
+      "change": "+12.5% vs previous period",
+      "label": "Total Revenue"
+    },
+    "services": {
+      "change": "-2.1% vs previous period",
+      "label": "Services"
+    }
+  },
+  "sidebar": {
+    "branch": "Main Branch",
+    "brand": "PawAdmin",
+    "logoAlt": "PetBuddy logo",
+    "logout": "Logout",
+    "nav": {
+      "blog": "Blog",
+      "employees": "Employees",
+      "inventory": "Products",
+      "reports": "Reports",
+      "serviceBookings": "Service Bookings",
+      "services": "Services",
+      "users": "Users",
+      "vouchers": "Vouchers",
+      "shipping": "Shipping Config"
+    },
+    "toggle": "Toggle sidebar"
+  },
+  "serviceBookings": {
+    "actions": {
+      "create": "Create new booking",
+      "edit": "Edit booking",
+      "view": "View booking"
+    },
+    "pagination": {
+      "label": "Booking pagination",
+      "showing": "Showing {{from}} - {{to}} of {{total}} bookings"
+    },
+    "services": {
+      "bathDry": "Bath & dry",
+      "furTrim": "Fur trimming",
+      "hygieneCombo": "Hygiene combo",
+      "styling": "Styling trim"
+    },
+    "stats": {
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "pending": "Pending confirmation",
+      "total": "Total bookings"
+    },
+    "status": {
+      "cancelled": "Cancelled",
+      "completed": "Done",
+      "confirmed": "Confirmed",
+      "pending": "Pending"
+    },
+    "subtitle": "Track and coordinate pet care appointments.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "code": "Order code",
+        "customer": "Customer",
+        "dateTime": "Date & time",
+        "pet": "Pet",
+        "service": "Service",
+        "status": "Status"
+      },
+      "rows": {
+        "cj9915": {
+          "customer": "Hoang Kim Yen",
+          "pet": "Bong (Samoyed)"
+        },
+        "cj9918": {
+          "customer": "Tran Minh Quan",
+          "pet": "Mochi (Corgi)"
+        },
+        "cj9920": {
+          "customer": "Le Thi Bich",
+          "pet": "Lu (Beagle)"
+        },
+        "cj9921": {
+          "customer": "Nguyen Van An",
+          "pet": "Bo (Poodle)"
+        }
+      }
+    },
+    "title": "Service Booking Management",
+    "toolbar": {
+      "customerLabel": "Search customer",
+      "dateLabel": "Date range",
+      "filter": "Filter",
+      "searchPlaceholder": "Enter name or phone number...",
+      "serviceLabel": "Service type",
+      "services": {
+        "all": "All services",
+        "bath": "Bath & dry",
+        "combo": "Full combo",
+        "earCare": "Ear cleaning",
+        "grooming": "Grooming"
+      }
+    }
+  },
+  "serviceManagement": {
+    "actions": {
+      "add": "Add new service",
+      "delete": "Delete service",
+      "edit": "Edit service",
+      "view": "View service"
+    },
+    "create": {
+      "accent": {
+        "label": "Quick guidance",
+        "text": "Use clear images and rich descriptions to help customers understand value quickly and increase booking confidence.",
+        "title": "Connect the customer experience"
+      },
+      "cancel": "Cancel",
+      "categories": {
+        "grooming": "Grooming & Spa",
+        "hotel": "Pet hotel",
+        "vet": "Veterinary"
+      },
+      "close": "Close the create-service form",
+      "fields": {
+        "category": "Category",
+        "description": "Service description",
+        "name": "Service name",
+        "status": "Active status"
+      },
+      "media": {
+        "hint": "PNG, JPG up to 10MB",
+        "subtitle": "Upload a preview image or drag and drop it here to highlight the new service.",
+        "title": "Illustration image",
+        "uploadLabel": "Upload image or drag it here"
+      },
+      "placeholders": {
+        "description": "Describe the steps, benefits, and experience customers will receive.",
+        "name": "Example: Full bath and dry package"
+      },
+      "pricing": {
+        "badge": "Flexible pricing",
+        "currency": "VND",
+        "subtitle": "Set pricing by weight tier to keep the service fair, transparent, and easy to manage.",
+        "title": "Pricing by weight",
+        "tiers": {
+          "from10To20": "10kg - 20kg",
+          "from5To10": "5kg - 10kg",
+          "over20": "Over 20kg",
+          "under5": "Under 5kg"
+        }
+      },
+      "save": "Save service",
+      "subtitle": "Create a new pet-care package, set weight-based pricing, and add visuals for faster rollout.",
+      "tip": {
+        "text": "High-quality imagery and detailed descriptions help customers decide faster and improve service booking conversion.",
+        "title": "Quick tip"
+      },
+      "title": "Add new service"
+    },
+    "categories": {
+      "grooming": "Grooming & Spa",
+      "hotel": "Hotel",
+      "vet": "Vet"
+    },
+    "filters": {
+      "advanced": "Advanced filter",
+      "categories": {
+        "all": "All",
+        "grooming": "Grooming & Spa",
+        "hotel": "Hotel",
+        "vet": "Vet"
+      },
+      "status": {
+        "active": "Active",
+        "all": "Status: All",
+        "inactive": "Inactive"
+      }
+    },
+    "pagination": {
+      "showing": "Showing 1 - 10 of 24 services"
+    },
+    "stats": {
+      "active": "Active",
+      "promotions": "Promotions",
+      "total": "Total services"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "subtitle": "Configure and update pet care service packages.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "category": "Category",
+        "name": "Service name",
+        "price": "Base price",
+        "status": "Status",
+        "updatedAt": "Updated"
+      },
+      "rows": {
+        "bathTrimCombo": {
+          "description": "For dogs under 5kg",
+          "name": "Bath, dry & trim combo"
+        },
+        "vaccination": {
+          "description": "5-vaccine package",
+          "name": "Routine vaccination"
+        },
+        "vipHotel": {
+          "description": "Air-conditioned single room",
+          "name": "VIP Pet Hotel"
+        }
+      }
+    },
+    "title": "Service Management",
+    "pricing": {
+      "cancel": "Close",
+      "close": "Close service pricing",
+      "currency": "VND",
+      "editDetails": "Edit details",
+      "save": "Update pricing",
+      "serviceId": "Service ID: {{id}}",
+      "subtitle": "Configure flexible pricing for spa and grooming services. Prices are grouped by body weight to keep operations fair and professional.",
+      "title": "Service Pricing Management",
+      "weightTiers": {
+        "from10To20": "10kg - 20kg",
+        "from5To10": "5kg - 10kg",
+        "over20": "Over 20kg",
+        "under5": "Under 5kg"
+      },
+      "services": {
+        "bathDry": {
+          "description": "Includes basic hygiene steps: deodorizing bath, blow dry, coat polishing, and brushing.",
+          "title": "Standard bath and dry"
+        },
+        "hygieneCombo": {
+          "description": "Complete care package: nail trimming, nail filing, anal gland expression, and deep ear cleaning.",
+          "title": "Hygiene combo"
+        },
+        "styling": {
+          "description": "Advanced grooming and styling based on individual requests or breed-specific needs.",
+          "title": "Trimming & styling"
+        }
+      }
+    }
+  },
+  "topNav": {
+    "help": "Help",
+    "menu": "Open menu",
+    "notifications": "Notifications"
+  },
+  "topSales": {
+    "categories": {
+      "grooming": "Spa & Grooming",
+      "medical": "Medical services",
+      "product": "Products"
+    },
+    "columns": {
+      "category": "Category",
+      "name": "Product/Service Name",
+      "quantity": "Quantity",
+      "revenue": "Revenue"
+    },
+    "items": {
+      "grooming": {
+        "name": "Basic Dog/Cat Bath & Grooming"
+      },
+      "royalCanin": {
+        "name": "Royal Canin Poodle Adult 1.5kg"
+      },
+      "vaccine": {
+        "name": "7-in-1 Vaccine Injection"
+      }
+    },
+    "title": "Best-selling Products & Services"
+  },
+  "users": {
+    "actions": {
+      "add": "Add user",
+      "edit": "Edit",
+      "export": "Export list",
+      "view": "View details"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "showing": "Showing {{from}} - {{to}} of {{total}} results"
+    },
+    "stats": {
+      "active": {
+        "label": "Active users",
+        "note": "90% activity rate"
+      },
+      "newToday": {
+        "label": "New users today",
+        "note": "Updated 5 minutes ago"
+      },
+      "total": {
+        "label": "Total users",
+        "note": "+24 new customers this month"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "locked": "Locked"
+    },
+    "subtitle": "Manage customer information, loyalty points, and purchase history.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "customer": "Customer",
+        "orders": "Total orders",
+        "phone": "Phone number",
+        "points": "Loyalty points",
+        "status": "Status"
+      },
+      "orderCount": "{{count}} orders",
+      "pointsUnit": "points",
+      "rows": {
+        "leThiB": {
+          "email": "lethib@email.com",
+          "name": "Le Thi B"
+        },
+        "nguyenVanA": {
+          "email": "nguyenvana@email.com",
+          "name": "Nguyen Van A"
+        },
+        "tranVanC": {
+          "email": "tranvanc@email.com",
+          "name": "Tran Van C"
+        }
+      }
+    },
+    "title": "User Management",
+    "toolbar": {
+      "advancedFilter": "Advanced filter",
+      "searchPlaceholder": "Search by name or phone number...",
+      "status": {
+        "active": "Active",
+        "all": "All statuses",
+        "locked": "Locked"
+      }
+    }
+  },
+  "productManagement": {
+    "actions": {
+      "add": "Add new product",
+      "delete": "Delete product",
+      "edit": "Edit product",
+      "view": "View product"
+    },
+    "categories": {
+      "accessories": "Accessories",
+      "food": "Food"
+    },
+    "filters": {
+      "categories": {
+        "accessories": "Accessories",
+        "all": "All",
+        "food": "Food",
+        "medicine": "Pet medicine",
+        "toys": "Toys"
+      },
+      "status": {
+        "active": "Active",
+        "all": "Status: All",
+        "inactive": "Inactive"
+      }
+    },
+    "pagination": {
+      "showing": "Showing {{shown}} of {{total}} products"
+    },
+    "searchPlaceholder": "Search products...",
+    "stats": {
+      "available": "Available",
+      "lowStock": "Low stock",
+      "total": "Total products"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "stock": {
+      "low": "Low stock"
+    },
+    "subtitle": "Track categories, selling prices, inventory, and product availability.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "category": "Category",
+        "name": "Product name",
+        "price": "Price",
+        "status": "Status",
+        "stock": "Stock",
+        "updatedAt": "Updated"
+      },
+      "rows": {
+        "helloShampoo": {
+          "imageAlt": "Hello pet shampoo bottle",
+          "name": "Hello shampoo for dogs and cats 280g",
+          "sku": "SKU: ACC-SH-280G"
+        },
+        "royalCaninPoodle": {
+          "imageAlt": "Royal Canin Poodle Adult dry food package",
+          "name": "Royal Canin Poodle Adult dry food",
+          "sku": "SKU: RC-PAD-500G"
+        },
+        "transportCrate": {
+          "imageAlt": "Size M pet transport crate",
+          "name": "Size M transport crate",
+          "sku": "SKU: ACC-CR-M"
+        }
+      }
+    },
+    "title": "Product Management"
+  },
+  "voucherManagement": {
+    "actions": {
+      "create": "Create new voucher",
+      "delete": "Delete voucher",
+      "edit": "Edit voucher"
+    },
+    "pagination": {
+      "showing": "Showing 1-10 of 124 vouchers"
+    },
+    "rewards": {
+      "accumulation": "Point earning rate (Spending)",
+      "accumulationHint": "Customers receive 1 point for every 10,000 VND spent.",
+      "info": "Set earning and redemption rates for the whole reward points system.",
+      "pointUnit": "PTS",
+      "redemption": "Redemption value (Usage)",
+      "redemptionHint": "Each point can be redeemed as 1,000 VND at checkout.",
+      "save": "Update settings",
+      "scaleText": "Upgrade your plan to unlock personalized reward point features.",
+      "scaleTitle": "Scaling up?",
+      "tiers": {
+        "diamond": "Diamond (VIP 2)",
+        "gold": "Gold (VIP 1)",
+        "silver": "Silver (Default)"
+      },
+      "tiersTitle": "Membership tier multiplier",
+      "title": "Reward Points Settings"
+    },
+    "stats": {
+      "activeVouchers": {
+        "label": "Active vouchers",
+        "note": "+12% vs last month"
+      },
+      "issuedPoints": {
+        "label": "Points issued this month",
+        "note": "Total: 1.2M system-wide points"
+      },
+      "redeemedPoints": {
+        "label": "Redeemed points",
+        "note": "Redemption rate: 41.5%"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "subtitle": "Set up promotional campaigns and reward point rules for customers.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "code": "Voucher code",
+        "discount": "Discount type",
+        "expiry": "Expiry",
+        "status": "Status"
+      },
+      "filter": "Filter vouchers",
+      "minimumOrder": "Minimum order: {{value}}",
+      "rows": {
+        "newbie": {
+          "description": "50k off first order",
+          "usage": "Used: 852/1000"
+        },
+        "petSpring": {
+          "daysLeft": "15 days left",
+          "description": "10% off spa services"
+        },
+        "xmas": {
+          "description": "Christmas offer",
+          "expired": "Expired"
+        }
+      },
+      "searchPlaceholder": "Search voucher code...",
+      "title": "Voucher list",
+      "unlimited": "Unlimited"
+    },
+    "toast": {
+      "description": "Reward point settings have been saved.",
+      "title": "Success!"
+    },
+    "title": "Voucher & Reward Management"
+  },
+  "shippingTitle": "Shipping Fee Configuration",
+  "shippingSubtitle": "Set up fee configuration based on geographical distance to optimize operational costs."
+}

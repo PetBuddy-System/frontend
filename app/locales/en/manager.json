@@ -1,0 +1,556 @@
+{
+  "dashboard": {
+    "export": "Export Log",
+    "print": "Print",
+    "subtitle": "Detailed inventory import/export history - District 1",
+    "title": "Inventory Transaction History"
+  },
+  "managerDashboard": {
+    "title": "Overview dashboard",
+    "subtitle": "Track store operations, appointments, and priority tasks at a glance.",
+    "hero": {
+      "leading": "Dashboard",
+      "middle": "control",
+      "trailing": "overview",
+      "description": "Good morning, Manager. The system is operating smoothly.",
+      "dogAlt": "Cute golden puppy portrait in warm lighting.",
+      "catAlt": "Black cat with a focused gaze on a clean light background."
+    },
+    "stats": {
+      "revenue": {
+        "change": "+12%",
+        "label": "Today's revenue",
+        "value": "42,500,000 VND"
+      },
+      "pending": {
+        "badge": "Needs action",
+        "label": "Bookings pending approval",
+        "value": "15 requests"
+      },
+      "staff": {
+        "badge": "Normal",
+        "label": "Staff on shift",
+        "value": "8 / 12 staff"
+      },
+      "stock": {
+        "badge": "Alert",
+        "label": "Products running low",
+        "value": "04 SKUs"
+      }
+    },
+    "chart": {
+      "title": "Revenue trend",
+      "subtitle": "Seven-day performance snapshot",
+      "period": "This week",
+      "days": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "values": {
+        "mon": "28M",
+        "tue": "35M",
+        "thu": "42.5M"
+      }
+    },
+    "tasks": {
+      "title": "Immediate tasks",
+      "viewAll": "View all tasks",
+      "items": {
+        "shiftSwap": {
+          "title": "Review shift swap request",
+          "subtitle": "Le Van Tam • Morning shift 20/10"
+        },
+        "cancellationApproval": {
+          "title": "Approve cancellation request",
+          "subtitle": "Order #8821 • Full Grooming"
+        },
+        "restock": {
+          "title": "Routine restock intake",
+          "subtitle": "Deadline: 3:00 PM today"
+        }
+      }
+    },
+    "appointments": {
+      "title": "Latest appointments",
+      "create": "Create new appointment",
+      "view": "View appointment details",
+      "more": "More options",
+      "columns": {
+        "customer": "Customer",
+        "pet": "Pet",
+        "service": "Service",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "rows": {
+        "nguyenHoang": {
+          "initials": "NH",
+          "customerName": "Nguyen Hoang",
+          "customerPhone": "090xxxx123",
+          "pet": "Mochi (Poodle)",
+          "service": "Full grooming",
+          "status": "Completed"
+        },
+        "tranVan": {
+          "initials": "TV",
+          "customerName": "Tran Van",
+          "customerPhone": "098xxxx456",
+          "pet": "LuLu (Shiba)",
+          "service": "Rabies vaccination",
+          "status": "Pending"
+        },
+        "quocMinh": {
+          "initials": "QM",
+          "customerName": "Quoc Minh",
+          "customerPhone": "034xxxx999",
+          "pet": "Bo (British Shorthair)",
+          "service": "Deodorizing bath and dry",
+          "status": "In service"
+        }
+      }
+    }
+  },
+  "filters": {
+    "apply": "Apply Filters",
+    "date": "Date Range",
+    "staff": "Staff Member",
+    "staffPlaceholder": "Search by name...",
+    "type": {
+      "all": "All Types",
+      "label": "Transaction Type"
+    },
+    "zone": {
+      "all": "All Zones",
+      "back": "Back Room A",
+      "cold": "Cold Storage",
+      "front": "Front Store",
+      "label": "Warehouse / Zone"
+    }
+  },
+  "pagination": {
+    "showing": "Showing 1 to 10 of 2,450 entries"
+  },
+  "sidebar": {
+    "branch": "District 1 Branch",
+    "brand": "Store Ops",
+    "logoAlt": "PetBuddy logo",
+    "logout": "Logout",
+    "roleTitle": "Store Manager",
+    "nav": {
+      "dashboard": "Operations overview",
+      "inventory": "Inventory Control",
+      "products": "Product Management",
+      "staff": "Staff Coordination",
+      "returnRequests": "Return approvals",
+      "disposalApprovals": "Disposal approvals"
+    },
+    "toggle": "Toggle sidebar"
+  },
+  "stats": {
+    "discrepancies": {
+      "label": "Current Discrepancies",
+      "note": "Requires review"
+    },
+    "exports": {
+      "label": "Total Exports (30 Days)",
+      "note": "+5% vs last month"
+    },
+    "imports": {
+      "label": "Total Imports (30 Days)",
+      "note": "+12% vs last month"
+    }
+  },
+  "staffSchedule": {
+    "actions": {
+      "assign": "Assign"
+    },
+    "assignmentModal": {
+      "availableWithMatch": "Available • {{match}} match",
+      "cancel": "Cancel",
+      "choose": "Choose",
+      "close": "Close assignment dialog",
+      "confirm": "Confirm assignment",
+      "filters": {
+        "all": "All",
+        "grooming": "Grooming",
+        "sitter": "Sitter",
+        "vet": "Vet"
+      },
+      "searchPlaceholder": "Search by name or skill...",
+      "selected": "Selected",
+      "staff": {
+        "hoangNam": {
+          "name": "Hoang Nam",
+          "role": "Grooming specialist"
+        },
+        "leThiLan": {
+          "name": "Le Thi Lan",
+          "role": "Grooming team lead",
+          "status": "Busy until 15:30"
+        },
+        "minhTu": {
+          "name": "Minh Tu",
+          "role": "Grooming staff"
+        },
+        "tranVanNam": {
+          "name": "Tran Van Nam",
+          "role": "Support staff"
+        }
+      },
+      "title": "Assign staff for {{bookingCode}}"
+    },
+    "bookingList": {
+      "filter": "Filter",
+      "title": "Pending Booking Assignments",
+      "today": "Today"
+    },
+    "categories": {
+      "grooming": "Grooming",
+      "sitter": "Sitter",
+      "vet": "Vet"
+    },
+    "pagination": {
+      "showing": "Showing 3 of 12 bookings"
+    },
+    "quickTip": {
+      "description": "Bookings marked as Pending assignment should be prioritized so the team can keep service timelines on track.",
+      "title": "Quick tip"
+    },
+    "searchPlaceholder": "Search bookings...",
+    "staffStatus": {
+      "groups": {
+        "grooming": {
+          "title": "Grooming (2/3 available)"
+        },
+        "vet": {
+          "title": "Vet (1/1 available)"
+        }
+      },
+      "members": {
+        "mai": {
+          "name": "Mai N.",
+          "status": "Available"
+        },
+        "nam": {
+          "name": "Nam T.",
+          "status": "Busy until 15:00"
+        },
+        "son": {
+          "name": "Dr. Son",
+          "status": "Available"
+        }
+      },
+      "online": "Online",
+      "title": "Staff status",
+      "viewAll": "View all staff"
+    },
+    "status": {
+      "pending": "Pending assignment",
+      "scheduled": "Pre-scheduled"
+    },
+    "subtitle": "Assign staff based on pending service bookings.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "code": "Booking ID",
+        "customerPet": "Customer & Pet",
+        "service": "Service",
+        "status": "Status",
+        "time": "Time"
+      },
+      "rows": {
+        "bk1024": {
+          "code": "#BK-1024",
+          "customer": "Ms. Lan",
+          "date": "Today, 24/10",
+          "pet": "Poodle \"Bong\"",
+          "service": "Premium grooming",
+          "time": "14:00 - 15:30"
+        },
+        "bk1025": {
+          "code": "#BK-1025",
+          "customer": "Mr. Quan",
+          "date": "Today, 24/10",
+          "pet": "Husky \"Max\"",
+          "service": "General checkup",
+          "time": "16:00 - 17:00"
+        },
+        "bk1026": {
+          "code": "#BK-1026",
+          "customer": "Ms. Minh",
+          "date": "Tomorrow, 25/10",
+          "pet": "Ragdoll cat \"Mochi\"",
+          "service": "Day care",
+          "time": "08:00 - 18:00"
+        }
+      }
+    },
+    "title": "Staff Coordination"
+  },
+  "table": {
+    "columns": {
+      "balance": "Ending Stock",
+      "dateTime": "Date & Time",
+      "id": "Receipt ID",
+      "movement": "Movement",
+      "note": "Note",
+      "product": "Product/SKU",
+      "staff": "Performed By",
+      "type": "Transaction Type"
+    },
+    "rows": {
+      "adj0092": {
+        "dateTime": "Oct 23, 16:45 PM",
+        "id": "ADJ-0092",
+        "note": "Damaged packaging",
+        "product": "Feather Wand Toy",
+        "sku": "SKU: TOY-FW-01",
+        "staff": "Le Van C"
+      },
+      "aud1104": {
+        "dateTime": "Oct 23, 08:00 AM",
+        "id": "AUD-1104",
+        "note": "Monthly count correction",
+        "product": "Cat Litter Silica 5L",
+        "sku": "SKU: LIT-SIL-5L",
+        "staff": "Manager Admin"
+      },
+      "rc99021": {
+        "dateTime": "Oct 24, 09:15 AM",
+        "id": "RC-99021",
+        "note": "Supplier delivery Q4",
+        "product": "Royal Canin Maxi Adult 15kg",
+        "sku": "SKU: RC-MAX-15",
+        "staff": "Nguyen Van A"
+      },
+      "so45091": {
+        "dateTime": "Oct 24, 11:30 AM",
+        "id": "SO-45091",
+        "note": "Web order #W-991",
+        "product": "NexGard Spectra (L)",
+        "sku": "SKU: NXG-L-03",
+        "staff": "Tran Thi B"
+      }
+    },
+    "viewDetails": "View details"
+  },
+  "topNav": {
+    "notifications": "Notifications",
+    "search": "Search...",
+    "settings": "Settings",
+    "title": "PetStore.vn Manager",
+    "help": "Help",
+    "menu": "Open menu"
+  },
+  "manager": {
+    "name": "Tran Thi Lan"
+  },
+  "transactionTypes": {
+    "audit": "Stock audit",
+    "damage": "Damaged goods",
+    "export": "Export",
+    "import": "Import"
+  },
+  "returnRequests": {
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "view": "View details"
+    },
+    "breadcrumb": {
+      "current": "Request approvals",
+      "ops": "Operations"
+    },
+    "details": {
+      "approveRefund": "Approve refund",
+      "cancel": "Cancel",
+      "close": "Close request details",
+      "download": "Download document",
+      "orderInfo": "Order information",
+      "payment": "Payment method",
+      "proofAlt": "Customer proof image {{index}}",
+      "proofTitle": "Customer-provided evidence",
+      "purchaseDate": "Purchase date",
+      "reasonText": "The dog harness size guide was misleading. The customer ordered size L for a 30kg Golden Retriever, but the chest strap was still too tight even when fully extended. The finish quality is good, but the item is simply too small for the pet.",
+      "reasonTitle": "Return reason",
+      "submittedBy": "Submitted on Oct 14, 2023 by {{customer}}",
+      "title": "Return request {{code}}",
+      "totalValue": "Total value",
+      "validity": "Eligibility",
+      "validityValue": "Within 30 days"
+    },
+    "filters": {
+      "all": "All requests",
+      "filter": "Filter",
+      "pending": "Pending",
+      "resolved": "Resolved"
+    },
+    "pagination": {
+      "showing": "Showing 1-10 of 24 results"
+    },
+    "products": {
+      "bed": "Orthopedic Memory Foam pet bed",
+      "collar": "Safe LED collar (Green)",
+      "feeder": "SmartCat V2 automatic feeder",
+      "harness": "Ultima Pro dog harness (Size L)"
+    },
+    "status": {
+      "pending": "Pending review",
+      "urgent": "Urgent: Missing proof",
+      "verified": "Verified"
+    },
+    "subtitle": "Reviewing 24 pending return and warranty requests.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "code": "Order ID",
+        "customer": "Customer",
+        "product": "Product",
+        "status": "Status",
+        "type": "Type"
+      }
+    },
+    "title": "Complaint Management",
+    "types": {
+      "return": "Return",
+      "warranty": "Warranty"
+    }
+  },
+  "disposalApprovals": {
+    "actions": {
+      "approve": "Approve",
+      "approveDisposal": "Approve disposal",
+      "reject": "Reject",
+      "view": "View details"
+    },
+    "detail": {
+      "code": "Code {{code}}",
+      "damageValue": "Damage value",
+      "evidence": "Evidence photos (2)",
+      "evidenceAlt": "Disposal evidence image {{index}}",
+      "kicker": "Request details",
+      "location": "Location",
+      "locationValue": "Store A - Shelf 4B",
+      "more": "Request options",
+      "note": "The product arrived with a large crack on the rear glass panel. It is unsafe to display or use for pets and was immediately moved to the quarantine area.",
+      "noteTitle": "Staff note",
+      "close": "Close request details"
+    },
+    "pendingBadge": "{{count}} pending",
+    "products": {
+      "salmonFood": "Premium salmon dry food 5kg",
+      "terrarium": "Glass terrarium size M",
+      "tunaPate": "Tuna pate for cats 80g"
+    },
+    "reasons": {
+      "damaged": "Damaged",
+      "expired": "Expired"
+    },
+    "staff": {
+      "hieuPham": "Hieu Pham",
+      "minhTran": "Minh Tran",
+      "sarahNguyen": "Sarah Nguyen"
+    },
+    "subtitle": "Review and approve disposal requests for expired or damaged products.",
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "product": "Product",
+        "quantity": "Qty",
+        "reason": "Reason",
+        "staff": "Staff"
+      }
+    },
+    "times": {
+      "today0915": "Today, 09:15",
+      "today1145": "Today, 11:45",
+      "yesterday1430": "Yesterday, 14:30"
+    },
+    "title": "Disposal Requests"
+  },
+  "productManagement": {
+    "title": "Product Management",
+    "subtitle": "Track categories, pricing, stock levels, and product availability.",
+    "searchPlaceholder": "Search products...",
+    "actions": {
+      "add": "Add new product",
+      "delete": "Delete product",
+      "edit": "Edit product",
+      "view": "View product"
+    },
+    "categories": {
+      "accessories": "Accessories",
+      "food": "Food"
+    },
+    "filters": {
+      "categories": {
+        "accessories": "Accessories",
+        "all": "All",
+        "food": "Food",
+        "medicine": "Veterinary Medicine",
+        "toys": "Toys"
+      },
+      "status": {
+        "active": "Active",
+        "all": "Status: All",
+        "inactive": "Inactive",
+        "deleted": "Deleted"
+      }
+    },
+    "pagination": {
+      "showing": "Showing {{from}} to {{to}} of {{total}} products"
+    },
+    "stats": {
+      "available": "Available",
+      "lowStock": "Low Stock",
+      "total": "Total Products"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleted": "Deleted"
+    },
+    "stock": {
+      "low": "Low stock"
+    },
+    "table": {
+      "columns": {
+        "actions": "Actions",
+        "category": "Category",
+        "name": "Product Name",
+        "brand": "Brand",
+        "price": "Price",
+        "status": "Status",
+        "stock": "Stock",
+        "updatedAt": "Updated"
+      },
+      "noProducts": "No products found",
+      "noProductsDesc": "Try adjusting your filters or keyword query"
+    },
+    "editModal": {
+      "title": "Edit Product",
+      "code": "Product Code",
+      "name": "Product Name",
+      "price": "Unit Price",
+      "brand": "Brand Name",
+      "category": "Category",
+      "stock": "Total Stock",
+      "status": "Status",
+      "description": "Description",
+      "imageUrls": "Product Images",
+      "currentImages": "Current Images",
+      "uploadNew": "Upload New Images",
+      "newImagesPreview": "New Images Preview",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "loading": "Loading product details...",
+      "success": "Product updated successfully",
+      "error": "Failed to update product"
+    }
+  }
+}

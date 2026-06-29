@@ -1,15 +1,25 @@
-import enAuth from "~/locales/en/auth.json";
-import enCommon from "~/locales/en/common.json";
-import enLanding from "~/locales/en/landing.json";
-import enProducts from "~/locales/en/products.json";
-import enServices from "~/locales/en/services.json";
-import enWelcome from "~/locales/en/welcome.json";
-import viAuth from "~/locales/vi/auth.json";
-import viCommon from "~/locales/vi/common.json";
-import viLanding from "~/locales/vi/landing.json";
-import viProducts from "~/locales/vi/products.json";
-import viServices from "~/locales/vi/services.json";
-import viWelcome from "~/locales/vi/welcome.json";
+import enAdmin from '~/locales/en/admin.json'
+import enAuth from '~/locales/en/auth.json'
+import enBlog from '~/locales/en/blog.json'
+import enCommon from '~/locales/en/common.json'
+import enLanding from '~/locales/en/landing.json'
+import enManager from '~/locales/en/manager.json'
+import enProducts from '~/locales/en/products.json'
+import enProfile from '~/locales/en/profile.json'
+import enServices from '~/locales/en/services.json'
+import enStaff from '~/locales/en/staff.json'
+import enWelcome from '~/locales/en/welcome.json'
+import viAdmin from '~/locales/vi/admin.json'
+import viAuth from '~/locales/vi/auth.json'
+import viBlog from '~/locales/vi/blog.json'
+import viCommon from '~/locales/vi/common.json'
+import viLanding from '~/locales/vi/landing.json'
+import viManager from '~/locales/vi/manager.json'
+import viProducts from '~/locales/vi/products.json'
+import viProfile from '~/locales/vi/profile.json'
+import viServices from '~/locales/vi/services.json'
+import viStaff from '~/locales/vi/staff.json'
+import viWelcome from '~/locales/vi/welcome.json'
 
 /**
  * Tập hợp tài nguyên i18n. Mỗi feature 1 namespace riêng để:
@@ -23,37 +33,52 @@ import viWelcome from "~/locales/vi/welcome.json";
  */
 
 export const NAMESPACES = [
-  "common",
-  "welcome",
-  "landing",
-  "auth",
-  "products",
-  "services",
-] as const;
-export type Namespace = (typeof NAMESPACES)[number];
+  'blog',
+  'common',
+  'welcome',
+  'landing',
+  'auth',
+  'products',
+  'profile',
+  'services',
+  'staff',
+  'manager',
+  'admin'
+] as const
+export type Namespace = (typeof NAMESPACES)[number]
 
-export const DEFAULT_NAMESPACE: Namespace = "common";
+export const DEFAULT_NAMESPACE: Namespace = 'common'
 
 export const resources = {
   en: {
+    admin: enAdmin,
     auth: enAuth,
+    blog: enBlog,
     common: enCommon,
     landing: enLanding,
+    manager: enManager,
     products: enProducts,
+    profile: enProfile,
     services: enServices,
-    welcome: enWelcome,
+    staff: enStaff,
+    welcome: enWelcome
   },
   vi: {
+    admin: viAdmin,
     auth: viAuth,
+    blog: viBlog,
     common: viCommon,
     landing: viLanding,
+    manager: viManager,
     products: viProducts,
+    profile: viProfile,
     services: viServices,
-    welcome: viWelcome,
-  },
-} as const;
+    staff: viStaff,
+    welcome: viWelcome
+  }
+} as const
 
-export const SUPPORTED_LANGUAGES = ["en", "vi"] as const;
-export type Language = (typeof SUPPORTED_LANGUAGES)[number];
+export const SUPPORTED_LANGUAGES = ['en', 'vi'] as const
+export type Language = (typeof SUPPORTED_LANGUAGES)[number]
 
-export const FALLBACK_LANGUAGE: Language = "vi";
+export const FALLBACK_LANGUAGE: Language = 'vi'

@@ -22,6 +22,284 @@
     "viewOptions": "Tùy chọn",
     "viewDetails": "Xem chi tiết"
   },
+  "detail": {
+    "breadcrumb": {
+      "label": "Điều hướng",
+      "home": "Trang chủ",
+      "store": "Cửa hàng",
+      "dogFood": "Thức ăn cho chó"
+    },
+    "product": {
+      "title": "Thức ăn hạt Royal Canin Poodle Adult 1.5kg",
+      "shortTitle": "Royal Canin Poodle Adult",
+      "imageAlt": "Thức ăn hạt Royal Canin Poodle Adult 1.5kg",
+      "ratingLabel": "Đánh giá 4.5 trên 5 sao",
+      "reviews": "(45 đánh giá)",
+      "price": "429.000đ",
+      "summary": "Thức ăn dành riêng cho giống chó Poodle trên 10 tháng tuổi. Giúp duy trì sức khỏe của bộ lông và hỗ trợ sức khỏe răng miệng."
+    },
+    "gallery": {
+      "front": "Xem mặt trước bao bì",
+      "kibble": "Xem cận cảnh hạt thức ăn",
+      "nutrition": "Xem nhãn dinh dưỡng",
+      "lifestyle": "Xem ảnh sử dụng sản phẩm"
+    },
+    "quantity": {
+      "label": "Số lượng",
+      "decrease": "Giảm số lượng",
+      "increase": "Tăng số lượng"
+    },
+    "actions": {
+      "addToCart": "Thêm vào giỏ hàng",
+      "buyNow": "Mua ngay"
+    },
+    "tabs": {
+      "description": "Mô tả sản phẩm"
+    },
+    "description": {
+      "highlightsTitle": "Đặc điểm nổi bật",
+      "highlights": {
+        "kibble": "Thiết kế hạt đặc biệt phù hợp với hàm răng của Poodle.",
+        "coat": "Giúp duy trì sức khỏe bộ lông xoăn độc đáo.",
+        "dental": "Hỗ trợ sức khỏe răng miệng, giảm hình thành cao răng."
+      },
+      "benefitsTitle": "Lợi ích sức khỏe",
+      "benefits": "Công thức đặc biệt giúp duy trì sức khỏe của giống chó Poodle. Omega 3 EPA và DHA cùng dầu lưu ly giúp nuôi dưỡng bộ lông xoăn, hỗ trợ lông mọc liên tục với mức protein phù hợp.",
+      "specsTitle": "Thông tin sản phẩm"
+    },
+    "specs": {
+      "brand": {
+        "label": "Thương hiệu",
+        "value": "Royal Canin"
+      },
+      "type": {
+        "label": "Loại sản phẩm",
+        "value": "Thức ăn hạt cho chó"
+      },
+      "weight": {
+        "label": "Trọng lượng",
+        "value": "1.5kg"
+      },
+      "age": {
+        "label": "Lứa tuổi",
+        "value": "Chó trưởng thành trên 10 tháng tuổi"
+      }
+    },
+    "related": {
+      "title": "Sản phẩm tương tự",
+      "viewAll": "Xem tất cả",
+      "buy": "Mua",
+      "items": {
+        "ganadorLamb": {
+          "title": "Thức ăn hạt Ganador Adult vị Cừu & Gạo 3kg",
+          "badge": "-10%"
+        },
+        "zenithAdult": {
+          "title": "Thức ăn hạt mềm Zenith cho chó trưởng thành 1.2kg",
+          "badge": ""
+        },
+        "pedigreeBeef": {
+          "title": "Thức ăn hạt Pedigree vị Bò & Rau Củ 3kg",
+          "badge": ""
+        },
+        "smartHeartBeef": {
+          "title": "Thức ăn hạt SmartHeart vị Bò Nướng 3kg",
+          "badge": "Mới"
+        }
+      }
+    }
+  },
+  "cart": {
+    "addedToCart": "Đã thêm sản phẩm vào giỏ hàng!",
+    "title": "Giỏ hàng của bạn",
+    "continueShopping": "Tiếp tục mua sắm",
+    "categoryLabel": "Danh mục: {{category}}",
+    "remove": "Xóa sản phẩm",
+    "quantity": {
+      "decrease": "Giảm số lượng",
+      "increase": "Tăng số lượng"
+    },
+    "items": {
+      "oliveShampoo": {
+        "title": "Sữa tắm Olive Essence lông nâu 450g",
+        "category": "Grooming Spa",
+        "imageAlt": "Chai sữa tắm Olive Essence cho thú cưng"
+      },
+      "royalCaninPoodle": {
+        "title": "Thức ăn hạt Royal Canin Poodle Adult 1.5kg",
+        "category": "Thức ăn",
+        "imageAlt": "Túi thức ăn hạt Royal Canin Poodle Adult"
+      }
+    },
+    "summary": {
+      "title": "Tóm tắt đơn hàng",
+      "products": "Sản phẩm ({{count}})",
+      "total": "Tổng cộng",
+      "checkout": "Thanh toán ngay",
+      "securePayment": "Thanh toán an toàn và bảo mật"
+    },
+    "support": {
+      "title": "Cần hỗ trợ?",
+      "description": "Chúng tôi luôn sẵn sàng giúp đỡ bạn 24/7.",
+      "phone": "1900 1234"
+    },
+    "suggestions": {
+      "title": "Thường được mua cùng",
+      "add": "Thêm",
+      "items": {
+        "treats": {
+          "title": "Bánh thưởng xương gặm",
+          "imageAlt": "Bánh thưởng nhiều màu cho chó trong bát gỗ"
+        },
+        "ropeToy": {
+          "title": "Đồ chơi dây thừng bền bỉ",
+          "imageAlt": "Cún con vui vẻ chơi với đồ chơi màu đỏ"
+        },
+        "leatherCollar": {
+          "title": "Vòng cổ da cao cấp",
+          "imageAlt": "Vòng cổ da nâu với khóa vàng"
+        },
+        "ceramicBowl": {
+          "title": "Bát ăn Ceramic chống trượt",
+          "imageAlt": "Bát nước ceramic hiện đại cho thú cưng"
+        }
+      }
+    }
+  },
+  "checkout": {
+    "title": "Thanh toán",
+    "shipping": {
+      "title": "Thông tin giao hàng",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nhập họ và tên",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại",
+      "address": "Địa chỉ",
+      "addressPlaceholder": "Số nhà, tên đường",
+      "city": "Tỉnh/Thành phố",
+      "cityPlaceholder": "Chọn Tỉnh/Thành phố",
+      "district": "Quận/Huyện",
+      "districtPlaceholder": "Chọn Quận/Huyện",
+      "ward": "Phường/Xã",
+      "wardPlaceholder": "Chọn Phường/Xã",
+      "cities": {
+        "hoChiMinh": "Hồ Chí Minh",
+        "haNoi": "Hà Nội",
+        "daNang": "Đà Nẵng"
+      }
+    },
+    "delivery": {
+      "title": "Phương thức vận chuyển",
+      "methods": {
+        "standard": {
+          "title": "Giao hàng tiêu chuẩn (2-3 ngày)",
+          "description": "Thanh toán cước phí thấp nhất"
+        },
+        "express": {
+          "title": "Giao hàng nhanh (24h)",
+          "description": "Nhận hàng ngay trong ngày"
+        }
+      }
+    },
+    "payment": {
+      "title": "Phương thức thanh toán",
+      "methods": {
+        "cod": "Thanh toán khi nhận hàng (COD)",
+        "bank": "Chuyển khoản ngân hàng",
+        "momo": "Ví MoMo",
+        "zaloPay": "Ví ZaloPay"
+      },
+      "alt": {
+        "momo": "Logo MoMo",
+        "zaloPay": "Logo ZaloPay"
+      }
+    },
+    "note": {
+      "title": "Ghi chú đơn hàng",
+      "placeholder": "Nhập ghi chú hoặc lời nhắn cho nhân viên giao hàng..."
+    },
+    "summary": {
+      "title": "Đơn hàng của bạn",
+      "quantity": "SL: {{count}}",
+      "subtotal": "Tạm tính",
+      "shipping": "Phí vận chuyển",
+      "freeShipping": "Miễn phí",
+      "discount": "Giảm giá",
+      "total": "Tổng cộng",
+      "placeOrder": "Đặt hàng ngay",
+      "items": {
+        "oliveShampoo": {
+          "title": "Sữa tắm Olive Essence",
+          "imageAlt": "Chai sữa tắm Olive Essence cho thú cưng"
+        },
+        "royalCaninPoodle": {
+          "title": "Thức ăn hạt Royal Canin",
+          "imageAlt": "Túi thức ăn hạt Royal Canin Poodle Adult"
+        }
+      },
+      "trust": {
+        "secure": "Thanh toán bảo mật",
+        "returns": "Hoàn trả 7 ngày",
+        "authentic": "Cam kết chính hãng"
+      }
+    },
+    "coupon": {
+      "title": "Mã giảm giá / Voucher",
+      "placeholder": "Nhập mã...",
+      "apply": "Áp dụng"
+    }
+  },
+  "orderSuccess": {
+    "banner": {
+      "title": "Cảm ơn bạn đã đặt hàng!",
+      "orderCodePrefix": "Mã đơn hàng của bạn là",
+      "emailPrefix": "Một email xác nhận đã được gửi đến"
+    },
+    "details": {
+      "title": "Chi tiết đơn hàng",
+      "itemCount": "{{count}} sản phẩm",
+      "quantity": "Số lượng: {{count}}",
+      "items": {
+        "oliveShampoo": {
+          "title": "Sữa tắm Olive Essence lông nâu",
+          "imageAlt": "Chai sữa tắm Olive Essence cho thú cưng"
+        },
+        "royalCaninPoodle": {
+          "title": "Thức ăn hạt Royal Canin Poodle Adult",
+          "imageAlt": "Túi thức ăn hạt Royal Canin Poodle Adult"
+        }
+      }
+    },
+    "delivery": {
+      "title": "Thông tin nhận hàng",
+      "name": "Nguyễn Văn An",
+      "phone": "090 123 4567",
+      "address": "123 Đường Lê Lợi, Phường Bến Thành, Quận 1, TP. Hồ Chí Minh"
+    },
+    "method": {
+      "title": "Phương thức vận chuyển và thanh toán",
+      "shippingLabel": "Vận chuyển",
+      "shipping": "Giao hàng nhanh (2-3 ngày)",
+      "paymentLabel": "Thanh toán",
+      "payment": "Thẻ tín dụng (Visa **** 4455)"
+    },
+    "payment": {
+      "title": "Tổng cộng",
+      "subtotal": "Tạm tính",
+      "shipping": "Phí vận chuyển",
+      "freeShipping": "Miễn phí",
+      "total": "Tổng tiền",
+      "trackOrder": "Theo dõi đơn hàng",
+      "continueShopping": "Tiếp tục mua sắm"
+    },
+    "support": {
+      "title": "Cần hỗ trợ?",
+      "description": "Đội ngũ chăm sóc thú cưng luôn sẵn sàng giúp đỡ bạn.",
+      "phone": "1900 1234",
+      "chat": "Chat với chúng tôi"
+    },
+    "trustQuote": "Dành cho những cái đuôi luôn vẫy hạnh phúc."
+  },
   "hero": {
     "title": "Thức ăn & Phụ kiện cho chó",
     "subtitle": "Khám phá đa dạng các sản phẩm dinh dưỡng và phụ kiện chất lượng cao, giúp cún cưng của bạn luôn khỏe mạnh và vui vẻ mỗi ngày."
@@ -30,15 +308,14 @@
     "title": "Bộ lọc",
     "categoriesTitle": "Danh mục",
     "brandsTitle": "Thương hiệu",
-    "priceTitle": "Mức giá",
-    "priceMin": "0đ",
-    "priceMax": "1.000.000đ+",
     "categories": {
       "all": "Tất cả",
-      "dryFood": "Thức ăn hạt",
-      "wetFood": "Pate / Thức ăn ướt",
-      "treats": "Bánh thưởng / Xương gặm",
-      "accessories": "Phụ kiện"
+      "toys": "Đồ chơi",
+      "hygiene": "Vệ sinh thú cưng",
+      "supplement": "Thực phẩm chức năng",
+      "accessories": "Phụ kiện",
+      "dogFood": "Thức ăn cho Chó",
+      "catFood": "Thức ăn cho Mèo"
     }
   },
   "brands": {

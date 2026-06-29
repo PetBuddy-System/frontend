@@ -22,6 +22,284 @@
     "viewOptions": "Options",
     "viewDetails": "View details"
   },
+  "detail": {
+    "breadcrumb": {
+      "label": "Breadcrumb",
+      "home": "Home",
+      "store": "Shop",
+      "dogFood": "Dog food"
+    },
+    "product": {
+      "title": "Royal Canin Poodle Adult dry food 1.5kg",
+      "shortTitle": "Royal Canin Poodle Adult",
+      "imageAlt": "Royal Canin Poodle Adult dry food 1.5kg",
+      "ratingLabel": "Rated 4.5 out of 5 stars",
+      "reviews": "(45 reviews)",
+      "price": "429,000 VND",
+      "summary": "Breed-specific food for Poodles over 10 months old. Helps maintain coat health and supports oral health."
+    },
+    "gallery": {
+      "front": "View front packaging",
+      "kibble": "View kibble close-up",
+      "nutrition": "View nutrition label",
+      "lifestyle": "View lifestyle image"
+    },
+    "quantity": {
+      "label": "Quantity",
+      "decrease": "Decrease quantity",
+      "increase": "Increase quantity"
+    },
+    "actions": {
+      "addToCart": "Add to cart",
+      "buyNow": "Buy now"
+    },
+    "tabs": {
+      "description": "Product description"
+    },
+    "description": {
+      "highlightsTitle": "Highlights",
+      "highlights": {
+        "kibble": "Special kibble shape designed for the Poodle jaw.",
+        "coat": "Helps maintain the health of the breed's unique curly coat.",
+        "dental": "Supports oral health and helps reduce tartar formation."
+      },
+      "benefitsTitle": "Health benefits",
+      "benefits": "This breed-specific formula helps maintain the health of Poodles. Omega 3 EPA and DHA, plus borage oil, nourish the curly coat and support continuous hair growth with an adapted protein level.",
+      "specsTitle": "Product information"
+    },
+    "specs": {
+      "brand": {
+        "label": "Brand",
+        "value": "Royal Canin"
+      },
+      "type": {
+        "label": "Product type",
+        "value": "Dry dog food"
+      },
+      "weight": {
+        "label": "Weight",
+        "value": "1.5kg"
+      },
+      "age": {
+        "label": "Life stage",
+        "value": "Adult dogs over 10 months old"
+      }
+    },
+    "related": {
+      "title": "Similar products",
+      "viewAll": "View all",
+      "buy": "Buy",
+      "items": {
+        "ganadorLamb": {
+          "title": "Ganador Adult lamb & rice dry food 3kg",
+          "badge": "-10%"
+        },
+        "zenithAdult": {
+          "title": "Zenith soft food for adult dogs 1.2kg",
+          "badge": ""
+        },
+        "pedigreeBeef": {
+          "title": "Pedigree beef & vegetable dry food 3kg",
+          "badge": ""
+        },
+        "smartHeartBeef": {
+          "title": "SmartHeart roast beef dry food 3kg",
+          "badge": "New"
+        }
+      }
+    }
+  },
+  "cart": {
+    "addedToCart": "Product added to cart!",
+    "title": "Your cart",
+    "continueShopping": "Continue shopping",
+    "categoryLabel": "Category: {{category}}",
+    "remove": "Remove item",
+    "quantity": {
+      "decrease": "Decrease quantity",
+      "increase": "Increase quantity"
+    },
+    "items": {
+      "oliveShampoo": {
+        "title": "Olive Essence shampoo for brown coats 450g",
+        "category": "Grooming Spa",
+        "imageAlt": "Olive Essence pet shampoo bottle"
+      },
+      "royalCaninPoodle": {
+        "title": "Royal Canin Poodle Adult dry food 1.5kg",
+        "category": "Dog food",
+        "imageAlt": "Royal Canin Poodle Adult dry food bag"
+      }
+    },
+    "summary": {
+      "title": "Order summary",
+      "products": "Products ({{count}})",
+      "total": "Total",
+      "checkout": "Checkout now",
+      "securePayment": "Safe and secure payment"
+    },
+    "support": {
+      "title": "Need support?",
+      "description": "Our team is ready to help you any time.",
+      "phone": "1900 1234"
+    },
+    "suggestions": {
+      "title": "Frequently bought together",
+      "add": "Add",
+      "items": {
+        "treats": {
+          "title": "Chew bone reward treats",
+          "imageAlt": "Colorful dog treats in a wooden bowl"
+        },
+        "ropeToy": {
+          "title": "Durable rope toy",
+          "imageAlt": "Happy puppy playing with a red toy"
+        },
+        "leatherCollar": {
+          "title": "Premium leather collar",
+          "imageAlt": "Brown leather pet collar with gold buckle"
+        },
+        "ceramicBowl": {
+          "title": "Anti-slip ceramic bowl",
+          "imageAlt": "Modern ceramic pet bowl with fresh water"
+        }
+      }
+    }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shipping": {
+      "title": "Shipping information",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Enter full name",
+      "phone": "Phone number",
+      "phonePlaceholder": "Enter phone number",
+      "address": "Address",
+      "addressPlaceholder": "House number and street",
+      "city": "Province / City",
+      "cityPlaceholder": "Choose province / city",
+      "district": "District",
+      "districtPlaceholder": "Choose district",
+      "ward": "Ward",
+      "wardPlaceholder": "Choose ward",
+      "cities": {
+        "hoChiMinh": "Ho Chi Minh City",
+        "haNoi": "Ha Noi",
+        "daNang": "Da Nang"
+      }
+    },
+    "delivery": {
+      "title": "Shipping method",
+      "methods": {
+        "standard": {
+          "title": "Standard delivery (2-3 days)",
+          "description": "Lowest shipping cost"
+        },
+        "express": {
+          "title": "Express delivery (24h)",
+          "description": "Receive your order within the day"
+        }
+      }
+    },
+    "payment": {
+      "title": "Payment method",
+      "methods": {
+        "cod": "Cash on delivery (COD)",
+        "bank": "Bank transfer",
+        "momo": "MoMo wallet",
+        "zaloPay": "ZaloPay wallet"
+      },
+      "alt": {
+        "momo": "MoMo logo",
+        "zaloPay": "ZaloPay logo"
+      }
+    },
+    "note": {
+      "title": "Order note",
+      "placeholder": "Enter delivery notes or a message for our staff..."
+    },
+    "summary": {
+      "title": "Your order",
+      "quantity": "Qty: {{count}}",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping fee",
+      "freeShipping": "Free",
+      "discount": "Discount",
+      "total": "Total",
+      "placeOrder": "Place order",
+      "items": {
+        "oliveShampoo": {
+          "title": "Olive Essence shampoo",
+          "imageAlt": "Olive Essence pet shampoo bottle"
+        },
+        "royalCaninPoodle": {
+          "title": "Royal Canin dry food",
+          "imageAlt": "Royal Canin Poodle Adult dry food bag"
+        }
+      },
+      "trust": {
+        "secure": "Secure payment",
+        "returns": "7-day returns",
+        "authentic": "Authentic products guaranteed"
+      }
+    },
+    "coupon": {
+      "title": "Discount code / Voucher",
+      "placeholder": "Enter code...",
+      "apply": "Apply"
+    }
+  },
+  "orderSuccess": {
+    "banner": {
+      "title": "Thank you for your order!",
+      "orderCodePrefix": "Your order code is",
+      "emailPrefix": "A confirmation email has been sent to"
+    },
+    "details": {
+      "title": "Order details",
+      "itemCount": "{{count}} products",
+      "quantity": "Quantity: {{count}}",
+      "items": {
+        "oliveShampoo": {
+          "title": "Olive Essence shampoo for brown coats",
+          "imageAlt": "Olive Essence pet shampoo bottle"
+        },
+        "royalCaninPoodle": {
+          "title": "Royal Canin Poodle Adult dry food",
+          "imageAlt": "Royal Canin Poodle Adult dry food bag"
+        }
+      }
+    },
+    "delivery": {
+      "title": "Delivery information",
+      "name": "Nguyen Van An",
+      "phone": "090 123 4567",
+      "address": "123 Le Loi Street, Ben Thanh Ward, District 1, Ho Chi Minh City"
+    },
+    "method": {
+      "title": "Shipping & payment method",
+      "shippingLabel": "Shipping",
+      "shipping": "Express delivery (2-3 days)",
+      "paymentLabel": "Payment",
+      "payment": "Credit card (Visa **** 4455)"
+    },
+    "payment": {
+      "title": "Total",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping fee",
+      "freeShipping": "Free",
+      "total": "Total paid",
+      "trackOrder": "Track order",
+      "continueShopping": "Continue shopping"
+    },
+    "support": {
+      "title": "Need support?",
+      "description": "Our pet care team is always ready to help.",
+      "phone": "1900 1234",
+      "chat": "Chat with us"
+    },
+    "trustQuote": "For every tail that keeps wagging happily."
+  },
   "hero": {
     "title": "Dog food & accessories",
     "subtitle": "Explore premium nutrition and accessories to keep your pups healthy and happy every day."
@@ -30,15 +308,14 @@
     "title": "Filters",
     "categoriesTitle": "Categories",
     "brandsTitle": "Brands",
-    "priceTitle": "Price range",
-    "priceMin": "0 VND",
-    "priceMax": "1,000,000 VND+",
     "categories": {
       "all": "All",
-      "dryFood": "Dry food",
-      "wetFood": "Wet food",
-      "treats": "Treats & chews",
-      "accessories": "Accessories"
+      "toys": "Toys",
+      "hygiene": "Pet Hygiene",
+      "supplement": "Pet Supplements",
+      "accessories": "Accessories",
+      "dogFood": "Dog Foods",
+      "catFood": "Cat Foods"
     }
   },
   "brands": {

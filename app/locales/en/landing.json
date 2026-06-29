@@ -1,7 +1,9 @@
 {
   "brand": {
-    "name": "Pet Store",
-    "logoAlt": "Pet Store logo",
+    "name": "PetBuddy",
+    "petName": "Pet",
+    "buddyName": "Buddy",
+    "logoAlt": "PetBuddy logo",
     "tagline": "A premium pet care system with high-quality products and services."
   },
   "nav": {
@@ -13,12 +15,33 @@
   },
   "actions": {
     "cart": "Open cart",
+    "account": "Open account",
     "menu": "Open menu",
     "addToCart": "Add to cart",
     "supportChat": "Support chat",
     "callNow": "Call now",
     "login": "Log in",
-    "register": "Sign up"
+    "register": "Sign up",
+    "logout": "Log out",
+    "profile": "My account"
+  },
+  "chatModal": {
+    "eyebrow": "Live support",
+    "title": "PetBuddy chat",
+    "subtitle": "Ask us anything about booking, products, or pet care tips.",
+    "close": "Close chat box",
+    "greeting": "Hi! We’re here to help you choose the best service for your pet.",
+    "reply": "Our team can answer in a few minutes. What would you like to know?",
+    "followUp": "If you need a service recommendation, tell us your pet’s size and coat condition.",
+    "inputLabel": "Message",
+    "placeholder": "Type your question here",
+    "send": "Send",
+    "sideTitle": "Support details",
+    "sideDescription": "This space is reserved for a larger chat box so the conversation feels easier to read.",
+    "sideHoursLabel": "Hours",
+    "sideHoursValue": "08:00 - 21:00 daily",
+    "sidePhoneLabel": "Phone",
+    "sidePhoneValue": "092 199 9319"
   },
   "hero": {
     "title": "Complete care for your beloved pets",
@@ -34,56 +57,19 @@
         "title": "Bath & blow dry",
         "description": "A multi-step bath routine with specialized shampoos to deep clean, deodorize, and leave coats silky smooth for all breeds.",
         "imageAlt": "Bath and blow dry",
-        "bullets": [
-          "Deep clean scent glands",
-          "Basic fluffy blow dry",
-          "Ear cleaning and nail trim"
-        ]
+        "bullets": ["Deep clean scent glands", "Basic fluffy blow dry", "Ear cleaning and nail trim"]
       },
       "grooming": {
         "title": "Grooming & styling",
         "description": "Artistic trimming based on standard styles or personal requests to make pets look neat, cute, and confident.",
         "imageAlt": "Grooming and styling",
-        "bullets": [
-          "Style consultation",
-          "Full-body detailed trim",
-          "Coat repair for tangles"
-        ]
+        "bullets": ["Style consultation", "Full-body detailed trim", "Coat repair for tangles"]
       }
     }
   },
   "products": {
     "title": "Featured products",
-    "filters": {
-      "all": "All",
-      "food": "Food",
-      "accessories": "Accessories",
-      "toys": "Toys"
-    },
-    "badgeHot": "HOT",
-    "viewAll": "View all products",
-    "items": {
-      "royalCanin": {
-        "title": "Royal Canin Mini Puppy 2kg dry food",
-        "price": "350,000 VND",
-        "imageAlt": "Royal Canin dry food"
-      },
-      "ganador": {
-        "title": "Ganador Adult chicken flavor",
-        "price": "120,000 VND",
-        "imageAlt": "Ganador dry food"
-      },
-      "bone": {
-        "title": "Natural cowhide dental chew for medium dogs",
-        "price": "45,000 VND",
-        "imageAlt": "Cowhide chew"
-      },
-      "carrier": {
-        "title": "Airline pet carrier size M",
-        "price": "450,000 VND",
-        "imageAlt": "Pet carrier"
-      }
-    }
+    "viewAll": "View all products"
   },
   "trust": {
     "title": "Why choose Pet Store?",
@@ -100,6 +86,144 @@
         "title": "24/7 friendly support",
         "description": "Our experts are always ready to advise on nutrition and pet care."
       }
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Contact & support",
+      "subtitle": "We're here to provide the best care for your pets. Reach out to our dedicated team anytime.",
+      "imageAlt": "Warm veterinary reception area with a happy dog and owner"
+    },
+    "info": {
+      "title": "Our information",
+      "addressLabel": "Address",
+      "address": "151 Huy Can, Thu Duc, Ho Chi Minh City",
+      "phoneLabel": "Phone",
+      "phone": "092 199 9319",
+      "followLabel": "Follow us",
+      "facebook": "Facebook: PetBuddy",
+      "mapAlt": "Map view of Thu Duc district in Ho Chi Minh City",
+      "openMap": "Open Google Maps"
+    },
+    "policies": {
+      "purchaseTab": "Purchase policy",
+      "shippingTab": "Shipping policy",
+      "returnTab": "Return policy",
+      "purchaseDescription": "At PetBuddy, we are committed to a safe, transparent shopping experience. Every food, accessory, and care item is reviewed carefully before reaching your pet.",
+      "purchaseCards": {
+        "verified": {
+          "title": "Verified origins",
+          "description": "Every product is authentic and checked for safety and quality."
+        },
+        "quality": {
+          "title": "High quality",
+          "description": "We prioritize premium products that meet trusted pet-care standards."
+        },
+        "support": {
+          "title": "24/7 support",
+          "description": "Our team is ready to help you choose the right products and services."
+        }
+      },
+      "purchaseConditions": {
+        "title": "Return conditions",
+        "items": [
+          "Products with manufacturer defects",
+          "Products delivered incorrectly (wrong code, size, color, quantity)",
+          "Products damaged during shipping (dented, broken, torn packaging)",
+          "Products in original condition with receipt and tags"
+        ]
+      },
+      "shippingHero": {
+        "title": "Free shipping in inner city",
+        "description": "Orders within central HCM City districts enjoy complimentary delivery."
+      },
+      "shippingItems": {
+        "fast": {
+          "title": "Fast delivery",
+          "description": "Most orders are processed and shipped within 2-4 hours after confirmation."
+        },
+        "safe": {
+          "title": "Safe packaging",
+          "description": "Careful packaging keeps products protected during transit."
+        },
+        "schedule": {
+          "title": "Flexible schedule",
+          "description": "Choose a delivery window that fits your routine."
+        }
+      },
+      "return": {
+        "intro": "PetBuddy is committed to providing the best quality products for your pets. If any issues arise, we are ready to support returns and exchanges according to our policy.",
+        "applicable": {
+          "title": "Eligible for return",
+          "items": [
+            "Products with manufacturer defects",
+            "Products delivered incorrectly",
+            "Products damaged during shipping",
+            "Unused products in original condition"
+          ]
+        },
+        "notApplicable": {
+          "title": "Not eligible for return",
+          "items": [
+            "Used products or opened seals",
+            "Products damaged due to improper storage",
+            "Scratched or broken products from impact",
+            "Custom-made orders (special sizes, colors, personalized items)",
+            "Expired products"
+          ]
+        },
+        "fees": {
+          "title": "Return shipping fees",
+          "petbuddyFault": {
+            "title": "PetBuddy's fault",
+            "description": "PetBuddy covers outbound shipping. Customer pays return shipping."
+          },
+          "customerFault": {
+            "title": "Customer's fault",
+            "description": "Customer pays all shipping fees for both directions."
+          }
+        },
+        "process": {
+          "title": "Return process",
+          "steps": [
+            { "title": "Contact us", "description": "Email, call hotline, or chat directly on website" },
+            { "title": "Provide information", "description": "Order ID, photos/videos of defects, detailed description" },
+            { "title": "PetBuddy confirms", "description": "Response within 24-48 business hours" },
+            { "title": "Ship item back (if needed)", "description": "Send product to PetBuddy address" },
+            { "title": "Process completed", "description": "Exchange or refund within 2 business days" }
+          ]
+        },
+        "note": "Contact hotline 092 199 9319 or email hotro@petbuddy.vn for quick support."
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "booking": {
+          "question": "How can I book a grooming appointment for my dog?",
+          "answer": "You can book directly from the Services section on our website or contact our hotline at 092 199 9319 for quick support from the PetBuddy team."
+        },
+        "delivery": {
+          "question": "Do you offer home delivery?",
+          "answer": "Yes. We provide nationwide delivery and complimentary shipping for many qualifying orders within inner Ho Chi Minh City under our current policy."
+        },
+        "returns": {
+          "question": "What is your product return policy?",
+          "answer": "PetBuddy supports returns within 7 days for manufacturer defects or items that do not match the description, as long as the product remains unused and keeps its original labels."
+        },
+        "loyalty": {
+          "question": "Do you have benefits for loyal customers?",
+          "answer": "Yes. Our member rewards program lets you collect points for discount vouchers, gifts, and exclusive perks for returning customers."
+        }
+      }
+    },
+    "newsletter": {
+      "title": "Join our pet-loving community",
+      "description": "Get exclusive care tips, health updates, and special offers delivered to your inbox every week.",
+      "placeholder": "Enter your email",
+      "submit": "Subscribe",
+      "submitted": "Subscribed",
+      "imageAlt": "Two happy dogs sitting together in a park"
     }
   },
   "team": {
@@ -135,5 +259,8 @@
     "services": "Services",
     "cart": "Cart",
     "account": "Account"
+  },
+  "toast": {
+    "addedToCart": "Added to cart!"
   }
 }

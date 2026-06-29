@@ -1,2 +1,5 @@
-export { RegisterPage } from "./pages/register-page";
-export { LoginPage } from "./pages/login-page";
+export { RegisterPage } from './pages/register-page'
+export { LoginPage } from './pages/login-page'
+export { OtpVerificationPage } from './pages/otp-verification-page'
+export { ForgotPasswordPage } from './pages/forgot-password-page'
+export { ResetPasswordPage } from './pages/reset-password-page'

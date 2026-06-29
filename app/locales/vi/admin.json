@@ -1,0 +1,695 @@
+{
+  "admin": {
+    "name": "Quản trị viên",
+    "role": "Quản trị chăm sóc thú cưng"
+  },
+  "blogManagement": {
+    "actions": {
+      "add": "Tạo bài viết mới",
+      "delete": "Xóa bài viết",
+      "edit": "Sửa bài viết"
+    },
+    "confirmDelete": "Bạn có chắc muốn xóa bài viết này?",
+    "create": {
+      "accent": {
+        "label": "Hướng dẫn nhanh",
+        "text": "Nhập file .md để tự động điền nội dung. Sau đó chỉnh sửa tiêu đề, mô tả ngắn và ảnh bìa để có kết quả tốt nhất.",
+        "title": "Sẵn sàng nhập Markdown"
+      },
+      "cancel": "Hủy bỏ",
+      "close": "Đóng form tạo bài viết",
+      "draftHint": "Lưu nháp - chỉ hiển thị với quản trị viên",
+      "editTitle": "Chỉnh sửa bài viết",
+      "fields": {
+        "author": "Tác giả",
+        "label": "Danh mục",
+        "content": "Nội dung Markdown",
+        "coverImage": "Ảnh bìa",
+        "excerpt": "Mô tả ngắn",
+        "publish": "Xuất bản ngay",
+        "title": "Tiêu đề"
+      },
+      "imageUpload": {
+        "currentImage": "Ảnh bìa hiện tại",
+        "invalidType": "Chỉ chấp nhận file JPEG, PNG, GIF hoặc WebP.",
+        "placeholder": "Nhấn để tải ảnh lên hoặc kéo thả vào đây",
+        "remove": "Xóa ảnh bìa",
+        "tooLarge": "Kích thước file tối đa {{max}}MB."
+      },
+      "importMd": "Nhập .md",
+      "placeholders": {
+        "author": "ví dụ: Đội ngũ PetBuddy",
+        "content": "# Tiêu đề của bạn\n\nViết nội dung bài viết bằng định dạng Markdown tại đây...",
+        "excerpt": "Một mô tả ngắn được hiển thị trên thẻ bài viết...",
+        "title": "Tiêu đề bài viết của bạn"
+      },
+      "preview": {
+        "excerptPlaceholder": "Tóm tắt ngắn gọn bài viết...",
+        "subtitle": "Xem trước cách bài viết sẽ hiển thị trên trang blog.",
+        "title": "Xem trước thẻ bài viết",
+        "titlePlaceholder": "Tiêu đề bài viết của bạn"
+      },
+      "publishedHint": "Hiển thị cho tất cả người dùng trên trang blog",
+      "save": "Lưu bài viết",
+      "subtitle": "Viết hoặc nhập file .md, xem trước nội dung đã render, và xuất bản lên trang blog.",
+      "tabs": {
+        "editor": "Trình soạn thảo",
+        "preview": "Xem trước"
+      },
+      "tip": {
+        "text": "Dùng định dạng Markdown cho tiêu đề, danh sách, khối code và liên kết. Bảng và gạch ngang cũng được hỗ trợ qua GitHub Flavored Markdown.",
+        "title": "Mẹo về Markdown"
+      },
+      "title": "Tạo bài viết blog"
+    },
+    "pagination": {
+      "showing": "Hiển thị {{from}} - {{to}} của {{total}} bài viết"
+    },
+    "sidebar": {
+      "all": "Tất cả bài viết",
+      "featured": "Nổi bật",
+      "grooming": "Làm đẹp",
+      "health": "Sức khỏe",
+      "lifestyle": "Lối sống",
+      "nutrition": "Dinh dưỡng",
+      "training": "Huấn luyện"
+    },
+    "stats": {
+      "drafts": {
+        "label": "Bản nháp",
+        "note": "Chưa xuất bản"
+      },
+      "published": {
+        "label": "Đã xuất bản",
+        "note": "Đang hiển thị trên blog"
+      },
+      "total": {
+        "label": "Tổng bài viết",
+        "note": "Toàn thời gian"
+      }
+    },
+    "subtitle": "Quản lý bài viết blog, nhập file .md và xuất bản nội dung lên trang blog.",
+    "table": {
+      "columns": {
+        "actions": "Hành động",
+        "author": "Tác giả",
+        "label": "Danh mục",
+        "date": "Ngày",
+        "post": "Bài viết",
+        "status": "Trạng thái"
+      },
+      "draft": "Nháp",
+      "empty": "Chưa có bài viết nào. Tạo bài viết blog đầu tiên của bạn.",
+      "published": "Đã xuất bản"
+    },
+    "title": "Quản lý Blog"
+  },
+  "charts": {
+    "breakdown": {
+      "items": {
+        "grooming": "Spa & Grooming",
+        "medical": "Dịch vụ y tế",
+        "products": "Sản phẩm"
+      },
+      "primaryLabel": "Sản phẩm",
+      "title": "Cơ cấu doanh thu"
+    },
+    "revenueTrend": {
+      "days": {
+        "fri": "T6",
+        "mon": "T2",
+        "sat": "T7",
+        "sun": "CN",
+        "thu": "T5",
+        "tue": "T3",
+        "wed": "T4"
+      },
+      "title": "Xu hướng doanh thu",
+      "unit": "Triệu VNĐ"
+    }
+  },
+  "dashboard": {
+    "subtitle": "Xem tổng quan doanh thu cửa hàng ở chế độ chỉ xem",
+    "title": "Báo cáo doanh thu"
+  },
+  "employees": {
+    "actions": {
+      "add": "Thêm nhân viên mới",
+      "delete": "Xóa",
+      "edit": "Sửa"
+    },
+    "pagination": {
+      "next": "Trang sau",
+      "previous": "Trang trước",
+      "showing": "Hiển thị {{from}}-{{to}} trên {{total}} nhân viên"
+    },
+    "roles": {
+      "manager": "manager",
+      "staff": "staff"
+    },
+    "status": {
+      "leave": "Nghỉ phép",
+      "working": "Đang làm việc"
+    },
+    "table": {
+      "columns": {
+        "actions": "Hành động",
+        "name": "Họ tên",
+        "role": "Chức vụ",
+        "status": "Trạng thái"
+      },
+      "rows": {
+        "leThiMai": {
+          "name": "Lê Thị Mai"
+        },
+        "nguyenMinhHoang": {
+          "name": "Nguyễn Minh Hoàng"
+        },
+        "phamVanHung": {
+          "name": "Phạm Văn Hùng"
+        },
+        "tranVanAn": {
+          "name": "Trần Văn An"
+        }
+      }
+    },
+    "title": "Quản lý nhân viên",
+    "toolbar": {
+      "role": {
+        "all": "Tất cả chức vụ"
+      },
+      "searchPlaceholder": "Tìm kiếm theo tên, mã NV..."
+    }
+  },
+  "filters": {
+    "custom": "Tùy chỉnh",
+    "month": "Tháng này",
+    "today": "Hôm nay",
+    "week": "Tuần này"
+  },
+  "metrics": {
+    "averageOrder": {
+      "change": "+8.4% so với kỳ trước",
+      "label": "TB cỡ đơn"
+    },
+    "orders": {
+      "change": "+5.2% so với kỳ trước",
+      "label": "Đơn hàng"
+    },
+    "revenue": {
+      "change": "+12.5% so với kỳ trước",
+      "label": "Tổng doanh thu"
+    },
+    "services": {
+      "change": "-2.1% so với kỳ trước",
+      "label": "Dịch vụ"
+    }
+  },
+  "sidebar": {
+    "branch": "Chi nhánh chính",
+    "brand": "PawAdmin",
+    "logoAlt": "Logo PetBuddy",
+    "logout": "Đăng xuất",
+    "nav": {
+      "blog": "Blog",
+      "employees": "Nhân viên",
+      "inventory": "Sản phẩm",
+      "reports": "Báo cáo",
+      "serviceBookings": "Lịch đặt dịch vụ",
+      "services": "Dịch vụ",
+      "users": "Người dùng",
+      "vouchers": "Voucher",
+      "shipping": "Cấu hình vận chuyển"
+    },
+    "toggle": "Thu gọn/mở rộng thanh bên"
+  },
+  "serviceBookings": {
+    "actions": {
+      "create": "Tạo lịch hẹn mới",
+      "edit": "Chỉnh sửa lịch hẹn",
+      "view": "Xem lịch hẹn"
+    },
+    "pagination": {
+      "label": "Phân trang lịch đặt",
+      "showing": "Hiển thị {{from}} - {{to}} của {{total}} lịch đặt"
+    },
+    "services": {
+      "bathDry": "Tắm & sấy khô",
+      "furTrim": "Cắt tỉa lông",
+      "hygieneCombo": "Combo vệ sinh",
+      "styling": "Cắt tỉa tạo kiểu"
+    },
+    "stats": {
+      "cancelled": "Đã hủy",
+      "completed": "Đã hoàn thành",
+      "pending": "Chờ xác nhận",
+      "total": "Tổng lịch đặt"
+    },
+    "status": {
+      "cancelled": "Đã hủy",
+      "completed": "Đã xong",
+      "confirmed": "Đã xác nhận",
+      "pending": "Đang chờ"
+    },
+    "subtitle": "Theo dõi và điều phối lịch hẹn chăm sóc thú cưng.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "code": "Mã đơn",
+        "customer": "Khách hàng",
+        "dateTime": "Ngày & giờ",
+        "pet": "Thú cưng",
+        "service": "Dịch vụ",
+        "status": "Trạng thái"
+      },
+      "rows": {
+        "cj9915": {
+          "customer": "Hoàng Kim Yến",
+          "pet": "Bông (Samoyed)"
+        },
+        "cj9918": {
+          "customer": "Trần Minh Quân",
+          "pet": "Mochi (Corgi)"
+        },
+        "cj9920": {
+          "customer": "Lê Thị Bích",
+          "pet": "Lu (Beagle)"
+        },
+        "cj9921": {
+          "customer": "Nguyễn Văn An",
+          "pet": "Bơ (Poodle)"
+        }
+      }
+    },
+    "title": "Quản lý lịch đặt dịch vụ",
+    "toolbar": {
+      "customerLabel": "Tìm kiếm khách hàng",
+      "dateLabel": "Khoảng ngày",
+      "filter": "Lọc",
+      "searchPlaceholder": "Nhập tên hoặc số điện thoại...",
+      "serviceLabel": "Loại dịch vụ",
+      "services": {
+        "all": "Tất cả dịch vụ",
+        "bath": "Tắm & sấy",
+        "combo": "Trọn gói combo",
+        "earCare": "Vệ sinh tai",
+        "grooming": "Cắt tỉa lông"
+      }
+    }
+  },
+  "serviceManagement": {
+    "actions": {
+      "add": "Thêm dịch vụ mới",
+      "delete": "Xóa dịch vụ",
+      "edit": "Chỉnh sửa dịch vụ",
+      "view": "Xem dịch vụ"
+    },
+    "create": {
+      "accent": {
+        "label": "Tư vấn nhanh",
+        "text": "Dùng hình ảnh chất lượng cao và mô tả rõ ràng để tăng tỷ lệ đặt lịch và giúp khách hàng hiểu ngay giá trị dịch vụ.",
+        "title": "Kết nối trải nghiệm khách hàng"
+      },
+      "cancel": "Hủy bỏ",
+      "categories": {
+        "grooming": "Grooming & Spa",
+        "hotel": "Khách sạn thú cưng",
+        "vet": "Thú y"
+      },
+      "close": "Đóng form tạo dịch vụ",
+      "fields": {
+        "category": "Danh mục",
+        "description": "Mô tả dịch vụ",
+        "name": "Tên dịch vụ",
+        "status": "Trạng thái hoạt động"
+      },
+      "media": {
+        "hint": "PNG, JPG tối đa 10MB",
+        "subtitle": "Tải ảnh minh họa hoặc kéo thả vào đây để làm nổi bật dịch vụ mới.",
+        "title": "Hình ảnh minh họa",
+        "uploadLabel": "Tải ảnh lên hoặc kéo thả vào đây"
+      },
+      "placeholders": {
+        "description": "Mô tả quy trình, lợi ích và trải nghiệm khách hàng sẽ nhận được.",
+        "name": "Ví dụ: Tắm sấy trọn gói"
+      },
+      "pricing": {
+        "badge": "Bảng giá linh hoạt",
+        "currency": "đ",
+        "subtitle": "Điền mức giá theo từng phân khúc cân nặng để giữ tính công bằng và chuyên nghiệp.",
+        "title": "Bảng giá theo cân nặng",
+        "tiers": {
+          "from10To20": "Từ 10kg - 20kg",
+          "from5To10": "Từ 5kg - 10kg",
+          "over20": "Trên 20kg",
+          "under5": "Dưới 5kg"
+        }
+      },
+      "save": "Lưu dịch vụ",
+      "subtitle": "Tạo gói dịch vụ mới, thiết lập giá theo trọng lượng và bổ sung hình ảnh để triển khai nhanh chóng.",
+      "tip": {
+        "text": "Hình ảnh chất lượng cao và mô tả chi tiết giúp khách hàng ra quyết định nhanh hơn và tăng tỷ lệ đặt lịch dịch vụ.",
+        "title": "Mẹo nhỏ"
+      },
+      "title": "Thêm dịch vụ mới"
+    },
+    "categories": {
+      "grooming": "Grooming & Spa",
+      "hotel": "Khách sạn",
+      "vet": "Thú y"
+    },
+    "filters": {
+      "advanced": "Lọc nâng cao",
+      "categories": {
+        "all": "Tất cả",
+        "grooming": "Grooming & Spa",
+        "hotel": "Khách sạn",
+        "vet": "Thú y"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "all": "Trạng thái: Tất cả",
+        "inactive": "Ngừng hoạt động"
+      }
+    },
+    "pagination": {
+      "showing": "Hiển thị 1 - 10 trên tổng số 24 dịch vụ"
+    },
+    "stats": {
+      "active": "Đang hoạt động",
+      "promotions": "Khuyến mãi",
+      "total": "Tổng số dịch vụ"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng hoạt động"
+    },
+    "subtitle": "Cấu hình và cập nhật các gói dịch vụ dành cho thú cưng.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "category": "Phân loại",
+        "name": "Tên dịch vụ",
+        "price": "Giá cơ bản",
+        "status": "Trạng thái",
+        "updatedAt": "Cập nhật"
+      },
+      "rows": {
+        "bathTrimCombo": {
+          "description": "Dành cho chó dưới 5kg",
+          "name": "Combo tắm sấy & cắt tỉa"
+        },
+        "vaccination": {
+          "description": "Gói 5 loại vaccine",
+          "name": "Tiêm chủng định kỳ"
+        },
+        "vipHotel": {
+          "description": "Phòng đơn điều hòa",
+          "name": "Khách sạn thú cưng VIP"
+        }
+      }
+    },
+    "title": "Quản lý dịch vụ",
+    "pricing": {
+      "cancel": "Đóng",
+      "close": "Đóng bảng giá dịch vụ",
+      "currency": "đ",
+      "editDetails": "Chỉnh sửa chi tiết",
+      "save": "Cập nhật bảng giá",
+      "serviceId": "Service ID: {{id}}",
+      "subtitle": "Cấu hình biểu phí linh hoạt cho Spa & Grooming. Mức giá được phân loại theo trọng lượng cơ thể để đảm bảo tính công bằng và chuyên nghiệp trong vận hành.",
+      "title": "Quản lý bảng giá dịch vụ",
+      "weightTiers": {
+        "from10To20": "Từ 10kg - 20kg",
+        "from5To10": "Từ 5kg - 10kg",
+        "over20": "Trên 20kg",
+        "under5": "Dưới 5kg"
+      },
+      "services": {
+        "bathDry": {
+          "description": "Bao gồm các bước vệ sinh cơ bản: tắm khử mùi, sấy khô đánh bóng lông và chải tơi.",
+          "title": "Tắm sấy tiêu chuẩn"
+        },
+        "hygieneCombo": {
+          "description": "Chăm sóc toàn diện: cắt móng, mài móng, vắt tuyến hôi và vệ sinh tai chuyên sâu.",
+          "title": "Combo vệ sinh"
+        },
+        "styling": {
+          "description": "Dịch vụ cắt lông tạo kiểu chuyên sâu theo yêu cầu riêng biệt hoặc theo đặc thù giống loài.",
+          "title": "Cắt tỉa & tạo kiểu"
+        }
+      }
+    }
+  },
+  "topNav": {
+    "help": "Trợ giúp",
+    "menu": "Mở menu",
+    "notifications": "Thông báo"
+  },
+  "topSales": {
+    "categories": {
+      "grooming": "Spa & Grooming",
+      "medical": "Dịch vụ y tế",
+      "product": "Sản phẩm"
+    },
+    "columns": {
+      "category": "Danh mục",
+      "name": "Tên sản phẩm/dịch vụ",
+      "quantity": "Số lượng",
+      "revenue": "Doanh thu"
+    },
+    "items": {
+      "grooming": {
+        "name": "Tắm & cắt tỉa lông chó/mèo cơ bản"
+      },
+      "royalCanin": {
+        "name": "Hạt Royal Canin Poodle Adult 1.5kg"
+      },
+      "vaccine": {
+        "name": "Tiêm phòng vắc xin 7 bệnh"
+      }
+    },
+    "title": "Sản phẩm & dịch vụ bán chạy nhất"
+  },
+  "users": {
+    "actions": {
+      "add": "Thêm người dùng",
+      "edit": "Chỉnh sửa",
+      "export": "Xuất danh sách",
+      "view": "Xem chi tiết"
+    },
+    "pagination": {
+      "label": "Phân trang",
+      "showing": "Hiển thị {{from}} - {{to}} trong số {{total}} kết quả"
+    },
+    "stats": {
+      "active": {
+        "label": "Đang hoạt động",
+        "note": "90% tỷ lệ hoạt động"
+      },
+      "newToday": {
+        "label": "Người dùng mới hôm nay",
+        "note": "Cập nhật 5 phút trước"
+      },
+      "total": {
+        "label": "Tổng người dùng",
+        "note": "+24 khách mới tháng này"
+      }
+    },
+    "status": {
+      "active": "Hoạt động",
+      "locked": "Bị khóa"
+    },
+    "subtitle": "Quản lý thông tin, điểm tích lũy và lịch sử mua hàng của khách hàng.",
+    "table": {
+      "columns": {
+        "actions": "Hành động",
+        "customer": "Khách hàng",
+        "orders": "Tổng đơn hàng",
+        "phone": "Số điện thoại",
+        "points": "Điểm tích lũy",
+        "status": "Trạng thái"
+      },
+      "orderCount": "{{count}} đơn",
+      "pointsUnit": "điểm",
+      "rows": {
+        "leThiB": {
+          "email": "lethib@email.com",
+          "name": "Lê Thị B"
+        },
+        "nguyenVanA": {
+          "email": "nguyenvana@email.com",
+          "name": "Nguyễn Văn A"
+        },
+        "tranVanC": {
+          "email": "tranvanc@email.com",
+          "name": "Trần Văn C"
+        }
+      }
+    },
+    "title": "Quản lý người dùng",
+    "toolbar": {
+      "advancedFilter": "Lọc nâng cao",
+      "searchPlaceholder": "Tìm kiếm theo tên hoặc số điện thoại...",
+      "status": {
+        "active": "Hoạt động",
+        "all": "Tất cả trạng thái",
+        "locked": "Bị khóa"
+      }
+    }
+  },
+  "productManagement": {
+    "actions": {
+      "add": "Thêm sản phẩm mới",
+      "delete": "Xóa sản phẩm",
+      "edit": "Chỉnh sửa sản phẩm",
+      "view": "Xem sản phẩm"
+    },
+    "categories": {
+      "accessories": "Phụ kiện",
+      "food": "Thức ăn"
+    },
+    "filters": {
+      "categories": {
+        "accessories": "Phụ kiện",
+        "all": "Tất cả",
+        "food": "Thức ăn",
+        "medicine": "Thuốc thú y",
+        "toys": "Đồ chơi"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "all": "Trạng thái: Tất cả",
+        "inactive": "Ngừng kinh doanh"
+      }
+    },
+    "pagination": {
+      "showing": "Hiển thị {{shown}} trên {{total}} sản phẩm"
+    },
+    "searchPlaceholder": "Tìm kiếm sản phẩm...",
+    "stats": {
+      "available": "Sẵn hàng",
+      "lowStock": "Sắp hết hàng",
+      "total": "Tổng sản phẩm"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng kinh doanh"
+    },
+    "stock": {
+      "low": "Sắp hết"
+    },
+    "subtitle": "Theo dõi danh mục, giá bán, tồn kho và trạng thái kinh doanh của sản phẩm.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "category": "Danh mục",
+        "name": "Tên sản phẩm",
+        "price": "Giá bán",
+        "status": "Trạng thái",
+        "stock": "Tồn kho",
+        "updatedAt": "Cập nhật"
+      },
+      "rows": {
+        "helloShampoo": {
+          "imageAlt": "Chai sữa tắm Hello cho chó mèo",
+          "name": "Sữa tắm Hello cho chó mèo 280g",
+          "sku": "SKU: ACC-SH-280G"
+        },
+        "royalCaninPoodle": {
+          "imageAlt": "Bao bì thức ăn hạt Royal Canin Poodle Adult",
+          "name": "Thức ăn hạt Royal Canin Poodle Adult",
+          "sku": "SKU: RC-PAD-500G"
+        },
+        "transportCrate": {
+          "imageAlt": "Lồng vận chuyển thú cưng size M",
+          "name": "Lồng vận chuyển size M",
+          "sku": "SKU: ACC-CR-M"
+        }
+      }
+    },
+    "title": "Quản lý sản phẩm"
+  },
+  "voucherManagement": {
+    "actions": {
+      "create": "Tạo voucher mới",
+      "delete": "Xóa voucher",
+      "edit": "Chỉnh sửa voucher"
+    },
+    "pagination": {
+      "showing": "Hiển thị 1-10 trên 124 voucher"
+    },
+    "rewards": {
+      "accumulation": "Tỷ lệ tích điểm (Chi tiêu)",
+      "accumulationHint": "Khách hàng nhận được 1 điểm cho mỗi 10.000đ chi tiêu.",
+      "info": "Thiết lập tỷ lệ tích lũy và giá trị quy đổi điểm cho toàn hệ thống.",
+      "pointUnit": "ĐIỂM",
+      "redemption": "Giá trị quy đổi (Sử dụng)",
+      "redemptionHint": "Mỗi điểm có thể quy đổi thành 1.000đ khi thanh toán.",
+      "save": "Cập nhật cấu hình",
+      "scaleText": "Nâng cấp gói để có thêm tính năng cá nhân hóa điểm thưởng.",
+      "scaleTitle": "Mở rộng quy mô?",
+      "tiers": {
+        "diamond": "Kim cương (VIP 2)",
+        "gold": "Vàng (VIP 1)",
+        "silver": "Bạc (Mặc định)"
+      },
+      "tiersTitle": "Hệ số theo hạng thành viên",
+      "title": "Cấu hình điểm thưởng"
+    },
+    "stats": {
+      "activeVouchers": {
+        "label": "Voucher đang hoạt động",
+        "note": "+12% so với tháng trước"
+      },
+      "issuedPoints": {
+        "label": "Điểm đã cấp tháng này",
+        "note": "Tổng cộng: 1.2M điểm toàn hệ thống"
+      },
+      "redeemedPoints": {
+        "label": "Điểm đã quy đổi",
+        "note": "Tỷ lệ quy đổi: 41.5%"
+      }
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng hoạt động"
+    },
+    "subtitle": "Thiết lập chiến dịch khuyến mãi và hệ thống tích điểm cho khách hàng.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "code": "Mã voucher",
+        "discount": "Loại giảm giá",
+        "expiry": "Hạn dùng",
+        "status": "Trạng thái"
+      },
+      "filter": "Lọc voucher",
+      "minimumOrder": "Đơn từ: {{value}}",
+      "rows": {
+        "newbie": {
+          "description": "Tặng 50k đơn đầu tiên",
+          "usage": "Sử dụng: 852/1000"
+        },
+        "petSpring": {
+          "daysLeft": "Còn 15 ngày",
+          "description": "Giảm 10% dịch vụ Spa"
+        },
+        "xmas": {
+          "description": "Ưu đãi Giáng sinh",
+          "expired": "Đã hết hạn"
+        }
+      },
+      "searchPlaceholder": "Tìm mã voucher...",
+      "title": "Danh sách voucher",
+      "unlimited": "Vô thời hạn"
+    },
+    "toast": {
+      "description": "Cấu hình điểm thưởng đã được lưu.",
+      "title": "Thành công!"
+    },
+    "title": "Quản lý ưu đãi & điểm thưởng"
+  },
+  "shippingTitle": "Cấu hình phí vận chuyển",
+  "shippingSubtitle": "Thiết lập biểu phí dựa trên khoảng cách địa lý để tối ưu hóa chi phí vận hành."
+}

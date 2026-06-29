@@ -1,25 +1,22 @@
-import { LandingBottomNav } from "../components/landing-bottom-nav";
-import { LandingFab } from "../components/landing-fab";
-import { LandingFooter } from "../components/landing-footer";
-import { LandingHeader } from "../components/landing-header";
-import { LandingHero } from "../components/landing-hero";
-import { LandingProducts } from "../components/landing-products";
-import { LandingServices } from "../components/landing-services";
-import { LandingTrust } from "../components/landing-trust";
+import { LandingHero } from '../components/home/landing-hero'
+import { LandingProducts } from '../components/home/landing-products'
+import { LandingServices } from '../components/home/landing-services'
+import { LandingTrust } from '../components/home/landing-trust'
+import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <LandingHeader />
-      <main className="flex flex-col pb-24 md:pb-0">
+    <div className='min-h-screen bg-background text-foreground'>
+      <SiteHeader />
+      <main className='flex flex-col pb-24 md:pb-0'>
         <LandingHero />
         <LandingServices />
         <LandingProducts />
         <LandingTrust />
       </main>
-      <LandingFooter />
-      <LandingBottomNav />
-      <LandingFab />
+      <SiteFooter />
+      <SiteBottomNav />
+      <SiteFab />
     </div>
-  );
+  )
 }

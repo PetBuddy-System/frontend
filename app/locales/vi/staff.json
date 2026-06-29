@@ -1,0 +1,362 @@
+{
+  "dashboard": {
+    "subtitle": "Tổng quan ca làm và hoạt động cửa hàng trong ngày",
+    "title": "Bảng điều khiển nhân viên"
+  },
+  "notifications": {
+    "items": {
+      "process": {
+        "description": "Checklist bàn giao tại quầy đã được cập nhật. Vui lòng xem lại trước ca làm tiếp theo.",
+        "time": "2 giờ trước",
+        "title": "Cập nhật quy trình đón khách mới"
+      },
+      "reward": {
+        "description": "Chúc mừng đội grooming có điểm đánh giá dịch vụ cao nhất trong tuần này.",
+        "time": "Thứ 2, 09:00",
+        "title": "Khen thưởng nhân viên xuất sắc tuần"
+      },
+      "shift": {
+        "description": "Yêu cầu đổi ca chiều thứ Bảy của bạn đã được quản lý chấp thuận.",
+        "time": "Hôm qua, 15:30",
+        "title": "Yêu cầu đổi ca được chấp thuận"
+      }
+    },
+    "title": "Thông báo quan trọng",
+    "viewAll": "Xem tất cả thông báo"
+  },
+  "schedule": {
+    "date": "Thứ 5, 24 tháng 10",
+    "shifts": {
+      "afternoon": {
+        "area": "Khu vực: Phòng tắm thú cưng",
+        "status": "Sắp tới",
+        "time": "13:00 - 17:00",
+        "title": "Hỗ trợ Spa & Grooming"
+      },
+      "morning": {
+        "area": "Khu vực: Quầy thanh toán & đồ dùng",
+        "status": "Đang diễn ra",
+        "time": "08:00 - 12:00",
+        "title": "Nhân viên bán hàng (Ca sáng)"
+      }
+    },
+    "title": "Lịch làm việc hôm nay"
+  },
+  "sidebar": {
+    "avatarAlt": "Ảnh đại diện nhân viên",
+    "logoAlt": "Logo PetBuddy",
+    "logout": "Đăng xuất",
+    "nav": {
+      "orders": "Quản lý đơn hàng",
+      "attendanceHistory": "Lịch sử chấm công",
+      "shiftRequest": "Tạo yêu cầu đổi ca",
+      "violations": "Xem các lần vi phạm",
+      "weeklySchedule": "Xem các ca làm việc trong tuần",
+      "disposalRequest": "Tạo yêu cầu hủy hàng",
+      "inventory": "Quản lý kho hàng"
+    },
+    "portalLabel": "PetBuddy Staff Portal",
+    "roleTitle": "Nhân viên cửa hàng",
+    "toggle": "Thu gọn/mở rộng thanh bên"
+  },
+  "staff": {
+    "name": "Nguyễn Văn An"
+  },
+  "stats": {
+    "completed": {
+      "label": "Số ca đã hoàn thành",
+      "note": "Tuần này",
+      "unit": "ca",
+      "value": "5"
+    },
+    "hours": {
+      "label": "Tổng giờ làm",
+      "note": "Tuần này",
+      "unit": "giờ",
+      "value": "32.5"
+    },
+    "title": "Thống kê tuần này",
+    "violations": {
+      "label": "Số lần vi phạm",
+      "note": "Hồ sơ tốt",
+      "unit": "lần",
+      "value": "0"
+    },
+    "workDays": {
+      "label": "Ngày công tích lũy",
+      "note": "Tháng hiện tại",
+      "unit": "ngày",
+      "value": "18"
+    }
+  },
+  "topNav": {
+    "brand": "PetBuddy",
+    "help": "Trợ giúp",
+    "menu": "Mở menu",
+    "notifications": "Thông báo"
+  },
+  "welcome": {
+    "checkIn": "Chấm công ngay",
+    "kicker": "Ca làm hôm nay",
+    "subtitle": "Chúc bạn một ngày làm việc tràn đầy năng lượng tại PetBuddy.",
+    "title": "Chào buổi sáng, Nguyễn Văn An"
+  },
+  "attendance": {
+    "pageTitle": "Lịch sử chấm công",
+    "pageSubtitle": "Xem chi tiết giờ làm việc và trạng thái chuyên cần",
+    "heading": "Lịch sử chấm công",
+    "description": "Xem chi tiết giờ làm việc và trạng thái chuyên cần.",
+    "previousMonth": "Tháng trước",
+    "nextMonth": "Tháng sau",
+    "months": {
+      "oct2024": "Tháng 10/2024",
+      "sep2024": "Tháng 09/2024",
+      "aug2024": "Tháng 08/2024"
+    },
+    "summary": {
+      "totalDays": {
+        "label": "Tổng ngày công",
+        "value": "22",
+        "unit": "ngày"
+      },
+      "totalHours": {
+        "label": "Số giờ làm việc",
+        "value": "176",
+        "unit": "giờ"
+      },
+      "lateEarly": {
+        "label": "Đi muộn/Về sớm",
+        "value": "2",
+        "unit": "lần"
+      },
+      "daysOff": {
+        "label": "Ngày nghỉ",
+        "value": "1",
+        "unit": "ngày"
+      }
+    },
+    "status": {
+      "onTime": "Đúng giờ",
+      "late": "Đi muộn",
+      "earlyLeave": "Về sớm",
+      "dayOff": "Nghỉ phép"
+    },
+    "table": {
+      "title": "Chi tiết theo ngày",
+      "export": "Xuất báo cáo",
+      "showing": "Hiển thị {{from}}-{{to}} của {{total}} bản ghi",
+      "columns": {
+        "date": "Ngày",
+        "checkIn": "Giờ vào",
+        "checkOut": "Giờ ra",
+        "totalHours": "Tổng giờ",
+        "status": "Trạng thái",
+        "note": "Ghi chú"
+      }
+    },
+    "records": {
+      "day1": {
+        "dayLabel": "Thứ 6, 25/10"
+      },
+      "day2": {
+        "dayLabel": "Thứ 5, 24/10",
+        "note": "Tắc đường khu vực Cầu Giấy"
+      },
+      "day3": {
+        "dayLabel": "Thứ 4, 23/10"
+      },
+      "day4": {
+        "dayLabel": "Thứ 3, 22/10",
+        "note": "Nghỉ phép năm (Đã duyệt)"
+      },
+      "day5": {
+        "dayLabel": "Thứ 2, 21/10"
+      }
+    }
+  },
+  "shiftRequest": {
+    "pageTitle": "Tạo yêu cầu đổi ca",
+    "pageSubtitle": "Điền thông tin chi tiết bên dưới để yêu cầu đổi ca",
+    "heading": "Tạo yêu cầu đổi ca",
+    "description": "Điền thông tin chi tiết bên dưới để yêu cầu đổi ca làm việc hoặc tìm người thay thế.",
+    "form": {
+      "shiftLabel": "Ca làm việc muốn đổi",
+      "shiftPlaceholder": "Chọn ca làm việc...",
+      "shiftOptions": {
+        "morning": "Sáng: 08:00 - 14:00 | Thứ 5, 24/10/2023 | Grooming",
+        "afternoon": "Chiều: 14:00 - 20:00 | Thứ 6, 25/10/2023 | Bán hàng"
+      },
+      "reasonLabel": "Lý do đổi ca",
+      "reasonPlaceholder": "Nhập lý do chi tiết...",
+      "solutionLabel": "Phương án thay thế",
+      "solutionOptions": {
+        "specific": "Đổi ca trực tiếp với đồng nghiệp",
+        "open": "Đăng lên bảng tin (Tìm người thay thế)"
+      },
+      "colleagueLabel": "Chọn đồng nghiệp",
+      "colleaguePlaceholder": "Tìm kiếm tên...",
+      "compensationLabel": "Ca bạn sẽ làm bù (Tùy chọn)",
+      "cancel": "Hủy",
+      "submit": "Gửi yêu cầu"
+    },
+    "recent": {
+      "title": "Yêu cầu gần đây",
+      "viewAll": "Xem tất cả",
+      "status": {
+        "pending": "Đang chờ xử lý",
+        "approved": "Đã chấp nhận",
+        "rejected": "Từ chối"
+      },
+      "items": {
+        "req1": {
+          "title": "Đổi với: Nguyễn Văn A",
+          "shift": "Ca: Sáng 22/10"
+        },
+        "req2": {
+          "title": "Đăng lên bảng tin",
+          "shift": "Ca: Chiều 18/10"
+        },
+        "req3": {
+          "title": "Đổi với: Trần Thị B",
+          "shift": "Ca: Sáng 10/10"
+        }
+      }
+    }
+  },
+  "disposalRequest": {
+    "pageTitle": "Tạo yêu cầu hủy hàng",
+    "pageSubtitle": "Gửi yêu cầu xử lý hàng hết hạn hoặc hàng lỗi",
+    "heading": "Tạo yêu cầu hủy hàng / xử lý hàng lỗi",
+    "description": "Vui lòng cung cấp đầy đủ thông tin để gửi yêu cầu phê duyệt cho quản lý cửa hàng.",
+    "form": {
+      "productLabel": "Sản phẩm cần xử lý",
+      "productPlaceholder": "Tìm kiếm theo tên hoặc mã SKU...",
+      "selectedProduct": {
+        "imageAlt": "Ảnh sản phẩm hạt Royal Canin Puppy",
+        "name": "Hạt Royal Canin Puppy",
+        "sku": "SKU: RC-PUP-001",
+        "stockLabel": "Tồn kho hiện tại:",
+        "stockValue": "24 túi"
+      },
+      "reasonLabel": "Lý do hủy",
+      "reasonPlaceholder": "Chọn lý do...",
+      "reasons": {
+        "expired": "Hết hạn sử dụng",
+        "damaged": "Hư hỏng vật lý",
+        "quality": "Vấn đề chất lượng",
+        "other": "Lý do khác"
+      },
+      "quantityLabel": "Số lượng hủy",
+      "batchLabel": "Số lô / Batch Number (Tùy chọn)",
+      "batchPlaceholder": "Ví dụ: LOT-2023-X",
+      "expiryDateLabel": "Ngày hết hạn (Nếu có)",
+      "evidenceLabel": "Minh chứng hình ảnh",
+      "uploadTitle": "Kéo thả hoặc nhấp để tải ảnh lên",
+      "uploadHint": "Hỗ trợ JPG, PNG (Tối đa 5MB)",
+      "evidenceAlt": "Ảnh minh chứng bao bì sản phẩm bị hỏng",
+      "removeEvidence": "Xóa ảnh minh chứng",
+      "descriptionLabel": "Mô tả chi tiết / Ghi chú",
+      "descriptionPlaceholder": "Vui lòng mô tả chi tiết tình trạng hàng hóa hoặc lý do cần tiêu hủy...",
+      "cancel": "Hủy",
+      "submit": "Gửi yêu cầu"
+    },
+    "summary": {
+      "title": "Tổng quan hôm nay",
+      "sent": "Yêu cầu đã gửi",
+      "products": "Sản phẩm xử lý"
+    },
+    "recent": {
+      "title": "Yêu cầu gần đây",
+      "viewAll": "Tất cả",
+      "quantity": "Số lượng: {{value}}",
+      "supportText": "Cần hỗ trợ từ kho vận?",
+      "supportAction": "Liên hệ hotline kho",
+      "status": {
+        "pending": "Đang chờ",
+        "approved": "Đã duyệt",
+        "rejected": "Từ chối"
+      },
+      "times": {
+        "today": "10:45 AM",
+        "yesterday": "Hôm qua",
+        "oct02": "02/10/2023",
+        "oct01": "01/10/2023"
+      },
+      "items": {
+        "royalCanin": "Hạt Royal Canin Puppy",
+        "pedigree": "Xương gặm sạch răng Pedigree",
+        "whiskas": "Pate Whiskas vị cá thu",
+        "maneki": "Cát vệ sinh Maneki Neko"
+      }
+    },
+    "toast": {
+      "title": "Yêu cầu đã gửi!",
+      "description": "Mã yêu cầu: #REQ-4922. Đang chờ quản lý duyệt."
+    }
+  },
+  "addProduct": {
+    "pageTitle": "Thêm Sản Phẩm Mới",
+    "heading1": "Thêm",
+    "heading2": "Sản Phẩm",
+    "heading3": "Mới",
+    "description": "Khởi tạo danh mục mới với đầy đủ thông tin kỹ thuật và hình ảnh chất lượng cao.",
+    "form": {
+      "productName": "Tên sản phẩm",
+      "productNamePlaceholder": "Ví dụ: Thức ăn khô hữu cơ cho mèo",
+      "category": "Danh mục",
+      "categoryPlaceholder": "Chọn danh mục...",
+      "supplier": "Nhà cung cấp",
+      "supplierPlaceholder": "Tìm nhà cung cấp...",
+      "price": "Giá bán (VND)",
+      "stock": "Số lượng tồn kho",
+      "description": "Mô tả chi tiết",
+      "descriptionPlaceholder": "Nhập thông tin chi tiết về sản phẩm, thành phần, công dụng...",
+      "image": "Hình ảnh sản phẩm",
+      "uploadTitle": "Kéo thả ảnh vào đây",
+      "uploadHint": "Định dạng hỗ trợ: JPG, PNG, WebP (Tối đa 10MB). Khuyên dùng tỉ lệ 1:1.",
+      "uploadButton": "Chọn tệp từ máy tính",
+      "confirm": "Xác nhận sản phẩm",
+      "cancel": "Hủy bỏ",
+      "submit": "Lưu tất cả",
+      "saving": "Đang lưu..."
+    },
+    "categories": {
+      "toys": "Đồ chơi",
+      "hygiene": "Vệ sinh thú cưng",
+      "supplement": "Thực phẩm chức năng",
+      "accessories": "Phụ kiện",
+      "dogFood": "Thức ăn cho Chó",
+      "catFood": "Thức ăn cho Mèo"
+    },
+    "preview": {
+      "title": "Danh sách sản phẩm",
+      "count": "sản phẩm",
+      "indexLabel": "Sản phẩm",
+      "stock": "Tồn kho",
+      "remove": "Xóa sản phẩm",
+      "empty": "Chưa có sản phẩm nào",
+      "emptyHint": "Điền thông tin và nhấn 'Xác nhận sản phẩm' để thêm",
+      "noName": "Chưa có tên",
+      "noPrice": "Chưa có giá"
+    },
+    "tips": {
+      "title": "Tips",
+      "content": "Sử dụng tên ngắn gọn, súc tích để khách hàng dễ dàng tìm kiếm qua thanh Search."
+    },
+    "seo": {
+      "title": "SEO Preview",
+      "content": "Xem trước hiển thị kết quả tìm kiếm trên thiết bị di động..."
+    },
+    "sync": {
+      "title": "Auto Sync",
+      "content": "Sản phẩm sẽ được tự động đồng bộ lên hệ thống POS và Website sau khi lưu."
+    },
+    "toast": {
+      "successTitle": "Thành công!",
+      "successMessage": "Các sản phẩm đã được lưu vào cơ sở dữ liệu."
+    }
+  },
+  "inventory": {
+    "title": "Kho hàng"
+  }
+}

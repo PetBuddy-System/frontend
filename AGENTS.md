@@ -1,15 +1,15 @@
-# AGENTS.md — edu-nexus-web
+# AGENTS.md — petbuddy-web
 
-> Tài liệu dành cho các AI agent (Codex, Cursor, Cline, Claude Code, ...) và dev mới khi làm việc trên codebase frontend của dự án **Edu Nexus**. Đọc kỹ trước khi sinh code, refactor hay đề xuất thay đổi.
+> Tài liệu dành cho các AI agent (Codex, Cursor, Cline, Claude Code, ...) và dev mới khi làm việc trên codebase frontend của dự án **PetBuddy**. Đọc kỹ trước khi sinh code, refactor hay đề xuất thay đổi.
 
 ---
 
 ## 1. Bối cảnh dự án (Project Context)
 
-- **Tên dự án:** Edu Nexus — nền tảng giáo dục/learning platform (SPA + SSR).
-- **Khoá / môn:** FPT University, semester 7, môn **EXE**.
-- **Vai trò repo này:** Frontend web app (`edu-nexus-web`).
-- **Người dùng cuối:** Sinh viên, giảng viên, người học. UI cần **đa ngôn ngữ** (mặc định **tiếng Việt**, hỗ trợ EN) và **dark/light mode**.
+- **Tên dự án:** PetBuddy — nền tảng thương mại và dịch vụ chăm sóc thú cưng (SPA + SSR).
+- **Khoá / môn:** FPT University, semester 8, môn **SBA301**.
+- **Vai trò repo này:** Frontend web app (`petbuddy-web`).
+- **Người dùng cuối:** Người nuôi thú cưng, khách mua sản phẩm và khách đặt dịch vụ. UI cần **đa ngôn ngữ** (mặc định **tiếng Việt**, hỗ trợ EN) và **dark/light mode**.
 - **Nguyên tắc cốt lõi:** _dễ bảo trì, dễ mở rộng, đa ngôn ngữ, đa theme._
 
 ---
@@ -40,7 +40,7 @@
 Lấy cảm hứng từ **Feature-Sliced Design** (tinh giản): phân lớp rõ giữa `routes` (routing), `features` (business), `shared` (tái sử dụng), `providers` (context cấp app), `styles` (CSS) và `locales` (i18n).
 
 ```
-edu-nexus-web/
+petbuddy-web/
 ├── app/
 │   ├── root.tsx                       # Root layout, gắn AppProviders + theme init script
 │   ├── routes.ts                      # Khai báo route (config object)
@@ -53,6 +53,8 @@ edu-nexus-web/
 │   │       ├── components/            # Component nội bộ chỉ feature này dùng
 │   │       │   ├── welcome-header.tsx
 │   │       │   └── welcome-resources.tsx
+│   │       ├── services/              # API functions theo domain con
+│   │       │   └── welcome-api.ts
 │   │       ├── welcome-page.tsx       # Trang chính của feature (export ra cho route)
 │   │       └── index.ts               # Public API barrel của feature
 │   │
@@ -211,7 +213,7 @@ const { theme, setTheme, toggleTheme } = useTheme();
 ```
 - `ThemeProvider` được gắn 1 lần tại `app/providers/app-providers.tsx`. **KHÔNG** gắn lại ở component con.
 - `themeInitScript` được inject `<script>` trong `<head>` (tại `root.tsx`) để áp class `dark` **trước khi** React hydrate → tránh flash màu sai (FOUC).
-- State persist trong `localStorage` key `STORAGE_KEYS.theme` = `"edu-nexus-theme"`.
+- State persist trong `localStorage` key `STORAGE_KEYS.theme` = `"petbuddy-theme"`.
 - Khi chưa có giá trị lưu, fallback theo `prefers-color-scheme` của OS.
 
 ### 4.6 Đổi màu chủ đạo về sau
@@ -233,7 +235,7 @@ File `app/shared/lib/i18n/index.ts`:
 - `fallbackLng: "vi"` (mặc định tiếng Việt)
 - `supportedLngs: ["en", "vi"]`
 - Detector order: `localStorage` → `navigator`
-- Storage key: `STORAGE_KEYS.language` = `"edu-nexus-lang"`
+- Storage key: `STORAGE_KEYS.language` = `"petbuddy-lang"`
 - Default namespace: `"common"`
 - Namespaces hiện có: `["common", "welcome", "landing", "pricing", "auth", "dashboard"]`
 
@@ -347,6 +349,23 @@ i18n.changeLanguage("en");
 - Locale key: `camelCase`, namespace tách bằng `.`.
 - Mỗi feature có `index.ts` làm **public API barrel** — nơi khác chỉ import qua barrel: `import { WelcomePage } from "~/features/welcome"`.
 
+**Variable / function / type naming:**
+- Biến thường, state, params dùng `camelCase`: `selectedServiceId`, `bookingDate`, `petCount`.
+- Boolean ưu tiên prefix rõ nghĩa: `isOpen`, `hasDiscount`, `canSubmit`, `shouldShowError`.
+- Constant cấp module / config tĩnh dùng `SCREAMING_SNAKE_CASE`: `NAV_ITEMS`, `SERVICE_STATUS_OPTIONS`, `DEFAULT_PAGE_SIZE`.
+- Constant local trong scope nhỏ có thể dùng `camelCase`: `totalPrice`, `currentStep`.
+- Function thường dùng `camelCase` và nên bắt đầu bằng động từ: `formatCurrency`, `calculateTotal`, `getServiceStatusLabel`.
+- Event handler trong component dùng `handleXxx`: `handleSubmit`, `handleServiceSelect`, `handleQuantityChange`.
+- Callback prop dùng `onXxx`: `onSubmit`, `onServiceSelect`, `onClose`.
+- Type / interface / union type dùng `PascalCase`: `ServiceStatus`, `BookingFormValues`, `CartItem`.
+- Props interface luôn dùng `XxxProps`: `ServiceCardProps`, `ProfileSidebarProps`.
+- Array/list nên dùng tên số nhiều hoặc hậu tố rõ nghĩa: `services`, `cartItems`, `bookingHistoryItems`.
+- Object dạng map/record nên thể hiện rõ chiều mapping: `statusLabelMap`, `serviceIconByType`, `routeByRole`.
+- Component render một item dùng tên số ít: `ServiceHistoryCard`, `ProductCard`.
+- Component render list/section dùng tên số nhiều hoặc section rõ nghĩa: `ServiceHistoryList`, `ProfileStats`, `ContactInfoSection`.
+- Tránh viết tắt mơ hồ như `svc`, `usr`, `tmp`, `data1`; ưu tiên tên đầy đủ: `service`, `user`, `temporaryFile`, `profileData`.
+- Tránh tên quá chung như `data`, `item`, `value` nếu đã có ngữ cảnh rõ hơn; dùng `service`, `booking`, `cartItem`, `selectedValue`.
+
 ### 7.6 Lint / Format / Typecheck
 ```bash
 npm run typecheck    # react-router typegen + tsc
@@ -404,6 +423,7 @@ Theo thứ tự ưu tiên:
 - Bọc localStorage/window trong `useEffect` hoặc check `typeof window !== "undefined"`. Hoặc dùng helper `~/shared/lib/storage`.
 - Dùng `cn()` cho mọi class merge có điều kiện.
 - Chạy `npm run typecheck` trước khi báo done.
+- Tách logic API vào `app/features/<feature>/services/<domain>/`. Types và constants giữ trong `app/shared/lib/<name>.ts`.
 
 ### ❌ DON'T
 - **Không** tạo `tailwind.config.js` / `tailwind.config.ts` — Tailwind v4 không cần.
@@ -415,6 +435,7 @@ Theo thứ tự ưu tiên:
 - **Không** import chéo giữa các feature (`features/auth` ↔ `features/courses`). Cần share thì kéo lên `shared/`.
 - **Không** import `features/*` từ `shared/*` (vi phạm dependency rule).
 - **Không** import `mocks/*` hay `api/operations/*` từ `features/*` hay `shared/*` — mock code chỉ tồn tại trong `mocks/` và `entry.client.tsx`. Fetch functions từ `api/operations/` chỉ được gọi từ route loader/action.
+- **Không** đặt API functions trong `components/` hay `pages/`. Dùng `services/` đúng cấu trúc.
 - **Không** tạo `*.md` linh tinh / README phụ.
 - **Không** đụng vào `Dockerfile`, `react-router.config.ts`, `vite.config.ts` trừ khi task yêu cầu.
 - **Không** commit khi user chưa yêu cầu.
@@ -429,15 +450,18 @@ Theo thứ tự ưu tiên:
    app/features/auth/
    ├── components/
    │   └── login-form.tsx
-   ├── hooks/                  (nếu cần, vd use-login.ts)
-   ├── api/                    (nếu cần, vd auth-api.ts)
-   ├── types.ts                (nếu cần)
-   ├── auth-page.tsx
-   └── index.ts                # export { AuthPage } from "./auth-page";
+   ├── pages/
+   ├── services/                  # API functions theo domain con
+   │   ├── auth/
+   │   │   ├── auth-api.ts
+   │   │   └── index.ts
+   │   └── index.ts
+   └── index.ts
    ```
 2. Tạo locale: `app/locales/{en,vi}/auth.json`, đăng ký vào `app/shared/lib/i18n/resources.ts`.
 3. Tạo route entry: `app/routes/login.tsx` import `AuthPage` từ `~/features/auth`.
 4. Đăng ký trong `app/routes.ts`: `route("login", "routes/login.tsx")`.
+5. Types và constants (nếu cần) đặt trong `app/shared/lib/<name>.ts`, không đặt trong feature.
 
 ### Thêm 1 trang đơn (vd `/about`)
 1. `app/routes/about.tsx` viết component (hoặc compose feature).

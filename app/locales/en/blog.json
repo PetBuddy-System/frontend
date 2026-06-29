@@ -1,0 +1,59 @@
+{
+  "hero": {
+    "title": "Pet Blog",
+    "subtitle": "Stories, tips and useful information about pet care",
+    "imageAlt": "Happy pets and their owners"
+  },
+  "sidebar": {
+    "title": "Categories",
+    "featured": "Featured",
+    "all": "All posts",
+    "nutrition": "Nutrition",
+    "health": "Health",
+    "grooming": "Grooming",
+    "training": "Training",
+    "lifestyle": "Lifestyle"
+  },
+  "card": {
+    "readMore": "Read more",
+    "author": "By",
+    "date": "on"
+  },
+  "search": {
+    "placeholder": "Search blog posts...",
+    "clear": "Clear search"
+  },
+  "pagination": {
+    "posts": "posts",
+    "prev": "Previous page",
+    "next": "Next page"
+  },
+  "error": {
+    "fetch": "Failed to load blog posts. Please try again.",
+    "retry": "Retry",
+    "fallback": "Could not load latest posts. Showing sample articles instead.",
+    "authTitle": "Login required",
+    "authDescription": "Please log in to view blog posts.",
+    "loginButton": "Log in"
+  },
+  "empty": {
+    "title": "No posts found",
+    "description": "There are no posts in this category yet."
+  },
+  "detail": {
+    "nav": {
+      "blog": "Blog"
+    },
+    "authorLabel": "Author",
+    "readTime": "min read",
+    "share": "Share this article:",
+    "comments": "Leave a Comment",
+    "commentPlaceholder": "Share your experience or ask a question...",
+    "postComment": "Post Comment",
+    "relatedTitle": "Related Articles",
+    "notFound": {
+      "title": "Post not found",
+      "backLink": "Back to Blog"
+    }
+  }
+}

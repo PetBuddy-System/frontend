@@ -1,0 +1,554 @@
+{
+  "dashboard": {
+    "export": "Xuất lịch sử",
+    "print": "In",
+    "subtitle": "Lịch sử nhập/xuất kho chi tiết - Quận 1",
+    "title": "Lịch sử giao dịch tồn kho"
+  },
+  "managerDashboard": {
+    "title": "Bảng điều khiển tổng quan",
+    "subtitle": "Theo dõi nhanh vận hành cửa hàng, lịch hẹn và các việc cần xử lý.",
+    "hero": {
+      "leading": "Bảng",
+      "middle": "điều",
+      "trailing": "khiển Tổng quan",
+      "description": "Chào buổi sáng, Manager. Hệ thống đang vận hành ổn định.",
+      "dogAlt": "Cún con lông vàng đáng yêu trong ánh sáng ấm áp.",
+      "catAlt": "Mèo đen với ánh mắt tập trung trên nền sáng tối giản."
+    },
+    "stats": {
+      "revenue": {
+        "change": "+12%",
+        "label": "Doanh thu hôm nay",
+        "value": "42.500.000 VNĐ"
+      },
+      "pending": {
+        "badge": "Cần xử lý",
+        "label": "Lịch đặt chờ duyệt",
+        "value": "15 yêu cầu"
+      },
+      "staff": {
+        "badge": "Bình thường",
+        "label": "Nhân viên đang ca",
+        "value": "8 / 12 staff"
+      },
+      "stock": {
+        "badge": "Cảnh báo",
+        "label": "Sản phẩm sắp hết",
+        "value": "04 SKUs"
+      }
+    },
+    "chart": {
+      "title": "Xu hướng doanh thu",
+      "subtitle": "Phân tích dữ liệu 7 ngày gần nhất",
+      "period": "Tuần này",
+      "days": {
+        "mon": "T2",
+        "tue": "T3",
+        "wed": "T4",
+        "thu": "T5",
+        "fri": "T6",
+        "sat": "T7",
+        "sun": "CN"
+      },
+      "values": {
+        "mon": "28M",
+        "tue": "35M",
+        "thu": "42.5M"
+      }
+    },
+    "tasks": {
+      "title": "Việc cần làm ngay",
+      "viewAll": "Xem tất cả công việc",
+      "items": {
+        "shiftSwap": {
+          "title": "Duyệt yêu cầu đổi ca",
+          "subtitle": "Lê Văn Tám • Ca sáng 20/10"
+        },
+        "cancellationApproval": {
+          "title": "Phê duyệt hủy hàng",
+          "subtitle": "Đơn #8821 • Grooming Full"
+        },
+        "restock": {
+          "title": "Nhập kho định kỳ",
+          "subtitle": "Hạn chót: 15:00 hôm nay"
+        }
+      }
+    },
+    "appointments": {
+      "title": "Lịch hẹn gần nhất",
+      "create": "Tạo lịch mới",
+      "view": "Xem chi tiết lịch hẹn",
+      "more": "Tùy chọn khác",
+      "columns": {
+        "customer": "Khách hàng",
+        "pet": "Thú cưng",
+        "service": "Dịch vụ",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "rows": {
+        "nguyenHoang": {
+          "initials": "NH",
+          "customerName": "Nguyễn Hoàng",
+          "customerPhone": "090xxxx123",
+          "pet": "Mochi (Poodle)",
+          "service": "Cắt tỉa toàn diện",
+          "status": "Hoàn thành"
+        },
+        "tranVan": {
+          "initials": "TV",
+          "customerName": "Trần Vân",
+          "customerPhone": "098xxxx456",
+          "pet": "LuLu (Shiba)",
+          "service": "Tiêm phòng dại",
+          "status": "Đang chờ"
+        },
+        "quocMinh": {
+          "initials": "QM",
+          "customerName": "Quốc Minh",
+          "customerPhone": "034xxxx999",
+          "pet": "Bơ (Mèo Anh)",
+          "service": "Tắm sấy khử mùi",
+          "status": "Đang phục vụ"
+        }
+      }
+    }
+  },
+  "filters": {
+    "apply": "Áp dụng bộ lọc",
+    "date": "Khoảng ngày",
+    "staff": "Nhân viên",
+    "staffPlaceholder": "Tìm theo tên...",
+    "type": {
+      "all": "Tất cả loại",
+      "label": "Loại giao dịch"
+    },
+    "zone": {
+      "all": "Tất cả khu vực",
+      "back": "Kho sau A",
+      "cold": "Kho lạnh",
+      "front": "Cửa hàng phía trước",
+      "label": "Kho / khu vực"
+    }
+  },
+  "pagination": {
+    "showing": "Hiển thị 1 đến 10 trong 2,450 mục"
+  },
+  "sidebar": {
+    "branch": "Chi nhánh Quận 1",
+    "brand": "Store Ops",
+    "logoAlt": "Logo PetBuddy",
+    "logout": "Đăng xuất",
+    "roleTitle": "Quản lý cửa hàng",
+    "nav": {
+      "dashboard": "Tổng quan vận hành",
+      "inventory": "Kiểm soát kho",
+      "products": "Quản lý sản phẩm",
+      "staff": "Điều phối nhân sự",
+      "returnRequests": "Duyệt đổi trả",
+      "disposalApprovals": "Duyệt hủy hàng"
+    },
+    "toggle": "Thu gọn/mở rộng thanh bên"
+  },
+  "stats": {
+    "discrepancies": {
+      "label": "Chênh lệch hiện tại",
+      "note": "Cần kiểm tra"
+    },
+    "exports": {
+      "label": "Tổng xuất kho (30 ngày)",
+      "note": "+5% so với tháng trước"
+    },
+    "imports": {
+      "label": "Tổng nhập kho (30 ngày)",
+      "note": "+12% so với tháng trước"
+    }
+  },
+  "staffSchedule": {
+    "actions": {
+      "assign": "Phân công"
+    },
+    "assignmentModal": {
+      "availableWithMatch": "Sẵn sàng • {{match}} match",
+      "cancel": "Hủy",
+      "choose": "Chọn",
+      "close": "Đóng hộp thoại phân công",
+      "confirm": "Xác nhận phân công",
+      "filters": {
+        "all": "Tất cả",
+        "grooming": "Grooming",
+        "sitter": "Sitter",
+        "vet": "Thú y"
+      },
+      "searchPlaceholder": "Tìm theo tên hoặc kỹ năng...",
+      "selected": "Đã chọn",
+      "staff": {
+        "hoangNam": {
+          "name": "Hoàng Nam",
+          "role": "Chuyên gia Grooming"
+        },
+        "leThiLan": {
+          "name": "Lê Thị Lan",
+          "role": "Trưởng nhóm Grooming",
+          "status": "Bận đến 15:30"
+        },
+        "minhTu": {
+          "name": "Minh Tú",
+          "role": "Nhân viên Grooming"
+        },
+        "tranVanNam": {
+          "name": "Trần Văn Nam",
+          "role": "Nhân viên hỗ trợ"
+        }
+      },
+      "title": "Phân công nhân viên cho {{bookingCode}}"
+    },
+    "bookingList": {
+      "filter": "Lọc",
+      "title": "Danh sách đặt chỗ chờ điều phối",
+      "today": "Hôm nay"
+    },
+    "categories": {
+      "grooming": "Grooming",
+      "sitter": "Sitter",
+      "vet": "Thú y"
+    },
+    "pagination": {
+      "showing": "Hiển thị 3 trên 12 đơn đặt chỗ"
+    },
+    "quickTip": {
+      "description": "Đơn hàng có trạng thái Chờ phân công cần được ưu tiên điều phối nhân sự để đảm bảo tiến độ phục vụ khách hàng.",
+      "title": "Mẹo nhanh"
+    },
+    "quickTipTitle": "Mẹo nhanh",
+    "searchPlaceholder": "Tìm đơn đặt chỗ...",
+    "staffStatus": {
+      "groups": {
+        "grooming": {
+          "title": "Grooming (2/3 sẵn sàng)"
+        },
+        "vet": {
+          "title": "Thú y (1/1 sẵn sàng)"
+        }
+      },
+      "members": {
+        "mai": {
+          "name": "Mai N.",
+          "status": "Đang rảnh"
+        },
+        "nam": {
+          "name": "Nam T.",
+          "status": "Đang bận đến 15:00"
+        },
+        "son": {
+          "name": "Bs. Sơn",
+          "status": "Đang rảnh"
+        }
+      },
+      "online": "Trực tuyến",
+      "title": "Trạng thái nhân sự",
+      "viewAll": "Xem tất cả nhân sự"
+    },
+    "status": {
+      "pending": "Chờ phân công",
+      "scheduled": "Lên lịch trước"
+    },
+    "subtitle": "Giao việc cho nhân viên dựa trên các lịch đặt chỗ chờ xử lý.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "code": "Mã đơn",
+        "customerPet": "Khách hàng & thú cưng",
+        "service": "Dịch vụ",
+        "status": "Trạng thái",
+        "time": "Thời gian"
+      },
+      "rows": {
+        "bk1024": {
+          "code": "#BK-1024",
+          "customer": "Chị Lan",
+          "date": "Hôm nay, 24/10",
+          "pet": "Poodle \"Bông\"",
+          "service": "Cắt tỉa lông cao cấp",
+          "time": "14:00 - 15:30"
+        },
+        "bk1025": {
+          "code": "#BK-1025",
+          "customer": "Anh Quân",
+          "date": "Hôm nay, 24/10",
+          "pet": "Husky \"Max\"",
+          "service": "Khám tổng quát",
+          "time": "16:00 - 17:00"
+        },
+        "bk1026": {
+          "code": "#BK-1026",
+          "customer": "Chị Minh",
+          "date": "Ngày mai, 25/10",
+          "pet": "Mèo Ragdoll \"Mochi\"",
+          "service": "Trông giữ ban ngày",
+          "time": "08:00 - 18:00"
+        }
+      }
+    },
+    "title": "Điều phối nhân sự"
+  },
+  "table": {
+    "columns": {
+      "balance": "Tồn cuối",
+      "dateTime": "Ngày & giờ",
+      "id": "Mã phiếu",
+      "movement": "Biến động",
+      "note": "Ghi chú",
+      "product": "Sản phẩm/SKU",
+      "staff": "Người thực hiện",
+      "type": "Loại giao dịch"
+    },
+    "rows": {
+      "adj0092": {
+        "dateTime": "23/10, 16:45",
+        "id": "ADJ-0092",
+        "note": "Bao bì bị hỏng",
+        "product": "Đồ chơi cần câu lông vũ",
+        "sku": "SKU: TOY-FW-01",
+        "staff": "Lê Văn C"
+      },
+      "aud1104": {
+        "dateTime": "23/10, 08:00",
+        "id": "AUD-1104",
+        "note": "Điều chỉnh kiểm kê tháng",
+        "product": "Cát vệ sinh Silica 5L",
+        "sku": "SKU: LIT-SIL-5L",
+        "staff": "Quản lý kho"
+      },
+      "rc99021": {
+        "dateTime": "24/10, 09:15",
+        "id": "RC-99021",
+        "note": "Nhà cung cấp giao Q4",
+        "product": "Royal Canin Maxi Adult 15kg",
+        "sku": "SKU: RC-MAX-15",
+        "staff": "Nguyễn Văn A"
+      },
+      "so45091": {
+        "dateTime": "24/10, 11:30",
+        "id": "SO-45091",
+        "note": "Đơn web #W-991",
+        "product": "NexGard Spectra (L)",
+        "sku": "SKU: NXG-L-03",
+        "staff": "Trần Thị B"
+      }
+    },
+    "viewDetails": "Xem chi tiết"
+  },
+  "topNav": {
+    "notifications": "Thông báo",
+    "search": "Tìm kiếm...",
+    "settings": "Cài đặt",
+    "title": "Quản lý PetStore.vn",
+    "help": "Trợ giúp",
+    "menu": "Mở menu"
+  },
+  "manager": {
+    "name": "Trần Thị Lan"
+  },
+  "transactionTypes": {
+    "audit": "Kiểm kê",
+    "damage": "Hàng hỏng",
+    "export": "Xuất hàng",
+    "import": "Nhập hàng"
+  },
+  "returnRequests": {
+    "actions": {
+      "approve": "Phê duyệt",
+      "reject": "Từ chối",
+      "view": "Xem chi tiết"
+    },
+    "breadcrumb": {
+      "current": "Phê duyệt yêu cầu",
+      "ops": "Vận hành"
+    },
+    "details": {
+      "approveRefund": "Phê duyệt hoàn tiền",
+      "cancel": "Hủy bỏ",
+      "close": "Đóng chi tiết yêu cầu",
+      "download": "Tải xuống tài liệu",
+      "orderInfo": "Thông tin đơn hàng",
+      "payment": "Phương thức thanh toán",
+      "proofAlt": "Hình ảnh bằng chứng {{index}}",
+      "proofTitle": "Bằng chứng khách hàng cung cấp",
+      "purchaseDate": "Ngày mua",
+      "reasonText": "Bảng kích cỡ đai dắt chó hơi gây hiểu lầm. Khách đặt size L cho Golden Retriever 30kg nhưng dây đeo ngực quá chật ngay cả khi đã nới rộng hết mức. Chất lượng hoàn thiện tốt nhưng sản phẩm quá nhỏ so với thú cưng.",
+      "reasonTitle": "Lý do trả hàng",
+      "submittedBy": "Gửi vào ngày 14/10/2023 bởi {{customer}}",
+      "title": "Yêu cầu trả hàng {{code}}",
+      "totalValue": "Tổng giá trị",
+      "validity": "Tính hợp lệ",
+      "validityValue": "Trong vòng 30 ngày"
+    },
+    "filters": {
+      "all": "Tất cả yêu cầu",
+      "filter": "Bộ lọc",
+      "pending": "Chờ xử lý",
+      "resolved": "Đã giải quyết"
+    },
+    "pagination": {
+      "showing": "Đang hiển thị 1-10 của 24 kết quả"
+    },
+    "products": {
+      "bed": "Nệm thú cưng chỉnh hình Memory Foam",
+      "collar": "Vòng cổ LED an toàn (Xanh lá)",
+      "feeder": "Máy cho mèo ăn tự động SmartCat V2",
+      "harness": "Đai dắt chó Ultima Pro (Size L)"
+    },
+    "status": {
+      "pending": "Chờ kiểm duyệt",
+      "urgent": "Khẩn cấp: Thiếu bằng chứng",
+      "verified": "Đã xác minh"
+    },
+    "subtitle": "Đang xem xét 24 yêu cầu trả hàng và bảo hành chờ xử lý.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "code": "Mã đơn hàng",
+        "customer": "Khách hàng",
+        "product": "Sản phẩm",
+        "status": "Trạng thái",
+        "type": "Loại"
+      }
+    },
+    "title": "Quản lý khiếu nại",
+    "types": {
+      "return": "Trả hàng",
+      "warranty": "Bảo hành"
+    }
+  },
+  "disposalApprovals": {
+    "actions": {
+      "approve": "Duyệt",
+      "approveDisposal": "Duyệt tiêu hủy",
+      "reject": "Từ chối",
+      "view": "Xem chi tiết"
+    },
+    "detail": {
+      "code": "Mã {{code}}",
+      "damageValue": "Giá trị thiệt hại",
+      "evidence": "Ảnh minh chứng (2)",
+      "evidenceAlt": "Ảnh minh chứng hủy hàng {{index}}",
+      "kicker": "Chi tiết yêu cầu",
+      "location": "Vị trí",
+      "locationValue": "Cửa hàng A - Kệ 4B",
+      "more": "Tùy chọn yêu cầu",
+      "note": "Sản phẩm khi nhập kho đã có vết nứt lớn ở tấm kính phía sau. Không an toàn để trưng bày hoặc nuôi nhốt vật nuôi. Đã được chuyển vào khu vực cách ly ngay lập tức.",
+      "noteTitle": "Ghi chú từ nhân viên",
+      "close": "Đóng chi tiết yêu cầu"
+    },
+    "pendingBadge": "{{count}} chờ duyệt",
+    "products": {
+      "salmonFood": "Hạt cá hồi cao cấp 5kg",
+      "terrarium": "Chuồng thủy tinh size M",
+      "tunaPate": "Pate cá ngừ cho mèo 80g"
+    },
+    "reasons": {
+      "damaged": "Hư hỏng",
+      "expired": "Hết hạn"
+    },
+    "staff": {
+      "hieuPham": "Hiếu Phạm",
+      "minhTran": "Minh Trần",
+      "sarahNguyen": "Sarah Nguyễn"
+    },
+    "subtitle": "Xem xét và phê duyệt các yêu cầu tiêu hủy sản phẩm hết hạn hoặc hư hỏng.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "product": "Sản phẩm",
+        "quantity": "SL",
+        "reason": "Lý do",
+        "staff": "Nhân viên"
+      }
+    },
+    "times": {
+      "today0915": "Hôm nay, 09:15",
+      "today1145": "Hôm nay, 11:45",
+      "yesterday1430": "Hôm qua, 14:30"
+    },
+    "title": "Yêu cầu tiêu hủy"
+  },
+  "productManagement": {
+    "title": "Quản lý sản phẩm",
+    "actions": {
+      "add": "Thêm sản phẩm mới",
+      "delete": "Xóa sản phẩm",
+      "edit": "Chỉnh sửa sản phẩm",
+      "view": "Xem sản phẩm"
+    },
+    "categories": {
+      "accessories": "Phụ kiện",
+      "food": "Thức ăn"
+    },
+    "filters": {
+      "categories": {
+        "accessories": "Phụ kiện",
+        "all": "Tất cả",
+        "food": "Thức ăn",
+        "medicine": "Thuốc thú y",
+        "toys": "Đồ chơi"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "all": "Trạng thái: Tất cả",
+        "inactive": "Ngừng kinh doanh",
+        "deleted": "Đã xóa"
+      }
+    },
+    "pagination": {
+      "showing": "Hiển thị {{from}} đến {{to}} trong {{total}} sản phẩm"
+    },
+    "searchPlaceholder": "Tìm kiếm sản phẩm...",
+    "stats": {
+      "available": "Sẵn hàng",
+      "lowStock": "Sắp hết hàng",
+      "total": "Tổng sản phẩm"
+    },
+    "status": {
+      "active": "Đang hoạt động",
+      "inactive": "Ngừng kinh doanh",
+      "deleted": "Đã xóa"
+    },
+    "stock": {
+      "low": "Sắp hết"
+    },
+    "subtitle": "Theo dõi danh mục, giá bán, tồn kho và trạng thái kinh doanh của sản phẩm.",
+    "table": {
+      "columns": {
+        "actions": "Thao tác",
+        "category": "Danh mục",
+        "name": "Tên sản phẩm",
+        "price": "Giá bán",
+        "status": "Trạng thái",
+        "stock": "Tồn kho",
+        "updatedAt": "Cập nhật"
+      }
+    },
+    "editModal": {
+      "title": "Chỉnh sửa sản phẩm",
+      "code": "Mã sản phẩm",
+      "name": "Tên sản phẩm",
+      "price": "Đơn giá",
+      "brand": "Thương hiệu",
+      "category": "Danh mục",
+      "stock": "Tồn kho",
+      "status": "Trạng thái",
+      "description": "Mô tả sản phẩm",
+      "imageUrls": "Hình ảnh sản phẩm",
+      "currentImages": "Hình ảnh hiện tại",
+      "uploadNew": "Tải lên hình ảnh mới",
+      "newImagesPreview": "Xem trước hình ảnh mới",
+      "save": "Lưu thay đổi",
+      "cancel": "Hủy",
+      "loading": "Đang tải thông tin sản phẩm...",
+      "success": "Cập nhật sản phẩm thành công",
+      "error": "Cập nhật sản phẩm thất bại"
+    }
+  }
+}

@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "./theme.css";
+@import 'tailwindcss';
+@import './theme.css';
 
 /* Bật dark mode dựa trên class `dark` ở <html> (do ThemeProvider
    set). Dùng class thay vì prefers-color-scheme để user có thể
@@ -30,6 +30,14 @@
   --color-destructive-foreground: var(--color-destructive-foreground);
   --color-brand-zalo: var(--color-brand-zalo);
   --color-brand-zalo-foreground: var(--color-brand-zalo-foreground);
+  --color-logo-primary: var(--color-logo-primary);
+  --color-logo-secondary: var(--color-logo-secondary);
+  --color-success: var(--color-success);
+  --color-success-foreground: var(--color-success-foreground);
+  --color-info: var(--color-info);
+  --color-info-foreground: var(--color-info-foreground);
+  --color-warning: var(--color-warning);
+  --color-warning-foreground: var(--color-warning-foreground);
   --color-cream-variant: var(--color-cream-variant);
 
   --radius-sm: var(--radius-sm);
@@ -37,11 +45,10 @@
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
 
-  --font-sans: "Be Vietnam Pro", "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Noto Color Emoji";
-  --font-display: "Plus Jakarta Sans", "Be Vietnam Pro", ui-sans-serif,
-    system-ui, sans-serif;
+  --font-sans:
+    'Be Vietnam Pro', 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-display: 'Plus Jakarta Sans', 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
 }
 
 html,
@@ -55,11 +62,182 @@ html.dark {
 }
 
 .material-symbols-outlined {
-  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
   display: inline-block;
   line-height: 1;
 }
 
 .material-symbols-outlined.fill {
-  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+/* Order tracking stepper — dashed/solid progress lines */
+.stepper-line {
+  background: repeating-linear-gradient(
+    to right,
+    var(--color-border),
+    var(--color-border) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.stepper-line-active {
+  background: var(--color-primary);
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Markdown / prose rendering */
+.markdown-body {
+  color: var(--color-foreground);
+  line-height: 1.75;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--color-card-foreground);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.25;
+}
+
+.markdown-body h1 {
+  font-size: 2em;
+}
+.markdown-body h2 {
+  font-size: 1.5em;
+}
+.markdown-body h3 {
+  font-size: 1.25em;
+}
+.markdown-body h4 {
+  font-size: 1em;
+}
+
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.markdown-body a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.markdown-body a:hover {
+  opacity: 0.8;
+}
+
+.markdown-body strong {
+  font-weight: 600;
+  color: var(--color-card-foreground);
+}
+.markdown-body em {
+  font-style: italic;
+}
+
+.markdown-body code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.875em;
+  background: var(--color-muted);
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  color: var(--color-primary);
+}
+
+.markdown-body pre {
+  background: var(--color-muted);
+  padding: 1em;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  margin-bottom: 1em;
+}
+
+.markdown-body pre code {
+  background: none;
+  padding: 0;
+  color: var(--color-foreground);
+  font-size: 0.875em;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.markdown-body ul {
+  list-style-type: disc;
+}
+.markdown-body ol {
+  list-style-type: decimal;
+}
+.markdown-body li {
+  margin-bottom: 0.25em;
+}
+
+.markdown-body blockquote {
+  border-left: 4px solid var(--color-primary);
+  padding-left: 1em;
+  margin-left: 0;
+  color: var(--color-muted-foreground);
+  font-style: italic;
+  margin-bottom: 1em;
+}
+
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 1.5em 0;
+}
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+  font-size: 0.875em;
+}
+
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--color-border);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+.markdown-body th {
+  background: var(--color-muted);
+  font-weight: 600;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  border-radius: 0.5rem;
 }

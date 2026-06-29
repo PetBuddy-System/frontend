@@ -5,9 +5,14 @@
 /.react-router/
 /.claude/
 /.kiro/
+/.cursor/
 /build/
-
+AGENTS.md
+DESIGN.md
+ARCHITECTURE.md
 # Environment variables
+.env.example
 .env.local
 # Whitelist template — commit cho dev mới biết cần env vars gì
 Note
+.tmp-dev-server*.log

@@ -1,4 +1,4 @@
-import type { RequestHandler } from "msw";
+import type { RequestHandler } from 'msw'
 
 /**
  * Tổng hợp TẤT CẢ mock handlers.
@@ -15,7 +15,9 @@ import type { RequestHandler } from "msw";
  */
 
 // Handler viết tay (placeholder — xoá khi orval generate được)
-import { exampleHandlers } from "./example.handler";
+import { exampleHandlers } from './example.handler'
+import { shippingHandlers } from './shipping.handler'
+import { orderHandlers } from './order.handler'
 
 // ─── Orval generated handlers (uncomment khi có swagger) ──────────────────────
 // import { getCoursesHandlers } from "~/api/operations/course-endpoints/course-endpoints.msw";
@@ -24,7 +26,9 @@ import { exampleHandlers } from "./example.handler";
 
 export const handlers: RequestHandler[] = [
   ...exampleHandlers,
+  ...shippingHandlers,
+  ...orderHandlers
 
   // ...getCoursesHandlers(),
   // ...getUsersHandlers(),
-];
+]

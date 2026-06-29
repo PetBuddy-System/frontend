@@ -1,6 +1,6 @@
 # Kiến trúc src — dành cho dev FE mới
 
-> Tài liệu giải thích cách tổ chức source code của **edu-nexus-web** kèm ví dụ thực tế. Đọc file này trước khi code feature mới.
+> Tài liệu giải thích cách tổ chức source code của **petbuddy-web** kèm ví dụ thực tế. Đọc file này trước khi code feature mới.
 >
 > Tài liệu liên quan: [`AGENTS.md`](./AGENTS.md) (chi tiết quy ước & API), [`README.md`](./README.md) (setup & scripts).
 
@@ -45,7 +45,8 @@ Hãy xem dự án như **một toà nhà**:
 | `shared/ui/`         | **Đồ nội thất tiêu chuẩn** — ghế, bàn ai cũng dùng được  | Button, Input, Card (generic)                |
 | `shared/components/` | **Đồ đã ráp** — bộ bàn ăn = bàn + ghế gắn liền           | ThemeToggle, LanguageSwitcher (đã ráp)       |
 | `shared/lib/`        | **Dụng cụ** — kéo, búa, thước                            | `cn()`, `storage`, i18n init                 |
-| `features/<x>/lib/`  | **Ngăn phụ trong từng phòng** — đồ chỉ phòng đó dùng     | visual mapping, helper nội bộ của feature    |
+| `features/<x>/services/` | **Dụng cụ trong phòng** — chỉ phòng đó dùng | API calls, service functions nội bộ của feature |
+| `features/<x>/lib/`      | **Ngăn phụ trong từng phòng** — đồ chỉ phòng đó dùng | visual mapping, helper nội bộ của feature |
 | `shared/config/`     | **Bảng địa chỉ, danh bạ**                                | `SITE.name`, `STORAGE_KEYS`, env vars        |
 | `providers/`         | **Hệ thống điện/nước cấp toàn nhà**                      | Theme, i18n, sau này: Auth, Toast, Query     |
 | `styles/`            | **Bảng màu sơn** của cả toà nhà                          | `theme.css` — đổi 1 chỗ áp cả nhà            |
@@ -86,15 +87,138 @@ Khi feature lớn dần, đừng để mọi file nằm phẳng ở root của f
 
 ```text
 app/features/<feature>/
-├── pages/                  # entry page của feature
+├── pages/
 ├── components/
-│   ├── layout/             # layout/shared within feature
-│   ├── <screen-a>/         # component riêng cho màn A
-│   └── <screen-b>/         # component riêng cho màn B
+│   ├── layout/
+│   ├── <screen-a>/
+│   └── <screen-b>/
+├── services/         ← API functions theo domain con
+│   └── <domain>/
+│       ├── <name>-api.ts
+│       └── index.ts
 ├── hooks/
 ├── lib/
 └── index.ts
 ```
+
+### Quy tắc chia nhỏ `components/` trong feature lớn
+
+Với feature nhỏ, giữ cấu trúc đơn giản:
+
+```text
+app/features/<feature>/
+├── components/
+├── pages/
+└── index.ts
+```
+
+Khi `components/` có nhiều hơn khoảng **8-10 file**, hoặc đã phục vụ nhiều page/flow khác nhau, hãy chia thành folder con theo **màn hình / nghiệp vụ / user flow**. Tránh để quá nhiều file nằm trực tiếp ở root `components/`.
+
+Ưu tiên đặt folder theo câu hỏi: _"Component này phục vụ màn hình/flow nào?"_
+
+```text
+components/
+├── listing/
+├── detail/
+├── booking/
+├── cart/
+├── checkout/
+├── order-success/
+├── overview/
+├── services/
+├── orders/
+├── tracking/
+├── returns/
+├── home/
+└── contact/
+```
+
+Hạn chế chia theo loại UI chung chung nếu chưa thật sự cần:
+
+```text
+components/
+├── cards/
+├── buttons/
+├── modals/
+└── sections/
+```
+
+`layout/` chỉ dùng cho layout riêng của feature, ví dụ sidebar/header/support floating của profile:
+
+```text
+components/layout/
+├── profile-sidebar.tsx
+├── profile-page-header.tsx
+└── profile-floating-support.tsx
+```
+
+Component chỉ dùng cho một page/flow thì đặt vào folder của page/flow đó:
+
+```text
+components/booking/service-booking-summary.tsx
+components/checkout/checkout-payment-methods.tsx
+components/tracking/order-tracking-stepper.tsx
+```
+
+Nếu một component dùng chung bởi nhiều page **trong cùng feature**, có thể tạo:
+
+```text
+components/shared/
+```
+
+Nhưng chỉ tạo `shared/` khi đã có ít nhất 2 page trong cùng feature dùng chung. Không tạo folder rỗng để "chuẩn bị trước".
+
+Nếu component dùng chung bởi **2 feature trở lên**, không đặt trong `features/<x>/components/shared`; hãy kéo lên:
+
+```text
+app/shared/components/
+```
+
+Ví dụ trong repo hiện tại:
+
+```text
+app/features/profile/components/
+├── layout/
+├── overview/
+├── services/
+├── orders/
+├── tracking/
+└── returns/
+
+app/features/products/components/
+├── listing/
+├── detail/
+├── cart/
+├── checkout/
+└── order-success/
+
+app/features/services/components/
+├── listing/
+├── detail/
+└── booking/
+
+app/features/landing/components/
+├── home/
+└── contact/
+```
+
+Page trong `pages/` import component bằng relative path trong cùng feature:
+
+```tsx
+import { ServiceBookingSummary } from "../components/booking/service-booking-summary";
+```
+
+Không import component nội bộ của feature khác:
+
+```tsx
+// Không nên
+import { LandingHeader } from "~/features/landing/components/landing-header";
+
+// Nên
+import { SiteHeader } from "~/shared/components";
+```
+
+Rule ngắn gọn: chia theo **màn hình/flow người dùng**, không chia theo "nó là card/button/list" nếu chưa có nhu cầu tái sử dụng thật. Mở `service-booking-page.tsx` thì dev phải đoán được component nằm ở `components/booking/`; mở `profile-tracking-page.tsx` thì dev phải đoán được component nằm ở `components/tracking/`.
 
 Tương tự với `app/routes/`, khi route nhiều nên nhóm theo domain:
 
@@ -287,7 +411,7 @@ import { CoursesPage } from "~/features/courses";
 import type { Route } from "./+types/courses";
 
 export function meta({}: Route.MetaArgs) {
-  return [{ title: "Khoá học - Edu Nexus" }];
+  return [{ title: "Khoá học - PetBuddy" }];
 }
 
 export default function Courses() {
@@ -464,6 +588,7 @@ Khi tắt, code MSW bị **tree-shake** khỏi production bundle (dynamic import
 | Thêm namespace mới                      | `app/shared/lib/i18n/resources.ts`                        |
 | Thêm trang mới                          | `app/routes/<name>.tsx` + `app/routes.ts`                 |
 | Thêm feature mới                        | tạo `app/features/<name>/` (xem mục 3)                    |
+| Tách API logic vào feature service      | `app/features/<name>/services/<domain>/`                   |
 | Thêm UI primitive (Button, Input...)    | `app/shared/ui/`                                          |
 | Thêm provider mới (Toast, Query...)     | `app/providers/` + ráp vào `app-providers.tsx`            |
 | Thêm env var                            | `.env.local` (+ `.env.example`) + `app/shared/config/env.ts` |

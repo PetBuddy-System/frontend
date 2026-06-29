@@ -1,7 +1,9 @@
 {
   "brand": {
-    "name": "Pet Store",
-    "logoAlt": "Logo Pet Store",
+    "name": "PetBuddy",
+    "petName": "Pet",
+    "buddyName": "Buddy",
+    "logoAlt": "Logo PetBuddy",
     "tagline": "Hệ thống cửa hàng chăm sóc và cung cấp sản phẩm cao cấp cho thú cưng."
   },
   "nav": {
@@ -13,12 +15,33 @@
   },
   "actions": {
     "cart": "Mở giỏ hàng",
+    "account": "Mở tài khoản",
     "menu": "Mở menu",
     "addToCart": "Thêm vào giỏ",
     "supportChat": "Trò chuyện hỗ trợ",
     "callNow": "Gọi ngay",
     "login": "Đăng nhập",
-    "register": "Đăng ký"
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
+    "profile": "Tài khoản của tôi"
+  },
+  "chatModal": {
+    "eyebrow": "Hỗ trợ trực tuyến",
+    "title": "Chat với PetBuddy",
+    "subtitle": "Hỏi về đặt lịch, sản phẩm hoặc lời khuyên chăm sóc thú cưng bất kỳ lúc nào.",
+    "close": "Đóng hộp chat",
+    "greeting": "Xin chào! Chúng tôi sẵn sàng hỗ trợ bạn chọn dịch vụ phù hợp cho bé yêu.",
+    "reply": "Đội ngũ của chúng tôi sẽ phản hồi trong vài phút. Bạn muốn tư vấn gì hôm nay?",
+    "followUp": "Nếu bạn cần gợi ý dịch vụ, hãy cho chúng tôi biết cân nặng và tình trạng lông của bé.",
+    "inputLabel": "Tin nhắn",
+    "placeholder": "Nhập câu hỏi của bạn",
+    "send": "Gửi",
+    "sideTitle": "Thông tin hỗ trợ",
+    "sideDescription": "Khu vực này dành cho hộp chat lớn hơn để cuộc trò chuyện dễ đọc và rõ ràng hơn.",
+    "sideHoursLabel": "Giờ hỗ trợ",
+    "sideHoursValue": "08:00 - 21:00 mỗi ngày",
+    "sidePhoneLabel": "Số điện thoại",
+    "sidePhoneValue": "092 199 9319"
   },
   "hero": {
     "title": "Chăm sóc trọn vẹn cho cún yêu của bạn",
@@ -34,56 +57,19 @@
         "title": "Tắm & sấy tiêu chuẩn",
         "description": "Quy trình tắm sấy nhiều bước với dầu gội chuyên dụng, giúp làm sạch sâu, khử mùi và dưỡng lông mềm mượt. Phù hợp cho mọi giống chó mèo.",
         "imageAlt": "Tắm và sấy chó",
-        "bullets": [
-          "Làm sạch tuyến hôi",
-          "Sấy phồng tạo kiểu cơ bản",
-          "Vệ sinh tai, cắt móng"
-        ]
+        "bullets": ["Làm sạch tuyến hôi", "Sấy phồng tạo kiểu cơ bản", "Vệ sinh tai, cắt móng"]
       },
       "grooming": {
         "title": "Tỉa lông & tạo kiểu (Grooming)",
         "description": "Dịch vụ cắt tỉa nghệ thuật theo tiêu chuẩn hoặc theo yêu cầu riêng, biến hóa ngoại hình thú cưng trở nên đáng yêu và gọn gàng hơn.",
         "imageAlt": "Tỉa lông và tạo kiểu",
-        "bullets": [
-          "Tư vấn kiểu cắt phù hợp",
-          "Cắt tỉa chi tiết toàn thân",
-          "Phục hồi lông xơ rối"
-        ]
+        "bullets": ["Tư vấn kiểu cắt phù hợp", "Cắt tỉa chi tiết toàn thân", "Phục hồi lông xơ rối"]
       }
     }
   },
   "products": {
     "title": "Sản phẩm nổi bật",
-    "filters": {
-      "all": "Tất cả",
-      "food": "Thức ăn",
-      "accessories": "Phụ kiện",
-      "toys": "Đồ chơi"
-    },
-    "badgeHot": "HOT",
-    "viewAll": "Xem tất cả sản phẩm",
-    "items": {
-      "royalCanin": {
-        "title": "Thức ăn hạt cho chó con Royal Canin Mini Puppy 2kg",
-        "price": "350.000đ",
-        "imageAlt": "Thức ăn hạt Royal Canin"
-      },
-      "ganador": {
-        "title": "Thức ăn cho chó trưởng thành Ganador Adult vị thịt gà",
-        "price": "120.000đ",
-        "imageAlt": "Thức ăn hạt Ganador"
-      },
-      "bone": {
-        "title": "Xương gặm sạch răng da bò tự nhiên cho chó cỡ trung",
-        "price": "45.000đ",
-        "imageAlt": "Xương da bò"
-      },
-      "carrier": {
-        "title": "Lồng vận chuyển thú cưng hàng không size M",
-        "price": "450.000đ",
-        "imageAlt": "Lồng di động"
-      }
-    }
+    "viewAll": "Xem tất cả sản phẩm"
   },
   "trust": {
     "title": "Tại sao chọn Pet Store?",
@@ -100,6 +86,144 @@
         "title": "Hỗ trợ nhiệt tình 24/7",
         "description": "Đội ngũ chuyên gia luôn sẵn sàng tư vấn về dinh dưỡng và cách chăm sóc thú cưng."
       }
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Liên hệ & hỗ trợ",
+      "subtitle": "Chúng tôi luôn sẵn sàng đồng hành để thú cưng của bạn được chăm sóc chu đáo nhất.",
+      "imageAlt": "Khu vực lễ tân thú y ấm áp với thú cưng và chủ nuôi"
+    },
+    "info": {
+      "title": "Thông tin liên hệ",
+      "addressLabel": "Địa chỉ",
+      "address": "151 Huy Cận, Thủ Đức, TP. HCM",
+      "phoneLabel": "Điện thoại",
+      "phone": "092 199 9319",
+      "followLabel": "Theo dõi",
+      "facebook": "Facebook: PetBuddy",
+      "mapAlt": "Bản đồ khu vực Thủ Đức, TP. Hồ Chí Minh",
+      "openMap": "Mở Google Maps"
+    },
+    "policies": {
+      "purchaseTab": "Chính sách mua hàng",
+      "shippingTab": "Chính sách giao hàng",
+      "returnTab": "Chính sách đổi trả",
+      "purchaseDescription": "Tại PetBuddy, chúng tôi cam kết mang đến trải nghiệm mua sắm an toàn, minh bạch và đáng tin cậy. Mỗi sản phẩm thức ăn, phụ kiện và chăm sóc đều được kiểm tra kỹ trước khi đến tay thú cưng của bạn.",
+      "purchaseCards": {
+        "verified": {
+          "title": "Nguồn gốc rõ ràng",
+          "description": "Tất cả sản phẩm đều chính hãng và được kiểm tra về độ an toàn."
+        },
+        "quality": {
+          "title": "Chất lượng cao",
+          "description": "Chúng tôi ưu tiên sản phẩm cao cấp, phù hợp tiêu chuẩn chăm sóc thú cưng."
+        },
+        "support": {
+          "title": "Hỗ trợ 24/7",
+          "description": "Đội ngũ luôn sẵn sàng tư vấn để bạn chọn đúng sản phẩm và dịch vụ."
+        }
+      },
+      "purchaseConditions": {
+        "title": "Điều kiện đổi trả",
+        "items": [
+          "Sản phẩm bị lỗi do nhà sản xuất (hỏng hóc, sai thành phần, ôi thiu, biến chất, bao bì lỗi)",
+          "Sản phẩm bị giao sai so với đơn hàng (sai mã, sai kích cỡ, sai màu sắc, sai số lượng)",
+          "Sản phẩm bị hư hỏng trong quá trình vận chuyển (móp méo, vỡ, rách bao bì, rò rỉ)",
+          "Sản phẩm còn nguyên vẹn, chưa qua sử dụng và còn đầy đủ hóa đơn/tem mác"
+        ]
+      },
+      "shippingHero": {
+        "title": "Miễn phí giao hàng nội thành",
+        "description": "Các đơn hàng trong khu vực trung tâm TP. HCM được hỗ trợ giao hàng miễn phí."
+      },
+      "shippingItems": {
+        "fast": {
+          "title": "Giao hàng nhanh",
+          "description": "Phần lớn đơn hàng được xử lý và gửi đi trong 2-4 giờ sau xác nhận."
+        },
+        "safe": {
+          "title": "Đóng gói an toàn",
+          "description": "Bao bì được chuẩn bị cẩn thận để giữ sản phẩm nguyên vẹn khi vận chuyển."
+        },
+        "schedule": {
+          "title": "Linh hoạt thời gian",
+          "description": "Bạn có thể chọn khung giờ giao phù hợp với lịch sinh hoạt của mình."
+        }
+      },
+      "return": {
+        "intro": "PetBuddy cam kết mang đến sản phẩm chất lượng nhất cho thú cưng của bạn. Nếu có bất kỳ sự cố nào, chúng tôi sẵn sàng hỗ trợ đổi/trả theo quy định.",
+        "applicable": {
+          "title": "Được đổi/trả",
+          "items": [
+            "Sản phẩm bị lỗi do nhà sản xuất",
+            "Sản phẩm bị giao sai so với đơn hàng",
+            "Sản phẩm bị hư hỏng trong quá trình vận chuyển",
+            "Sản phẩm còn nguyên vẹn, chưa qua sử dụng"
+          ]
+        },
+        "notApplicable": {
+          "title": "Không được đổi/trả",
+          "items": [
+            "Sản phẩm đã qua sử dụng hoặc đã mở seal",
+            "Sản phẩm bị hư hỏng do bảo quản sai cách",
+            "Sản phẩm bị trầy xước, bể vỡ do va đập",
+            "Hàng đặt theo yêu cầu riêng (order đặc biệt)",
+            "Sản phẩm đã hết hạn sử dụng"
+          ]
+        },
+        "fees": {
+          "title": "Phí vận chuyển đổi trả",
+          "petbuddyFault": {
+            "title": "Lỗi do PetBuddy",
+            "description": "PetBuddy chịu phí vận chuyển chiều đi. Khách hàng chịu phí chiều trả."
+          },
+          "customerFault": {
+            "title": "Lỗi do Khách hàng",
+            "description": "Khách hàng chịu toàn bộ phí vận chuyển 02 chiều."
+          }
+        },
+        "process": {
+          "title": "Quy trình đổi/trả",
+          "steps": [
+            { "title": "Liên hệ yêu cầu", "description": "Gửi email, gọi hotline hoặc chat trực tiếp trên website" },
+            { "title": "Cung cấp thông tin", "description": "Mã đơn hàng, hình ảnh/video lỗi và mô tả chi tiết" },
+            { "title": "Xác nhận từ PetBuddy", "description": "Phản hồi trong 24-48 giờ làm việc" },
+            { "title": "Gửi hàng trả (nếu cần)", "description": "Gửi sản phẩm về địa chỉ PetBuddy" },
+            { "title": "Hoàn tất xử lý", "description": "Đổi sản phẩm mới hoặc hoàn tiền trong 2 ngày làm việc" }
+          ]
+        },
+        "note": "Liên hệ hotline 092 199 9319 hoặc email hotro@petbuddy.vn để được hỗ trợ nhanh nhất."
+      }
+    },
+    "faq": {
+      "title": "Câu hỏi thường gặp",
+      "items": {
+        "booking": {
+          "question": "Làm thế nào để đặt lịch tắm cho chó?",
+          "answer": "Quý khách có thể đặt lịch trực tiếp tại mục Dịch vụ trên website hoặc liên hệ hotline 092 199 9319 để được đội ngũ PetBuddy hỗ trợ nhanh chóng."
+        },
+        "delivery": {
+          "question": "Cửa hàng có giao hàng tận nơi không?",
+          "answer": "Có. Chúng tôi hỗ trợ giao hàng tận nơi trên toàn quốc và miễn phí giao hàng với nhiều đơn trong khu vực nội thành TP. HCM theo chính sách hiện hành."
+        },
+        "returns": {
+          "question": "Chính sách đổi trả sản phẩm như thế nào?",
+          "answer": "PetBuddy hỗ trợ đổi trả trong vòng 7 ngày nếu sản phẩm có lỗi từ nhà sản xuất hoặc không đúng mô tả, với điều kiện sản phẩm còn nguyên tem nhãn và chưa qua sử dụng."
+        },
+        "loyalty": {
+          "question": "Có ưu đãi gì cho khách hàng thân thiết không?",
+          "answer": "Chúng tôi có chương trình tích điểm dành cho thành viên, giúp bạn đổi voucher giảm giá, quà tặng và nhận nhiều ưu đãi riêng cho khách hàng quay lại thường xuyên."
+        }
+      }
+    },
+    "newsletter": {
+      "title": "Tham gia cộng đồng yêu thú cưng",
+      "description": "Nhận mẹo chăm sóc, cập nhật sức khỏe và ưu đãi đặc biệt mỗi tuần.",
+      "placeholder": "Nhập email của bạn",
+      "submit": "Đăng ký",
+      "submitted": "Đã đăng ký",
+      "imageAlt": "Hai chú chó vui vẻ ngồi cạnh nhau trong công viên"
     }
   },
   "team": {
@@ -135,5 +259,8 @@
     "services": "Dịch vụ",
     "cart": "Giỏ hàng",
     "account": "Tài khoản"
+  },
+  "toast": {
+    "addedToCart": "Đã thêm sản phẩm vào giỏ hàng!"
   }
 }

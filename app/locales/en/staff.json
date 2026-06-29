@@ -1,0 +1,362 @@
+{
+  "dashboard": {
+    "subtitle": "Shift overview and daily store operations",
+    "title": "Staff Dashboard"
+  },
+  "notifications": {
+    "items": {
+      "process": {
+        "description": "The front desk handoff checklist has been updated. Please review it before your next shift.",
+        "time": "2 hours ago",
+        "title": "New customer check-in process"
+      },
+      "reward": {
+        "description": "Congratulations to the grooming team for the highest service rating this week.",
+        "time": "Monday, 09:00",
+        "title": "Weekly staff recognition"
+      },
+      "shift": {
+        "description": "Your Saturday afternoon shift swap request has been approved by the manager.",
+        "time": "Yesterday, 15:30",
+        "title": "Shift request approved"
+      }
+    },
+    "title": "Important Notifications",
+    "viewAll": "View all notifications"
+  },
+  "schedule": {
+    "date": "Thursday, October 24",
+    "shifts": {
+      "afternoon": {
+        "area": "Area: Pet bathing room",
+        "status": "Upcoming",
+        "time": "13:00 - 17:00",
+        "title": "Spa & Grooming Support"
+      },
+      "morning": {
+        "area": "Area: Checkout counter & supplies",
+        "status": "In progress",
+        "time": "08:00 - 12:00",
+        "title": "Sales Assistant (Morning Shift)"
+      }
+    },
+    "title": "Today's Schedule"
+  },
+  "sidebar": {
+    "avatarAlt": "Staff avatar",
+    "logoAlt": "PetBuddy logo",
+    "logout": "Log out",
+    "nav": {
+      "orders": "Manage Orders",
+      "attendanceHistory": "Attendance history",
+      "shiftRequest": "Create shift request",
+      "violations": "View violations",
+      "weeklySchedule": "Weekly work schedule",
+      "disposalRequest": "Disposal request",
+      "inventory": "Inventory management"
+    },
+    "portalLabel": "PetBuddy Staff Portal",
+    "roleTitle": "Store Staff",
+    "toggle": "Toggle sidebar"
+  },
+  "staff": {
+    "name": "Nguyen Van An"
+  },
+  "stats": {
+    "completed": {
+      "label": "Completed shifts",
+      "note": "This week",
+      "unit": "shifts",
+      "value": "5"
+    },
+    "hours": {
+      "label": "Total work hours",
+      "note": "This week",
+      "unit": "hours",
+      "value": "32.5"
+    },
+    "title": "This Week's Stats",
+    "violations": {
+      "label": "Violations",
+      "note": "Good record",
+      "unit": "times",
+      "value": "0"
+    },
+    "workDays": {
+      "label": "Accumulated work days",
+      "note": "Current month",
+      "unit": "days",
+      "value": "18"
+    }
+  },
+  "topNav": {
+    "brand": "PetBuddy",
+    "help": "Help",
+    "menu": "Open menu",
+    "notifications": "Notifications"
+  },
+  "welcome": {
+    "checkIn": "Check in now",
+    "kicker": "Today's shift",
+    "subtitle": "Wishing you an energetic workday at PetBuddy.",
+    "title": "Good morning, Nguyen Van An"
+  },
+  "attendance": {
+    "pageTitle": "Attendance History",
+    "pageSubtitle": "View detailed work hours and attendance status",
+    "heading": "Attendance History",
+    "description": "View detailed work hours and attendance status.",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "months": {
+      "oct2024": "October 2024",
+      "sep2024": "September 2024",
+      "aug2024": "August 2024"
+    },
+    "summary": {
+      "totalDays": {
+        "label": "Total work days",
+        "value": "22",
+        "unit": "days"
+      },
+      "totalHours": {
+        "label": "Work hours",
+        "value": "176",
+        "unit": "hours"
+      },
+      "lateEarly": {
+        "label": "Late/Early leave",
+        "value": "2",
+        "unit": "times"
+      },
+      "daysOff": {
+        "label": "Days off",
+        "value": "1",
+        "unit": "day"
+      }
+    },
+    "status": {
+      "onTime": "On time",
+      "late": "Late",
+      "earlyLeave": "Early leave",
+      "dayOff": "Day off"
+    },
+    "table": {
+      "title": "Daily Details",
+      "export": "Export report",
+      "showing": "Showing {{from}}-{{to}} of {{total}} records",
+      "columns": {
+        "date": "Date",
+        "checkIn": "Check in",
+        "checkOut": "Check out",
+        "totalHours": "Total hours",
+        "status": "Status",
+        "note": "Note"
+      }
+    },
+    "records": {
+      "day1": {
+        "dayLabel": "Fri, Oct 25"
+      },
+      "day2": {
+        "dayLabel": "Thu, Oct 24",
+        "note": "Traffic jam at Cau Giay area"
+      },
+      "day3": {
+        "dayLabel": "Wed, Oct 23"
+      },
+      "day4": {
+        "dayLabel": "Tue, Oct 22",
+        "note": "Annual leave (Approved)"
+      },
+      "day5": {
+        "dayLabel": "Mon, Oct 21"
+      }
+    }
+  },
+  "shiftRequest": {
+    "pageTitle": "Create Shift Request",
+    "pageSubtitle": "Fill in the details below to request a shift swap",
+    "heading": "Create Shift Request",
+    "description": "Fill in the details below to request a shift swap or find a replacement.",
+    "form": {
+      "shiftLabel": "Shift to swap",
+      "shiftPlaceholder": "Select a shift...",
+      "shiftOptions": {
+        "morning": "Morning: 08:00 - 14:00 | Thu, 24/10/2023 | Grooming",
+        "afternoon": "Afternoon: 14:00 - 20:00 | Fri, 25/10/2023 | Sales"
+      },
+      "reasonLabel": "Reason for swap",
+      "reasonPlaceholder": "Enter your reason in detail...",
+      "solutionLabel": "Replacement option",
+      "solutionOptions": {
+        "specific": "Swap directly with a colleague",
+        "open": "Post on bulletin board (Find a replacement)"
+      },
+      "colleagueLabel": "Select colleague",
+      "colleaguePlaceholder": "Search by name...",
+      "compensationLabel": "Compensation shift (Optional)",
+      "cancel": "Cancel",
+      "submit": "Submit request"
+    },
+    "recent": {
+      "title": "Recent Requests",
+      "viewAll": "View all",
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "items": {
+        "req1": {
+          "title": "Swap with: Nguyen Van A",
+          "shift": "Shift: Morning Oct 22"
+        },
+        "req2": {
+          "title": "Posted on bulletin",
+          "shift": "Shift: Afternoon Oct 18"
+        },
+        "req3": {
+          "title": "Swap with: Tran Thi B",
+          "shift": "Shift: Morning Oct 10"
+        }
+      }
+    }
+  },
+  "disposalRequest": {
+    "pageTitle": "Create disposal request",
+    "pageSubtitle": "Submit expired or damaged product handling requests",
+    "heading": "Create disposal request / handle damaged goods",
+    "description": "Please provide complete information so the store manager can review and approve the request.",
+    "form": {
+      "productLabel": "Product to process",
+      "productPlaceholder": "Search by product name or SKU...",
+      "selectedProduct": {
+        "imageAlt": "Royal Canin Puppy product image",
+        "name": "Royal Canin Puppy dry food",
+        "sku": "SKU: RC-PUP-001",
+        "stockLabel": "Current stock:",
+        "stockValue": "24 bags"
+      },
+      "reasonLabel": "Disposal reason",
+      "reasonPlaceholder": "Select a reason...",
+      "reasons": {
+        "expired": "Expired product",
+        "damaged": "Physical damage",
+        "quality": "Quality issue",
+        "other": "Other reason"
+      },
+      "quantityLabel": "Disposal quantity",
+      "batchLabel": "Batch number (Optional)",
+      "batchPlaceholder": "Example: LOT-2023-X",
+      "expiryDateLabel": "Expiry date (If any)",
+      "evidenceLabel": "Photo evidence",
+      "uploadTitle": "Drag and drop or click to upload photos",
+      "uploadHint": "JPG, PNG supported (Max 5MB)",
+      "evidenceAlt": "Photo evidence of damaged product packaging",
+      "removeEvidence": "Remove evidence photo",
+      "descriptionLabel": "Detailed description / Notes",
+      "descriptionPlaceholder": "Describe the product condition or reason for disposal in detail...",
+      "cancel": "Cancel",
+      "submit": "Submit request"
+    },
+    "summary": {
+      "title": "Today overview",
+      "sent": "Requests submitted",
+      "products": "Products processed"
+    },
+    "recent": {
+      "title": "Recent requests",
+      "viewAll": "All",
+      "quantity": "Quantity: {{value}}",
+      "supportText": "Need warehouse support?",
+      "supportAction": "Contact warehouse hotline",
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "times": {
+        "today": "10:45 AM",
+        "yesterday": "Yesterday",
+        "oct02": "02/10/2023",
+        "oct01": "01/10/2023"
+      },
+      "items": {
+        "royalCanin": "Royal Canin Puppy dry food",
+        "pedigree": "Pedigree dental chew bone",
+        "whiskas": "Whiskas tuna pate",
+        "maneki": "Maneki Neko cat litter"
+      }
+    },
+    "toast": {
+      "title": "Request submitted!",
+      "description": "Request code: #REQ-4922. Waiting for manager approval."
+    }
+  },
+  "addProduct": {
+    "pageTitle": "Add New Product",
+    "heading1": "Add",
+    "heading2": "New",
+    "heading3": "Product",
+    "description": "Initialize a new product listing with complete technical information and high-quality images.",
+    "form": {
+      "productName": "Product name",
+      "productNamePlaceholder": "Example: Organic dry cat food",
+      "category": "Category",
+      "categoryPlaceholder": "Select category...",
+      "supplier": "Supplier",
+      "supplierPlaceholder": "Search supplier...",
+      "price": "Selling price (VND)",
+      "stock": "Stock quantity",
+      "description": "Detailed description",
+      "descriptionPlaceholder": "Enter detailed product information, ingredients, usage...",
+      "image": "Product image",
+      "uploadTitle": "Drag and drop images here",
+      "uploadHint": "Supported formats: JPG, PNG, WebP (Max 10MB). Recommended 1:1 ratio.",
+      "uploadButton": "Choose file from computer",
+      "confirm": "Confirm product",
+      "cancel": "Cancel",
+      "submit": "Save all",
+      "saving": "Saving..."
+    },
+    "categories": {
+      "toys": "Toys",
+      "hygiene": "Pet hygiene",
+      "supplement": "Functional food",
+      "accessories": "Accessories",
+      "dogFood": "Dog food",
+      "catFood": "Cat food"
+    },
+    "preview": {
+      "title": "Product List",
+      "count": "items",
+      "indexLabel": "Product",
+      "stock": "Stock",
+      "remove": "Remove product",
+      "empty": "No products added yet",
+      "emptyHint": "Fill in the form and click 'Confirm product' to add",
+      "noName": "No name",
+      "noPrice": "No price"
+    },
+    "tips": {
+      "title": "Tips",
+      "content": "Use short, concise names to help customers search easily via the Search bar."
+    },
+    "seo": {
+      "title": "SEO Preview",
+      "content": "Preview how the search result will display on mobile devices..."
+    },
+    "sync": {
+      "title": "Auto Sync",
+      "content": "Product will be automatically synced to POS system and Website after saving."
+    },
+    "toast": {
+      "successTitle": "Success!",
+      "successMessage": "Products have been saved to the database."
+    }
+  },
+  "inventory": {
+    "title": "Inventory"
+  }
+}
