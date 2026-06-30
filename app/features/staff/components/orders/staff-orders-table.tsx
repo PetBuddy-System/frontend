@@ -242,12 +242,12 @@ export function StaffOrdersTable({
                                         <div className='flex flex-col gap-1'>
                                             <span className='inline-flex items-center gap-1 text-xs font-semibold text-foreground'>
                                                 <MaterialIcon
-                                                    name={order.paymentMethod === 'CARD' ? 'credit_card' : 'payments'}
+                                                    name={order.payment?.paymentMethod === 'CARD' ? 'credit_card' : 'payments'}
                                                     className='text-[16px] text-muted-foreground'
                                                 />
-                                                {order.paymentMethod === 'CARD' ? 'Thẻ (Stripe)' : 'Tiền mặt (COD)'}
+                                                {order.payment?.paymentMethod === 'CARD' ? 'Thẻ (Stripe)' : 'Tiền mặt (COD)'}
                                             </span>
-                                            {renderPaymentStatusBadge(order.paymentStatus)}
+                                            {renderPaymentStatusBadge(order.payment?.status)}
                                         </div>
                                     </td>
                                     <td className='px-6 py-4'>{renderStatusBadge(order.status)}</td>
@@ -262,7 +262,7 @@ export function StaffOrdersTable({
 
                                             {order.status === 'PENDING' && (
                                                 <>
-                                                    {((order.paymentMethod === 'CARD' && order.paymentStatus === 'PAID') || order.paymentMethod !== 'CARD') && (
+                                                    {((order.payment?.paymentMethod === 'CARD' && order.payment?.status === 'PAID') || order.payment?.paymentMethod !== 'CARD') && (
                                                         <button
                                                             onClick={() => onTransition(order.orderId, 'CONFIRMED')}
                                                             className='rounded-xl bg-blue-600 hover:bg-blue-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'

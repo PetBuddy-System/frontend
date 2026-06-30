@@ -146,8 +146,7 @@ export function OrderDetailModal({ orderId, orderCode, isStaff, onClose }: Order
     }
   }, [orderId])
 
-  // Resolve display name — backend uses recipientName, mock also stores userName
-  const recipientName = order?.recipientName ?? order?.userName ?? ''
+  const recipientName = order?.recipientName ?? ''
 
   const backdropClass = 'fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-[fadeIn_0.3s_ease-out]'
   const modalContainerClass = 'bg-white dark:bg-[#111a2e] w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-[modalScale_0.3s_ease-out] border border-gray-100 dark:border-slate-800'
@@ -278,17 +277,17 @@ export function OrderDetailModal({ orderId, orderCode, isStaff, onClose }: Order
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <MaterialIcon
-                        name={order.paymentMethod === 'CARD' ? 'credit_card' : 'payments'}
+                        name={order.payment?.paymentMethod === 'CARD' ? 'credit_card' : 'payments'}
                         className="text-blue-500 text-[18px] flex-shrink-0"
                       />
                       <p className="text-sm font-semibold text-gray-800 dark:text-slate-200">
-                        {order.paymentMethod === 'CARD' ? 'Thẻ quốc tế / Stripe' : 'Tiền mặt (COD)'}
+                        {order.payment?.paymentMethod === 'CARD' ? 'Thẻ quốc tế / Stripe' : 'Tiền mặt (COD)'}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 pl-6">
                       <span className="text-xs text-gray-500">Trạng thái:</span>
                       {(() => {
-                        switch (order.paymentStatus) {
+                        switch (order.payment?.status) {
                           case 'PAID':
                             return <span className="text-xs font-bold text-green-600 dark:text-green-400 uppercase">Đã thanh toán</span>
                           case 'FAILED':

@@ -14,7 +14,6 @@ export function CheckoutShippingForm({ addressValue, defaultName }: CheckoutShip
   const [savedPhone, setSavedPhone] = useState('')
 
   useEffect(() => {
-    // Ưu tiên: sessionStorage → defaultName từ tài khoản đăng nhập
     const storedName = sessionStorage.getItem('petbuddy_checkout_name')
     if (storedName) {
       setSavedName(storedName)
@@ -54,7 +53,7 @@ export function CheckoutShippingForm({ addressValue, defaultName }: CheckoutShip
           </label>
           <input
             id='fullName'
-            name='userName'
+            name='recipientName'
             className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
             placeholder='Nhập họ và tên của bạn'
             required

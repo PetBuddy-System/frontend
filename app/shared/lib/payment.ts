@@ -1,8 +1,3 @@
-/**
- * Payment types — chỉ chứa types/interfaces, không có API functions.
- * API functions nằm trong features/products/services/payment/.
- */
-
 export type PaymentMethod = 'CASH' | 'CARD'
 
 export type PaymentStatus =
@@ -21,11 +16,10 @@ export interface PaymentResponse {
   paymentMethod: PaymentMethod
   status: PaymentStatus
   amount: number
-  paidAt?: string
   stripeClientSecret?: string
-  clientSecret?: string
+  paidAt?: string
   createdAt: string
-  updatedAt: string
+  updatedAt?: string
 }
 
 export interface ApiResponse<T> {

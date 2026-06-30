@@ -1,7 +1,4 @@
-/**
- * Order types — chỉ chứa types/interfaces, không có API functions.
- * API functions nằm trong features/services/.
- */
+import type {PaymentResponse} from './payment'
 
 export type OrderStatus =
   | 'PENDING'
@@ -75,18 +72,15 @@ export interface OrderDetailFull {
   recipientName?: string
   phoneNumber?: string
   address?: string
+  note?: string
   status: string
   finalAmount: number
   clientSecret?: string
   createdAt: string
   updatedAt?: string
   orderDetails: OrderDetailResponse[]
-  // extra fields stored in mock (not in Java DTO) for backward compat
-  userName?: string
-  note?: string
+  payment?: PaymentResponse  
   voucherCode?: string
-  paymentMethod?: 'CASH' | 'CARD'
-  paymentStatus?: 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | 'PROCESSING'
 }
 
 export interface OrderResponse {
@@ -95,12 +89,12 @@ export interface OrderResponse {
   recipientName?: string
   phoneNumber?: string
   address?: string
+  note?: string
   status: OrderStatus
   finalAmount: number
   clientSecret?: string
   createdAt: string
   updatedAt?: string
   orderDetails?: OrderDetailResponse[]
-  paymentMethod?: 'CASH' | 'CARD'
-  paymentStatus?: 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | 'PROCESSING'
+  payment?: PaymentResponse
 }

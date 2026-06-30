@@ -191,7 +191,7 @@ export function CheckoutPage() {
         if (!clientSecret) {
           try {
             const paymentRes = await getPaymentByOrderIdApi(orderId)
-            clientSecret = paymentRes.data?.stripeClientSecret || paymentRes.data?.clientSecret || ''
+            clientSecret = paymentRes.data?.stripeClientSecret || ''
           } catch (payErr) {
             console.error('Lỗi lấy thông tin PaymentIntent:', payErr)
           }
@@ -205,7 +205,6 @@ export function CheckoutPage() {
           }
         })
       } else {
-        // Tiền mặt (COD) -> Hiện luôn là đặt hàng thành công
         navigate('/order-success')
       }
     } catch (error: unknown) {
