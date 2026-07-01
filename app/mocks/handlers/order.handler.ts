@@ -227,14 +227,12 @@ export const orderHandlers = [
         imageUrl: 'https://placehold.co/300x300?text=PetBuddy'
       }))
 
-      // Calculate finalAmount
       const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
       const shippingFee = subtotal > 500000 ? 0 : 30000
       const discount = body.voucherCode ? 50000 : 0
       const finalAmount = Math.max(0, subtotal + shippingFee - discount)
 
       const payMethod = body.paymentMethod || 'CASH'
-      // Nếu là thẻ (Stripe), ban đầu trạng thái thanh toán là PROCESSING
       const payStatus = payMethod === 'CARD' ? 'PROCESSING' : 'PENDING'
 
       const newOrder: MockOrder = {

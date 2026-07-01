@@ -26,13 +26,28 @@ interface ToastData {
   variant: ToastVariant
 }
 
+function cleanAddress(addr: string): string {
+  if (!addr) return ''
+  // Remove "00084" with optional surrounding spaces and commas
+  let cleaned = addr
+    .replace(/,\s*00084\s*,/g, ',')
+    .replace(/,\s*00084\b/g, '')
+    .replace(/\b00084\s*,/g, '')
+    .replace(/\b00084\b/g, '')
+  
+  // Clean duplicate commas or trailing/leading whitespace and commas
+  cleaned = cleaned.replace(/,\s*,/g, ',')
+  cleaned = cleaned.trim().replace(/^,/, '').replace(/,$/, '').trim()
+  return cleaned
+}
+
 async function reverseGeocode(lat: number, lng: number): Promise<string> {
   try {
     const res = await fetch(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=vi`
     )
     const data = await res.json()
-    if (data?.display_name) return data.display_name as string
+    if (data?.display_name) return cleanAddress(data.display_name as string)
   } catch {
     // fallback below
   }
@@ -337,7 +352,7 @@ export function AddressPickerPage() {
         const lat = parseFloat(data[0].lat)
         const lng = parseFloat(data[0].lon)
         await updateLocation(lat, lng, false)
-        setSelectedAddress(data[0].display_name ?? searchQuery)
+        setSelectedAddress(cleanAddress(data[0].display_name ?? searchQuery))
         setSearchError('')
       } else {
         setSearchError('Không tìm thấy địa chỉ này. Hãy thử nhập chi tiết hơn.')

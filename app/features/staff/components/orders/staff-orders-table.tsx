@@ -245,7 +245,7 @@ export function StaffOrdersTable({
                                                     name={order.payment?.paymentMethod === 'CARD' ? 'credit_card' : 'payments'}
                                                     className='text-[16px] text-muted-foreground'
                                                 />
-                                                {order.payment?.paymentMethod === 'CARD' ? 'Thẻ (Stripe)' : 'Tiền mặt (COD)'}
+                                                {order.payment?.paymentMethod === 'CARD' ? 'Thẻ' : 'Tiền mặt'}
                                             </span>
                                             {renderPaymentStatusBadge(order.payment?.status)}
                                         </div>

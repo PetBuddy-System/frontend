@@ -138,6 +138,7 @@ export function CheckoutPage() {
       address: finalAddress,
       note: getFormString(formData, 'note') || undefined,
       voucherCode: voucherCode || undefined,
+      shippingFee: isFreeShipping ? 0 : shippingFee,
       paymentMethod: selectedPaymentMethod,
     }
 
