@@ -21,7 +21,7 @@ export default [
   layout('routes/auth-layout.tsx', [
     route('profile', 'routes/profile.tsx'),
     route('profile/orders', 'routes/profile-orders.tsx'),
-    route('profile/tracking', 'routes/profile-tracking.tsx'),
+    route('profile/orders/:orderId', 'routes/profile-order-detail.tsx'),
     route('profile/services', 'routes/profile-services.tsx'),
     route('profile/returns', 'routes/profile-returns.tsx'),
     route('checkout', 'routes/checkout.tsx'),
@@ -41,7 +41,8 @@ export default [
     route('staff/disposal-request', 'routes/staff-disposal-request.tsx'),
     route('staff/shift-request', 'routes/staff-shift-request.tsx'),
     route('staff/add-product', 'routes/staff-add-product.tsx'),
-    route('staff/orders', 'routes/staff-orders.tsx')
+    route('staff/orders', 'routes/staff-orders.tsx'),
+    route('staff/orders/:orderId', 'routes/staff-order-detail.tsx')
   ]),
 
   // ─── Admin Only Routes ────────────────────────────────────────────────────

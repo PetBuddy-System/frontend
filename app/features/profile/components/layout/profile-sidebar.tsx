@@ -8,7 +8,6 @@ import { useAuth } from '~/providers/auth-provider'
 
 const MAIN_NAV = [
   { key: 'profile', icon: 'person', href: '/profile' },
-  { key: 'tracking', icon: 'local_shipping', href: '/profile/tracking' },
   { key: 'orders', icon: 'shopping_bag', href: '/profile/orders' },
   { key: 'services', icon: 'calendar_today', href: '/profile/services' },
   { key: 'returns', icon: 'assignment_return', href: '/profile/returns' },

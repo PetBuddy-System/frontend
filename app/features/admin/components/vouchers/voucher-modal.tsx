@@ -37,7 +37,7 @@ function toISOString(datetimeLocal: string) {
 const INITIAL_FORM: VoucherRequest = {
   voucherCode: '',
   voucherName: '',
-  discountType: 'FIXED',
+  discountType: 'FIXED_AMOUNT',
   discountValue: 0,
   maxDiscount: null,
   minOrderValue: null,
@@ -263,7 +263,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 onChange={handleChange}
                 className='rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
               >
-                <option value='FIXED'>Số tiền cố định (VND)</option>
+                <option value='FIXED_AMOUNT'>Số tiền cố định (VND)</option>
                 <option value='PERCENTAGE'>Phần trăm (%)</option>
               </select>
             </div>

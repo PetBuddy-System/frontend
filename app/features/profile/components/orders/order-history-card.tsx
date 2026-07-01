@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { updateOrderStatusApi } from '~/features/profile/services'
-import { OrderDetailModal } from '~/shared/components'
+import { getPaymentByOrderIdApi } from '~/features/products/services/payment/payment-api'
 
 export interface OrderHistoryCardProps {
   order: {
@@ -13,6 +14,29 @@ export interface OrderHistoryCardProps {
     status: string
     finalAmount: number
     createdAt: string
+    paymentMethod?: string
+    paymentStatus?: string
+    items?: Array<{
+      productId: string
+      name: string
+      price: number
+      quantity: number
+      imageUrl?: string
+    }>
+    orderDetails?: Array<{
+      orderDetailId: number
+      productId: string
+      productName: string
+      productImage?: string
+      unitPrice: number
+      quantity: number
+      totalPrice: number
+      createdAt: string
+    }>
+    payment?: {
+      paymentMethod: string
+      status: string
+    }
   }
   onRefresh: () => void
 }
@@ -30,21 +54,21 @@ const STATUS_ICON: Record<string, string> = {
 function getStatusClassName(status: string) {
   switch (status) {
     case 'COMPLETED':
-      return 'bg-success/10 text-success'
+      return 'text-success'
     case 'DELIVERED':
-      return 'bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-400'
+      return 'text-purple-600 dark:text-purple-400'
     case 'SHIPPING':
-      return 'bg-info/10 text-info'
+      return 'text-info'
     case 'PICKING':
-      return 'bg-cyan-100 text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400'
+      return 'text-cyan-600 dark:text-cyan-400'
     case 'CONFIRMED':
-      return 'bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400'
+      return 'text-blue-600 dark:text-blue-400'
     case 'PENDING':
-      return 'bg-warning/10 text-warning'
+      return 'text-warning'
     case 'CANCELED':
-      return 'bg-destructive/10 text-destructive'
+      return 'text-destructive'
     default:
-      return 'bg-muted text-muted-foreground'
+      return 'text-muted-foreground'
   }
 }
 
@@ -61,35 +85,12 @@ function getStatusLabel(status: string) {
     case 'DELIVERED':
       return 'Đã giao (Chờ nhận)'
     case 'COMPLETED':
-      return 'Hoàn thành'
+      return 'Giao hàng thành công'
     case 'CANCELED':
       return 'Đã hủy'
     default:
       return status
   }
-}
-
-function formatDate(dateStr: string) {
-  if (!dateStr) return '—'
-  const normalized = dateStr.includes('Z') || dateStr.includes('+') ? dateStr : dateStr + 'Z'
-  const d = new Date(normalized)
-  if (isNaN(d.getTime())) return dateStr
-  return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}/${d.getFullYear()}`
-}
-
-function formatDateTime(dateStr: string) {
-  if (!dateStr) return '—'
-  const normalized = dateStr.includes('Z') || dateStr.includes('+') ? dateStr : dateStr + 'Z'
-  const d = new Date(normalized)
-  if (isNaN(d.getTime())) return dateStr
-  return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}/${d.getFullYear()} ${d.getHours().toString().padStart(2, '0')}:${d
-    .getMinutes()
-    .toString()
-    .padStart(2, '0')}`
 }
 
 function formatPrice(value: number) {
@@ -99,9 +100,10 @@ function formatPrice(value: number) {
 
 export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
   const { t } = useTranslation('profile')
+  const navigate = useNavigate()
   const [showConfirmModal, setShowConfirmModal] = useState(false)
-  const [showDetailModal, setShowDetailModal] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
+  const [isLoadingPayment, setIsLoadingPayment] = useState(false)
 
   async function handleConfirmReceipt() {
     setIsConfirming(true)
@@ -120,124 +122,228 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
     }
   }
 
+  // Robustly extract order items in consistent format
+  const products = (() => {
+    if (order.orderDetails && order.orderDetails.length > 0) {
+      return order.orderDetails.map(d => ({
+        productId: d.productId,
+        name: d.productName,
+        price: d.unitPrice,
+        quantity: d.quantity,
+        imageUrl: d.productImage,
+      }))
+    }
+    if (order.items && order.items.length > 0) {
+      return order.items.map(i => ({
+        productId: i.productId,
+        name: i.name,
+        price: i.price,
+        quantity: i.quantity,
+        imageUrl: i.imageUrl,
+      }))
+    }
+    return []
+  })()
+
+  const totalQuantity = products.reduce((sum, p) => sum + p.quantity, 0)
+
+  // Payment Status checks
+  const isCard = order.payment?.paymentMethod === 'CARD' || order.paymentMethod === 'CARD'
+  const isPaid = order.payment?.status === 'PAID' || order.paymentStatus === 'PAID'
+  const canPayAgain = isCard && !isPaid && order.status !== 'CANCELED'
+
   return (
     <>
       <article
+        onClick={() => navigate(`/profile/orders/${order.orderId}`)}
         className={cn(
-          'overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-primary/40',
-          order.status === 'CANCELED' && 'opacity-75 grayscale-[0.5]'
+          'overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-primary/40 p-5 flex flex-col gap-4 cursor-pointer',
+          order.status === 'CANCELED' && 'opacity-85 grayscale-[0.3]'
         )}
       >
-        {/* Header */}
-        <div className='flex items-center justify-between border-b border-border bg-muted/30 px-4 py-3 md:px-5'>
-          <div className='flex items-center gap-3'>
-            <span className='text-sm font-bold text-foreground'>#{order.orderCode}</span>
-            <span className='text-xs text-muted-foreground'>
-              {t('orderHistory.orderDate', { date: formatDate(order.createdAt) })}
+        {/* Shop Header Block (Image 1 Shopee style) */}
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-border">
+          <div className="flex items-center gap-3">
+            {/* Shop Name */}
+            <span className="text-sm font-bold text-foreground">
+              PetBuddy Store
             </span>
           </div>
-          <span
-            className={cn(
-              'flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold',
-              getStatusClassName(order.status)
-            )}
-          >
-            <MaterialIcon
-              name={STATUS_ICON[order.status] || 'schedule'}
-              filled={order.status === 'COMPLETED'}
-              className='text-sm'
-            />
-            {getStatusLabel(order.status)}
+
+          {/* Right Status Label */}
+          <div className="flex items-center gap-1.5 text-xs font-semibold">
+            <span className={cn("flex items-center gap-1", getStatusClassName(order.status))}>
+              <MaterialIcon
+                name={STATUS_ICON[order.status] || 'schedule'}
+                filled={order.status === 'COMPLETED'}
+                className="text-[16px]"
+              />
+              <span>{getStatusLabel(order.status)}</span>
+            </span>
+            <span className="text-muted-foreground">|</span>
+            <span className="text-destructive font-bold uppercase">{order.status}</span>
+          </div>
+        </div>
+
+        {/* Product Items List */}
+        <div className="flex flex-col divide-y divide-border/50">
+          {products.map((product, idx) => (
+            <div key={idx} className="flex gap-4 py-4 first:pt-1 last:pb-1">
+              {/* Product Image */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  navigate(`/products/${product.productId}`)
+                }}
+                className="w-20 h-20 rounded-xl border border-border/80 bg-muted shrink-0 overflow-hidden hover:opacity-90 transition-opacity"
+              >
+                <img
+                  src={product.imageUrl || '/placeholder-product.png'}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.currentTarget
+                    target.onerror = null
+                    target.src = '/placeholder-product.png'
+                  }}
+                />
+              </button>
+              {/* Name & Variation */}
+              <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                <div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigate(`/products/${product.productId}`)
+                    }}
+                    className="font-bold text-sm text-foreground line-clamp-2 hover:text-primary transition-colors text-left hover:underline"
+                  >
+                    {product.name}
+                  </button>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Phân loại: Dành cho thú cưng
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    x{product.quantity}
+                  </p>
+                </div>
+              </div>
+              {/* Price Details */}
+              <div className="text-right shrink-0 flex flex-col justify-center gap-0.5">
+                <span className="text-xs text-muted-foreground line-through">
+                  {formatPrice(product.price * 1.2)}
+                </span>
+                <span className="text-sm font-bold text-destructive">
+                  {formatPrice(product.price)}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer Summary & Action buttons */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-3 border-t border-border mt-1">
+          {/* Order Code */}
+          <span className="text-xs text-muted-foreground font-semibold">
+            Mã đơn hàng: #{order.orderCode}
           </span>
-        </div>
 
-        {/* Order summary (no product images) */}
-        <div className='flex items-center gap-4 px-4 py-4 md:px-5'>
-          <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10'>
-            <MaterialIcon name='shopping_bag' className='text-[24px] text-primary' />
+          <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 ml-auto">
+            {/* Total Paid */}
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <MaterialIcon name="payments" className="text-[16px] text-success" />
+              <span>Thành tiền ({totalQuantity} sản phẩm):</span>
+              <span className="text-base font-extrabold text-destructive">
+                {formatPrice(order.finalAmount)}
+              </span>
+            </div>
+
+            {/* Buttons Row */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  navigate(`/profile/orders/${order.orderId}`)
+                }}
+                className="rounded-lg border border-primary px-4 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary/5 shadow-sm active:scale-95"
+              >
+                Xem chi tiết
+              </button>
+
+              {canPayAgain && (
+                <button
+                  type="button"
+                  onClick={async (e) => {
+                    e.stopPropagation()
+                    setIsLoadingPayment(true)
+                    try {
+                      const res = await getPaymentByOrderIdApi(order.orderId)
+                      if (res.success && res.data) {
+                        const clientSecret = res.data.stripeClientSecret || ''
+                        navigate('/payment', {
+                          state: {
+                            orderId: order.orderId,
+                            clientSecret,
+                            amount: order.finalAmount
+                          }
+                        })
+                      } else {
+                        alert(res.message || 'Không thể lấy thông tin thanh toán.')
+                      }
+                    } catch (err) {
+                      alert('Có lỗi xảy ra khi lấy thông tin thanh toán.')
+                    } finally {
+                      setIsLoadingPayment(false)
+                    }
+                  }}
+                  disabled={isLoadingPayment}
+                  className="rounded-lg bg-success text-success-foreground px-4 py-2 text-xs font-bold shadow-sm transition-colors hover:opacity-90 active:scale-95 disabled:opacity-50"
+                >
+                  {isLoadingPayment ? 'Đang tải...' : 'Thanh toán lại'}
+                </button>
+              )}
+
+              {order.status === 'DELIVERED' && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setShowConfirmModal(true)
+                  }}
+                  className="rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-sm transition-colors hover:opacity-90 active:scale-95"
+                >
+                  Đã nhận được hàng
+                </button>
+              )}
+            </div>
           </div>
-          <div className='min-w-0 flex-1'>
-            <p className='text-sm font-semibold text-foreground'>Mã đơn: #{order.orderCode}</p>
-            <p className='mt-0.5 text-xs text-muted-foreground'>
-              Ngày đặt: {formatDateTime(order.createdAt)}
-            </p>
-          </div>
-          <div className='text-right'>
-            <p className='text-xs text-muted-foreground'>Tổng tiền</p>
-            <p className={cn(
-              'font-display text-base font-bold',
-              order.status === 'CANCELED' ? 'text-muted-foreground' : 'text-primary'
-            )}>
-              {formatPrice(order.finalAmount)}
-            </p>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className='flex flex-col items-center justify-end gap-3 border-t border-border px-4 py-3 sm:flex-row md:px-5'>
-          <button
-            type='button'
-            onClick={() => setShowDetailModal(true)}
-            className='rounded-xl border border-primary px-5 py-2.5 text-xs font-bold text-primary transition-colors hover:bg-accent/10'
-          >
-            {t('orderHistory.actions.viewDetails', 'Xem chi tiết')}
-          </button>
-
-          {order.status === 'DELIVERED' && (
-            <button
-              type='button'
-              onClick={() => setShowConfirmModal(true)}
-              className='rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm transition-colors hover:opacity-90'
-            >
-              Đã nhận được hàng
-            </button>
-          )}
-
-          {order.status === 'SHIPPING' && (
-            <button
-              type='button'
-              onClick={() => alert('Đang theo dõi đơn hàng trên bản đồ...')}
-              className='rounded-xl bg-muted px-5 py-2.5 text-xs font-bold text-foreground shadow-sm transition-colors hover:opacity-90'
-            >
-              {t('orderHistory.actions.track', 'Theo dõi')}
-            </button>
-          )}
         </div>
       </article>
 
-      {/* Order Detail Modal */}
-      {showDetailModal && (
-        <OrderDetailModal
-          orderId={order.orderId}
-          orderCode={order.orderCode}
-          isStaff={false}
-          onClose={() => setShowDetailModal(false)}
-        />
-      )}
-
       {/* Confirmation Modal */}
       {showConfirmModal && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm'>
-          <div className='w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150'>
-            <h4 className='font-display text-lg font-bold text-foreground mb-2'>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <h4 className="font-display text-lg font-bold text-foreground mb-2">
               Xác nhận nhận hàng
             </h4>
-            <p className='text-sm text-muted-foreground mb-6'>
-              Bạn xác nhận đã nhận đầy đủ sản phẩm cho đơn hàng #{order.orderCode} và muốn hoàn tất đơn hàng?
+            <p className="text-sm text-muted-foreground mb-6">
+              Bạn xác nhận đã nhận đầy đủ sản phẩm và muốn hoàn tất đơn hàng?
             </p>
-            <div className='flex items-center justify-end gap-3'>
+            <div className="flex items-center justify-end gap-3">
               <button
-                type='button'
+                type="button"
                 onClick={() => setShowConfirmModal(false)}
-                className='rounded-xl border border-border px-4 py-2 text-sm font-semibold hover:bg-muted'
+                className="rounded-lg border border-border px-4 py-2 text-xs font-semibold hover:bg-muted"
               >
                 Hủy
               </button>
               <button
-                type='button'
+                type="button"
                 onClick={() => void handleConfirmReceipt()}
                 disabled={isConfirming}
-                className='rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-90 disabled:opacity-50'
+                className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:opacity-90 disabled:opacity-50"
               >
                 Xác nhận
               </button>

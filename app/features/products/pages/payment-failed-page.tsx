@@ -21,7 +21,7 @@ export function PaymentFailedPage() {
     try {
       const res = await getPaymentByOrderIdApi(Number(orderId))
       if (res.success && res.data) {
-        const clientSecret = res.data.stripeClientSecret || res.data.clientSecret || ''
+        const clientSecret = res.data.stripeClientSecret || ''
         const amount = res.data.amount || 0
         navigate('/payment', {
           state: {

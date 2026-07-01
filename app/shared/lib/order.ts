@@ -1,4 +1,5 @@
 import type {PaymentResponse} from './payment'
+import type {VoucherResponse} from './voucher'
 
 export type OrderStatus =
   | 'PENDING'
@@ -51,6 +52,7 @@ export interface CreateOrderRequest {
   address: string
   note?: string
   voucherCode?: string
+  shippingFee?: number
   paymentMethod?: 'CASH' | 'CARD'
 }
 
@@ -81,6 +83,8 @@ export interface OrderDetailFull {
   orderDetails: OrderDetailResponse[]
   payment?: PaymentResponse  
   voucherCode?: string
+  voucher?: VoucherResponse
+  shippingFee?: number
 }
 
 export interface OrderResponse {
@@ -97,4 +101,6 @@ export interface OrderResponse {
   updatedAt?: string
   orderDetails?: OrderDetailResponse[]
   payment?: PaymentResponse
+  voucher?: VoucherResponse
+  shippingFee?: number
 }

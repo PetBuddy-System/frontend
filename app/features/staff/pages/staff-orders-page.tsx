@@ -1,5 +1,6 @@
 // app/features/staff/pages/staff-orders-page.tsx
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 
 import { StaffSidebar } from '../components/layout/staff-sidebar'
 import { StaffTopNav } from '../components/layout/staff-top-nav'
@@ -10,11 +11,9 @@ import { cn } from '~/shared/lib/cn'
 import { StaffOrdersStats } from '../components/orders/staff-orders-stats'
 import { StaffOrdersTable } from '../components/orders/staff-orders-table'
 import { StaffOrderPickingDialog } from '../components/orders/staff-order-picking-dialog'
-import { OrderDetailModal } from '~/shared/components'
-
-
 
 export function StaffOrdersPage() {
+    const navigate = useNavigate()
     const [orders, setOrders] = useState<OrderResponse[]>([])
     const [stats, setStats] = useState({
         pending: 0,
@@ -33,9 +32,6 @@ export function StaffOrdersPage() {
     // Filters
     const [searchQuery, setSearchQuery] = useState('')
     const [statusFilter, setStatusFilter] = useState<string>('ALL')
-
-    // Detail Modal state
-    const [selectedOrderForDetail, setSelectedOrderForDetail] = useState<OrderResponse | null>(null)
 
     // Picking Modal state
     const [selectedOrderForPicking, setSelectedOrderForPicking] = useState<OrderResponse | null>(null)
@@ -132,7 +128,7 @@ export function StaffOrdersPage() {
                             statusFilter={statusFilter}
                             onSearchChange={setSearchQuery}
                             onStatusFilterChange={setStatusFilter}
-                            onViewDetail={setSelectedOrderForDetail}
+                            onViewDetail={(order) => navigate(`/staff/orders/${order.orderId}`)}
                             onTransition={handleTransition}
                             onOpenPicking={handleOpenPicking}
                             onTransitionToShipped={(orderId) => handleTransition(orderId, 'DELIVERED')}
@@ -185,16 +181,6 @@ export function StaffOrdersPage() {
                 onClose={() => setSelectedOrderForPicking(null)}
                 onSuccess={() => void loadData()}
             />
-
-            {/* Order Detail Modal */}
-            {selectedOrderForDetail && (
-                <OrderDetailModal
-                    orderId={selectedOrderForDetail.orderId}
-                    orderCode={selectedOrderForDetail.orderCode}
-                    isStaff={true}
-                    onClose={() => setSelectedOrderForDetail(null)}
-                />
-            )}
         </div>
     )
 }
