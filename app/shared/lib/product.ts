@@ -46,6 +46,7 @@ export interface ProductDetailData {
   name: string
   description: string
   price: number
+  salePrice?: number
   brandName: string
   status: string
   categoryId: number
@@ -53,6 +54,15 @@ export interface ProductDetailData {
   imageUrls: string[]
   totalStock: number
   batchCount: number
+  discountAmount?: number | null
+  discountType?: 'PERCENTAGE' | 'FIXED' | string | null
+  discountValue?: number | null
+  hasActivePromotion?: boolean
+  promotionName?: string | null
+  promotionDescription?: string | null
+  promotionEndDate?: string | null
+  promotionDiscountType?: 'PERCENTAGE' | 'FIXED' | string | null
+  promotionDiscountValue?: number | null
   createdAt: string
   updatedAt: string
 }
@@ -122,6 +132,7 @@ export interface FetchProductsManagementParams {
   sortBy?: string
   page?: number
   size?: number
+  nearExpiredDays?: number
 }
 
 export interface UpdateProductPayload {
@@ -158,11 +169,21 @@ export interface CreateProductResponse {
 }
 
 export interface ImportProductsResult {
-  canImport: boolean
+  success: boolean
   createdProducts: number
   createdBatches: number
-  warnings: string[]
-  errors: string[]
+  errors: Array<{
+    row: number
+    errorKey:
+      | 'PRODUCT_NAME_REQUIRED'
+      | 'CATEGORY_NAME_REQUIRED'
+      | 'PRODUCT_PRICE_INVALID'
+      | 'STOCK_QUANTITY_INVALID'
+      | 'EXPIRY_DATE_INVALID'
+      | 'PRODUCT_INACTIVE'
+      | 'CATEGORY_NOT_FOUND'
+      | string
+  }>
 }
 
 export interface ImportProductsResponse {

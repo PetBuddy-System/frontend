@@ -143,11 +143,11 @@
     "roleTitle": "Quản lý cửa hàng",
     "nav": {
       "dashboard": "Tổng quan vận hành",
-      "inventory": "Kiểm soát kho",
       "products": "Quản lý sản phẩm",
       "staff": "Điều phối nhân sự",
       "returnRequests": "Duyệt đổi trả",
-      "disposalApprovals": "Duyệt hủy hàng"
+      "disposalApprovals": "Duyệt hủy hàng",
+      "promotions": "Chương trình khuyến mãi"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
@@ -549,6 +549,49 @@
       "loading": "Đang tải thông tin sản phẩm...",
       "success": "Cập nhật sản phẩm thành công",
       "error": "Cập nhật sản phẩm thất bại"
+    }
+  },
+  "promotions": {
+    "title": "Quản lý Khuyến mãi",
+    "subtitle": "Quản lý các chương trình giảm giá và chiến dịch quảng bá.",
+    "searchPlaceholder": "Tìm kiếm khuyến mãi...",
+    "actions": {
+      "add": "Thêm khuyến mãi mới",
+      "edit": "Chỉnh sửa khuyến mãi",
+      "delete": "Xóa khuyến mãi",
+      "view": "Xem chi tiết"
+    },
+    "stats": {
+      "total": "TỔNG CHƯƠNG TRÌNH",
+      "active": "ĐANG HOẠT ĐỘNG",
+      "draft": "BẢN NHÁP",
+      "expired": "ĐÃ HẾT HẠN"
+    },
+    "table": {
+      "columns": {
+        "name": "Tên khuyến mãi",
+        "description": "Mô tả",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "noPromotions": "Không có chương trình khuyến mãi nào",
+      "noPromotionsDesc": "Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm"
+    },
+    "editModal": {
+      "title": "Chỉnh sửa khuyến mãi",
+      "createTitle": "Thêm khuyến mãi mới",
+      "name": "Tên khuyến mãi",
+      "description": "Mô tả",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "status": "Trạng thái",
+      "save": "Lưu thay đổi",
+      "cancel": "Hủy",
+      "success": "Cập nhật khuyến mãi thành công",
+      "createSuccess": "Tạo chương trình khuyến mãi thành công",
+      "error": "Thao tác thất bại"
     }
   }
 }

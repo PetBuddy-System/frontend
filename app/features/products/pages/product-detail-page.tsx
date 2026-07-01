@@ -124,8 +124,18 @@ export function ProductDetailPage() {
             productId={product.productId}
             name={product.name}
             price={product.price}
+            salePrice={product.salePrice}
             brandName={product.brandName}
             totalStock={product.totalStock}
+            discountAmount={product.discountAmount}
+            discountType={product.discountType}
+            discountValue={product.discountValue}
+            hasActivePromotion={product.hasActivePromotion}
+            promotionName={product.promotionName}
+            promotionDescription={product.promotionDescription}
+            promotionEndDate={product.promotionEndDate}
+            promotionDiscountType={product.promotionDiscountType}
+            promotionDiscountValue={product.promotionDiscountValue}
             imageUrl={product.imageUrls?.[0]}
           />
         </div>

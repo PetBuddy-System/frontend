@@ -418,6 +418,7 @@ export function ManagerProductBatchSection({
                                             <th className='w-16 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>STT</th>
                                             <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Mã lô hàng</th>
                                             <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Tồn kho</th>
+                                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Giá vốn</th>
                                             <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Ngày hết hạn</th>
                                             <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Số ngày còn lại</th>
                                             <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Trạng thái</th>
@@ -444,6 +445,9 @@ export function ManagerProductBatchSection({
                                                         </td>
                                                         <td className='px-4 py-3.5 font-semibold text-foreground'>
                                                             {batch.stockQuantity}
+                                                        </td>
+                                                        <td className='px-4 py-3.5 font-semibold text-foreground'>
+                                                            {batch.cost != null ? `${batch.cost.toLocaleString('vi-VN')} đ` : 'N/A'}
                                                         </td>
                                                         <td className='px-4 py-3.5 text-muted-foreground font-medium'>
                                                             {formatDate(batch.expiryDate)}
@@ -516,7 +520,7 @@ export function ManagerProductBatchSection({
                                                     {/* Audit detail expansion row */}
                                                     {isExpanded && (
                                                         <tr className='bg-muted/20 border-b border-border/50'>
-                                                            <td colSpan={7} className='px-6 py-3'>
+                                                            <td colSpan={8} className='px-6 py-3'>
                                                                 <div className='flex flex-wrap gap-x-8 gap-y-2 text-xs'>
                                                                     <div className='flex items-center gap-2 text-muted-foreground'>
                                                                         <MaterialIcon name='calendar_month' className='text-sm' />
@@ -543,7 +547,7 @@ export function ManagerProductBatchSection({
                                                     {/* Inline edit form row - Chỉ hiển thị khi chưa xóa */}
                                                     {isEditing && !isDeleted && (
                                                         <tr className='bg-primary/5 border-b border-border'>
-                                                            <td colSpan={7} className='px-6 py-4'>
+                                                            <td colSpan={8} className='px-6 py-4'>
                                                                 <div className='flex flex-col gap-3'>
                                                                     <span className='text-xs font-bold text-muted-foreground uppercase tracking-wide'>Chỉnh sửa lô hàng: {batch.batchCode}</span>
                                                                     <div className='flex flex-wrap gap-3'>

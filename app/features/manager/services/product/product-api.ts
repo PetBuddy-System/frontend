@@ -39,7 +39,7 @@ export async function fetchCategoriesApi(): Promise<ListCategoryResponse> {
 export async function fetchProductsManagementApi(
   params: FetchProductsManagementParams = {}
 ): Promise<PagedProductManagementResponse> {
-  const { keyword, categoryId, brandName, status, sortBy, page = 0, size = 10 } = params
+  const { keyword, categoryId, brandName, status, sortBy, page = 0, size = 10, nearExpiredDays = 120 } = params
 
   return customFetch<PagedProductManagementResponse>({
     url: `${PRODUCTS_BASE_URL}/management`,
@@ -51,7 +51,8 @@ export async function fetchProductsManagementApi(
       status: status || undefined,
       sortBy: sortBy || undefined,
       page,
-      size
+      size,
+      nearExpiredDays
     }
   })
 }
@@ -98,14 +99,13 @@ export async function createProductApi(
 }
 
 export async function importProductsApi(
-  file: File,
-  confirm: boolean = false
+  file: File
 ): Promise<ImportProductsResponse> {
   const formData = new FormData()
   formData.append('file', file)
 
   return customFetch<ImportProductsResponse>({
-    url: `${PRODUCTS_BASE_URL}/import?confirm=${confirm}`,
+    url: `${PRODUCTS_BASE_URL}/import`,
     method: 'POST',
     data: formData
   })
