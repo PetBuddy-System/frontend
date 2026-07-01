@@ -15,7 +15,7 @@ export interface VoucherResponse {
   voucherId: string
   voucherCode: string
   voucherName: string
-  discountType: 'PERCENTAGE' | 'FIXED' | string
+  discountType: 'PERCENTAGE' | 'FIXED_AMOUNT' | string
   discountValue: number
   maxDiscount: number | null
   minOrderValue: number | null
@@ -32,7 +32,7 @@ export interface VoucherResponse {
 export interface VoucherRequest {
   voucherCode: string
   voucherName: string
-  discountType: 'PERCENTAGE' | 'FIXED' | string
+  discountType: 'PERCENTAGE' | 'FIXED_AMOUNT' | string
   discountValue: number
   maxDiscount?: number | null
   minOrderValue?: number | null
