@@ -7,7 +7,6 @@ export interface CheckoutMapProps {
   defaultLng?: number
 }
 
-// Store coordinates as fallback center
 const STORE_LAT = 10.776889
 const STORE_LON = 106.700806
 
@@ -46,7 +45,6 @@ useEffect(() => {
     if (cssLoaded && jsLoaded) setIsLeafletLoaded(true)
   }
 
-  // Tránh chèn lại link/script nhiều lần khi component remount (StrictMode/HMR)
   let link = document.querySelector<HTMLLinkElement>('link[data-leaflet]')
   if (!link) {
     link = document.createElement('link')

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { getPaymentByOrderIdApi } from '~/features/products/services/payment/payment-api'
+import { getPaymentByOrderIdApi } from '~/features/products/services'
 
 export function PaymentFailedPage() {
   const navigate = useNavigate()
@@ -39,15 +39,13 @@ export function PaymentFailedPage() {
       setIsRetrying(false)
     }
   }
-
-  // Phân loại lý do thất bại sang tiếng Việt
   let reasonTitle = 'Thanh toán thất bại'
   let reasonDescription = 'Không thể hoàn tất giao dịch thanh toán trực tuyến.'
 
   switch (reason) {
     case 'timeout':
       reasonTitle = 'Hết thời gian giao dịch'
-      reasonDescription = 'Thời gian dành cho việc thanh toán đơn hàng (5 phút) đã kết thúc.'
+      reasonDescription = 'Thời gian dành cho việc thanh toán đơn hàng đã kết thúc.'
       break
     case 'user_cancelled':
       reasonTitle = 'Giao dịch bị hủy'
@@ -66,7 +64,6 @@ export function PaymentFailedPage() {
       <SiteHeader />
       <main className='mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center p-6 text-center md:py-16'>
         
-        {/* Vòng tròn Icon lỗi màu đỏ */}
         <div className='mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10 text-destructive animate-bounce'>
           <MaterialIcon name='cancel' className='text-[48px]' />
         </div>
@@ -95,7 +92,6 @@ export function PaymentFailedPage() {
           </div>
         </div>
 
-        {/* Nút hành động */}
         <div className='flex w-full flex-col gap-3'>
           {orderId && (
             <button

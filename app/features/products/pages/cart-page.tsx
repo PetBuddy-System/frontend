@@ -3,44 +3,14 @@ import { useTranslation } from 'react-i18next'
 
 import { CartItemsList, type CartItem } from '../components/cart/cart-items-list'
 import { CartOrderSummary } from '../components/cart/cart-order-summary'
-import { CartSuggestions, type CartSuggestion } from '../components/cart/cart-suggestions'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
 import {
   getCartApi,
   updateCartItemApi,
   removeCartItemApi,
   clearCartApi,
-} from '../services/cart'
+} from '../services'
 import type { CartItemResponse } from '~/shared/lib/cart'
-
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-// const SUGGESTIONS: CartSuggestion[] = [
-//   {
-//     key: 'treats',
-//     image:
-//       'https://lh3.googleusercontent.com/aida-public/AB6AXuAh0Mt6FVKZtoZIl8hmpDSsxvCx6L1TKQ5qRwm5_xTvWTzzLlj7EtK3CNi6AhdkRuvKbRyHbsNB5dztwxU6jm02uBewG26QLu7OaxUSiIlAJQhPWrynOSWUA-Guyf10N2WqYv6P0vlXRH3ysKcNaOJBqtpA7ps8SkLZ29t0qWni6O08YfwgfbBj6D9iUa_dJVW_LiuRiafZIH6qH5mFE8QScPIBVwX4X7DD3UlqQ7WMB018sLlXjvONm_qgeSyKre1OEWq3cTz_WmA',
-//     price: 85000,
-//   },
-//   {
-//     key: 'ropeToy',
-//     image:
-//       'https://lh3.googleusercontent.com/aida-public/AB6AXuBDBudYeLKEdmwXy5PdXabk8pPTMta8e7woVqNCjuh0usqTa-LdUolvcpn5xIp58m9-fxYDg08HC25OVOyyTm0A2P_U0dRcnxqkxwD_WtCIvzYhi1TVXgsy4mCCR1rsaneVLsb5s-oMVCr_odxoOmtulAccheNytvG_cCo3qodaRqZANN4eWvDe3OlQyuVCcPHDxF_w18oepm-IbIcQbT4ISlc6pN7JkE3-kjBUuMPHrU0Z-vgFVaLNCV4UP6OXv_LPiE3iAP9Z4GQ',
-//     price: 120000,
-//   },
-//   {
-//     key: 'leatherCollar',
-//     image:
-//       'https://lh3.googleusercontent.com/aida-public/AB6AXuArwBf7UHSiWPAQRs5-02N0HWuz9jmofJ_e9rICLQSIynaGrkRm9_wTgtmtrUBWscRJQBd43haD1tm4ioBGU3qorsnaVx-RU2hrwsR9bExWLMF9T3KAAdNWnO5lb9VCEEjWW2YWulkiJCzGmt2aFEpp8c9b0uZ90TVH1aWMEv8okZogchwFlsgE2NCJchSJwde3eWVXTeXJ4ZCaxtoPSt067ALgjO05337NHrAsSMiLZnRfB742vKPXoFcDPA6JYNGPnNKU9Vg8VFU',
-//     price: 350000,
-//   },
-//   {
-//     key: 'ceramicBowl',
-//     image:
-//       'https://lh3.googleusercontent.com/aida-public/AB6AXuCdf_YqJ2ZfNOBKzXiCy-IHUrXjgLClIzIZjWt5VdZeJxG7bQlU1PbcRbDZ_zQmH3aWpJk4irp1xMUeoZ-pLONJMBYzQU85Cx31mmUHkr-Ur007CEVRPFOeLH0NFcFrzVyac31YUC7kd1mygBsnJN4RgRnDeuKsaVJqQ1fLiJVw0jBLAG1W86sfcWk5SbeJSd3zAC_IOHm2n9qFzekhtpmKkDRD_svrOvkyrva-DYE377-MJDQEghzzAuGlG2rlLxoLZDNvaatDSfM',
-//     price: 215000,
-//   },
-// ]
 
 const CART_PLACEHOLDER_IMAGE = 'https://placehold.co/300x300?text=PetBuddy'
 
@@ -152,9 +122,6 @@ export function CartPage() {
       setIsMutating(false)
     }
   }
-
-  // ─── Render ─────────────────────────────────────────────────────────────
-
   if (isLoading) {
     return (
       <div className='flex min-h-screen flex-col bg-background text-foreground'>
@@ -180,7 +147,6 @@ export function CartPage() {
           {t('cart.title')}
         </h1>
 
-        {/* Error banner */}
         {error && (
           <div className='mb-6 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
             {error}
@@ -217,8 +183,6 @@ export function CartPage() {
             />
           </div>
         </div>
-
-        {/* <CartSuggestions items={SUGGESTIONS} formatPrice={formatPrice} /> */}
       </main>
 
       <SiteFooter />

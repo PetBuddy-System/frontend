@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -9,7 +8,7 @@ import { ProductsHero } from '../components/listing/products-hero'
 import { ProductsGallery } from '../components/listing/products-gallery'
 import { ProductsSidebarFilters } from '../components/listing/products-sidebar-filters'
 import { ProductsPagination } from '../components/listing/products-pagination'
-import { fetchProductsApi, fetchCategoriesApi } from '../services/products'
+import { fetchProductsApi, fetchCategoriesApi } from '../services'
 import type { ProductResponse, CategoryData } from '~/shared/lib/product'
 import { cn } from '~/shared/lib/cn'
 
@@ -32,7 +31,6 @@ const BRAND_MAP: Record<string, string> = {
 export function ProductsPage() {
   const { t } = useTranslation('products')
 
-  // Search, filter and page state variables
   const [searchInput, setSearchInput] = useState('')
   const [keyword, setKeyword] = useState('')
   const [category, setCategory] = useState<string | number>('all')
@@ -40,7 +38,6 @@ export function ProductsPage() {
   const [sort, setSort] = useState('popular')
   const [page, setPage] = useState(0)
 
-  // API data states
   const [products, setProducts] = useState<ProductResponse[]>([])
   const [categories, setCategories] = useState<CategoryData[]>([])
   const [totalElements, setTotalElements] = useState(0)
@@ -48,7 +45,6 @@ export function ProductsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch categories on mount
   useEffect(() => {
     let active = true
     async function loadCategories() {
@@ -67,7 +63,6 @@ export function ProductsPage() {
     }
   }, [])
 
-  // Search input debouncer
   useEffect(() => {
     const handler = setTimeout(() => {
       setKeyword(searchInput)
@@ -76,7 +71,6 @@ export function ProductsPage() {
     return () => clearTimeout(handler)
   }, [searchInput])
 
-  // Fetch products upon filter changes
   useEffect(() => {
     let active = true
 

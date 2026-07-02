@@ -301,7 +301,7 @@
     "trustQuote": "Dành cho những cái đuôi luôn vẫy hạnh phúc."
   },
   "hero": {
-    "title": "Thức ăn & Phụ kiện cho chó",
+    "title": "Thức ăn & Phụ kiện cho thú cưng",
     "subtitle": "Khám phá đa dạng các sản phẩm dinh dưỡng và phụ kiện chất lượng cao, giúp cún cưng của bạn luôn khỏe mạnh và vui vẻ mỗi ngày."
   },
   "filters": {
@@ -450,5 +450,10 @@
     "phone": "1900 1234",
     "zaloSupport": "Zalo hỗ trợ",
     "copyright": "© 2023 Pet Store. Đồng hành cùng thú cưng của bạn."
+  },
+  "outOfStockModal": {
+    "title": "Sản phẩm đã hết hàng",
+    "description": "Rất tiếc! Sản phẩm này vừa được người khác mua hết. Sản phẩm đã được tự động xóa khỏi giỏ hàng của bạn.",
+    "gotIt": "Đã hiểu"
   }
 }

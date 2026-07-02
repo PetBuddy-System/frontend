@@ -52,7 +52,8 @@ export interface CreateOrderRequest {
   address: string
   note?: string
   voucherCode?: string
-  shippingFee?: number
+  latitude: number
+  longitude: number
   paymentMethod?: 'CASH' | 'CARD'
 }
 
