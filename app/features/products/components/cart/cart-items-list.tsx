@@ -103,16 +103,6 @@ export function CartItemsList({
           </div>
         </article>
       ))}
-
-      <div className='pt-6'>
-        <a
-          className='inline-flex items-center gap-2 font-bold text-primary transition-transform hover:-translate-x-1'
-          href='/products'
-        >
-          <MaterialIcon name='arrow_back' className='text-[20px]' />
-          {t('cart.continueShopping')}
-        </a>
-      </div>
     </section>
   )
 }

@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { CartItemsList, type CartItem } from '../components/cart/cart-items-list'
 import { CartOrderSummary } from '../components/cart/cart-order-summary'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
+import { MaterialIcon } from '~/shared/ui'
 import {
   getCartApi,
   updateCartItemApi,
@@ -146,6 +148,16 @@ export function CartPage() {
         <h1 className='mb-10 font-display text-3xl font-bold text-primary md:text-5xl'>
           {t('cart.title')}
         </h1>
+
+        <div className='mb-6'>
+          <a
+            className='inline-flex items-center gap-2 font-bold text-primary transition-transform hover:-translate-x-1'
+            href='/products'
+          >
+            <MaterialIcon name='arrow_back' className='text-[20px]' />
+            {t('cart.continueShopping')}
+          </a>
+        </div>
 
         {error && (
           <div className='mb-6 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>

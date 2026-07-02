@@ -24,7 +24,7 @@ function mapToBlogPost(blog: BlogResponse): BlogPost & { markdownContent: string
       month: '2-digit',
       year: 'numeric'
     }),
-    imageUrl: blog.imageUrls?.[0] || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80',
+    imageUrl: blog.mediaFiles?.[0]?.fileUrl || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80',
     isPublished: true,
     views: 0,
     markdownContent: blog.content || ''

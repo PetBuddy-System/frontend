@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/shared/lib/cn'
@@ -21,11 +22,25 @@ export interface BlogCardProps {
 
 export function BlogCard({ post, featured = false }: BlogCardProps) {
   const { t } = useTranslation('blog')
+  const navigate = useNavigate()
+
+  const handleCardClick = () => {
+    navigate(`/blog/${post.id}`)
+  }
 
   return (
     <article
+      onClick={handleCardClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleCardClick()
+        }
+      }}
+      role='button'
+      tabIndex={0}
       className={cn(
-        'group flex flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5',
+        'group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5',
         featured && 'md:flex-row'
       )}
     >
@@ -69,6 +84,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
 
         <a
           href={`/blog/${post.id}`}
+          onClick={(e) => e.stopPropagation()}
           className='inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80'
         >
           {t('card.readMore')}

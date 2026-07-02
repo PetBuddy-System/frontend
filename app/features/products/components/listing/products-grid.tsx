@@ -1,6 +1,6 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
 import { addToCartApi } from '../../services'
 import { MaterialIcon } from '~/shared/ui'
 import type { ProductResponse } from '~/shared/lib/product'
@@ -12,6 +12,7 @@ export interface ProductsGridProps {
 
 export function ProductsGrid({ products, isLoading = false }: ProductsGridProps) {
   const { t } = useTranslation('products')
+  const navigate = useNavigate()
   const [addingMap, setAddingMap] = useState<Record<string, boolean>>({})
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -44,7 +45,11 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
   }
 }
 
-  if (isLoading) {
+const handleCardClick = (product: ProductResponse) => {
+  navigate(`/products/${product.productId}`)
+}
+
+if (isLoading) {
     return (
       <div className='grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-3 xl:grid-cols-4'>
         {Array.from({ length: 8 }).map((_, idx) => (
@@ -80,7 +85,16 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
       {products.map((product) => (
         <article
           key={product.productId}
-          className='group flex flex-col rounded-2xl border border-border/60 bg-card shadow-sm transition-shadow hover:shadow-lg'
+          onClick={() => handleCardClick(product)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              handleCardClick(product)
+            }
+          }}
+          role='button'
+          tabIndex={0}
+          className='group flex cursor-pointer flex-col rounded-2xl border border-border/60 bg-card shadow-sm transition-shadow hover:shadow-lg'
         >
           <div className='relative w-full overflow-hidden bg-muted pt-[100%]'>
             <img
@@ -102,7 +116,10 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
             <button
               type='button'
               disabled={addingMap[product.productId]}
-              onClick={() => handleAddToCart(product)}
+              onClick={(e) => {
+                e.stopPropagation()
+                handleAddToCart(product)
+              }}
               className='mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-secondary px-3 py-2 text-sm font-semibold text-secondary-foreground transition-colors hover:opacity-90 disabled:opacity-50'
             >
               {addingMap[product.productId] ? (
@@ -112,13 +129,17 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
               )}
               {t('actions.addToCart')}
             </button>
-            <Link
-              to={`/products/${product.productId}`}
+            <button
+              type='button'
+              onClick={(e) => {
+                e.stopPropagation()
+                handleCardClick(product)
+              }}
               className='mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-primary'
             >
               <MaterialIcon name='info' className='text-[18px]' />
               {t('actions.viewDetails')}
-            </Link>
+            </button>
           </div>
         </article>
       ))}

@@ -179,9 +179,44 @@ export async function customFetch<T>(options: RequestOptions): Promise<T> {
     return response.data as T
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response) {
-      throw Object.assign(new Error(error.response.data?.message ?? 'API error'), {
+      // Extract user-friendly message from response
+      const responseData = error.response.data
+      let errorMessage: string
+
+      if (responseData?.message) {
+        errorMessage = responseData.message
+      } else if (responseData?.errors && typeof responseData.errors === 'object') {
+        // Handle validation errors array
+        const errors = Array.isArray(responseData.errors)
+          ? responseData.errors
+          : Object.values(responseData.errors)
+        errorMessage = errors[0] ?? 'Có lỗi xảy ra'
+      } else {
+        // Fallback based on HTTP status
+        switch (error.response.status) {
+          case 401:
+            errorMessage = 'Email hoặc mật khẩu không đúng'
+            break
+          case 403:
+            errorMessage = 'Bạn không có quyền truy cập'
+            break
+          case 404:
+            errorMessage = 'Không tìm thấy dữ liệu'
+            break
+          case 422:
+            errorMessage = 'Dữ liệu không hợp lệ'
+            break
+          case 500:
+            errorMessage = 'Lỗi máy chủ. Vui lòng thử lại sau'
+            break
+          default:
+            errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại'
+        }
+      }
+
+      throw Object.assign(new Error(errorMessage), {
         status: error.response.status,
-        data: error.response.data
+        data: responseData
       })
     }
     throw error
