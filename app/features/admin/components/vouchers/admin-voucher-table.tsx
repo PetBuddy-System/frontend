@@ -87,6 +87,7 @@ export function AdminVoucherTable({ onOpenCreate }: AdminVoucherTableProps) {
   }, [])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadVouchers(currentPage)
   }, [currentPage, loadVouchers])
 
@@ -215,7 +216,15 @@ export function AdminVoucherTable({ onOpenCreate }: AdminVoucherTableProps) {
                         name='confirmation_number'
                         className='mx-auto mb-2 text-[36px] text-muted-foreground/50'
                       />
-                      <p>Không tìm thấy voucher nào</p>
+                      <p className='mb-3'>Không tìm thấy voucher nào</p>
+                      <button
+                        type='button'
+                        onClick={onOpenCreate}
+                        className='inline-flex h-9 items-center justify-center gap-1 rounded-xl bg-primary/10 px-4 text-xs font-bold text-primary transition hover:bg-primary/20'
+                      >
+                        <MaterialIcon name='add' className='text-sm' />
+                        Tạo voucher
+                      </button>
                     </td>
                   </tr>
                 ) : (

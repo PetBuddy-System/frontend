@@ -10,7 +10,7 @@ import { RelatedProducts } from '../components/detail/related-products'
 import { MaterialIcon } from '~/shared/ui'
 import { SiteFooter } from '~/shared/components'
 import { SiteHeader } from '~/shared/components'
-import { fetchProductByIdApi } from '../services/products'
+import { fetchProductByIdApi } from '../services'
 import type { ProductDetailData } from '~/shared/lib/product'
 
 export function ProductDetailPage() {

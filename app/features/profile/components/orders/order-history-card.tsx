@@ -6,6 +6,7 @@ import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { updateOrderStatusApi } from '~/features/profile/services'
 import { getPaymentByOrderIdApi } from '~/features/products/services/payment/payment-api'
+import type {VoucherResponse} from '~/shared/lib/voucher'
 
 export interface OrderHistoryCardProps {
   order: {
@@ -13,9 +14,11 @@ export interface OrderHistoryCardProps {
     orderCode: string
     status: string
     finalAmount: number
+    shippingFee?: number
     createdAt: string
     paymentMethod?: string
     paymentStatus?: string
+    voucher?: VoucherResponse | null
     items?: Array<{
       productId: string
       name: string
@@ -121,8 +124,6 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
       setIsConfirming(false)
     }
   }
-
-  // Robustly extract order items in consistent format
   const products = (() => {
     if (order.orderDetails && order.orderDetails.length > 0) {
       return order.orderDetails.map(d => ({
@@ -147,7 +148,6 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
 
   const totalQuantity = products.reduce((sum, p) => sum + p.quantity, 0)
 
-  // Payment Status checks
   const isCard = order.payment?.paymentMethod === 'CARD' || order.paymentMethod === 'CARD'
   const isPaid = order.payment?.status === 'PAID' || order.paymentStatus === 'PAID'
   const canPayAgain = isCard && !isPaid && order.status !== 'CANCELED'
@@ -161,16 +161,13 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
           order.status === 'CANCELED' && 'opacity-85 grayscale-[0.3]'
         )}
       >
-        {/* Shop Header Block (Image 1 Shopee style) */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-border">
           <div className="flex items-center gap-3">
-            {/* Shop Name */}
             <span className="text-sm font-bold text-foreground">
               PetBuddy Store
             </span>
           </div>
 
-          {/* Right Status Label */}
           <div className="flex items-center gap-1.5 text-xs font-semibold">
             <span className={cn("flex items-center gap-1", getStatusClassName(order.status))}>
               <MaterialIcon
@@ -184,12 +181,9 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
             <span className="text-destructive font-bold uppercase">{order.status}</span>
           </div>
         </div>
-
-        {/* Product Items List */}
         <div className="flex flex-col divide-y divide-border/50">
           {products.map((product, idx) => (
             <div key={idx} className="flex gap-4 py-4 first:pt-1 last:pb-1">
-              {/* Product Image */}
               <button
                 onClick={(e) => {
                   e.stopPropagation()
@@ -198,17 +192,17 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 className="w-20 h-20 rounded-xl border border-border/80 bg-muted shrink-0 overflow-hidden hover:opacity-90 transition-opacity"
               >
                 <img
-                  src={product.imageUrl || '/placeholder-product.png'}
+                  src={product.imageUrl || 'https://placehold.co/300'}
                   alt={product.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     const target = e.currentTarget
                     target.onerror = null
-                    target.src = '/placeholder-product.png'
+                    target.src = 'https://placehold.co/300'
                   }}
                 />
               </button>
-              {/* Name & Variation */}
+
               <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                 <div>
                   <button
@@ -228,28 +222,16 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                   </p>
                 </div>
               </div>
-              {/* Price Details */}
-              <div className="text-right shrink-0 flex flex-col justify-center gap-0.5">
-                <span className="text-xs text-muted-foreground line-through">
-                  {formatPrice(product.price * 1.2)}
-                </span>
-                <span className="text-sm font-bold text-destructive">
-                  {formatPrice(product.price)}
-                </span>
-              </div>
             </div>
           ))}
         </div>
 
-        {/* Footer Summary & Action buttons */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-3 border-t border-border mt-1">
-          {/* Order Code */}
           <span className="text-xs text-muted-foreground font-semibold">
             Mã đơn hàng: #{order.orderCode}
           </span>
 
           <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 ml-auto">
-            {/* Total Paid */}
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <MaterialIcon name="payments" className="text-[16px] text-success" />
               <span>Thành tiền ({totalQuantity} sản phẩm):</span>
@@ -258,7 +240,6 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
               </span>
             </div>
 
-            {/* Buttons Row */}
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -321,7 +302,6 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
         </div>
       </article>
 
-      {/* Confirmation Modal */}
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">

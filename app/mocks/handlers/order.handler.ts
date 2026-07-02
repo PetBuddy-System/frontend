@@ -203,11 +203,13 @@ export const orderHandlers = [
   http.post(`${BASE}/api/orders`, async ({ request }) => {
     try {
       const body = (await request.json()) as {
-        userName: string
+        recipientName: string
         phoneNumber: string
         address: string
         note?: string
         voucherCode?: string
+        latitude?: number
+        longitude?: number
         items?: { productId: string; price: number; quantity: number }[]
         paymentMethod?: 'CASH' | 'CARD'
       }
@@ -241,7 +243,7 @@ export const orderHandlers = [
         status: 'PENDING',
         finalAmount,
         createdAt: new Date().toISOString(),
-        userName: body.userName,
+        userName: body.recipientName,
         phoneNumber: body.phoneNumber,
         address: body.address,
         note: body.note,

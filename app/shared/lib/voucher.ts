@@ -1,8 +1,3 @@
-/**
- * Voucher types — chỉ chứa types/interfaces, không có API functions.
- * API functions nằm trong features/services/.
- */
-
 export interface ApiResponse<T> {
   code?: number
   message?: string

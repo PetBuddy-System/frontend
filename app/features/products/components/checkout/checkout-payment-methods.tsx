@@ -67,16 +67,6 @@ export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: Check
           )
         })}
       </div>
-
-      {selectedMethod === 'CARD' && (
-        <div className='mt-4 flex items-start gap-3 rounded-xl border border-info/30 bg-info/5 px-4 py-3 text-sm text-info'>
-          <MaterialIcon name='info' className='mt-0.5 shrink-0 text-[18px]' />
-          <p>
-            Bạn sẽ được chuyển đến trang thanh toán Stripe an toàn sau khi xác nhận đơn hàng.
-            Vui lòng hoàn tất thanh toán trong <strong>5 phút</strong>.
-          </p>
-        </div>
-      )}
     </section>
   )
 }

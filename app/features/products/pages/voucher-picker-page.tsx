@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFooter, SiteHeader } from '~/shared/components'
-import { fetchActiveVouchersApi } from '../services/voucher'
+import { fetchActiveVouchersApi } from '../services'
 import type { VoucherResponse } from '~/shared/lib/voucher'
 
 export const SESSION_KEY_VOUCHER_CODE = 'petbuddy_checkout_voucher_code'
@@ -73,7 +72,6 @@ export function VoucherPickerPage() {
   const [error, setError] = useState('')
   const [selectedCode, setSelectedCode] = useState<string>('')
 
-  // Read orderSubtotal from sessionStorage (set by checkout page)
   const orderSubtotal = parseInt(sessionStorage.getItem('petbuddy_checkout_subtotal') ?? '0', 10)
 
   useEffect(() => {
@@ -125,7 +123,6 @@ export function VoucherPickerPage() {
       <SiteHeader />
 
       <main className='mx-auto w-full max-w-2xl flex-1 px-4 py-8 md:px-6'>
-        {/* Back button */}
         <button
           type='button'
           onClick={() => navigate('/order')}
@@ -135,7 +132,6 @@ export function VoucherPickerPage() {
           Quay lại
         </button>
 
-        {/* Header */}
         <div className='mb-6 flex items-center justify-between'>
           <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
             Chọn mã giảm giá
@@ -147,7 +143,6 @@ export function VoucherPickerPage() {
           )}
         </div>
 
-        {/* Error */}
         {error && (
           <div className='mb-4 flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
             <MaterialIcon name='error' className='text-[18px]' />
@@ -155,7 +150,6 @@ export function VoucherPickerPage() {
           </div>
         )}
 
-        {/* Loading */}
         {isLoading ? (
           <div className='flex flex-col gap-4'>
             {[1, 2, 3].map((i) => (
@@ -167,7 +161,6 @@ export function VoucherPickerPage() {
           </div>
         ) : (
           <div className='flex flex-col gap-3'>
-            {/* Eligible vouchers */}
             {eligibleVouchers.map((voucher) => {
               const isSelected = selectedCode === voucher.voucherCode
               const discount = calculateDiscount(voucher, orderSubtotal)
@@ -242,7 +235,6 @@ export function VoucherPickerPage() {
               )
             })}
 
-            {/* Ineligible vouchers */}
             {ineligibleVouchers.length > 0 && (
               <>
                 <p className='mt-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
@@ -277,7 +269,6 @@ export function VoucherPickerPage() {
               </>
             )}
 
-            {/* Empty state */}
             {vouchers.length === 0 && (
               <div className='py-16 text-center'>
                 <MaterialIcon name='local_offer' className='mx-auto mb-3 text-[48px] text-muted-foreground' />
@@ -285,9 +276,6 @@ export function VoucherPickerPage() {
               </div>
             )}
 
-            
-
-  {/* Action bar */}
             <div className='mt-4 flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4'>
               <div className='min-w-0 flex-1'>
                 {selectedVoucher ? (

@@ -1,10 +1,11 @@
-// payment.tsx
 import { useEffect, useState, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router'
 import { loadStripe } from '@stripe/stripe-js'
 import {
   Elements,
-  CardElement,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js'
@@ -13,15 +14,23 @@ import { env } from '~/shared/config/env'
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
 
-const stripePromise = loadStripe(
-  env.STRIPE_PK ||
-    'pk_test_51TmQMbRtV6chAZTDY35lvdxSEaeHFH5XGY5wkWmhzPt15LbI2GoqvGlgq13tbYIXioh9MTMIAxvnDyvKPMrYldah00GlDDlu9T'
-)
+const stripePromise = loadStripe(env.STRIPE_PK)
 
 function formatPrice(value: number) {
   return `${new Intl.NumberFormat('vi-VN').format(value)}đ`
 }
 
+const SESSION_KEY_CARDHOLDER = 'petbuddy_payment_cardholder'
+
+const stripeElementStyle = {
+  base: {
+    fontSize: '15px',
+    color: '#191c1d',
+    '::placeholder': { color: '#aab7c4' },
+    fontFamily: 'inherit',
+  },
+  invalid: { color: '#ba1a1a' },
+}
 
 function CheckoutForm({
   clientSecret,
@@ -37,14 +46,22 @@ function CheckoutForm({
   const navigate = useNavigate()
   const [isProcessing, setIsProcessing] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [cardHolderName, setCardHolderName] = useState('')
+  const [cardHolderName, setCardHolderName] = useState(
+    () => sessionStorage.getItem(SESSION_KEY_CARDHOLDER) ?? ''
+  )
+
+  function handleCardHolderChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value.toUpperCase()
+    setCardHolderName(val)
+    sessionStorage.setItem(SESSION_KEY_CARDHOLDER, val)
+  }
 
   async function handlePaySubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!stripe || !elements) return
 
-    const cardElement = elements.getElement(CardElement)
-    if (!cardElement) {
+    const cardNumberElement = elements.getElement(CardNumberElement)
+    if (!cardNumberElement) {
       setErrorMessage('Không tải được cổng nhập thẻ.')
       return
     }
@@ -57,10 +74,9 @@ function CheckoutForm({
     setIsProcessing(true)
     setErrorMessage('')
 
-    // ✅ Thực sự gọi Stripe confirmCardPayment
     const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
-        card: cardElement,
+        card: cardNumberElement,
         billing_details: {
           name: cardHolderName,
         },
@@ -68,15 +84,14 @@ function CheckoutForm({
     })
 
     if (error) {
-      // Stripe trả về lỗi (thẻ từ chối, sai số, ...)
       setErrorMessage(error.message ?? 'Thanh toán thất bại. Vui lòng thử lại.')
       setIsProcessing(false)
       return
     }
 
     if (paymentIntent?.status === 'succeeded') {
-      // ✅ Webhook sẽ tự cập nhật DB, frontend chỉ cần redirect
       sessionStorage.removeItem(`petbuddy_payment_start_${orderId}`)
+      sessionStorage.removeItem(SESSION_KEY_CARDHOLDER)
       navigate('/order-success')
     } else {
       setErrorMessage('Thanh toán chưa hoàn tất. Vui lòng thử lại.')
@@ -97,7 +112,7 @@ function CheckoutForm({
           placeholder='NGUYEN VAN A'
           required
           value={cardHolderName}
-          onChange={(e) => setCardHolderName(e.target.value.toUpperCase())}
+          onChange={handleCardHolderChange}
           disabled={isProcessing}
         />
       </div>
@@ -106,19 +121,23 @@ function CheckoutForm({
         <label className='text-sm font-semibold text-foreground'>
           Thông tin thẻ tín dụng/ghi nợ
         </label>
-        <div className='rounded-xl border border-border bg-background p-4 shadow-inner'>
-          <CardElement
-            options={{
-              style: {
-                base: {
-                  fontSize: '16px',
-                  color: '#191c1d',
-                  '::placeholder': { color: '#aab7c4' },
-                },
-                invalid: { color: '#ba1a1a' },
-              },
-            }}
-          />
+        <div className='overflow-hidden rounded-xl border border-border bg-background shadow-inner'>
+          <div className='flex items-center gap-2 border-b border-border px-4 py-3'>
+            <div className='flex-1'>
+              <CardNumberElement
+                options={{ style: stripeElementStyle, showIcon: true, placeholder: '1234 1234 1234 1234' }}
+              />
+            </div>
+          </div>
+
+          <div className='grid grid-cols-2 divide-x divide-border'>
+            <div className='px-4 py-3'>
+              <CardExpiryElement options={{ style: stripeElementStyle, placeholder: 'MM / YY' }} />
+            </div>
+            <div className='px-4 py-3'>
+              <CardCvcElement options={{ style: stripeElementStyle, placeholder: 'CVC' }} />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -128,14 +147,6 @@ function CheckoutForm({
           <span>{errorMessage}</span>
         </div>
       )}
-
-      {/* Thẻ test Stripe */}
-      <div className='rounded-xl border border-blue-200/50 bg-blue-50/50 dark:bg-blue-950/20 p-3 text-xs text-blue-700 dark:text-blue-400'>
-        <p className='font-semibold mb-1'>🧪 Thẻ test Stripe:</p>
-        <p>Số thẻ: <span className='font-mono'>4242 4242 4242 4242</span></p>
-        <p>Ngày hết hạn: bất kỳ ngày nào trong tương lai &nbsp;|&nbsp; CVV: bất kỳ 3 số</p>
-      </div>
-
       <button
         type='submit'
         disabled={isProcessing || !stripe}
@@ -164,10 +175,14 @@ export function PaymentPage() {
     orderId?: number
     clientSecret?: string
     amount?: number
+    shippingFee?: number
+    isFreeShipping?: boolean
   }
   const orderId = paymentState.orderId ?? 0
   const clientSecret = paymentState.clientSecret ?? ''
   const amount = paymentState.amount ?? 0
+  const shippingFee = paymentState.shippingFee ?? 0
+  const isFreeShipping = paymentState.isFreeShipping ?? true
 
   const [timeLeft, setTimeLeft] = useState(300)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -222,7 +237,9 @@ export function PaymentPage() {
   const seconds = timeLeft % 60
   const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 
-  
+  const actualShippingFee = isFreeShipping ? 0 : shippingFee
+  const subtotal = amount - actualShippingFee
+
   if (!orderId || !clientSecret) {
     return (
       <div className='flex min-h-screen flex-col bg-background text-foreground'>
@@ -252,7 +269,6 @@ export function PaymentPage() {
       <SiteHeader />
       <main className='mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 md:py-16'>
 
-        {/* Countdown banner */}
         <section className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between rounded-2xl bg-white dark:bg-[#111a2e] border border-border/40 p-6 shadow-sm'>
           <div>
             <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
@@ -262,7 +278,7 @@ export function PaymentPage() {
               Mã đơn hàng: #{orderId}
             </h1>
           </div>
-          <div className='flex items-center gap-3 self-start md:self-auto rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/50 px-4 py-2.5 text-amber-700 dark:text-amber-400'>
+          <div className='flex items-center gap-3 self-start md:self-auto rounded-xl bg-warning/10 border border-warning/20 px-4 py-2.5 text-warning'>
             <MaterialIcon
               name='alarm'
               className={`text-[24px] ${timeLeft < 60 ? 'animate-pulse text-destructive' : ''}`}
@@ -279,14 +295,12 @@ export function PaymentPage() {
         </section>
 
         <div className='grid grid-cols-1 gap-6 md:grid-cols-12'>
-          {/* Form thanh toán */}
           <section className='md:col-span-7 flex flex-col gap-6 rounded-2xl bg-white dark:bg-[#111a2e] border border-border/40 p-6 shadow-sm'>
             <div className='flex items-center gap-3 border-b border-border/50 pb-4'>
               <MaterialIcon name='shield' className='text-[24px] text-[#004d99]' />
               <h2 className='font-display text-lg font-bold'>Cổng thanh toán Stripe bảo mật</h2>
             </div>
 
-            {/* ✅ Truyền clientSecret vào Elements options và CheckoutForm */}
             <Elements stripe={stripePromise} options={{ clientSecret }}>
               <CheckoutForm
                 clientSecret={clientSecret}
@@ -299,11 +313,10 @@ export function PaymentPage() {
               onClick={handleCancelPayment}
               className='text-center text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors py-2'
             >
-              Hủy thanh toán & Quay lại
+              Hủy thanh toán &amp; Quay lại
             </button>
           </section>
 
-          {/* Chi tiết đơn hàng */}
           <section className='md:col-span-5 flex flex-col gap-6 rounded-2xl bg-white dark:bg-[#111a2e] border border-border/40 p-6 shadow-sm h-fit'>
             <h3 className='font-display text-base font-bold border-b border-border/50 pb-3'>
               Chi tiết thanh toán
@@ -311,11 +324,15 @@ export function PaymentPage() {
             <div className='flex flex-col gap-4'>
               <div className='flex items-center justify-between text-sm'>
                 <span className='text-muted-foreground'>Số tiền đơn hàng</span>
-                <span className='font-semibold'>{formatPrice(amount)}</span>
+                <span className='font-semibold'>{formatPrice(subtotal > 0 ? subtotal : amount)}</span>
               </div>
               <div className='flex items-center justify-between text-sm'>
-                <span className='text-muted-foreground'>Phí giao dịch</span>
-                <span className='font-semibold text-success'>Miễn phí</span>
+                <span className='text-muted-foreground'>Phí giao hàng</span>
+                {isFreeShipping ? (
+                  <span className='font-semibold text-success'>Miễn phí</span>
+                ) : (
+                  <span className='font-semibold'>{formatPrice(shippingFee)}</span>
+                )}
               </div>
               <hr className='border-border/50' />
               <div className='flex items-center justify-between'>

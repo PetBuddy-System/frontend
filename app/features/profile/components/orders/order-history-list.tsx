@@ -53,7 +53,6 @@ export function OrderHistoryList() {
     }, 0)
   }, [])
 
-  // Reset to first page when filter changes
   useEffect(() => {
     setCurrentPage(0)
   }, [activeFilter])
@@ -92,7 +91,6 @@ export function OrderHistoryList() {
         </p>
       ) : null}
 
-      {/* Pagination Controls */}
       {!isLoading && totalPages > 1 && (
         <div className='mt-8 flex items-center justify-center gap-4 bg-card border border-border rounded-xl p-4 shadow-sm'>
           <button

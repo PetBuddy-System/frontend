@@ -450,5 +450,10 @@
     "phone": "1900 1234",
     "zaloSupport": "Zalo support",
     "copyright": "© 2023 Pet Store. Caring for your pets every day."
+  },
+  "outOfStockModal": {
+    "title": "Product Out of Stock",
+    "description": "We are sorry! This product was just bought by someone else. The product has been automatically removed from your cart.",
+    "gotIt": "Got it"
   }
 }

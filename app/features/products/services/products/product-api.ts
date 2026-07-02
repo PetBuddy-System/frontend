@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/**
- * Products feature — products API service.
- * Chứa tất cả product-related API functions cho customer-facing pages.
- */
-
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type {

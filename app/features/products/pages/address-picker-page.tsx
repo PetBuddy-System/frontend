@@ -1,12 +1,9 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { calculateShippingFeeApi  } from '../services/shipping'
-import { fetchAllShippingRulesApi } from '~/features/admin/services/shipping'
+import { calculateShippingFeeApi, fetchShippingRulesApi } from '../services'
 import type { ShippingRule } from '~/shared/lib/shipping'
 
 const STORE_LAT = 10.776889
@@ -28,16 +25,12 @@ interface ToastData {
 
 function cleanAddress(addr: string): string {
   if (!addr) return ''
-  // Remove "00084" with optional surrounding spaces and commas
-  let cleaned = addr
-    .replace(/,\s*00084\s*,/g, ',')
-    .replace(/,\s*00084\b/g, '')
-    .replace(/\b00084\s*,/g, '')
-    .replace(/\b00084\b/g, '')
-  
-  // Clean duplicate commas or trailing/leading whitespace and commas
-  cleaned = cleaned.replace(/,\s*,/g, ',')
-  cleaned = cleaned.trim().replace(/^,/, '').replace(/,$/, '').trim()
+  const cleaned = addr
+    .split(',')
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0 && !/^\d+$/.test(part))
+    .join(', ')
+
   return cleaned
 }
 
@@ -53,8 +46,6 @@ async function reverseGeocode(lat: number, lng: number): Promise<string> {
   }
   return `${lat.toFixed(6)}, ${lng.toFixed(6)}`
 }
-
-// Tính khoảng cách (km) giữa 2 toạ độ theo công thức Haversine
 function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const toRad = (value: number) => (value * Math.PI) / 180
   const R = 6371
@@ -65,17 +56,12 @@ function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): 
     Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
-
-// Tìm rule phù hợp với khoảng cách — null nếu ngoài vùng phủ
 function findMatchingRule(rules: ShippingRule[], distanceKm: number): ShippingRule | null {
   return (
     rules.find((r) => distanceKm >= r.minDistance && distanceKm < r.maxDistance) ?? null
   )
 }
 
-// Ép .leaflet-container luôn bám 100% kích thước của div bọc ngoài và kế thừa
-// border-radius của nó — không để Leaflet tự set width/height/shape riêng,
-// đây chính là nguyên nhân khiến map "tràn" ra ngoài khung bo góc.
 const LEAFLET_OVERRIDE_STYLES = `
   .pb-map-wrapper {
     position: relative !important;
@@ -105,7 +91,7 @@ function Toast({ toast, onClose }: { toast: ToastData | null; onClose: () => voi
     <div className='fixed top-20 left-1/2 z-[100] -translate-x-1/2 px-4'>
       <div
         className={`flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white shadow-lg ${
-          isSuccess ? 'bg-green-600' : 'bg-destructive'
+          isSuccess ? 'bg-success' : 'bg-destructive'
         }`}
       >
         <MaterialIcon name={isSuccess ? 'check_circle' : 'location_off'} className='text-[20px]' />
@@ -139,8 +125,6 @@ export function AddressPickerPage() {
   function showToast(message: string, variant: ToastVariant = 'success') {
     setToast({ message, variant })
   }
-
-  // Restore previous selection
   useEffect(() => {
     const savedAddress = sessionStorage.getItem(SESSION_KEY_ADDRESS) ?? ''
     if (savedAddress) {
@@ -157,9 +141,8 @@ export function AddressPickerPage() {
     }
   }, [])
 
-  // Fetch shipping rules từ admin config
   useEffect(() => {
-    fetchAllShippingRulesApi()
+    fetchShippingRulesApi()
       .then((res) => {
         if (res?.data) setShippingRules(res.data)
       })
@@ -168,8 +151,6 @@ export function AddressPickerPage() {
       })
       .finally(() => setIsLoadingRules(false))
   }, [])
-
-  // Load Leaflet dynamically
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -184,8 +165,6 @@ export function AddressPickerPage() {
     const checkBothLoaded = () => {
       if (cssLoaded && jsLoaded) setIsLeafletLoaded(true)
     }
-
-    // Tránh chèn lại link/script nhiều lần khi component remount (StrictMode/HMR)
     let link = document.querySelector<HTMLLinkElement>('link[data-leaflet]')
     if (!link) {
       link = document.createElement('link')
@@ -219,15 +198,11 @@ export function AddressPickerPage() {
 
     checkBothLoaded()
   }, [])
-
-  // Initialize Map
   useEffect(() => {
     if (!isLeafletLoaded || !mapContainerRef.current || typeof window === 'undefined') return
 
     const L = (window as any).L
     if (!L || mapInstanceRef.current) return
-
-    // Clean up previous leaflet instance if any (StrictMode/HMR)
     const container: any = mapContainerRef.current
     if (container._leaflet_id) {
       container._leaflet_id = null
@@ -238,13 +213,6 @@ export function AddressPickerPage() {
       zoom: 13,
       scrollWheelZoom: true,
     })
-
-    // Ép cứng các thuộc tính box-model quan trọng bằng inline style !important
-    // ngay trên node mà Leaflet quản lý (.leaflet-container). Inline !important
-    // luôn thắng mọi CSS global khác (ví dụ 1 rule .leaflet-container { position:
-    // fixed; width: 100vw } dùng cho trang bản đồ full-screen nào đó trong app
-    // mà vô tình áp luôn vào đây) — đây là nguyên nhân khiến map "tràn" khỏi
-    // khung bo viền và đè lên header.
     const leafletEl = map.getContainer()
     const forcedStyles: Record<string, string> = {
       position: 'relative',
@@ -305,7 +273,6 @@ export function AddressPickerPage() {
         mapInstanceRef.current = null
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLeafletLoaded])
 
   async function updateLocation(lat: number, lng: number, reverseGeocode_: boolean) {
@@ -440,15 +407,13 @@ export function AddressPickerPage() {
     if (stateLevel.some((f) => hcmcKeywords.some((kw) => f.includes(kw)))) {
       return true
     }
-
-    // Fallback: check city/county nếu state không có
     const cityLevel = [addr.city, addr.county]
       .filter(Boolean)
       .map((s: string) => s.toLowerCase())
 
     return cityLevel.some((f) => hcmcKeywords.some((kw) => f.includes(kw)))
   } catch {
-    return true // fail-open
+    return true 
   }
 }
 
@@ -551,7 +516,7 @@ export function AddressPickerPage() {
             <MaterialIcon name='location_on' className='mt-0.5 shrink-0 text-primary text-[20px]' />
             <div className='flex-1'>
               <p className='text-xs font-semibold text-muted-foreground'>Địa chỉ đã chọn</p>
-              <p className='text-sm font-medium text-foreground'>{selectedAddress}</p>
+              <p className='text-sm font-medium text-foreground'>{cleanAddress(selectedAddress)}</p>
             </div>
           </div>
         )}

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { addToCartApi } from '../../services/cart'
+import { addToCartApi } from '../../services'
 import { MaterialIcon } from '~/shared/ui'
 import type { ProductResponse } from '~/shared/lib/product'
 
@@ -133,7 +133,6 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
         </div>
       )}
 
-      {/* Floating error toast */}
       {error && (
         <div className='fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-xl bg-destructive px-4 py-3 text-destructive-foreground shadow-lg animate-in fade-in slide-in-from-bottom-4'>
           <MaterialIcon name='error' className='text-[20px]' />

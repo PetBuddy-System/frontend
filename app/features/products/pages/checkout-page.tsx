@@ -11,15 +11,14 @@ import {
 } from '../components/checkout/checkout-order-summary'
 import { CheckoutPaymentMethods, type SelectedPaymentMethod } from '../components/checkout/checkout-payment-methods'
 import { CheckoutShippingForm } from '../components/checkout/checkout-shipping-form'
+import { OutOfStockModal } from '../components/checkout/out-of-stock-modal'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { createOrderApi } from '../services/order'
+import { createOrderApi, getCartApi, removeCartItemApi, getPaymentByOrderIdApi } from '../services'
 import type { CreateOrderRequest } from '~/shared/lib/order'
-import { getCartApi } from '../services/cart'
 import type { CartItemResponse } from '~/shared/lib/cart'
 import { MaterialIcon } from '~/shared/ui'
 import { readStorage } from '~/shared/lib/storage'
 import { useAuth } from '~/providers/auth-provider'
-import { getPaymentByOrderIdApi } from '../services/payment/payment-api'
 
 const SESSION_KEY_ADDRESS = 'petbuddy_checkout_address'
 const SESSION_KEY_LAT = 'petbuddy_checkout_lat'
@@ -29,6 +28,7 @@ const SESSION_KEY_IS_FREE_SHIPPING = 'petbuddy_checkout_is_free'
 const SESSION_KEY_VOUCHER_CODE = 'petbuddy_checkout_voucher_code'
 const SESSION_KEY_VOUCHER_NAME = 'petbuddy_checkout_voucher_name'
 const SESSION_KEY_VOUCHER_DISCOUNT = 'petbuddy_checkout_voucher_discount'
+const SESSION_KEY_PAYMENT_METHOD = 'petbuddy_checkout_payment_method'
 
 function formatPrice(value: number) {
   return `${new Intl.NumberFormat('vi-VN').format(value)}đ`
@@ -50,20 +50,34 @@ export function CheckoutPage() {
   const [rawCartItems, setRawCartItems] = useState<CartItemResponse[]>([])
   const [cartItems, setCartItems] = useState<CheckoutOrderItem[]>([])
 
+  const [outOfStockProductName, setOutOfStockProductName] = useState<string | null>(null)
+
   const [selectedAddress, setSelectedAddress] = useState('')
   const [shippingFee, setShippingFee] = useState(0)
   const [isFreeShipping, setIsFreeShipping] = useState(true)
+  const [deliveryLat, setDeliveryLat] = useState(0)
+  const [deliveryLng, setDeliveryLng] = useState(0)
   const [voucherCode, setVoucherCode] = useState('')
   const [voucherName, setVoucherName] = useState('')
   const [voucherDiscount, setVoucherDiscount] = useState(0)
 
-  // State phương thức thanh toán (mặc định là CASH/COD)
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<SelectedPaymentMethod>('CASH')
+  // State phương thức thanh toán — đọc từ sessionStorage để giữ sau reload
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<SelectedPaymentMethod>(() => {
+    const saved = typeof window !== 'undefined' ? sessionStorage.getItem(SESSION_KEY_PAYMENT_METHOD) : null
+    return (saved === 'CASH' || saved === 'CARD') ? saved : 'CASH'
+  })
+
+  function handlePaymentMethodChange(method: SelectedPaymentMethod) {
+    setSelectedPaymentMethod(method)
+    sessionStorage.setItem(SESSION_KEY_PAYMENT_METHOD, method)
+  }
 
   function syncFromSession() {
     setSelectedAddress(sessionStorage.getItem(SESSION_KEY_ADDRESS) ?? '')
     setShippingFee(parseInt(sessionStorage.getItem(SESSION_KEY_SHIPPING_FEE) ?? '0', 10))
     setIsFreeShipping(sessionStorage.getItem(SESSION_KEY_IS_FREE_SHIPPING) !== 'false')
+    setDeliveryLat(parseFloat(sessionStorage.getItem(SESSION_KEY_LAT) ?? '0'))
+    setDeliveryLng(parseFloat(sessionStorage.getItem(SESSION_KEY_LNG) ?? '0'))
     setVoucherCode(sessionStorage.getItem(SESSION_KEY_VOUCHER_CODE) ?? '')
     setVoucherName(sessionStorage.getItem(SESSION_KEY_VOUCHER_NAME) ?? '')
     setVoucherDiscount(parseInt(sessionStorage.getItem(SESSION_KEY_VOUCHER_DISCOUNT) ?? '0', 10))
@@ -132,13 +146,20 @@ export function CheckoutPage() {
       return
     }
 
+    if (!deliveryLat || !deliveryLng) {
+      setErrorMessage(t('checkout.addressRequired', 'Vui lòng chọn địa chỉ giao hàng trên bản đồ.'))
+      setIsSubmitting(false)
+      return
+    }
+
     const request: CreateOrderRequest = {
       recipientName: getFormString(formData, 'recipientName'),
       phoneNumber: getFormString(formData, 'phoneNumber'),
       address: finalAddress,
       note: getFormString(formData, 'note') || undefined,
       voucherCode: voucherCode || undefined,
-      shippingFee: isFreeShipping ? 0 : shippingFee,
+      latitude: deliveryLat,
+      longitude: deliveryLng,
       paymentMethod: selectedPaymentMethod,
     }
 
@@ -181,6 +202,7 @@ export function CheckoutPage() {
         SESSION_KEY_ADDRESS, SESSION_KEY_LAT, SESSION_KEY_LNG,
         SESSION_KEY_SHIPPING_FEE, SESSION_KEY_IS_FREE_SHIPPING,
         SESSION_KEY_VOUCHER_CODE, SESSION_KEY_VOUCHER_NAME, SESSION_KEY_VOUCHER_DISCOUNT,
+        SESSION_KEY_PAYMENT_METHOD,
         'petbuddy_checkout_name', 'petbuddy_checkout_phone',
         'petbuddy_checkout_subtotal', 'petbuddy_checkout_distance',
         'petbuddy_checkout_note',
@@ -203,13 +225,53 @@ export function CheckoutPage() {
             orderId,
             clientSecret,
             amount: lastOrderDetails.finalAmount,
+            shippingFee,
+            isFreeShipping,
           }
         })
       } else {
         navigate('/order-success')
       }
     } catch (error: unknown) {
-      setErrorMessage(error instanceof Error ? error.message : t('checkout.createError'))
+      const apiError = error as { message?: string; data?: { message?: string; code?: string | number } }
+      const rawMessage = apiError?.data?.message ?? (error instanceof Error ? error.message : '')
+
+      const isOutOfStock =
+        rawMessage?.toLowerCase().includes('out of stock') ||
+        rawMessage?.toLowerCase().includes('hết hàng') ||
+        apiError?.data?.code === 'PRODUCT_OUT_OF_STOCK' ||
+        String(apiError?.data?.code) === '1010'
+
+      if (isOutOfStock) {
+        let productName = rawMessage ?? ''
+
+        const matchedItem = rawCartItems.find(
+          (item) =>
+            rawMessage?.toLowerCase().includes(item.productName.toLowerCase())
+        )
+
+        if (matchedItem) {
+          productName = matchedItem.productName
+          try {
+            await removeCartItemApi(matchedItem.cartItemId)
+          } catch {
+          }
+          setRawCartItems((prev) => prev.filter((i) => i.cartItemId !== matchedItem.cartItemId))
+          setCartItems((prev) => prev.filter((i) => i.key !== matchedItem.cartItemId))
+        } else if (rawCartItems.length === 1) {
+          const onlyItem = rawCartItems[0]
+          productName = onlyItem.productName
+          try {
+            await removeCartItemApi(onlyItem.cartItemId)
+          } catch {
+          }
+          setRawCartItems([])
+          setCartItems([])
+        }
+        setOutOfStockProductName(productName || 'Sản phẩm đã hết hàng')
+      } else {
+        setErrorMessage(error instanceof Error ? error.message : t('checkout.createError'))
+      }
     } finally {
       setIsSubmitting(false)
     }
@@ -248,15 +310,13 @@ export function CheckoutPage() {
               </div>
             )}
 
-            {/* Điền tự động tên từ tài khoản đã login qua prop defaultName */}
             <CheckoutShippingForm addressValue={selectedAddress} defaultName={user?.fullName} />
             
-            {/* Chọn phương thức thanh toán (controlled) */}
             <CheckoutPaymentMethods
               selectedMethod={selectedPaymentMethod}
-              onMethodChange={setSelectedPaymentMethod}
+              onMethodChange={handlePaymentMethodChange}
             />
-            
+
             <CheckoutNote />
           </div>
 
@@ -277,6 +337,12 @@ export function CheckoutPage() {
       <SiteFooter />
       <SiteBottomNav />
       <SiteFab />
+      {outOfStockProductName && (
+        <OutOfStockModal
+          productName={outOfStockProductName}
+          onClose={() => setOutOfStockProductName(null)}
+        />
+      )}
     </div>
   )
 }

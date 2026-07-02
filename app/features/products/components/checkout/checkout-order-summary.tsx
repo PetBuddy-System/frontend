@@ -86,12 +86,12 @@ export function CheckoutOrderSummary({
               {isFreeShipping ? t('checkout.summary.freeShipping') : formatPrice(shippingFee)}
             </span>
           </div>
-          <div className='flex items-center justify-between text-muted-foreground'>
-            <span>{t('checkout.summary.discount')}</span>
-            <span className={discount > 0 ? 'font-bold text-success' : ''}>
-              {discount > 0 ? `-${formatPrice(discount)}` : formatPrice(0)}
-            </span>
-          </div>
+          {discount > 0 && (
+            <div className='flex items-center justify-between text-muted-foreground'>
+              <span>{t('checkout.summary.discount')}</span>
+              <span className='font-bold text-success'>-{formatPrice(discount)}</span>
+            </div>
+          )}
           <div className='mt-2 flex items-center justify-between pt-2'>
             <span className='font-display text-2xl font-semibold text-foreground'>
               {t('checkout.summary.total')}
@@ -102,7 +102,7 @@ export function CheckoutOrderSummary({
           </div>
         </div>
 
-        <button
+       <button
           type='submit'
           disabled={isSubmitting || items.length === 0}
           className='flex w-full items-center justify-center gap-3 rounded-full bg-secondary px-6 py-4 font-display font-semibold text-secondary-foreground shadow-md transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
@@ -112,7 +112,7 @@ export function CheckoutOrderSummary({
             filled={!isSubmitting}
             className={isSubmitting ? 'animate-spin text-[20px]' : 'text-[20px]'}
           />
-          {isSubmitting ? t('checkout.summary.creatingOrder') : t('checkout.summary.placeOrder')}
+          {!isSubmitting && t('checkout.summary.placeOrder')}
         </button>
 
         <div className='mt-6 flex flex-col gap-3 border-t border-border pt-4'>

@@ -88,36 +88,10 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
     }
   }
 
-  const getProgressWidth = (status: string) => {
-    switch (status) {
-      case 'PENDING': return 'w-[0%]'
-      case 'CONFIRMED':
-      case 'PICKING': return 'w-[25%]'
-      case 'SHIPPING': return 'w-[50%]'
-      case 'DELIVERED': return 'w-[75%]'
-      case 'COMPLETED': return 'w-[100%]'
-      default: return 'w-[0%]'
-    }
-  }
-
-  const isStepActive = (stepIndex: number, status: string) => {
-    const statusLevels: Record<string, number> = {
-      'PENDING': 0,
-      'CONFIRMED': 1,
-      'PICKING': 1,
-      'SHIPPING': 2,
-      'DELIVERED': 3,
-      'COMPLETED': 4,
-      'CANCELED': -1
-    }
-    const currentLevel = statusLevels[status] ?? 0
-    return currentLevel >= stepIndex
-  }
-
   const subtotal = order?.orderDetails?.reduce((sum, item) => sum + item.totalPrice, 0) ?? 0
   const shippingFee = order?.shippingFee ?? (subtotal > 500000 ? 0 : 30000)
-  const isFreeShipping = shippingFee === 0
-  const discount = order?.voucher?.discountValue ?? (subtotal + shippingFee - (order?.finalAmount ?? subtotal))
+  const hasVoucher = Boolean(order?.voucherCode || order?.voucher)
+  const discount = hasVoucher? (order?.voucher?.discountValue ?? (subtotal + shippingFee - (order?.finalAmount ?? subtotal))): 0
 
   // Determine if the Cancel Order button should be visible
   const canCancel = (() => {
@@ -164,89 +138,86 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
             <div className="text-center py-16 text-destructive">
               <p className="font-semibold">{error ?? 'Không tìm thấy thông tin đơn hàng'}</p>
             </div>
-          ) : (
-            /* Stepper progress */
-            <div className="mt-12 relative px-4 pb-4">
-              <div className="absolute top-6 left-0 w-full h-1 bg-border -translate-y-1/2 z-0"></div>
-              <div className={cn(
-                "absolute top-6 left-0 h-1 bg-success -translate-y-1/2 z-0 transition-all duration-500",
-                getProgressWidth(order.status)
-              )}></div>
-
-              <div className="relative z-10 flex justify-between items-start">
-                <div className="flex flex-col items-center gap-3 w-20 sm:w-32">
-                  <div className={cn(
-                    "w-12 h-12 rounded-full bg-card border-4 flex items-center justify-center shadow-sm transition-colors",
-                    isStepActive(0, order.status) ? "border-success text-success" : "border-border text-muted-foreground"
-                  )}>
-                    <MaterialIcon name="receipt_long" />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs font-bold text-foreground">Đã đặt hàng</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">{formatDateTime(order.createdAt)}</p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center gap-3 w-20 sm:w-32">
-                  <div className={cn(
-                    "w-12 h-12 rounded-full bg-card border-4 flex items-center justify-center shadow-sm transition-colors",
-                    isStepActive(1, order.status) ? "border-success text-success" : "border-border text-muted-foreground"
-                  )}>
-                    <MaterialIcon name="payments" />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs font-bold text-foreground">Xác nhận TT</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
-                      {isStepActive(1, order.status) ? formatDateTime(order.updatedAt || order.createdAt) : '—'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center gap-3 w-20 sm:w-32">
-                  <div className={cn(
-                    "w-12 h-12 rounded-full bg-card border-4 flex items-center justify-center shadow-sm transition-colors",
-                    isStepActive(2, order.status) ? "border-success text-success" : "border-border text-muted-foreground"
-                  )}>
-                    <MaterialIcon name="local_shipping" />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs font-bold text-foreground">Giao xuất kho</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
-                      {isStepActive(2, order.status) ? formatDateTime(order.updatedAt || order.createdAt) : '—'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center gap-3 w-20 sm:w-32">
-                  <div className={cn(
-                    "w-12 h-12 rounded-full bg-card border-4 flex items-center justify-center shadow-sm transition-colors",
-                    isStepActive(3, order.status) ? "border-success text-success" : "border-border text-muted-foreground"
-                  )}>
-                    <MaterialIcon name="move_to_inbox" />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs font-bold text-foreground">Đã giao hàng</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
-                      {isStepActive(3, order.status) ? formatDateTime(order.updatedAt || order.createdAt) : '—'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex flex-col items-center gap-3 w-20 sm:w-32">
-                  <div className={cn(
-                    "w-12 h-12 rounded-full bg-card border-4 flex items-center justify-center shadow-sm transition-colors",
-                    isStepActive(4, order.status) ? "border-success text-success" : "border-border text-muted-foreground"
-                  )}>
-                    <MaterialIcon name="grade" />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs font-bold text-foreground">Hoàn thành</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
-                      {isStepActive(4, order.status) ? formatDateTime(order.updatedAt || order.createdAt) : '—'}
-                    </p>
-                  </div>
-                </div>
+          ) : order.status === 'CANCELED' ? (
+            /* Canceled state */
+            <div className="mt-8 flex flex-col items-center gap-3 py-8">
+              <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center text-destructive">
+                <MaterialIcon name="close" className="text-[28px]" />
               </div>
+              <p className="font-bold text-destructive">Đơn hàng đã bị hủy</p>
+              <p className="text-xs text-muted-foreground">{formatDateTime(order.updatedAt || order.createdAt)}</p>
+            </div>
+          ) : (
+            <div className="mt-12 px-2 pb-4">
+              {(() => {
+                const statusLevels: Record<string, number> = {
+                  'PENDING': 0,
+                  'CONFIRMED': 1,
+                  'PICKING': 1,
+                  'SHIPPING': 2,
+                  'DELIVERED': 3,
+                  'COMPLETED': 4,
+                }
+                const currentLevel = statusLevels[order.status] ?? 0
+
+                const steps = [
+                  { icon: 'receipt_long', label: 'Đã đặt hàng', time: formatDateTime(order.createdAt) },
+                  { icon: 'payments', label: 'Xác nhận đơn hàng', time: currentLevel >= 1 ? formatDateTime(order.updatedAt || order.createdAt) : null },
+                  { icon: 'local_shipping', label: 'Giao xuất kho', time: currentLevel >= 2 ? formatDateTime(order.updatedAt || order.createdAt) : null },
+                  { icon: 'move_to_inbox', label: 'Đã giao hàng', time: currentLevel >= 3 ? formatDateTime(order.updatedAt || order.createdAt) : null },
+                  { icon: 'grade', label: 'Hoàn thành', time: currentLevel >= 4 ? formatDateTime(order.updatedAt || order.createdAt) : null },
+                ]
+
+                return (
+                  <div className="flex items-start">
+                    {steps.map((step, i) => {
+                      const isDone = i < currentLevel
+                      const isCurrent = i === currentLevel
+                      const isUpcoming = i > currentLevel
+                      const isLast = i === steps.length - 1
+
+                      return (
+                        <div key={step.label} className={cn('flex items-center', !isLast && 'flex-1')}>
+                          {/* Circle + label */}
+                          <div className="flex flex-col items-center gap-2 flex-shrink-0 w-20 sm:w-24">
+                            <div
+                              className={cn(
+                                'w-11 h-11 rounded-full flex items-center justify-center transition-colors',
+                                (isDone || isCurrent) && 'bg-primary text-primary-foreground shadow-sm',
+                                isCurrent && 'ring-4 ring-primary/20',
+                                isUpcoming && 'bg-muted border-2 border-dashed border-border text-muted-foreground/40'
+                              )}
+                            >
+                              <MaterialIcon name={isDone ? 'check' : step.icon} className="text-[20px]" />
+                            </div>
+                            <div className="text-center">
+                              <p
+                                className={cn(
+                                  'text-xs font-bold',
+                                  isUpcoming ? 'text-muted-foreground/50' : 'text-foreground'
+                                )}
+                              >
+                                {step.label}
+                              </p>
+                              <p className="text-[10px] text-muted-foreground mt-0.5">{step.time ?? '—'}</p>
+                            </div>
+                          </div>
+
+                          {/* Connector line */}
+                          {!isLast && (
+                            <div
+                              className={cn(
+                                'flex-1 h-0.5 mx-1 -mt-9',
+                                i < currentLevel ? 'bg-primary' : 'border-t-2 border-dashed border-border'
+                              )}
+                            />
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+              })()}
             </div>
           )}
         </div>
@@ -310,7 +281,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                           onError={(e) => {
                             const target = e.currentTarget
                             target.onerror = null
-                            target.src = '/placeholder-product.png'
+                            target.src = 'https://placehold.co/300'
                           }}
                         />
                       </button>
@@ -361,7 +332,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                           {order.payment?.paymentMethod === 'CARD' ? 'Thanh toán thẻ' : 'Tiền mặt'}
                         </p>
                         <p className="text-[10px] text-muted-foreground">
-                          {order.payment?.paymentMethod === 'CARD' ? 'Qua cổng thanh toán Stripe' : 'Thanh toán COD khi nhận hàng'}
+                          {order.payment?.paymentMethod === 'CARD' ? 'Qua cổng thanh toán' : 'Thanh toán khi nhận hàng'}
                         </p>
                       </div>
                     </div>
@@ -374,7 +345,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                     )}>
                       <MaterialIcon name={order.payment?.status === 'PAID' ? "verified_user" : "schedule"} className="text-[18px]" />
                       <span>
-                        {order.payment?.status === 'PAID' ? "Đã thanh toán" : "Chờ thanh toán khi nhận hàng"}
+                        {order.payment?.status === 'PAID' ? "Đã thanh toán" : "Chờ thanh toán"}
                       </span>
                     </div>
                   </div>
@@ -408,6 +379,33 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                 </div>
               </div>
             </div>
+
+            {/* Cancel Order Button */}
+            {canCancel && (
+              <div className="flex justify-end">
+                <button
+                  onClick={handleCancelOrder}
+                  disabled={isCanceling}
+                  className={cn(
+                    "flex items-center gap-2 px-5 py-2.5 rounded-lg border-2 border-destructive text-destructive font-bold text-sm transition-colors",
+                    "hover:bg-destructive hover:text-destructive-foreground",
+                    isCanceling && "opacity-60 cursor-not-allowed hover:bg-transparent hover:text-destructive"
+                  )}
+                >
+                  {isCanceling ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      <span>Đang hủy...</span>
+                    </>
+                  ) : (
+                    <>
+                      <MaterialIcon name="cancel" className="text-[18px]" />
+                      <span>Hủy đơn hàng</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
           </>
         )}
       </main>

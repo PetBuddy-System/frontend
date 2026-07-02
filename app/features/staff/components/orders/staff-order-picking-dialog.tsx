@@ -104,7 +104,7 @@ export function StaffOrderPickingDialog({ order, onClose, onSuccess }: StaffOrde
                                             onError={(e) => {
                                                 const target = e.currentTarget
                                                 target.onerror = null
-                                                target.src = '/placeholder-product.png'
+                                                target.src = 'https://placehold.co/300'
                                             }}
                     />
                                         <div>
