@@ -14,18 +14,19 @@ import type {
 
 interface ManagerProductBatchSectionProps {
     productId: string
-    isDeleted?: boolean // ✅ Thêm prop này
+    isDeleted?: boolean
     onRefresh?: () => void
 }
 
 interface NewBatchRow {
     quantity: number
+    cost: number  // ✅ Thêm field cost
     expiryDate: string
 }
 
 export function ManagerProductBatchSection({
     productId,
-    isDeleted = false // ✅ Mặc định false
+    isDeleted = false
 }: ManagerProductBatchSectionProps) {
     // ─── State ────────────────────────────────────────────
     const [batches, setBatches] = useState<ProductBatchItem[]>([])
@@ -38,7 +39,11 @@ export function ManagerProductBatchSection({
     const [sortBy, setSortBy] = useState<BatchSortBy>('date_desc')
 
     // ─── New Batch Form State ─────────────────────────────
-    const [newBatches, setNewBatches] = useState<NewBatchRow[]>([{ quantity: 0, expiryDate: '' }])
+    const [newBatches, setNewBatches] = useState<NewBatchRow[]>([{
+        quantity: 0,
+        cost: 0,  // ✅ Thêm cost
+        expiryDate: ''
+    }])
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitError, setSubmitError] = useState<string | null>(null)
     const [showSuccess, setShowSuccess] = useState(false)
@@ -98,11 +103,15 @@ export function ManagerProductBatchSection({
     }
 
     // ─── New Batch Form Handlers ───────────────────────────
-    const addBatchRow = () => setNewBatches([...newBatches, { quantity: 0, expiryDate: '' }])
+    const addBatchRow = () => setNewBatches([...newBatches, {
+        quantity: 0,
+        cost: 0,  // ✅ Thêm cost
+        expiryDate: ''
+    }])
 
     const removeBatchRow = (index: number) => setNewBatches(newBatches.filter((_, i) => i !== index))
 
-    const updateBatchRow = (index: number, field: 'quantity' | 'expiryDate', value: string | number) => {
+    const updateBatchRow = (index: number, field: 'quantity' | 'cost' | 'expiryDate', value: string | number) => {
         const updated = [...newBatches]
         updated[index] = { ...updated[index], [field]: value }
         setNewBatches(updated)
@@ -112,9 +121,10 @@ export function ManagerProductBatchSection({
         setSubmitError(null)
         setShowSuccess(false)
 
-        const validBatches = newBatches.filter(b => b.quantity > 0 && b.expiryDate.trim() !== '')
+        // ✅ Validate bao gồm cost
+        const validBatches = newBatches.filter(b => b.quantity > 0 && b.cost >= 0 && b.expiryDate.trim() !== '')
         if (validBatches.length === 0) {
-            setSubmitError('Vui lòng nhập ít nhất 1 lô hàng')
+            setSubmitError('Vui lòng nhập đầy đủ thông tin (Số lượng > 0, Giá vốn >= 0, Ngày hết hạn)')
             return
         }
 
@@ -122,11 +132,12 @@ export function ManagerProductBatchSection({
         try {
             const payload: CreateBatchPayload[] = validBatches.map((batch) => ({
                 stockQuantity: batch.quantity,
+                cost: batch.cost,  // ✅ Thêm cost vào payload
                 expiryDate: batch.expiryDate
             }))
             const response = await createBatchesApi(productId, payload)
             if (response.success) {
-                setNewBatches([{ quantity: 0, expiryDate: '' }])
+                setNewBatches([{ quantity: 0, cost: 0, expiryDate: '' }])
                 setShowSuccess(true)
                 setTimeout(() => setShowSuccess(false), 3000)
                 // Refresh list
@@ -276,6 +287,7 @@ export function ManagerProductBatchSection({
                                         <tr className='bg-muted/40 border-b border-border'>
                                             <th className='w-16 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>STT</th>
                                             <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Số lượng</th>
+                                            <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Giá vốn (VNĐ)</th> {/* ✅ Thêm cột */}
                                             <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Ngày hết hạn</th>
                                             <th className='w-20 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>Thao tác</th>
                                         </tr>
@@ -287,8 +299,21 @@ export function ManagerProductBatchSection({
                                                 <td className='px-4 py-3'>
                                                     <input
                                                         type='number'
+                                                        min='1'
                                                         value={batch.quantity || ''}
                                                         onChange={(e) => updateBatchRow(index, 'quantity', Number(e.target.value))}
+                                                        className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
+                                                        placeholder='0'
+                                                        disabled={isSubmitting}
+                                                    />
+                                                </td>
+                                                <td className='px-4 py-3'>
+                                                    <input
+                                                        type='number'
+                                                        min='0'
+                                                        step='1000'
+                                                        value={batch.cost || ''}
+                                                        onChange={(e) => updateBatchRow(index, 'cost', Number(e.target.value))}
                                                         className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
                                                         placeholder='0'
                                                         disabled={isSubmitting}
@@ -478,7 +503,6 @@ export function ManagerProductBatchSection({
                                                         </td>
                                                         <td className='px-4 py-3.5 text-center'>
                                                             <div className='flex items-center justify-center gap-1.5'>
-                                                                {/* ✅ Nút View - Luôn hiển thị */}
                                                                 <button
                                                                     onClick={() => toggleExpandBatch(batch.batchId)}
                                                                     className={`p-1.5 rounded-lg transition-colors ${isExpanded
@@ -490,7 +514,6 @@ export function ManagerProductBatchSection({
                                                                     <MaterialIcon name='visibility' className='text-lg' />
                                                                 </button>
 
-                                                                {/* ✅ Chỉ hiển thị Edit và Delete nếu chưa bị xóa */}
                                                                 {!isDeleted && (
                                                                     <>
                                                                         <button
@@ -544,14 +567,13 @@ export function ManagerProductBatchSection({
                                                         </tr>
                                                     )}
 
-                                                    {/* Inline edit form row - Chỉ hiển thị khi chưa xóa */}
+                                                    {/* Inline edit form row */}
                                                     {isEditing && !isDeleted && (
                                                         <tr className='bg-primary/5 border-b border-border'>
                                                             <td colSpan={8} className='px-6 py-4'>
                                                                 <div className='flex flex-col gap-3'>
                                                                     <span className='text-xs font-bold text-muted-foreground uppercase tracking-wide'>Chỉnh sửa lô hàng: {batch.batchCode}</span>
                                                                     <div className='flex flex-wrap gap-3'>
-                                                                        {/* Số lượng */}
                                                                         <div className='flex flex-col gap-1 min-w-[140px]'>
                                                                             <label className='text-xs font-bold text-muted-foreground uppercase'>Tồn kho</label>
                                                                             <input
@@ -561,7 +583,6 @@ export function ManagerProductBatchSection({
                                                                                 className='rounded-lg border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
                                                                             />
                                                                         </div>
-                                                                        {/* Ngày hết hạn */}
                                                                         <div className='flex flex-col gap-1 min-w-[160px]'>
                                                                             <label className='text-xs font-bold text-muted-foreground uppercase'>Ngày hết hạn</label>
                                                                             <input
@@ -571,7 +592,6 @@ export function ManagerProductBatchSection({
                                                                                 className='rounded-lg border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
                                                                             />
                                                                         </div>
-                                                                        {/* Trạng thái */}
                                                                         <div className='flex flex-col gap-1 min-w-[140px]'>
                                                                             <label className='text-xs font-bold text-muted-foreground uppercase'>Trạng thái</label>
                                                                             <select
@@ -586,7 +606,6 @@ export function ManagerProductBatchSection({
                                                                         </div>
                                                                     </div>
 
-                                                                    {/* Edit Error */}
                                                                     {editError && (
                                                                         <div className='flex items-center gap-2 text-destructive text-xs font-semibold'>
                                                                             <MaterialIcon name='error_outline' className='text-base' />
@@ -594,7 +613,6 @@ export function ManagerProductBatchSection({
                                                                         </div>
                                                                     )}
 
-                                                                    {/* Edit Actions */}
                                                                     <div className='flex gap-2'>
                                                                         <button
                                                                             onClick={handleCancelEdit}
@@ -655,4 +673,4 @@ export function ManagerProductBatchSection({
             </div>
         </div>
     )
-}   
+}
