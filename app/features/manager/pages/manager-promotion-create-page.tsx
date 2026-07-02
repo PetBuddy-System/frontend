@@ -1,3 +1,5 @@
+// app/features/manager/pages/manager-promotion-create-page.tsx
+
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 
@@ -40,6 +42,13 @@ export function ManagerPromotionCreatePage() {
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
+  // ✅ State cho phân trang
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalElements, setTotalElements] = useState(0)
+  const pageSize = 10 // ✅ Mặc định 10 sản phẩm/trang
+
+  // ✅ Load products với phân trang
   useEffect(() => {
     async function loadProducts() {
       setIsLoadingProducts(true)
@@ -47,8 +56,8 @@ export function ManagerPromotionCreatePage() {
 
       try {
         const response = await fetchProductsManagementApi({
-          page: 0,
-          size: 100,
+          page: currentPage,  // ✅ Dùng currentPage
+          size: pageSize,     // ✅ Mặc định 10
           sortBy: 'date_desc',
           nearExpiredDays
         })
@@ -58,6 +67,8 @@ export function ManagerPromotionCreatePage() {
         }
 
         setProducts(response.data.content)
+        setTotalPages(response.data.totalPages)
+        setTotalElements(response.data.totalElements)
         setSelectedProductIds([])
         setProductDiscountById({})
       } catch (err) {
@@ -71,7 +82,7 @@ export function ManagerPromotionCreatePage() {
     }
 
     void loadProducts()
-  }, [nearExpiredDays])
+  }, [nearExpiredDays, currentPage]) // ✅ Thêm currentPage vào dependency
 
   const selectedProducts = useMemo(
     () => products.filter((product) => selectedProductIds.includes(product.productId)),
@@ -125,6 +136,13 @@ export function ManagerPromotionCreatePage() {
         [field]: value
       } as ProductDiscountState
     }))
+  }
+
+  // ✅ Hàm chuyển trang
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setCurrentPage(newPage)
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -303,7 +321,7 @@ export function ManagerPromotionCreatePage() {
                 </div>
               </section>
 
-              {/* Tầng 2: Sản phẩm áp dụng (GET /api/products?nearExpiredDays=...) */}
+              {/* Tầng 2: Sản phẩm áp dụng (GET /api/products/management?nearExpiredDays=...) */}
               <section className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
                 <div className='mb-5 flex items-center justify-between gap-4'>
                   <div className='flex items-center gap-3'>
@@ -313,7 +331,7 @@ export function ManagerPromotionCreatePage() {
                     <div>
                       <h2 className='text-lg font-bold text-foreground'>Sản phẩm áp dụng</h2>
                       <p className='text-xs text-muted-foreground'>
-                        GET /api/products?nearExpiredDays={nearExpiredDays} — mỗi sản phẩm đặt riêng loại &amp; giá trị giảm
+                        GET /api/products/management?nearExpiredDays={nearExpiredDays} (hiển thị {pageSize} sản phẩm/trang)
                       </p>
                     </div>
                   </div>
@@ -432,6 +450,36 @@ export function ManagerPromotionCreatePage() {
                     </tbody>
                   </table>
                 </div>
+
+                {/* ✅ Phân trang - Chỉ hiển thị khi có nhiều hơn 1 trang */}
+                {totalPages > 1 && (
+                  <div className='mt-4 flex items-center justify-between'>
+                    <div className='text-sm text-muted-foreground'>
+                      Hiển thị {products.length} trên {totalElements} sản phẩm
+                    </div>
+                    <div className='flex items-center gap-2'>
+                      <button
+                        type='button'
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 0}
+                        className='rounded-lg border border-border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+                      >
+                        <MaterialIcon name='chevron_left' className='text-lg' />
+                      </button>
+                      <span className='text-sm text-muted-foreground'>
+                        Trang {currentPage + 1} / {totalPages}
+                      </span>
+                      <button
+                        type='button'
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage >= totalPages - 1}
+                        className='rounded-lg border border-border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+                      >
+                        <MaterialIcon name='chevron_right' className='text-lg' />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </section>
 
               {/* Action bar */}
