@@ -11,12 +11,12 @@ import { ManagerProductsToolbar } from '../components/products/manager-products-
 import { ManagerCreateProductModal } from '../components/products/manager-create-product-modal'
 import { ManagerEditProductModal } from '../components/products/manager-edit-product-modal'
 import { ManagerImportProductsModal } from '../components/products/manager-import-products-modal'
-import { ManagerProductDeleteDialog } from '../components/products/manager-product-delete-dialog' // ✅ Import thêm
+import { ManagerProductDeleteDialog } from '../components/products/manager-product-delete-dialog'
 import {
   fetchProductsManagementApi,
   fetchCategoriesApi,
-  fetchProductStatsApi, // ✅ Import thêm
-  updateProductApi, // ✅ Import thêm
+  fetchProductStatsApi,
+  updateProductApi,
 } from '../services/product'
 import type { ProductManagementItem, CategoryData } from '~/shared/lib/product'
 
@@ -46,7 +46,7 @@ export function ManagerProductsPage() {
   const [editingProductId, setEditingProductId] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
 
-  // ✅ Delete Dialog states
+  // Delete Dialog states
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null)
   const [deletingProductName, setDeletingProductName] = useState('')
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
@@ -122,13 +122,27 @@ export function ManagerProductsPage() {
     async function loadManagementProducts() {
       setIsLoading(true)
       try {
-        const response = await fetchProductsManagementApi({
+        const params = {
           keyword,
           categoryId: category !== 'all' ? Number(category) : undefined,
           status: status !== 'all' ? (status as 'ACTIVE' | 'INACTIVE' | 'DELETED') : undefined,
           page,
           size: 10
+        }
+
+        console.log('📤 Component - Request Params:', params)
+
+        const response = await fetchProductsManagementApi(params)
+
+        console.log('📥 Component - Response:', {
+          success: response.success,
+          contentLength: response.data?.content?.length,
+          totalElements: response.data?.totalElements,
+          totalPages: response.data?.totalPages,
+          pageSize: response.data?.size,
+          requestedSize: params.size
         })
+
         if (active && response.success) {
           setProducts(response.data.content)
           setTotalElements(response.data.totalElements)
@@ -156,7 +170,6 @@ export function ManagerProductsPage() {
     setEditingProductId(productId)
   }
 
-  // ✅ Xử lý mở dialog xóa
   const handleDelete = (productId: string) => {
     const product = products.find(p => p.productId === productId)
     if (product) {
@@ -167,7 +180,6 @@ export function ManagerProductsPage() {
     }
   }
 
-  // ✅ Xử lý xóa sản phẩm (soft delete)
   const handleDeleteProduct = async () => {
     if (!deletingProductId) return
 
@@ -186,7 +198,7 @@ export function ManagerProductsPage() {
       if (response.success) {
         setIsDeleteConfirmOpen(false)
         setDeletingProductId(null)
-        setRefreshKey(prev => prev + 1) // Refresh lại danh sách
+        setRefreshKey(prev => prev + 1)
       } else {
         setDeleteError(response.message || 'Không thể xóa sản phẩm')
       }
@@ -289,7 +301,7 @@ export function ManagerProductsPage() {
               totalElements={totalElements}
               onPageChange={setPage}
               onEditClick={handleEdit}
-              onDeleteClick={handleDelete} // ✅ Đã sửa
+              onDeleteClick={handleDelete}
               onViewClick={handleView}
             />
 
@@ -318,7 +330,6 @@ export function ManagerProductsPage() {
               />
             )}
 
-            {/* ✅ Delete Confirm Dialog */}
             <ManagerProductDeleteDialog
               productName={deletingProductName}
               isOpen={isDeleteConfirmOpen}

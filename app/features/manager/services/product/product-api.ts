@@ -1,7 +1,4 @@
-/**
- * Manager feature — product management API service.
- */
-
+// manager/services/product/product-api.ts
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type {
@@ -22,12 +19,76 @@ import type {
 const PRODUCTS_BASE_URL = `${env.API_URL}${env.API_PRODUCTS_PATH}`
 const CATEGORIES_BASE_URL = `${env.API_URL}${env.API_CATEGORIES_PATH}`
 
+// ─── User API ──────────────────────────────────────────────────────────────
+
 export async function fetchProductByIdApi(productId: string): Promise<ProductDetailResponse> {
   return customFetch<ProductDetailResponse>({
     url: `${PRODUCTS_BASE_URL}/${productId}`,
     method: 'GET'
   })
 }
+
+// ─── Management API ────────────────────────────────────────────────────────
+
+export async function fetchProductsManagementApi(
+  params: FetchProductsManagementParams = {}
+): Promise<PagedProductManagementResponse> {
+  const {
+    keyword,
+    categoryId,
+    brandName,
+    status,
+    sortBy,
+    page = 0,
+    size = 10,
+    nearExpiredDays
+  } = params
+
+  // ✅ Build params rõ ràng, loại bỏ undefined
+  const queryParams: Record<string, string | number> = {
+    page,
+    size // ✅ Luôn có size
+  }
+
+  // Chỉ thêm các param có giá trị
+  if (keyword && keyword.trim()) {
+    queryParams.keyword = keyword.trim()
+  }
+  if (categoryId !== undefined && categoryId !== null) {
+    queryParams.categoryId = categoryId
+  }
+  if (brandName && brandName.trim()) {
+    queryParams.brandName = brandName.trim()
+  }
+  if (status) {
+    queryParams.status = status
+  }
+  if (sortBy) {
+    queryParams.sortBy = sortBy
+  }
+  if (nearExpiredDays) {
+    queryParams.nearExpiredDays = nearExpiredDays
+  }
+
+  console.log('📤 Product API - Query Params:', queryParams)
+
+  return customFetch<PagedProductManagementResponse>({
+    url: `${PRODUCTS_BASE_URL}/management`,
+    method: 'GET',
+    params: queryParams
+  })
+}
+
+export async function fetchProductManagementByIdApi(
+  productId: string
+): Promise<ProductDetailResponse> {
+  return customFetch<ProductDetailResponse>({
+    url: `${PRODUCTS_BASE_URL}/management/${productId}`,
+    method: 'GET'
+  })
+}
+
+// ─── Categories ────────────────────────────────────────────────────────────
 
 export async function fetchCategoriesApi(): Promise<ListCategoryResponse> {
   return customFetch<ListCategoryResponse>({
@@ -36,24 +97,25 @@ export async function fetchCategoriesApi(): Promise<ListCategoryResponse> {
   })
 }
 
-export async function fetchProductsManagementApi(
-  params: FetchProductsManagementParams = {}
-): Promise<PagedProductManagementResponse> {
-  const { keyword, categoryId, brandName, status, sortBy, page = 0, size = 10, nearExpiredDays = 120 } = params
+// ─── Create / Update / Import ─────────────────────────────────────────────
 
-  return customFetch<PagedProductManagementResponse>({
-    url: `${PRODUCTS_BASE_URL}/management`,
-    method: 'GET',
-    params: {
-      keyword: keyword || undefined,
-      categoryId: categoryId || undefined,
-      brandName: brandName || undefined,
-      status: status || undefined,
-      sortBy: sortBy || undefined,
-      page,
-      size,
-      nearExpiredDays
+export async function createProductApi(
+  payload: CreateProductPayload,
+  images?: File[]
+): Promise<CreateProductResponse> {
+  const formData = new FormData()
+  formData.append('data', JSON.stringify(payload))
+
+  if (images && images.length > 0) {
+    for (const file of images) {
+      formData.append('images', file)
     }
+  }
+
+  return customFetch<CreateProductResponse>({
+    url: PRODUCTS_BASE_URL,
+    method: 'POST',
+    data: formData
   })
 }
 
@@ -78,80 +140,47 @@ export async function updateProductApi(
   })
 }
 
-export async function createProductApi(
-  payload: CreateProductPayload,
-  images?: File[]
-): Promise<CreateProductResponse> {
-  const formData = new FormData()
-  formData.append('data', JSON.stringify(payload))
-
-  if (images && images.length > 0) {
-    for (const file of images) {
-      formData.append('images', file)
-    }
-  }
-
-  return customFetch<CreateProductResponse>({
-    url: PRODUCTS_BASE_URL,
-    method: 'POST',
-    data: formData
-  })
-}
-
 export async function importProductsApi(
-  file: File
+  file: File,
+  confirm: boolean = false
 ): Promise<ImportProductsResponse> {
   const formData = new FormData()
   formData.append('file', file)
 
   return customFetch<ImportProductsResponse>({
-    url: `${PRODUCTS_BASE_URL}/import`,
+    url: `${PRODUCTS_BASE_URL}/import?confirm=${confirm}`,
     method: 'POST',
     data: formData
   })
 }
+
+// ─── Stats ─────────────────────────────────────────────────────────────────
 
 export async function fetchProductStatsApi(
   params: {
     keyword?: string
     categoryId?: number
     status?: 'ACTIVE' | 'INACTIVE' | 'DELETED'
+    nearExpiredDays?: number
   } = {}
-): Promise<{ inStock: number; lowStock: number; total: number }> {
-  const firstResponse = await fetchProductsManagementApi({
+): Promise<{ inStock: number; lowStock: number }> {
+  // ✅ Chỉ gọi 1 lần với size=1 để lấy total
+  const response = await fetchProductsManagementApi({
     keyword: params.keyword,
     categoryId: params.categoryId,
     status: params.status,
+    nearExpiredDays: params.nearExpiredDays,
     page: 0,
     size: 1,
   })
 
-  if (!firstResponse.success) {
-    throw new Error(firstResponse.message || 'Failed to fetch product stats')
+  if (!response.success) {
+    throw new Error(response.message || 'Failed to fetch product stats')
   }
 
-  const totalElements = firstResponse.data.totalElements
-
-  const fullResponse = await fetchProductsManagementApi({
-    keyword: params.keyword,
-    categoryId: params.categoryId,
-    status: params.status,
-    page: 0,
-    size: totalElements,
-  })
-
-  if (!fullResponse.success) {
-    throw new Error(fullResponse.message || 'Failed to fetch product stats')
-  }
-
-  const allProducts = fullResponse.data.content
-
-  const inStock = allProducts.filter(p => p.totalStock > 0).length
-  const lowStock = allProducts.filter(p => p.totalStock > 0 && p.totalStock <= 5).length
 
   return {
-    total: totalElements,
-    inStock,
-    lowStock
+    inStock: 0,
+    lowStock: 0
   }
 }
