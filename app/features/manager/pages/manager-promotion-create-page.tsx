@@ -1,6 +1,6 @@
 // app/features/manager/pages/manager-promotion-create-page.tsx
 
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, useRef, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
@@ -34,21 +34,52 @@ export function ManagerPromotionCreatePage() {
     status: 'ACTIVE' as 'DRAFT' | 'ACTIVE'
   })
   const [nearExpiredDays, setNearExpiredDays] = useState(120)
+
+  // ✅ State cho tìm kiếm
+  const [keyword, setKeyword] = useState('')
+  const [keywordInput, setKeywordInput] = useState('')
+
   const [products, setProducts] = useState<ProductManagementItem[]>([])
-  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([])
-  const [productDiscountById, setProductDiscountById] = useState<Record<string, ProductDiscountState>>({})
   const [isLoadingProducts, setIsLoadingProducts] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
-  // ✅ State cho phân trang
+  // State cho phân trang
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
-  const pageSize = 10 // ✅ Mặc định 10 sản phẩm/trang
+  const pageSize = 10
 
-  // ✅ Load products với phân trang
+  // Lưu tất cả sản phẩm đã chọn (qua các trang)
+  const [selectedProductMap, setSelectedProductMap] = useState<Map<string, ProductDiscountState>>(new Map())
+
+  // Lấy danh sách product IDs đã chọn
+  const selectedProductIds = useMemo(() => {
+    return Array.from(selectedProductMap.keys())
+  }, [selectedProductMap])
+
+  // Lấy danh sách sản phẩm đã chọn từ trang hiện tại
+  const selectedProducts = useMemo(() => {
+    const currentPageSelected = products.filter((product) =>
+      selectedProductMap.has(product.productId)
+    )
+    return currentPageSelected
+  }, [products, selectedProductMap])
+
+  const canSubmit = selectedProductMap.size > 0 && !isSubmitting
+
+  // ✅ Debounce tìm kiếm (delay 350ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setKeyword(keywordInput)
+      setCurrentPage(0) // Reset về trang đầu khi tìm kiếm
+    }, 350)
+
+    return () => clearTimeout(timer)
+  }, [keywordInput])
+
+  // Load products
   useEffect(() => {
     async function loadProducts() {
       setIsLoadingProducts(true)
@@ -56,8 +87,9 @@ export function ManagerPromotionCreatePage() {
 
       try {
         const response = await fetchProductsManagementApi({
-          page: currentPage,  // ✅ Dùng currentPage
-          size: pageSize,     // ✅ Mặc định 10
+          keyword: keyword.trim() || undefined, // ✅ Thêm keyword vào API call
+          page: currentPage,
+          size: pageSize,
           sortBy: 'date_desc',
           nearExpiredDays
         })
@@ -69,12 +101,8 @@ export function ManagerPromotionCreatePage() {
         setProducts(response.data.content)
         setTotalPages(response.data.totalPages)
         setTotalElements(response.data.totalElements)
-        setSelectedProductIds([])
-        setProductDiscountById({})
       } catch (err) {
         setProducts([])
-        setSelectedProductIds([])
-        setProductDiscountById({})
         setError(err instanceof Error ? err.message : 'Không thể tải danh sách sản phẩm')
       } finally {
         setIsLoadingProducts(false)
@@ -82,67 +110,72 @@ export function ManagerPromotionCreatePage() {
     }
 
     void loadProducts()
-  }, [nearExpiredDays, currentPage]) // ✅ Thêm currentPage vào dependency
+  }, [nearExpiredDays, currentPage, keyword]) // ✅ Thêm keyword vào dependency
 
-  const selectedProducts = useMemo(
-    () => products.filter((product) => selectedProductIds.includes(product.productId)),
-    [products, selectedProductIds]
-  )
-
-  const canSubmit = selectedProducts.length > 0 && !isSubmitting
-
+  // Toggle chọn sản phẩm
   function toggleProduct(productId: string) {
-    setSelectedProductIds((current) =>
-      current.includes(productId)
-        ? current.filter((id) => id !== productId)
-        : [...current, productId]
-    )
-    setProductDiscountById((currentDiscounts) => {
-      if (selectedProductIds.includes(productId)) {
-        const nextDiscounts = { ...currentDiscounts }
-        delete nextDiscounts[productId]
-        return nextDiscounts
+    setSelectedProductMap((prev) => {
+      const newMap = new Map(prev)
+      if (newMap.has(productId)) {
+        newMap.delete(productId)
+      } else {
+        newMap.set(productId, { discountType: 'PERCENTAGE', discountValue: 20 })
       }
-
-      return {
-        ...currentDiscounts,
-        [productId]: currentDiscounts[productId] ?? { discountType: 'PERCENTAGE', discountValue: 20 }
-      }
+      return newMap
     })
   }
 
+  // Chọn tất cả sản phẩm trên trang hiện tại
   function handleSelectAllProducts() {
-    const allProductIds = products.map((product) => product.productId)
-    setSelectedProductIds(allProductIds)
-    setProductDiscountById((current) => {
-      const next = { ...current }
+    setSelectedProductMap((prev) => {
+      const newMap = new Map(prev)
       for (const product of products) {
-        next[product.productId] = next[product.productId] ?? { discountType: 'PERCENTAGE', discountValue: 20 }
+        if (!newMap.has(product.productId)) {
+          newMap.set(product.productId, { discountType: 'PERCENTAGE', discountValue: 20 })
+        }
       }
-      return next
+      return newMap
     })
   }
 
+  // Bỏ chọn tất cả sản phẩm trên trang hiện tại
+  function handleDeselectAllProducts() {
+    setSelectedProductMap((prev) => {
+      const newMap = new Map(prev)
+      for (const product of products) {
+        newMap.delete(product.productId)
+      }
+      return newMap
+    })
+  }
+
+  // Cập nhật discount cho sản phẩm
   function updateProductDiscount(
     productId: string,
     field: 'discountType' | 'discountValue',
     value: 'PERCENTAGE' | 'FIXED' | number
   ) {
-    setProductDiscountById((current) => ({
-      ...current,
-      [productId]: {
-        discountType: current[productId]?.discountType ?? 'PERCENTAGE',
-        discountValue: current[productId]?.discountValue ?? 20,
-        [field]: value
-      } as ProductDiscountState
-    }))
+    setSelectedProductMap((prev) => {
+      const newMap = new Map(prev)
+      const current = newMap.get(productId)
+      if (current) {
+        newMap.set(productId, {
+          ...current,
+          [field]: value
+        })
+      }
+      return newMap
+    })
   }
 
-  // ✅ Hàm chuyển trang
-  const handlePageChange = (newPage: number) => {
-    if (newPage >= 0 && newPage < totalPages) {
-      setCurrentPage(newPage)
-    }
+  // Kiểm tra sản phẩm đã được chọn chưa
+  const isProductSelected = (productId: string) => {
+    return selectedProductMap.has(productId)
+  }
+
+  // Lấy discount của sản phẩm
+  const getProductDiscount = (productId: string): ProductDiscountState => {
+    return selectedProductMap.get(productId) || { discountType: 'PERCENTAGE', discountValue: 20 }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -168,7 +201,7 @@ export function ManagerPromotionCreatePage() {
       return
     }
 
-    if (selectedProducts.length === 0) {
+    if (selectedProductMap.size === 0) {
       setError('Vui lòng chọn ít nhất một sản phẩm')
       return
     }
@@ -177,15 +210,17 @@ export function ManagerPromotionCreatePage() {
     setError(null)
 
     try {
+      const allSelectedProducts = Array.from(selectedProductMap.entries()).map(([productId, discount]) => ({
+        productId,
+        discountType: discount.discountType,
+        discountValue: discount.discountValue
+      }))
+
       const payload: CreatePromotionDTO = {
         ...form,
         startDate: form.startDate ? `${form.startDate}T00:00:00` : '',
         endDate: form.endDate ? `${form.endDate}T23:59:59` : '',
-        promotionDetails: selectedProducts.map((product) => ({
-          productId: product.productId,
-          discountType: productDiscountById[product.productId]?.discountType ?? 'PERCENTAGE',
-          discountValue: productDiscountById[product.productId]?.discountValue ?? 20
-        }))
+        promotionDetails: allSelectedProducts
       }
 
       await promotionApi.createPromotion(payload)
@@ -197,6 +232,12 @@ export function ManagerPromotionCreatePage() {
       setError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi tạo khuyến mãi')
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setCurrentPage(newPage)
     }
   }
 
@@ -214,9 +255,6 @@ export function ManagerPromotionCreatePage() {
                 <h1 className='font-display text-2xl font-bold text-card-foreground md:text-3xl'>
                   Thêm khuyến mãi mới
                 </h1>
-                <p className='mt-1 text-muted-foreground'>
-                  Chọn danh sách sản phẩm gần hết hạn bằng `nearExpiredDays`, rồi cấu hình mức giảm riêng cho từng sản phẩm.
-                </p>
               </div>
 
               <button
@@ -244,7 +282,7 @@ export function ManagerPromotionCreatePage() {
             )}
 
             <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
-              {/* Tầng 1: Thông tin chương trình khuyến mãi (POST /api/promotions) */}
+              {/* Tầng 1: Thông tin chương trình khuyến mãi */}
               <section className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
                 <div className='mb-5 flex items-center gap-3'>
                   <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10'>
@@ -252,7 +290,6 @@ export function ManagerPromotionCreatePage() {
                   </div>
                   <div>
                     <h2 className='text-lg font-bold text-foreground'>Thông tin chương trình</h2>
-                    <p className='text-xs text-muted-foreground'>POST /api/promotions</p>
                   </div>
                 </div>
                 <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
@@ -321,7 +358,7 @@ export function ManagerPromotionCreatePage() {
                 </div>
               </section>
 
-              {/* Tầng 2: Sản phẩm áp dụng (GET /api/products/management?nearExpiredDays=...) */}
+              {/* Tầng 2: Sản phẩm áp dụng */}
               <section className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
                 <div className='mb-5 flex items-center justify-between gap-4'>
                   <div className='flex items-center gap-3'>
@@ -330,23 +367,59 @@ export function ManagerPromotionCreatePage() {
                     </div>
                     <div>
                       <h2 className='text-lg font-bold text-foreground'>Sản phẩm áp dụng</h2>
-                      <p className='text-xs text-muted-foreground'>
-                        GET /api/products/management?nearExpiredDays={nearExpiredDays} (hiển thị {pageSize} sản phẩm/trang)
-                      </p>
                     </div>
                   </div>
                   <div className='flex items-center gap-4'>
                     <span className='rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground'>
-                      Đã chọn {selectedProductIds.length} / {products.length}
+                      Đã chọn {selectedProductMap.size} / {totalElements} sản phẩm
                     </span>
+                    <div className='flex gap-2'>
+                      <button
+                        type='button'
+                        onClick={handleSelectAllProducts}
+                        className='text-sm font-semibold text-primary hover:underline'
+                      >
+                        Chọn tất cả
+                      </button>
+                      <button
+                        type='button'
+                        onClick={handleDeselectAllProducts}
+                        className='text-sm font-semibold text-destructive hover:underline'
+                      >
+                        Bỏ chọn tất cả
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ✅ Thanh tìm kiếm */}
+                <div className='mb-4 flex items-center gap-4'>
+                  <div className='relative flex-1'>
+                    <MaterialIcon
+                      name='search'
+                      className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-lg'
+                    />
+                    <input
+                      type='text'
+                      placeholder='Tìm kiếm sản phẩm theo tên, mã hoặc thương hiệu...'
+                      value={keywordInput}
+                      onChange={(e) => setKeywordInput(e.target.value)}
+                      className='h-11 w-full rounded-xl border border-input bg-background pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
+                    />
+                  </div>
+                  {keyword && (
                     <button
                       type='button'
-                      onClick={handleSelectAllProducts}
-                      className='text-sm font-semibold text-primary hover:underline'
+                      onClick={() => {
+                        setKeywordInput('')
+                        setKeyword('')
+                        setCurrentPage(0)
+                      }}
+                      className='shrink-0 rounded-xl border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted transition-colors'
                     >
-                      Chọn tất cả
+                      Xóa tìm kiếm
                     </button>
-                  </div>
+                  )}
                 </div>
 
                 <div className='overflow-auto rounded-xl border border-border'>
@@ -367,18 +440,28 @@ export function ManagerPromotionCreatePage() {
                       {isLoadingProducts ? (
                         <tr>
                           <td colSpan={8} className='px-4 py-10 text-center text-sm text-muted-foreground'>
-                            Đang tải danh sách sản phẩm...
+                            <div className='flex items-center justify-center gap-2'>
+                              <span className='h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent' />
+                              Đang tải danh sách sản phẩm...
+                            </div>
                           </td>
                         </tr>
                       ) : products.length === 0 ? (
                         <tr>
                           <td colSpan={8} className='px-4 py-10 text-center text-sm text-muted-foreground'>
-                            Không có sản phẩm phù hợp với bộ lọc gần hết hạn.
+                            {keyword ? (
+                              <>
+                                Không tìm thấy sản phẩm nào với từ khóa "<strong>{keyword}</strong>"
+                              </>
+                            ) : (
+                              'Không có sản phẩm phù hợp với bộ lọc gần hết hạn.'
+                            )}
                           </td>
                         </tr>
                       ) : (
                         products.map((product) => {
-                          const checked = selectedProductIds.includes(product.productId)
+                          const checked = isProductSelected(product.productId)
+                          const discount = getProductDiscount(product.productId)
 
                           return (
                             <tr key={product.productId} className={checked ? 'bg-primary/5' : undefined}>
@@ -407,7 +490,7 @@ export function ManagerPromotionCreatePage() {
                               <td className='px-4 py-3'>
                                 {checked ? (
                                   <select
-                                    value={productDiscountById[product.productId]?.discountType ?? 'PERCENTAGE'}
+                                    value={discount.discountType}
                                     onChange={(e) =>
                                       updateProductDiscount(
                                         product.productId,
@@ -429,7 +512,7 @@ export function ManagerPromotionCreatePage() {
                                   <input
                                     type='number'
                                     min={0}
-                                    value={productDiscountById[product.productId]?.discountValue ?? 20}
+                                    value={discount.discountValue}
                                     onChange={(e) =>
                                       updateProductDiscount(
                                         product.productId,
@@ -451,11 +534,15 @@ export function ManagerPromotionCreatePage() {
                   </table>
                 </div>
 
-                {/* ✅ Phân trang - Chỉ hiển thị khi có nhiều hơn 1 trang */}
+                {/* Phân trang */}
                 {totalPages > 1 && (
                   <div className='mt-4 flex items-center justify-between'>
                     <div className='text-sm text-muted-foreground'>
-                      Hiển thị {products.length} trên {totalElements} sản phẩm
+                      {keyword ? (
+                        <>Kết quả tìm kiếm: {totalElements} sản phẩm</>
+                      ) : (
+                        <>Hiển thị {products.length} trên {totalElements} sản phẩm</>
+                      )}
                     </div>
                     <div className='flex items-center gap-2'>
                       <button
