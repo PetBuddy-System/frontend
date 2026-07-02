@@ -143,11 +143,11 @@
     "roleTitle": "Store Manager",
     "nav": {
       "dashboard": "Operations overview",
-      "inventory": "Inventory Control",
       "products": "Product Management",
       "staff": "Staff Coordination",
       "returnRequests": "Return approvals",
-      "disposalApprovals": "Disposal approvals"
+      "disposalApprovals": "Disposal approvals",
+      "promotions": "Promotions"
     },
     "toggle": "Toggle sidebar"
   },
@@ -551,6 +551,49 @@
       "loading": "Loading product details...",
       "success": "Product updated successfully",
       "error": "Failed to update product"
+    }
+  },
+  "promotions": {
+    "title": "Promotions Management",
+    "subtitle": "Manage discount programs and advertising campaigns.",
+    "searchPlaceholder": "Search promotions...",
+    "actions": {
+      "add": "Add new promotion",
+      "edit": "Edit promotion",
+      "delete": "Delete promotion",
+      "view": "View details"
+    },
+    "stats": {
+      "total": "TOTAL PROGRAMS",
+      "active": "ACTIVE",
+      "draft": "DRAFT",
+      "expired": "EXPIRED"
+    },
+    "table": {
+      "columns": {
+        "name": "Promotion Name",
+        "description": "Description",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "noPromotions": "No promotions found",
+      "noPromotionsDesc": "Try adjusting your filters or keyword query"
+    },
+    "editModal": {
+      "title": "Edit Promotion",
+      "createTitle": "Add New Promotion",
+      "name": "Promotion Name",
+      "description": "Description",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "status": "Status",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "success": "Promotion updated successfully",
+      "createSuccess": "Promotion created successfully",
+      "error": "Operation failed"
     }
   }
 }

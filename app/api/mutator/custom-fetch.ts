@@ -145,7 +145,7 @@ type RequestOptions = {
   url: string
   method: string
   headers?: Record<string, string>
-  params?: Record<string, string | number | boolean | undefined>
+  params?: Record<string, string | number | boolean | undefined | null>
   data?: unknown
   signal?: AbortSignal
 }
@@ -153,14 +153,26 @@ type RequestOptions = {
 export async function customFetch<T>(options: RequestOptions): Promise<T> {
   const { url, method, headers, params, data, signal } = options
 
+  const cleanParams = params
+    ? Object.entries(params).reduce((acc, [key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        acc[key] = value
+      }
+      return acc
+    }, {} as Record<string, string | number | boolean>)
+    : undefined
+
+  console.log('🔍 CustomFetch - Clean Params:', cleanParams) // Debug
+
   const config: AxiosRequestConfig = {
     url,
     method,
     headers,
-    params,
+    params: cleanParams,
     data,
     signal
   }
+
 
   try {
     const response = await axiosInstance(config)

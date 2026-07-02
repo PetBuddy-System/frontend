@@ -10,6 +10,7 @@ export interface ProductBatchItem {
     productCode: string
     productName: string
     stockQuantity: number
+    cost?: number
     expiryDate: string
     status: 'ACTIVE' | 'INACTIVE' | 'DELETED'
     deletedAt: string | null
