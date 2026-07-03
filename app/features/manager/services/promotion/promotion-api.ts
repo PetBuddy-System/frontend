@@ -79,7 +79,7 @@ export interface CreatePromotionDTO {
   }>
 }
 
-export interface UpdatePromotionDTO extends Partial<CreatePromotionDTO> {
+export type UpdatePromotionDTO = Omit<Partial<CreatePromotionDTO>, 'status'> & {
   status?: 'DRAFT' | 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'DELETED'
 }
 

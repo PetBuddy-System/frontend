@@ -168,6 +168,7 @@
   },
   "checkout": {
     "title": "Checkout",
+    "backToCart": "Back to cart",
     "shipping": {
       "title": "Shipping information",
       "fullName": "Full name",

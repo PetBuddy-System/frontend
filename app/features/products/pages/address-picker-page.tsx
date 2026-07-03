@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
+import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
+import { point } from "@turf/helpers";
 
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
@@ -37,14 +39,47 @@ function cleanAddress(addr: string): string {
 async function reverseGeocode(lat: number, lng: number): Promise<string> {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=vi`
-    )
-    const data = await res.json()
-    if (data?.display_name) return cleanAddress(data.display_name as string)
-  } catch {
-    // fallback below
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=vi`
+    );
+
+    const data = await res.json();
+    const addr = data.address ?? {};
+
+    const parts: string[] = [];
+
+    // Số nhà
+    if (addr.house_number) {
+      parts.push(addr.house_number);
+    }
+
+    // Tên đường
+    if (addr.road) {
+      if (addr.house_number) {
+        parts[parts.length - 1] += ` ${addr.road}`;
+      } else {
+        parts.push(addr.road);
+      }
+    }
+
+    // Phường
+    if (addr.suburb) {
+      parts.push(addr.suburb);
+    } else if (addr.city_district) {
+      parts.push(addr.city_district);
+    } else if (addr.quarter) {
+      parts.push(addr.quarter);
+    }
+
+    // Luôn hiển thị TP.HCM
+    parts.push("Thành phố Hồ Chí Minh");
+
+    parts.push("Việt Nam");
+
+    return parts.join(", ");
+  } catch (e) {
+    console.error(e);
+    return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   }
-  return `${lat.toFixed(6)}, ${lng.toFixed(6)}`
 }
 function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const toRad = (value: number) => (value * Math.PI) / 180
@@ -305,33 +340,38 @@ export function AddressPickerPage() {
   }
 
   async function handleSearchAddress(e: React.FormEvent) {
-    e.preventDefault()
-    if (!searchQuery.trim()) return
+  e.preventDefault();
+  if (!searchQuery.trim()) return;
+  setIsSearching(true);
+  setSearchError("");
 
-    setIsSearching(true)
-    setSearchError('')
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1&accept-language=vi`
-      )
-      const data = await res.json()
-      if (data && data.length > 0) {
-        const lat = parseFloat(data[0].lat)
-        const lng = parseFloat(data[0].lon)
-        await updateLocation(lat, lng, false)
-        setSelectedAddress(cleanAddress(data[0].display_name ?? searchQuery))
-        setSearchError('')
-      } else {
-        setSearchError('Không tìm thấy địa chỉ này. Hãy thử nhập chi tiết hơn.')
-      }
-    } catch {
-      setSearchError('Lỗi kết nối khi tìm kiếm địa chỉ.')
-    } finally {
-      setIsSearching(false)
+  try {
+    const query = `${searchQuery}, Thành phố Hồ Chí Minh, Việt Nam`;
+
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&accept-language=vi`);
+
+    const data = await res.json();
+
+    if (data && data.length > 0) {
+      const lat = parseFloat(data[0].lat);
+      const lng = parseFloat(data[0].lon);
+      await updateLocation(lat, lng, true);
+      setSearchError("");
+    } else {
+      setSearchError("Không tìm thấy địa chỉ này. Hãy thử nhập chi tiết hơn.");
     }
+  } catch {
+    setSearchError("Lỗi kết nối khi tìm kiếm địa chỉ.");
+  } finally {
+    setIsSearching(false);
   }
+}
 
   async function handleConfirm() {
+    if (!hcmBoundary) {
+      showToast("Đang tải dữ liệu bản đồ", "error");
+      return;
+    }
     const distanceFromStore = getDistanceKm(
       STORE_LAT,
       STORE_LON,
@@ -346,7 +386,7 @@ export function AddressPickerPage() {
       return
     }
 
-    const inHCMC = await isInHoChiMinhCity(currentCoords.lat, currentCoords.lng)
+    const inHCMC = isInHoChiMinhCity(currentCoords.lat, currentCoords.lng)
       if (!inHCMC) {
         showToast('Chỉ giao hàng trong phạm vi TP. Hồ Chí Minh', 'error')
         return
@@ -381,40 +421,29 @@ export function AddressPickerPage() {
     navigate('/order')
   }
 
-  async function isInHoChiMinhCity(lat: number, lng: number): Promise<boolean> {
-  try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=vi`
-    )
-    const data = await res.json()
-    const addr = data?.address ?? {}
+  const [hcmBoundary, setHcmBoundary] = useState<any>(null);
+  useEffect(() => {
+    fetch("/hcm_boundary.geojson")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Boundary loaded", data);
+        setHcmBoundary(data);
+      })
+      .catch((err) => {
+        console.error("Load boundary failed", err);
+      });
+  }, []);
 
-     const isoCode = addr['ISO3166-2-lvl4'] ?? ''
-    if (isoCode === 'VN-SG') return true
-
-    const hcmcKeywords = [
-      'hồ chí minh',
-      'ho chi minh',
-      'thành phố hồ chí minh',
-      'tp. hồ chí minh',
-      'tp hcm',
-    ]
-
-    const stateLevel = [addr.state, addr.province, addr.municipality]
-      .filter(Boolean)
-      .map((s: string) => s.toLowerCase())
-
-    if (stateLevel.some((f) => hcmcKeywords.some((kw) => f.includes(kw)))) {
-      return true
-    }
-    const cityLevel = [addr.city, addr.county]
-      .filter(Boolean)
-      .map((s: string) => s.toLowerCase())
-
-    return cityLevel.some((f) => hcmcKeywords.some((kw) => f.includes(kw)))
-  } catch {
-    return true 
+  function isInHoChiMinhCity(lat: number, lng: number): boolean {
+  if (!hcmBoundary) {
+    return false;
   }
+
+  const p = point([lng, lat]);
+
+  return hcmBoundary.features.some((feature: any) =>
+    booleanPointInPolygon(p, feature)
+  );
 }
 
   return (

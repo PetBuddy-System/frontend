@@ -102,7 +102,6 @@ function formatPrice(value: number) {
 }
 
 export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
-  const { t } = useTranslation('profile')
   const navigate = useNavigate()
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
@@ -262,17 +261,21 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                       const res = await getPaymentByOrderIdApi(order.orderId)
                       if (res.success && res.data) {
                         const clientSecret = res.data.stripeClientSecret || ''
+                        const orderShippingFee = order.shippingFee ?? 0
+                        const orderIsFreeShipping = orderShippingFee === 0
                         navigate('/payment', {
                           state: {
                             orderId: order.orderId,
                             clientSecret,
-                            amount: order.finalAmount
+                            amount: order.finalAmount,
+                            shippingFee: orderShippingFee,
+                            isFreeShipping: orderIsFreeShipping
                           }
                         })
                       } else {
                         alert(res.message || 'Không thể lấy thông tin thanh toán.')
                       }
-                    } catch (err) {
+                    } catch {
                       alert('Có lỗi xảy ra khi lấy thông tin thanh toán.')
                     } finally {
                       setIsLoadingPayment(false)

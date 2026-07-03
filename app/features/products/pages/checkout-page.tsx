@@ -1,19 +1,16 @@
 import { useMemo, useState, useEffect, useCallback } from 'react'
 import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { useNavigate, useLocation } from 'react-router'
 import { STORAGE_KEYS } from '~/shared/config/site'
 
 import { CheckoutNote } from '../components/checkout/checkout-note'
-import {
-  CheckoutOrderSummary,
-  type CheckoutOrderItem,
-} from '../components/checkout/checkout-order-summary'
+import {CheckoutOrderSummary,type CheckoutOrderItem,} from '../components/checkout/checkout-order-summary'
 import { CheckoutPaymentMethods, type SelectedPaymentMethod } from '../components/checkout/checkout-payment-methods'
 import { CheckoutShippingForm } from '../components/checkout/checkout-shipping-form'
 import { OutOfStockModal } from '../components/checkout/out-of-stock-modal'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { createOrderApi, getCartApi, removeCartItemApi, getPaymentByOrderIdApi } from '../services'
+import { createOrderApi, getCartApi, removeCartItemApi, getPaymentByOrderIdApi, fetchOrderByIdApi } from '../services'
 import type { CreateOrderRequest } from '~/shared/lib/order'
 import type { CartItemResponse } from '~/shared/lib/cart'
 import { MaterialIcon } from '~/shared/ui'
@@ -42,8 +39,11 @@ function getFormString(formData: FormData, key: string) {
 export function CheckoutPage() {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
+  const location = useLocation()
   const { user } = useAuth()
 
+  const pendingOrderId = (location.state as { orderId?: number } | null)?.orderId ?? null
+  
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
@@ -61,7 +61,17 @@ export function CheckoutPage() {
   const [voucherName, setVoucherName] = useState('')
   const [voucherDiscount, setVoucherDiscount] = useState(0)
 
-  // State phương thức thanh toán — đọc từ sessionStorage để giữ sau reload
+  interface PendingOrderView {
+    orderId: number
+    clientSecret: string
+    subtotal: number
+    shippingFee: number
+    isFreeShipping: boolean
+    voucherDiscount: number
+    finalAmount: number
+  }
+  const [pendingOrder, setPendingOrder] = useState<PendingOrderView | null>(null)
+
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<SelectedPaymentMethod>(() => {
     const saved = typeof window !== 'undefined' ? sessionStorage.getItem(SESSION_KEY_PAYMENT_METHOD) : null
     return (saved === 'CASH' || saved === 'CARD') ? saved : 'CASH'
@@ -117,13 +127,66 @@ export function CheckoutPage() {
     }
   }, [t])
 
+  const fetchPendingOrder = useCallback(async (orderId: number) => {
+    try {
+      const res = await fetchOrderByIdApi(orderId)
+      const order = res.data
+      const details = order.orderDetails ?? []
+
+      setCartItems(
+        details.map((d) => ({
+          key: String(d.orderDetailId),
+          image: d.productImage ?? '',
+          price: d.unitPrice,
+          quantity: d.quantity,
+          title: d.productName,
+        }))
+      )
+
+      const subtotal = details.reduce((sum, d) => sum + d.totalPrice, 0)
+      const shippingFee = order.shippingFee ?? 0
+      const isFreeShipping = shippingFee === 0
+      const voucherDiscount = Math.max(0, subtotal + shippingFee - order.finalAmount)
+
+      setPendingOrder({
+        orderId: order.orderId,
+        clientSecret: order.clientSecret ?? '',
+        subtotal,
+        shippingFee,
+        isFreeShipping,
+        voucherDiscount,
+        finalAmount: order.finalAmount,
+      })
+    } catch {
+      setErrorMessage(t('checkout.loadError', 'Không thể tải thông tin đơn hàng.'))
+    } finally {
+      setIsLoading(false)
+    }
+  }, [t])
+
+  function handleRetryPayment() {
+    if (!pendingOrder) return
+    navigate('/payment', {
+      state: {
+        orderId: pendingOrder.orderId,
+        clientSecret: pendingOrder.clientSecret,
+        amount: pendingOrder.finalAmount,
+        shippingFee: pendingOrder.shippingFee,
+        isFreeShipping: pendingOrder.isFreeShipping,
+      },
+    })
+  }
+
   useEffect(() => {
+  if (pendingOrderId) {
+    fetchPendingOrder(pendingOrderId)
+  } else {
     fetchCart()
-  }, [fetchCart])
+  }
+}, [pendingOrderId, fetchPendingOrder, fetchCart])
 
   const subtotal = useMemo(
-    () => rawCartItems.reduce((total, item) => total + item.subtotal, 0),
-    [rawCartItems]
+    () =>pendingOrder? pendingOrder.subtotal: rawCartItems.reduce((total, item) => total + item.subtotal, 0),[rawCartItems, pendingOrder]
   )
 
   useEffect(() => {
@@ -171,9 +234,11 @@ export function CheckoutPage() {
         throw new Error('Không nhận được mã đơn hàng từ hệ thống.')
       }
 
-      const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế / Stripe' : 'Tiền mặt (COD)'
+      const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế' : 'Tiền mặt'
 
       const lastOrderDetails = {
+        orderId,
+        clientSecret: response.data?.clientSecret || '',
         orderCode: response.data?.orderCode || `PET-${orderId}`,
         recipientName: request.recipientName,
         phoneNumber: request.phoneNumber,
@@ -198,16 +263,6 @@ export function CheckoutPage() {
 
       sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
 
-      const keysToRemove = [
-        SESSION_KEY_ADDRESS, SESSION_KEY_LAT, SESSION_KEY_LNG,
-        SESSION_KEY_SHIPPING_FEE, SESSION_KEY_IS_FREE_SHIPPING,
-        SESSION_KEY_VOUCHER_CODE, SESSION_KEY_VOUCHER_NAME, SESSION_KEY_VOUCHER_DISCOUNT,
-        SESSION_KEY_PAYMENT_METHOD,
-        'petbuddy_checkout_name', 'petbuddy_checkout_phone',
-        'petbuddy_checkout_subtotal', 'petbuddy_checkout_distance',
-        'petbuddy_checkout_note',
-      ]
-      keysToRemove.forEach((k) => sessionStorage.removeItem(k))
       if (selectedPaymentMethod === 'CARD') {
         let clientSecret = response.data?.clientSecret || ''
 
@@ -297,11 +352,22 @@ export function CheckoutPage() {
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
       <SiteHeader />
       <main className='mx-auto w-full max-w-6xl flex-1 px-4 py-10 pb-24 md:px-6 md:py-12'>
+        <div className='mb-6'>
+          <a
+            className='inline-flex items-center gap-2 font-bold text-primary transition-transform hover:-translate-x-1'
+            href='/cart'
+          >
+            <MaterialIcon name='arrow_back' className='text-[20px]' />
+            {t('checkout.backToCart', 'Quay lại giỏ hàng')}
+          </a>
+        </div>
+
         <form className='grid grid-cols-1 gap-8 lg:grid-cols-12' onSubmit={handleSubmit}>
           <div className='flex flex-col gap-8 lg:col-span-8'>
             <h1 className='font-display text-3xl font-bold text-primary md:text-5xl'>
               {t('checkout.title')}
             </h1>
+
 
             {errorMessage && (
               <div className='flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
@@ -324,12 +390,14 @@ export function CheckoutPage() {
             <CheckoutOrderSummary
               items={cartItems}
               subtotal={subtotal}
-              shippingFee={shippingFee}
-              isFreeShipping={isFreeShipping}
-              discount={voucherDiscount}
+              shippingFee={pendingOrder?.shippingFee ?? shippingFee}
+              isFreeShipping={pendingOrder?.isFreeShipping ?? isFreeShipping}
+              discount={pendingOrder?.voucherDiscount ?? voucherDiscount}
               voucherName={voucherName}
               formatPrice={formatPrice}
               isSubmitting={isSubmitting}
+              mode={pendingOrder ? 'retry-payment' : 'checkout'}
+              onRetryPayment={handleRetryPayment}
             />
           </div>
         </form>

@@ -26,6 +26,8 @@ export interface CheckoutOrderSummaryProps {
   voucherName: string
   formatPrice: (value: number) => string
   isSubmitting?: boolean
+  mode?: 'checkout' | 'retry-payment'
+  onRetryPayment?: () => void
 }
 
 export function CheckoutOrderSummary({
@@ -37,11 +39,14 @@ export function CheckoutOrderSummary({
   voucherName,
   formatPrice,
   isSubmitting = false,
+  mode = 'checkout',
+  onRetryPayment,
 }: CheckoutOrderSummaryProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
 
   const total = subtotal + (isFreeShipping ? 0 : shippingFee) - discount
+  const isRetryMode = mode === 'retry-payment'
 
   return (
     <aside className='flex flex-col gap-6 lg:sticky lg:top-24'>
@@ -103,16 +108,17 @@ export function CheckoutOrderSummary({
         </div>
 
        <button
-          type='submit'
+        type={isRetryMode ? 'button' : 'submit'}
+          onClick={isRetryMode ? onRetryPayment : undefined}
           disabled={isSubmitting || items.length === 0}
           className='flex w-full items-center justify-center gap-3 rounded-full bg-secondary px-6 py-4 font-display font-semibold text-secondary-foreground shadow-md transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
         >
-          <MaterialIcon
+         <MaterialIcon
             name={isSubmitting ? 'progress_activity' : 'lock'}
             filled={!isSubmitting}
             className={isSubmitting ? 'animate-spin text-[20px]' : 'text-[20px]'}
           />
-          {!isSubmitting && t('checkout.summary.placeOrder')}
+          {!isSubmitting && (isRetryMode ? 'Tiếp tục thanh toán' : t('checkout.summary.placeOrder'))}
         </button>
 
         <div className='mt-6 flex flex-col gap-3 border-t border-border pt-4'>

@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { addToCartApi } from '../../services/cart'
+import { useCart } from '~/providers/cart-provider'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
+
 
 export interface ProductDetailInfoProps {
   productId: string
@@ -44,6 +46,7 @@ export function ProductDetailInfo({
 }: ProductDetailInfoProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
+  const { refreshCart } = useCart()
   const [quantity, setQuantity] = useState(1)
   const [isAdding, setIsAdding] = useState(false)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
@@ -55,12 +58,12 @@ export function ProductDetailInfo({
   const safeBrandName = brandName || 'N/A'
   const isPromoted = Boolean(
     hasActivePromotion ||
-      safeSalePrice < safePrice ||
-      promotionName ||
-      promotionDescription ||
-      promotionEndDate ||
-      promotionDiscountValue != null ||
-      discountValue != null
+    safeSalePrice < safePrice ||
+    promotionName ||
+    promotionDescription ||
+    promotionEndDate ||
+    promotionDiscountValue != null ||
+    discountValue != null
   )
 
   const formatPrice = (value: number) => `${value.toLocaleString('vi-VN')}đ`
@@ -200,6 +203,7 @@ export function ProductDetailInfo({
 
     try {
       await addToCartApi({ productId, quantity, productName: name, price: safePrice, imageUrl })
+      await refreshCart()
       setShowSuccessToast(true)
       setTimeout(() => setShowSuccessToast(false), 3000)
     } catch (err: unknown) {
@@ -216,12 +220,14 @@ export function ProductDetailInfo({
 
     try {
       await addToCartApi({ productId, quantity, productName: name, price: safePrice, imageUrl })
+      await refreshCart()
       navigate('/checkout')
     } catch (err: unknown) {
       setAddError(err instanceof Error ? err.message : 'Lỗi xử lý mua ngay')
       setIsAdding(false)
     }
   }
+
 
   return (
     <section className='relative flex flex-col justify-start'>

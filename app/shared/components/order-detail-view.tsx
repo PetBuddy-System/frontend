@@ -91,7 +91,9 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
   const subtotal = order?.orderDetails?.reduce((sum, item) => sum + item.totalPrice, 0) ?? 0
   const shippingFee = order?.shippingFee ?? (subtotal > 500000 ? 0 : 30000)
   const hasVoucher = Boolean(order?.voucherCode || order?.voucher)
-  const discount = hasVoucher? (order?.voucher?.discountValue ?? (subtotal + shippingFee - (order?.finalAmount ?? subtotal))): 0
+  const rawDiscount = hasVoucher ? (order?.voucher?.discountValue ?? (subtotal + shippingFee - (order?.finalAmount ?? subtotal))) : 0
+  const discount = rawDiscount > subtotal ? subtotal : rawDiscount
+
 
   // Determine if the Cancel Order button should be visible
   const canCancel = (() => {

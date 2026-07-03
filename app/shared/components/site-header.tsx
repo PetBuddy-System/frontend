@@ -2,11 +2,13 @@ import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '~/providers/auth-provider'
+import { useCart } from '~/providers/cart-provider'
 import { getDashboardPathByRole } from '~/features/auth/services/auth'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 import { LanguageSwitcher } from './language-switcher'
 import { ThemeToggle } from './theme-toggle'
+
 
 const NAV_ITEMS = [
   { key: 'store', href: '/' },
@@ -36,8 +38,10 @@ function getInitials(fullName: string): string {
 export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
   const { t } = useTranslation('landing')
   const { user, isAuthenticated, isLoading, logout } = useAuth()
+  const { cartCount } = useCart()
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+
   const [isLangOpen, setIsLangOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const langRef = useRef<HTMLDivElement>(null)
@@ -200,10 +204,16 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
           <a
             href='/cart'
             aria-label={t('actions.cart')}
-            className='inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted'
+            className='relative inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted'
           >
             <MaterialIcon name='shopping_cart' className='text-[22px]' />
+            {cartCount > 0 && (
+              <span className='absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground animate-in zoom-in duration-200'>
+                {cartCount}
+              </span>
+            )}
           </a>
+
 
           {/* ─── Mobile: Auth + Menu button ─── */}
           <div className='flex items-center md:hidden'>

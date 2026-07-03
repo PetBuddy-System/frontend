@@ -132,7 +132,7 @@
       }
     },
     "summary": {
-      "title": "Tóm tắt đơn hàng",
+      "title": "Thông tin đơn hàng",
       "products": "Sản phẩm ({{count}})",
       "total": "Tổng cộng",
       "checkout": "Thanh toán ngay",
@@ -168,6 +168,7 @@
   },
   "checkout": {
     "title": "Thanh toán",
+    "backToCart": "Quay lại giỏ hàng",
     "shipping": {
       "title": "Thông tin giao hàng",
       "fullName": "Họ và tên",

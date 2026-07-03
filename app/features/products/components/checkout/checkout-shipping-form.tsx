@@ -42,7 +42,7 @@ export function CheckoutShippingForm({ addressValue, defaultName }: CheckoutShip
     <section className='rounded-xl border border-border/60 bg-card p-6 shadow-sm md:p-8'>
       <div className='mb-6 flex items-center gap-3'>
         <MaterialIcon name='person' className='text-[24px] text-primary' />
-        <h2 className='font-display text-2xl font-semibold text-primary'>Thông tin cá nhân</h2>
+        <h2 className='font-display text-2xl font-semibold text-primary'>Thông tin người nhận</h2>
       </div>
 
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
