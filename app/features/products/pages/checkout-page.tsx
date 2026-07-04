@@ -5,10 +5,11 @@ import { useNavigate, useLocation } from 'react-router'
 import { STORAGE_KEYS } from '~/shared/config/site'
 
 import { CheckoutNote } from '../components/checkout/checkout-note'
-import {CheckoutOrderSummary,type CheckoutOrderItem,} from '../components/checkout/checkout-order-summary'
+import { CheckoutOrderSummary, type CheckoutOrderItem, } from '../components/checkout/checkout-order-summary'
 import { CheckoutPaymentMethods, type SelectedPaymentMethod } from '../components/checkout/checkout-payment-methods'
-import { CheckoutShippingForm } from '../components/checkout/checkout-shipping-form'
+import { CheckoutShippingForm, toPhoneDisplay } from '../components/checkout/checkout-shipping-form'
 import { OutOfStockModal } from '../components/checkout/out-of-stock-modal'
+import { AdjustedQuantityModal } from '../components/checkout/adjusted-quantity-modal'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
 import { createOrderApi, getCartApi, removeCartItemApi, getPaymentByOrderIdApi, fetchOrderByIdApi } from '../services'
 import type { CreateOrderRequest } from '~/shared/lib/order'
@@ -43,7 +44,7 @@ export function CheckoutPage() {
   const { user } = useAuth()
 
   const pendingOrderId = (location.state as { orderId?: number } | null)?.orderId ?? null
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState('')
@@ -51,6 +52,10 @@ export function CheckoutPage() {
   const [cartItems, setCartItems] = useState<CheckoutOrderItem[]>([])
 
   const [outOfStockProductName, setOutOfStockProductName] = useState<string | null>(null)
+
+  // Queue các sản phẩm bị giảm số lượng — hiển thị từng cái một
+  const [adjustedQueue, setAdjustedQueue] = useState<CartItemResponse[]>([])
+  const currentAdjustedItem = adjustedQueue[0] ?? null
 
   const [selectedAddress, setSelectedAddress] = useState('')
   const [shippingFee, setShippingFee] = useState(0)
@@ -120,12 +125,36 @@ export function CheckoutPage() {
           title: item.productName,
         }))
       )
+      // Đưa các sản phẩm bị điều chỉnh số lượng vào queue để hiển thị popup
+      const adjustedItems = items.filter((item) => item.adjusted)
+      if (adjustedItems.length > 0) {
+        setAdjustedQueue(adjustedItems)
+      }
     } catch {
       setErrorMessage(t('checkout.loadError', 'Không thể tải giỏ hàng.'))
     } finally {
       setIsLoading(false)
     }
   }, [t])
+
+  /** User đồng ý mua với số lượng đã giảm → chuyển sang item tiếp theo trong queue */
+  function handleAdjustedConfirm() {
+    setAdjustedQueue((prev) => prev.slice(1))
+  }
+
+  /** User từ chối → xóa sản phẩm khỏi giỏ hàng rồi chuyển sang item tiếp theo */
+  async function handleAdjustedDecline() {
+    if (!currentAdjustedItem) return
+    const itemId = currentAdjustedItem.cartItemId
+    try {
+      await removeCartItemApi(itemId)
+    } catch {
+      // Bỏ qua lỗi xóa, vẫn cập nhật UI
+    }
+    setRawCartItems((prev) => prev.filter((i) => i.cartItemId !== itemId))
+    setCartItems((prev) => prev.filter((i) => i.key !== itemId))
+    setAdjustedQueue((prev) => prev.slice(1))
+  }
 
   const fetchPendingOrder = useCallback(async (orderId: number) => {
     try {
@@ -178,15 +207,15 @@ export function CheckoutPage() {
   }
 
   useEffect(() => {
-  if (pendingOrderId) {
-    fetchPendingOrder(pendingOrderId)
-  } else {
-    fetchCart()
-  }
-}, [pendingOrderId, fetchPendingOrder, fetchCart])
+    if (pendingOrderId) {
+      fetchPendingOrder(pendingOrderId)
+    } else {
+      fetchCart()
+    }
+  }, [pendingOrderId, fetchPendingOrder, fetchCart])
 
   const subtotal = useMemo(
-    () =>pendingOrder? pendingOrder.subtotal: rawCartItems.reduce((total, item) => total + item.subtotal, 0),[rawCartItems, pendingOrder]
+    () => pendingOrder ? pendingOrder.subtotal : rawCartItems.reduce((total, item) => total + item.subtotal, 0), [rawCartItems, pendingOrder]
   )
 
   useEffect(() => {
@@ -215,9 +244,16 @@ export function CheckoutPage() {
       return
     }
 
+    const phoneNumber = getFormString(formData, 'phoneNumber')
+    if (!phoneNumber || !/^0\d{10}$/.test(phoneNumber)) {
+      setErrorMessage(t('checkout.phoneRequired', 'Vui lòng nhập số điện thoại hợp lệ (+84 và 10 chữ số).'))
+      setIsSubmitting(false)
+      return
+    }
+
     const request: CreateOrderRequest = {
       recipientName: getFormString(formData, 'recipientName'),
-      phoneNumber: getFormString(formData, 'phoneNumber'),
+      phoneNumber,
       address: finalAddress,
       note: getFormString(formData, 'note') || undefined,
       voucherCode: voucherCode || undefined,
@@ -376,8 +412,12 @@ export function CheckoutPage() {
               </div>
             )}
 
-            <CheckoutShippingForm addressValue={selectedAddress} defaultName={user?.fullName} />
-            
+            <CheckoutShippingForm
+              addressValue={selectedAddress}
+              defaultName={user?.fullName}
+              defaultPhone={pendingOrder ? toPhoneDisplay(sessionStorage.getItem('petbuddy_checkout_phone') ?? '') : undefined}
+            />
+
             <CheckoutPaymentMethods
               selectedMethod={selectedPaymentMethod}
               onMethodChange={handlePaymentMethodChange}
@@ -409,6 +449,14 @@ export function CheckoutPage() {
         <OutOfStockModal
           productName={outOfStockProductName}
           onClose={() => setOutOfStockProductName(null)}
+        />
+      )}
+      {currentAdjustedItem && (
+        <AdjustedQuantityModal
+          productName={currentAdjustedItem.productName}
+          newQuantity={currentAdjustedItem.quantity}
+          onConfirm={handleAdjustedConfirm}
+          onDecline={handleAdjustedDecline}
         />
       )}
     </div>

@@ -24,10 +24,6 @@ export const guestCart = {
     return readRaw()
   },
 
-  /**
-   * request cần kèm productName + price vì guest cart không gọi BE để tự tính —
-   * FE phải tự truyền vào lúc gọi (lấy từ data sản phẩm đang hiển thị).
-   */
   add(request: AddToCartRequest & { productName: string; price: number; imageUrl: string }) {
     const items = readRaw()
     const existing = items.find((i) => i.productId === request.productId)

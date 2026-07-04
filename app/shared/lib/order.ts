@@ -63,6 +63,8 @@ export interface OrderDetailResponse {
   productName: string
   productImage?: string
   unitPrice: number
+  price?: number
+  salePrice?: number | null
   quantity: number
   totalPrice: number
   createdAt: string

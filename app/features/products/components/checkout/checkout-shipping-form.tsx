@@ -6,12 +6,32 @@ import { MaterialIcon } from '~/shared/ui'
 export interface CheckoutShippingFormProps {
   addressValue: string
   defaultName?: string
+  defaultPhone?: string
 }
 
-export function CheckoutShippingForm({ addressValue, defaultName }: CheckoutShippingFormProps) {
+export function toPhoneDisplay(phone: string): string {
+  const stripped = phone.trim()
+  if (!stripped) return ''
+  if (stripped.startsWith('+84')) return stripped
+  if (stripped.startsWith('0')) return '+84' + stripped.slice(1)
+  return '+84' + stripped
+}
+
+export function toPhoneSubmit(phone: string): string {
+  const stripped = phone.trim()
+  if (stripped.startsWith('+84')) return '0' + stripped.slice(3)
+  return stripped
+}
+
+function isValidPhone(phone: string): boolean {
+  return /^\+84\d{10}$/.test(phone.trim())
+}
+
+export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }: CheckoutShippingFormProps) {
   const navigate = useNavigate()
   const [savedName, setSavedName] = useState('')
   const [savedPhone, setSavedPhone] = useState('')
+  const [phoneError, setPhoneError] = useState('')
 
   useEffect(() => {
     const storedName = sessionStorage.getItem('petbuddy_checkout_name')
@@ -21,8 +41,15 @@ export function CheckoutShippingForm({ addressValue, defaultName }: CheckoutShip
       setSavedName(defaultName)
       sessionStorage.setItem('petbuddy_checkout_name', defaultName)
     }
-    setSavedPhone(sessionStorage.getItem('petbuddy_checkout_phone') ?? '')
-  }, [defaultName])
+
+    if (defaultPhone) {
+      const display = toPhoneDisplay(defaultPhone)
+      setSavedPhone(display)
+      sessionStorage.setItem('petbuddy_checkout_phone', display)
+    } else {
+      setSavedPhone(sessionStorage.getItem('petbuddy_checkout_phone') ?? '')
+    }
+  }, [defaultName, defaultPhone])
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     sessionStorage.setItem('petbuddy_checkout_name', e.target.value)
@@ -30,8 +57,36 @@ export function CheckoutShippingForm({ addressValue, defaultName }: CheckoutShip
   }
 
   function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    sessionStorage.setItem('petbuddy_checkout_phone', e.target.value)
-    setSavedPhone(e.target.value)
+    let value = e.target.value
+    if (!value.startsWith('+84')) {
+      const digits = value.replace(/\D/g, '')
+      value = '+84' + (digits.startsWith('84') ? digits.slice(2) : digits)
+    }
+    if (value.length > 12) return
+
+    sessionStorage.setItem('petbuddy_checkout_phone', value)
+    setSavedPhone(value)
+
+    if (value.length > 3 && !isValidPhone(value)) {
+      setPhoneError('Số điện thoại phải có đúng 10 chữ số sau +84')
+    } else {
+      setPhoneError('')
+    }
+  }
+
+  function handlePhoneFocus() {
+    if (!savedPhone) {
+      setSavedPhone('+84')
+    }
+  }
+
+  function handlePhoneBlur() {
+    if (savedPhone === '+84' || savedPhone === '') {
+      setSavedPhone('')
+      setPhoneError('')
+    } else if (!isValidPhone(savedPhone)) {
+      setPhoneError('Số điện thoại phải có đúng 10 chữ số sau +84')
+    }
   }
 
   function handlePickAddress() {
@@ -46,7 +101,6 @@ export function CheckoutShippingForm({ addressValue, defaultName }: CheckoutShip
       </div>
 
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-        {/* Full Name */}
         <div className='flex flex-col gap-2'>
           <label className='text-sm font-semibold text-foreground' htmlFor='fullName'>
             Họ và tên
@@ -67,16 +121,20 @@ export function CheckoutShippingForm({ addressValue, defaultName }: CheckoutShip
           <label className='text-sm font-semibold text-foreground' htmlFor='phone'>
             Số điện thoại
           </label>
+          <input type='hidden' name='phoneNumber' value={toPhoneSubmit(savedPhone)} />
           <input
             id='phone'
-            name='phoneNumber'
-            className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
-            placeholder='Nhập số điện thoại'
+            className={`w-full rounded-xl border bg-background px-4 py-3 text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${phoneError ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+              }`}
+            placeholder='+84912345678'
             required
             type='tel'
             value={savedPhone}
             onChange={handlePhoneChange}
+            onFocus={handlePhoneFocus}
+            onBlur={handlePhoneBlur}
           />
+          {phoneError && <p className='text-xs text-destructive'>{phoneError}</p>}
         </div>
       </div>
 
@@ -90,10 +148,8 @@ export function CheckoutShippingForm({ addressValue, defaultName }: CheckoutShip
         </div>
       )}
 
-      {/* Hidden input to carry address in form */}
       <input type='hidden' name='address' value={addressValue} />
 
-      {/* Pick address button */}
       <button
         type='button'
         onClick={handlePickAddress}

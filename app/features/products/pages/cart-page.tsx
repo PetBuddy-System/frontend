@@ -4,15 +4,11 @@ import { useTranslation } from 'react-i18next'
 
 import { CartItemsList, type CartItem } from '../components/cart/cart-items-list'
 import { CartOrderSummary } from '../components/cart/cart-order-summary'
+import { AdjustedQuantityModal } from '../components/checkout/adjusted-quantity-modal'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
 import { useCart } from '~/providers/cart-provider'
 import { MaterialIcon } from '~/shared/ui'
-import {
-  getCartApi,
-  updateCartItemApi,
-  removeCartItemApi,
-  clearCartApi,
-} from '../services'
+import { getCartApi, updateCartItemApi, removeCartItemApi } from '../services'
 import type { CartItemResponse } from '~/shared/lib/cart'
 
 
@@ -32,6 +28,9 @@ export function CartPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isMutating, setIsMutating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Sản phẩm bị server tự giảm số lượng do hết hàng — chờ user xác nhận
+  const [adjustedItem, setAdjustedItem] = useState<CartItemResponse | null>(null)
 
 
   const fetchCart = useCallback(async () => {
@@ -58,10 +57,13 @@ export function CartPage() {
       cartItemId: item.cartItemId,
       productId: item.productId,
       title: item.productName,
+      description: item.description,
       category: '',
       image: item.imageUrl || CART_PLACEHOLDER_IMAGE,
       price: item.price,
+      salePrice: item.salePrice,
       quantity: item.quantity,
+      subtotal: item.subtotal,
     }))
   }, [cartItems])
 
@@ -93,8 +95,13 @@ export function CartPage() {
     setIsMutating(true)
 
     try {
-      await updateCartItemApi(item.cartItemId, { quantity: item.quantity + 1 })
+      const updated = await updateCartItemApi(item.cartItemId, { quantity: item.quantity + 1 })
       await fetchCart()
+
+      // Server đã tự giới hạn số lượng do không đủ tồn kho → hỏi lại người dùng
+      if (updated?.adjusted) {
+        setAdjustedItem(updated)
+      }
     } catch {
       setError('Không thể cập nhật số lượng.')
     } finally {
@@ -116,20 +123,27 @@ export function CartPage() {
     }
   }
 
-  async function handleClearCart() {
-    if (isMutating) return
+  /** User đồng ý giữ sản phẩm với số lượng đã bị giảm */
+  function handleAdjustedConfirm() {
+    setAdjustedItem(null)
+  }
+
+  /** User từ chối → xóa sản phẩm khỏi giỏ hàng */
+  async function handleAdjustedDecline() {
+    if (!adjustedItem) return
     setIsMutating(true)
 
     try {
-      await clearCartApi()
-      setCartItems([])
-      await refetchCart()
+      await removeCartItemApi(adjustedItem.cartItemId)
+      await fetchCart()
     } catch {
-      setError('Không thể xoá giỏ hàng.')
+      setError('Không thể xoá sản phẩm.')
     } finally {
       setIsMutating(false)
+      setAdjustedItem(null)
     }
   }
+
 
   if (isLoading) {
     return (
@@ -156,15 +170,6 @@ export function CartPage() {
           {t('cart.title')}
         </h1>
 
-        <div className='mb-6'>
-          <a
-            className='inline-flex items-center gap-2 font-bold text-primary transition-transform hover:-translate-x-1'
-            href='/products'
-          >
-            <MaterialIcon name='arrow_back' className='text-[20px]' />
-            {t('cart.continueShopping')}
-          </a>
-        </div>
 
         {error && (
           <div className='mb-6 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
@@ -194,7 +199,6 @@ export function CartPage() {
             <CartItemsList
               items={items}
               formatPrice={formatPrice}
-              isMutating={isMutating}
               onDecrease={async (key) => {
                 const target = items.find((i) => i.key === key)
                 if (!target) return
@@ -216,7 +220,6 @@ export function CartPage() {
                 subtotal={subtotal}
                 formatPrice={formatPrice}
                 isMutating={isMutating}
-                onClearCart={handleClearCart}
               />
             </div>
           </div>
@@ -227,6 +230,15 @@ export function CartPage() {
       <SiteFooter />
       <SiteBottomNav />
       <SiteFab />
+
+      {adjustedItem && (
+        <AdjustedQuantityModal
+          productName={adjustedItem.productName}
+          newQuantity={adjustedItem.quantity}
+          onConfirm={handleAdjustedConfirm}
+          onDecline={handleAdjustedDecline}
+        />
+      )}
     </div>
   )
 }

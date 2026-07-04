@@ -288,14 +288,34 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                         />
                       </button>
                       <div className="flex-grow flex flex-col gap-1 min-w-0">
-                        <button
-                          onClick={() => navigate(`/products/${detail.productId}`)}
-                          className="font-bold text-base text-foreground leading-tight hover:text-primary transition-colors text-left truncate hover:underline"
-                        >
-                          {detail.productName}
-                        </button>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <button
+                            onClick={() => navigate(`/products/${detail.productId}`)}
+                            className="font-bold text-base text-foreground leading-tight hover:text-primary transition-colors text-left truncate hover:underline"
+                          >
+                            {detail.productName}
+                          </button>
+                          {((detail.price && detail.unitPrice < detail.price) || (detail.salePrice && detail.price && detail.salePrice < detail.price)) && (
+                            <span className="bg-destructive/10 text-destructive text-[9px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0">
+                              Giảm giá
+                            </span>
+                          )}
+                        </div>
                         <p className="text-xs text-muted-foreground">Số lượng: x{detail.quantity}</p>
-                        <p className="text-xs text-muted-foreground">Đơn giá: {formatPrice(detail.unitPrice)}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Đơn giá: {((detail.price && detail.unitPrice < detail.price) || (detail.salePrice && detail.price && detail.salePrice < detail.price)) ? (
+                            <>
+                              <span className="line-through mr-1 text-[11px] text-muted-foreground">
+                                {formatPrice(detail.price ?? detail.unitPrice)}
+                              </span>
+                              <span className="font-semibold text-foreground">
+                                {formatPrice(detail.unitPrice)}
+                              </span>
+                            </>
+                          ) : (
+                            formatPrice(detail.unitPrice)
+                          )}
+                        </p>
                       </div>
                       <div className="text-right flex-shrink-0">
                         <p className="text-base font-bold text-primary">{formatPrice(detail.totalPrice)}</p>

@@ -24,10 +24,6 @@ export interface SiteHeaderProps {
   activeItem?: SiteHeaderNavKey
 }
 
-/**
- * Trích chữ cái đầu từ fullName để hiển thị avatar initials.
- * Ví dụ: "Nguyễn Văn An" → "NA", "John" → "J"
- */
 function getInitials(fullName: string): string {
   const parts = fullName.trim().split(/\s+/)
   if (parts.length === 0) return '?'
