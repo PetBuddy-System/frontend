@@ -6,11 +6,19 @@
 export interface ProductResponse {
   productId: string
   name: string
-  price: number
+  price: number // Giữ lại để tương thích với các phần khác
+  salePrice: number // Thêm mới từ API
   brandName: string
   thumbnail?: string
   imageUrls?: string[] | null
   totalStock: number
+  // Các trường mới từ API
+  discountAmount?: number
+  discountValue?: number
+  hasActivePromotion?: boolean
+  promotionName?: string
+  promotionType?: string
+  unit?: string
 }
 
 export interface PagedProductResponse {
@@ -175,14 +183,14 @@ export interface ImportProductsResult {
   errors: Array<{
     row: number
     errorKey:
-      | 'PRODUCT_NAME_REQUIRED'
-      | 'CATEGORY_NAME_REQUIRED'
-      | 'PRODUCT_PRICE_INVALID'
-      | 'STOCK_QUANTITY_INVALID'
-      | 'EXPIRY_DATE_INVALID'
-      | 'PRODUCT_INACTIVE'
-      | 'CATEGORY_NOT_FOUND'
-      | string
+    | 'PRODUCT_NAME_REQUIRED'
+    | 'CATEGORY_NAME_REQUIRED'
+    | 'PRODUCT_PRICE_INVALID'
+    | 'STOCK_QUANTITY_INVALID'
+    | 'EXPIRY_DATE_INVALID'
+    | 'PRODUCT_INACTIVE'
+    | 'CATEGORY_NOT_FOUND'
+    | string
   }>
 }
 

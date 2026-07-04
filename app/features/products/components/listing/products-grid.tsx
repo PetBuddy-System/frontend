@@ -17,39 +17,43 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const formatPrice = (price: number) => {
-    return price.toLocaleString('vi-VN') + 'đ'
+  const formatPrice = (price: number | undefined | null) => {
+    const numPrice = Number(price)
+    if (isNaN(numPrice) || numPrice === 0) {
+      return '0đ'
+    }
+    return numPrice.toLocaleString('vi-VN') + 'đ'
   }
 
   const handleAddToCart = async (product: ProductResponse) => {
-  if (addingMap[product.productId]) return
-  setAddingMap((prev) => ({ ...prev, [product.productId]: true }))
-  setError(null)
-  setShowSuccessToast(false)
+    if (addingMap[product.productId]) return
+    setAddingMap((prev) => ({ ...prev, [product.productId]: true }))
+    setError(null)
+    setShowSuccessToast(false)
 
-  try {
-    await addToCartApi({
-      productId: product.productId,
-      quantity: 1,
-      productName: product.name,
-      price: product.price,
-      imageUrl: product.imageUrls?.[0] || product.thumbnail,
-    })
-    setShowSuccessToast(true)
-    setTimeout(() => setShowSuccessToast(false), 3000)
-  } catch (err: unknown) {
-    setError(err instanceof Error ? err.message : 'Lỗi thêm vào giỏ hàng')
-    setTimeout(() => setError(null), 3000)
-  } finally {
-    setAddingMap((prev) => ({ ...prev, [product.productId]: false }))
+    try {
+      await addToCartApi({
+        productId: product.productId,
+        quantity: 1,
+        productName: product.name,
+        price: product.salePrice, // Đổi từ price sang salePrice
+        imageUrl: product.imageUrls?.[0] || product.thumbnail,
+      })
+      setShowSuccessToast(true)
+      setTimeout(() => setShowSuccessToast(false), 3000)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Lỗi thêm vào giỏ hàng')
+      setTimeout(() => setError(null), 3000)
+    } finally {
+      setAddingMap((prev) => ({ ...prev, [product.productId]: false }))
+    }
   }
-}
 
-const handleCardClick = (product: ProductResponse) => {
-  navigate(`/products/${product.productId}`)
-}
+  const handleCardClick = (product: ProductResponse) => {
+    navigate(`/products/${product.productId}`)
+  }
 
-if (isLoading) {
+  if (isLoading) {
     return (
       <div className='grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-3 xl:grid-cols-4'>
         {Array.from({ length: 8 }).map((_, idx) => (
@@ -111,7 +115,9 @@ if (isLoading) {
               {product.name}
             </h3>
             <div className='mt-auto flex items-end justify-between pt-3'>
-              <span className='text-base font-bold text-primary font-display'>{formatPrice(product.price)}</span>
+              <span className='text-base font-bold text-primary font-display'>
+                {formatPrice(product.salePrice ?? product.price ?? 0)}
+              </span>
             </div>
             <button
               type='button'
