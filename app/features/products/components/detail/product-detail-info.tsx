@@ -21,6 +21,8 @@ export interface ProductDetailInfoProps {
   promotionEndDate?: string | null
   promotionDiscountType?: 'PERCENTAGE' | 'FIXED' | string | null
   promotionDiscountValue?: number | null
+  promotionPrice?: number
+  promotionType?: string
   imageUrl?: string
 }
 
@@ -40,6 +42,8 @@ export function ProductDetailInfo({
   promotionEndDate,
   promotionDiscountType,
   promotionDiscountValue,
+  promotionPrice,
+  promotionType,
   imageUrl
 }: ProductDetailInfoProps) {
   const { t } = useTranslation('products')
@@ -49,33 +53,28 @@ export function ProductDetailInfo({
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [addError, setAddError] = useState<string | null>(null)
 
-  const safePrice = price || 0
-  const safeSalePrice = salePrice ?? safePrice
+  // Giá gốc = salePrice (210.000đ), fallback sang price nếu không có
+  const originalPrice = salePrice || price || 0
+  // Giá hiển thị = promotionPrice (180.000đ) nếu có, fallback sang originalPrice
+  const displayPrice = promotionPrice || originalPrice
   const safeTotalStock = totalStock || 0
   const safeBrandName = brandName || 'N/A'
-  const isPromoted = Boolean(
-    hasActivePromotion ||
-      safeSalePrice < safePrice ||
-      promotionName ||
-      promotionDescription ||
-      promotionEndDate ||
-      promotionDiscountValue != null ||
-      discountValue != null
-  )
+
+  // Kiểm tra promotion
+  const isPromoted = Boolean(hasActivePromotion || promotionPrice || promotionName)
 
   const formatPrice = (value: number) => `${value.toLocaleString('vi-VN')}đ`
 
   const formatDate = (value?: string | null) => {
     if (!value) return null
-
     const parsedDate = new Date(value)
     if (Number.isNaN(parsedDate.getTime())) return value
-
     return parsedDate.toLocaleDateString('vi-VN')
   }
 
+  // Format badge giảm giá
   const formatDiscountBadge = () => {
-    const effectiveType = promotionDiscountType ?? discountType
+    const effectiveType = promotionType || promotionDiscountType || discountType
     const effectiveValue = promotionDiscountValue ?? discountValue ?? discountAmount
 
     if (effectiveValue == null) return null
@@ -91,15 +90,6 @@ export function ProductDetailInfo({
     if (!isPromoted) return null
 
     const discountText = formatDiscountBadge()
-    const effectiveDiscountValue = promotionDiscountValue ?? discountValue
-    const savingsText =
-      effectiveDiscountValue != null
-        ? promotionDiscountType === 'FIXED' || discountType === 'FIXED'
-          ? `Tiết kiệm ${formatPrice(effectiveDiscountValue)}`
-          : promotionDiscountType === 'PERCENTAGE' || discountType === 'PERCENTAGE'
-            ? `Giảm ${effectiveDiscountValue}%`
-            : null
-        : null
 
     return (
       <div className='mt-4 overflow-hidden rounded-[1.5rem] border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-accent/15 shadow-[0_14px_35px_-20px_rgba(37,99,235,0.35)]'>
@@ -120,61 +110,39 @@ export function ProductDetailInfo({
           )}
         </div>
 
-        <div className='space-y-4 px-4 py-4 sm:px-5'>
+        <div className='px-4 py-4 sm:px-5'>
           <div className='flex flex-wrap items-end gap-3'>
-            <div className='text-4xl font-black tracking-tight text-primary md:text-5xl'>
-              {formatPrice(safeSalePrice)}
-            </div>
-            {safeSalePrice < safePrice && (
-              <div className='pb-1 text-lg text-muted-foreground line-through'>
-                {formatPrice(safePrice)}
-              </div>
-            )}
-          </div>
-
-          <div className='flex flex-wrap items-center gap-2'>
-            {promotionName && (
-              <span className='inline-flex items-center rounded-full bg-foreground/5 px-3 py-1 text-sm font-semibold text-foreground'>
-                {promotionName}
-              </span>
-            )}
-            {savingsText && (
-              <span className='inline-flex items-center rounded-full bg-success/10 px-3 py-1 text-sm font-semibold text-success'>
-                {savingsText}
+            {/* Giá sau giảm (màu đỏ, to) */}
+            <span className='text-4xl font-black tracking-tight text-red-500 md:text-5xl'>
+              {formatPrice(displayPrice)}
+            </span>
+            {/* Giá gốc (gạch ngang) - chỉ hiển thị nếu có và khác giá sau giảm */}
+            {originalPrice > 0 && originalPrice !== displayPrice && (
+              <span className='pb-1 text-lg text-muted-foreground line-through'>
+                {formatPrice(originalPrice)}
               </span>
             )}
           </div>
-
+          {promotionName && (
+            <p className='mt-2 text-sm font-medium text-foreground'>
+              {promotionName}
+            </p>
+          )}
           {promotionDescription && (
-            <p className='max-w-2xl text-sm leading-6 text-muted-foreground'>
+            <p className='mt-1 text-sm text-muted-foreground'>
               {promotionDescription}
             </p>
           )}
-
-          <div className='grid gap-3 md:grid-cols-2'>
-            {promotionEndDate && (
-              <div className='rounded-2xl border border-border/70 bg-card/80 px-4 py-3 shadow-sm'>
-                <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>
-                  Hạn chót
-                </p>
-                <p className='mt-1 text-base font-semibold text-foreground'>
-                  {formatDate(promotionEndDate)}
-                </p>
-              </div>
-            )}
-            <div className='rounded-2xl border border-border/70 bg-card/80 px-4 py-3 shadow-sm'>
+          {promotionEndDate && (
+            <div className='mt-3 rounded-2xl border border-border/70 bg-card/80 px-4 py-3 shadow-sm'>
               <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>
-                Tiết kiệm
+                Hạn chót
               </p>
               <p className='mt-1 text-base font-semibold text-foreground'>
-                {discountAmount != null
-                  ? formatPrice(discountAmount)
-                  : safeSalePrice < safePrice
-                    ? formatPrice(safePrice - safeSalePrice)
-                    : '0đ'}
+                {formatDate(promotionEndDate)}
               </p>
             </div>
-          </div>
+          )}
         </div>
       </div>
     )
@@ -199,7 +167,13 @@ export function ProductDetailInfo({
     setShowSuccessToast(false)
 
     try {
-      await addToCartApi({ productId, quantity, productName: name, price: safePrice, imageUrl })
+      await addToCartApi({
+        productId,
+        quantity,
+        productName: name,
+        price: displayPrice,
+        imageUrl
+      })
       setShowSuccessToast(true)
       setTimeout(() => setShowSuccessToast(false), 3000)
     } catch (err: unknown) {
@@ -215,7 +189,13 @@ export function ProductDetailInfo({
     setAddError(null)
 
     try {
-      await addToCartApi({ productId, quantity, productName: name, price: safePrice, imageUrl })
+      await addToCartApi({
+        productId,
+        quantity,
+        productName: name,
+        price: displayPrice,
+        imageUrl
+      })
       navigate('/checkout')
     } catch (err: unknown) {
       setAddError(err instanceof Error ? err.message : 'Lỗi xử lý mua ngay')
@@ -266,7 +246,7 @@ export function ProductDetailInfo({
 
       <div className='mt-8 flex flex-col gap-3'>
         <label className='text-sm font-semibold text-foreground' htmlFor='quantity'>
-          {t('detail.quantity.label')}
+          Số lượng
         </label>
         <div className='flex w-fit items-center overflow-hidden rounded-2xl border border-border bg-card p-1 shadow-sm'>
           <button

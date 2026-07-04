@@ -39,6 +39,20 @@ export async function fetchProductByIdApi(productId: string): Promise<ProductDet
   })
 }
 
+export async function fetchProductVideoApi(productId: string): Promise<any> {
+  return customFetch<any>({
+    url: `${PRODUCTS_BASE_URL}/${productId}/video`,
+    method: 'GET'
+  })
+}
+
+export async function fetchProductImagesApi(productId: string): Promise<any> {
+  return customFetch<any>({
+    url: `${PRODUCTS_BASE_URL}/${productId}/images`,
+    method: 'GET'
+  })
+}
+
 export async function fetchCategoriesApi(): Promise<ListCategoryResponse> {
   return customFetch<ListCategoryResponse>({
     url: CATEGORIES_BASE_URL,

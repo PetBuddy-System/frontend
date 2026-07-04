@@ -43,8 +43,13 @@ export function LandingProducts() {
     }
   }, [])
 
-  const formatPrice = (price: number) => {
-    return price.toLocaleString('vi-VN') + 'đ'
+  // Sửa hàm formatPrice để xử lý undefined/null
+  const formatPrice = (price: number | undefined | null) => {
+    const numPrice = Number(price)
+    if (isNaN(numPrice) || numPrice === 0) {
+      return '0đ'
+    }
+    return numPrice.toLocaleString('vi-VN') + 'đ'
   }
 
   const handleAddToCart = async (product: ProductResponse) => {
@@ -58,7 +63,7 @@ export function LandingProducts() {
         productId: product.productId,
         quantity: 1,
         productName: product.name,
-        price: product.price,
+        price: product.salePrice ?? product.price ?? 0, // Sửa ở đây
         imageUrl: product.imageUrls?.[0] || product.thumbnail
       })
       setShowSuccessToast(true)
@@ -121,7 +126,7 @@ export function LandingProducts() {
                 </Link>
                 <div className='mt-auto pt-3'>
                   <div className='text-base font-bold text-primary font-display'>
-                    {formatPrice(product.price)}
+                    {formatPrice(product.salePrice ?? product.price ?? 0)} {/* Sửa ở đây */}
                   </div>
                   <button
                     type='button'

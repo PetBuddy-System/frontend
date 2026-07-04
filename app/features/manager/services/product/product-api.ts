@@ -183,4 +183,5 @@ export async function fetchProductStatsApi(
     inStock: 0,
     lowStock: 0
   }
+
 }

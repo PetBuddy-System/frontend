@@ -6,19 +6,20 @@
 export interface ProductResponse {
   productId: string
   name: string
-  price: number // Giữ lại để tương thích với các phần khác
-  salePrice: number // Thêm mới từ API
+  price: number
+  salePrice: number
   brandName: string
   thumbnail?: string
+  thumbnailUrl?: string // Thêm dòng này
   imageUrls?: string[] | null
   totalStock: number
-  // Các trường mới từ API
   discountAmount?: number
   discountValue?: number
   hasActivePromotion?: boolean
   promotionName?: string
-  promotionType?: string
+  promotionType?: 'PERCENTAGE' | 'FIXED_AMOUNT' | string
   unit?: string
+  promotionPrice?: number
 }
 
 export interface PagedProductResponse {
@@ -71,6 +72,11 @@ export interface ProductDetailData {
   promotionEndDate?: string | null
   promotionDiscountType?: 'PERCENTAGE' | 'FIXED' | string | null
   promotionDiscountValue?: number | null
+  promotionPrice?: number // Thêm dòng này - giá sau khi giảm
+  promotionType?: 'PERCENTAGE' | 'FIXED_AMOUNT' | string // Thêm dòng này - loại giảm giá
+  unit?: string // Thêm dòng này - đơn vị
+  ingredients?: string // Thêm dòng này - thành phần
+  usageInstructions?: string // Thêm dòng này - hướng dẫn sử dụng
   createdAt: string
   updatedAt: string
 }
