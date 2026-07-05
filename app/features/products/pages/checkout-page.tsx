@@ -11,22 +11,26 @@ import { CheckoutShippingForm, toPhoneDisplay } from '../components/checkout/che
 import { OutOfStockModal } from '../components/checkout/out-of-stock-modal'
 import { AdjustedQuantityModal } from '../components/checkout/adjusted-quantity-modal'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { createOrderApi, getCartApi, removeCartItemApi, getPaymentByOrderIdApi, fetchOrderByIdApi } from '../services'
+import { createOrderApi, getCartApi, removeCartItemApi, getPaymentByOrderIdApi, fetchOrderByIdApi, fetchActiveVouchersApi } from '../services'
 import type { CreateOrderRequest } from '~/shared/lib/order'
 import type { CartItemResponse } from '~/shared/lib/cart'
 import { MaterialIcon } from '~/shared/ui'
 import { readStorage } from '~/shared/lib/storage'
 import { useAuth } from '~/providers/auth-provider'
-
-const SESSION_KEY_ADDRESS = 'petbuddy_checkout_address'
-const SESSION_KEY_LAT = 'petbuddy_checkout_lat'
-const SESSION_KEY_LNG = 'petbuddy_checkout_lng'
-const SESSION_KEY_SHIPPING_FEE = 'petbuddy_checkout_shipping_fee'
-const SESSION_KEY_IS_FREE_SHIPPING = 'petbuddy_checkout_is_free'
-const SESSION_KEY_VOUCHER_CODE = 'petbuddy_checkout_voucher_code'
-const SESSION_KEY_VOUCHER_NAME = 'petbuddy_checkout_voucher_name'
-const SESSION_KEY_VOUCHER_DISCOUNT = 'petbuddy_checkout_voucher_discount'
-const SESSION_KEY_PAYMENT_METHOD = 'petbuddy_checkout_payment_method'
+import {
+  SESSION_KEY_ADDRESS,
+  SESSION_KEY_LAT,
+  SESSION_KEY_LNG,
+  SESSION_KEY_SHIPPING_FEE,
+  SESSION_KEY_IS_FREE_SHIPPING,
+  SESSION_KEY_VOUCHER_CODE,
+  SESSION_KEY_VOUCHER_NAME,
+  SESSION_KEY_VOUCHER_DISCOUNT,
+  SESSION_KEY_PAYMENT_METHOD,
+  SESSION_KEY_SUBTOTAL,
+  clearCheckoutSessionData,
+} from '../lib/checkout-storage-keys'
+import { isVoucherEligible } from '~/shared/lib/voucher'
 
 function formatPrice(value: number) {
   return `${new Intl.NumberFormat('vi-VN').format(value)}đ`
@@ -97,6 +101,18 @@ export function CheckoutPage() {
     setVoucherName(sessionStorage.getItem(SESSION_KEY_VOUCHER_NAME) ?? '')
     setVoucherDiscount(parseInt(sessionStorage.getItem(SESSION_KEY_VOUCHER_DISCOUNT) ?? '0', 10))
   }
+
+  function clearCheckoutSession() {
+  sessionStorage.removeItem(SESSION_KEY_ADDRESS)
+  sessionStorage.removeItem(SESSION_KEY_LAT)
+  sessionStorage.removeItem(SESSION_KEY_LNG)
+  sessionStorage.removeItem(SESSION_KEY_SHIPPING_FEE)
+  sessionStorage.removeItem(SESSION_KEY_IS_FREE_SHIPPING)
+  sessionStorage.removeItem(SESSION_KEY_VOUCHER_CODE)
+  sessionStorage.removeItem(SESSION_KEY_VOUCHER_NAME)
+  sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
+  sessionStorage.removeItem('petbuddy_checkout_subtotal')
+}
 
   useEffect(() => {
     syncFromSession()
@@ -220,7 +236,7 @@ export function CheckoutPage() {
 
   useEffect(() => {
     if (subtotal > 0) {
-      sessionStorage.setItem('petbuddy_checkout_subtotal', String(subtotal))
+      sessionStorage.setItem(SESSION_KEY_SUBTOTAL, String(subtotal))
     }
   }, [subtotal])
 
@@ -228,7 +244,27 @@ export function CheckoutPage() {
     event.preventDefault()
     setErrorMessage('')
     setIsSubmitting(true)
+    
+  if (voucherCode) {
+    try {
+      const voucherRes = await fetchActiveVouchersApi({ size: 100 })
+      const currentVoucher = voucherRes?.data?.content?.find((v) => v.voucherCode === voucherCode)
+      const stillEligible = currentVoucher ? isVoucherEligible(currentVoucher, subtotal) : false
 
+      if (!stillEligible) {
+        sessionStorage.removeItem(SESSION_KEY_VOUCHER_CODE)
+        sessionStorage.removeItem(SESSION_KEY_VOUCHER_NAME)
+        sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
+        setVoucherCode('')
+        setVoucherName('')
+        setVoucherDiscount(0)
+        setErrorMessage(t('checkout.voucherNoLongerValid', 'Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác.'))
+        setIsSubmitting(false)
+        return
+      }
+    } catch {
+    }
+  }
     const formData = new FormData(event.currentTarget)
     const finalAddress = selectedAddress || getFormString(formData, 'address')
 
@@ -245,8 +281,8 @@ export function CheckoutPage() {
     }
 
     const phoneNumber = getFormString(formData, 'phoneNumber')
-    if (!phoneNumber || !/^0\d{10}$/.test(phoneNumber)) {
-      setErrorMessage(t('checkout.phoneRequired', 'Vui lòng nhập số điện thoại hợp lệ (+84 và 10 chữ số).'))
+    if (!phoneNumber || !/^0\d{9}$/.test(phoneNumber)) {
+      setErrorMessage(t('checkout.phoneRequired', 'Vui lòng nhập số điện thoại hợp lệ (+84 và 9 chữ số).'))
       setIsSubmitting(false)
       return
     }
@@ -265,10 +301,12 @@ export function CheckoutPage() {
     try {
       const response = await createOrderApi(request)
       const orderId = response.data?.orderId
-
+      clearCheckoutSession()
       if (!orderId) {
         throw new Error('Không nhận được mã đơn hàng từ hệ thống.')
       }
+
+      clearCheckoutSessionData()
 
       const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế' : 'Tiền mặt'
 

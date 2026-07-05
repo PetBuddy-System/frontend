@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
@@ -24,7 +24,7 @@ export function toPhoneSubmit(phone: string): string {
 }
 
 function isValidPhone(phone: string): boolean {
-  return /^\+84\d{10}$/.test(phone.trim())
+  return /^\+84\d{9}$/.test(phone.trim())
 }
 
 export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }: CheckoutShippingFormProps) {

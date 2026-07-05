@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react'
 import { axiosInstance } from '~/api/mutator/custom-fetch'
 import { env } from '~/shared/config/env'

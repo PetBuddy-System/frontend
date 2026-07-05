@@ -35,12 +35,12 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
   const { t } = useTranslation('landing')
   const { user, isAuthenticated, isLoading, logout } = useAuth()
   const { cartCount } = useCart()
-
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const [isLangOpen, setIsLangOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const langRef = useRef<HTMLDivElement>(null)
+  
 
   // Đóng dropdown khi click bên ngoài
   useEffect(() => {

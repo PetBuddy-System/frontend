@@ -248,7 +248,8 @@
       "title": "Mã giảm giá / Voucher",
       "placeholder": "Nhập mã...",
       "apply": "Áp dụng"
-    }
+    },
+     "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
   },
   "orderSuccess": {
     "banner": {
@@ -456,5 +457,31 @@
     "title": "Sản phẩm đã hết hàng",
     "description": "Rất tiếc! Sản phẩm này vừa được người khác mua hết. Sản phẩm đã được tự động xóa khỏi giỏ hàng của bạn.",
     "gotIt": "Đã hiểu"
+  },
+
+  "addressPicker": {
+    "backButton": "Quay lại",
+    "title": "Chọn địa chỉ giao hàng",
+    "subtitle": "Nhập địa chỉ vào ô tìm kiếm hoặc nhấn vào bản đồ để chọn vị trí giao hàng.",
+    "searchTitle": "Tìm kiếm địa chỉ",
+    "myLocation": "Vị trí của tôi",
+    "searchPlaceholder": "Nhập địa chỉ, tên đường để tìm trên bản đồ...",
+    "searchButton": "Tìm kiếm",
+    "mapLoading": "Đang tải bản đồ...",
+    "mapHint": "Nhấn vào bản đồ hoặc kéo thả ghim để chọn vị trí chính xác",
+    "selectedAddressLabel": "Địa chỉ đã chọn",
+    "loadingBoundary": "Đang tải dữ liệu bản đồ",
+    "loadingRules": "Đang tải cấu hình...",
+    "calculatingFee": "Đang tính phí vận chuyển...",
+    "confirmButton": "Xác nhận địa chỉ",
+    "errors": {
+      "geoUnsupported": "Trình duyệt của bạn không hỗ trợ định vị GPS.",
+      "geoFailed": "Không thể lấy vị trí. Hãy kiểm tra quyền truy cập vị trí.",
+      "addressNotFound": "Không tìm thấy địa chỉ này. Hãy thử nhập chi tiết hơn.",
+      "searchConnectionError": "Lỗi kết nối khi tìm kiếm địa chỉ.",
+      "invalidLocationDefault": "Vị trí không hợp lệ, vui lòng chọn vị trí khác.",
+      "outsideHcmc": "Chỉ giao hàng trong phạm vi TP. Hồ Chí Minh",
+      "feeCalculationFailed": "Không thể tính phí vận chuyển, vui lòng thử lại."
+    }
   }
 }

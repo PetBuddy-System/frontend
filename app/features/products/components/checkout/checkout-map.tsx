@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { MaterialIcon } from '~/shared/ui'
 import { calculateShippingFeeApi } from '~/features/products/services/shipping/shipping-api' 
+import { useTranslation } from 'react-i18next'
 
 export interface CheckoutMapProps {
   onLocationSelect: (lat: number, lng: number) => void
@@ -19,6 +20,7 @@ export function CheckoutMap({
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
   const markerRef = useRef<any>(null)
+  const { t } = useTranslation()
 
   const [isLeafletLoaded, setIsLeafletLoaded] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -171,7 +173,7 @@ export function CheckoutMap({
       await calculateShippingFeeApi(lat, lng)
       return true
     } catch (err: any) {
-      setSearchError(err?.message ?? 'Vị trí không hợp lệ, vui lòng chọn vị trí khác.')
+      setSearchError(err?.message ?? t('errors.unknown'))
       return false
     } finally {
       setIsValidating(false)

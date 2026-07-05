@@ -248,7 +248,8 @@
       "title": "Discount code / Voucher",
       "placeholder": "Enter code...",
       "apply": "Apply"
-    }
+    },
+    "voucherNoLongerValid": "This voucher is no longer available. Please choose another one."
   },
   "orderSuccess": {
     "banner": {
@@ -456,5 +457,31 @@
     "title": "Product Out of Stock",
     "description": "We are sorry! This product was just bought by someone else. The product has been automatically removed from your cart.",
     "gotIt": "Got it"
+  },
+
+  "addressPicker": {
+    "backButton": "Back",
+    "title": "Choose delivery address",
+    "subtitle": "Type an address in the search box or tap the map to choose a delivery location.",
+    "searchTitle": "Search address",
+    "myLocation": "My location",
+    "searchPlaceholder": "Enter an address or street name to search on the map...",
+    "searchButton": "Search",
+    "mapLoading": "Loading map...",
+    "mapHint": "Tap the map or drag the pin to choose the exact location",
+    "selectedAddressLabel": "Selected address",
+    "loadingBoundary": "Loading map data",
+    "loadingRules": "Loading configuration...",
+    "calculatingFee": "Calculating shipping fee...",
+    "confirmButton": "Confirm address",
+    "errors": {
+      "geoUnsupported": "Your browser does not support GPS location.",
+      "geoFailed": "Could not get your location. Please check location permissions.",
+      "addressNotFound": "Address not found. Please try a more specific search.",
+      "searchConnectionError": "Connection error while searching for the address.",
+      "invalidLocationDefault": "Invalid location, please choose a different one.",
+      "outsideHcmc": "Delivery is only available within Ho Chi Minh City",
+      "feeCalculationFailed": "Could not calculate the shipping fee, please try again."
+    }
   }
 }
