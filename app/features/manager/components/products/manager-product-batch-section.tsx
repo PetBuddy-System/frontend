@@ -20,7 +20,7 @@ interface ManagerProductBatchSectionProps {
 
 interface NewBatchRow {
     quantity: number
-    cost: number  // ✅ Thêm field cost
+    basePrice: number  // ✅ Đổi từ cost thành basePrice
     expiryDate: string
 }
 
@@ -41,7 +41,7 @@ export function ManagerProductBatchSection({
     // ─── New Batch Form State ─────────────────────────────
     const [newBatches, setNewBatches] = useState<NewBatchRow[]>([{
         quantity: 0,
-        cost: 0,  // ✅ Thêm cost
+        basePrice: 0,  // ✅ Đổi từ cost thành basePrice
         expiryDate: ''
     }])
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -105,13 +105,13 @@ export function ManagerProductBatchSection({
     // ─── New Batch Form Handlers ───────────────────────────
     const addBatchRow = () => setNewBatches([...newBatches, {
         quantity: 0,
-        cost: 0,  // ✅ Thêm cost
+        basePrice: 0,  // ✅ Đổi từ cost thành basePrice
         expiryDate: ''
     }])
 
     const removeBatchRow = (index: number) => setNewBatches(newBatches.filter((_, i) => i !== index))
 
-    const updateBatchRow = (index: number, field: 'quantity' | 'cost' | 'expiryDate', value: string | number) => {
+    const updateBatchRow = (index: number, field: 'quantity' | 'basePrice' | 'expiryDate', value: string | number) => {
         const updated = [...newBatches]
         updated[index] = { ...updated[index], [field]: value }
         setNewBatches(updated)
@@ -121,8 +121,8 @@ export function ManagerProductBatchSection({
         setSubmitError(null)
         setShowSuccess(false)
 
-        // ✅ Validate bao gồm cost
-        const validBatches = newBatches.filter(b => b.quantity > 0 && b.cost >= 0 && b.expiryDate.trim() !== '')
+        // ✅ Validate với basePrice
+        const validBatches = newBatches.filter(b => b.quantity > 0 && b.basePrice >= 0 && b.expiryDate.trim() !== '')
         if (validBatches.length === 0) {
             setSubmitError('Vui lòng nhập đầy đủ thông tin (Số lượng > 0, Giá vốn >= 0, Ngày hết hạn)')
             return
@@ -132,12 +132,12 @@ export function ManagerProductBatchSection({
         try {
             const payload: CreateBatchPayload[] = validBatches.map((batch) => ({
                 stockQuantity: batch.quantity,
-                cost: batch.cost,  // ✅ Thêm cost vào payload
+                basePrice: batch.basePrice,  // ✅ Đổi từ cost thành basePrice
                 expiryDate: batch.expiryDate
             }))
             const response = await createBatchesApi(productId, payload)
             if (response.success) {
-                setNewBatches([{ quantity: 0, cost: 0, expiryDate: '' }])
+                setNewBatches([{ quantity: 0, basePrice: 0, expiryDate: '' }])
                 setShowSuccess(true)
                 setTimeout(() => setShowSuccess(false), 3000)
                 // Refresh list
@@ -287,7 +287,7 @@ export function ManagerProductBatchSection({
                                         <tr className='bg-muted/40 border-b border-border'>
                                             <th className='w-16 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>STT</th>
                                             <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Số lượng</th>
-                                            <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Giá vốn (VNĐ)</th> {/* ✅ Thêm cột */}
+                                            <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Giá vốn</th>
                                             <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Ngày hết hạn</th>
                                             <th className='w-20 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>Thao tác</th>
                                         </tr>
@@ -312,8 +312,8 @@ export function ManagerProductBatchSection({
                                                         type='number'
                                                         min='0'
                                                         step='1000'
-                                                        value={batch.cost || ''}
-                                                        onChange={(e) => updateBatchRow(index, 'cost', Number(e.target.value))}
+                                                        value={batch.basePrice || ''}  // ✅ Đổi từ batch.cost thành batch.basePrice
+                                                        onChange={(e) => updateBatchRow(index, 'basePrice', Number(e.target.value))}  // ✅ Đổi thành 'basePrice'
                                                         className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
                                                         placeholder='0'
                                                         disabled={isSubmitting}
@@ -472,7 +472,7 @@ export function ManagerProductBatchSection({
                                                             {batch.stockQuantity}
                                                         </td>
                                                         <td className='px-4 py-3.5 font-semibold text-foreground'>
-                                                            {batch.cost != null ? `${batch.cost.toLocaleString('vi-VN')} đ` : 'N/A'}
+                                                            {batch.basePrice != null ? `${batch.basePrice.toLocaleString('vi-VN')} đ` : 'N/A'}  {/* ✅ Đổi từ batch.cost thành batch.basePrice */}
                                                         </td>
                                                         <td className='px-4 py-3.5 text-muted-foreground font-medium'>
                                                             {formatDate(batch.expiryDate)}

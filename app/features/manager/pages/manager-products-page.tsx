@@ -130,18 +130,7 @@ export function ManagerProductsPage() {
           size: 10
         }
 
-        console.log('📤 Component - Request Params:', params)
-
         const response = await fetchProductsManagementApi(params)
-
-        console.log('📥 Component - Response:', {
-          success: response.success,
-          contentLength: response.data?.content?.length,
-          totalElements: response.data?.totalElements,
-          totalPages: response.data?.totalPages,
-          pageSize: response.data?.size,
-          requestedSize: params.size
-        })
 
         if (active && response.success) {
           setProducts(response.data.content)
@@ -190,7 +179,7 @@ export function ManagerProductsPage() {
       const product = products.find(p => p.productId === deletingProductId)
       const response = await updateProductApi(deletingProductId, {
         name: product?.name ?? '',
-        price: product?.price ?? 0,
+        salePrice: product?.salePrice ?? 0,
         brandName: product?.brandName ?? '',
         status: 'DELETED'
       })
@@ -293,6 +282,7 @@ export function ManagerProductsPage() {
               }}
             />
 
+            {/* ✅ Truyền products vào table - đã có thumbnailUrl và salePrice từ API */}
             <ManagerProductsTable
               products={products}
               isLoading={isLoading}

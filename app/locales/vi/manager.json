@@ -2,7 +2,6 @@
   "dashboard": {
     "export": "Xuất lịch sử",
     "print": "In",
-    "subtitle": "Lịch sử nhập/xuất kho chi tiết - Quận 1",
     "title": "Lịch sử giao dịch tồn kho"
   },
   "managerDashboard": {

@@ -40,7 +40,6 @@ export function ProductDetailPage() {
         if (active) {
           if (productResponse.success) {
             setProduct(productResponse.data)
-            // ✅ Thêm log để kiểm tra dữ liệu từ API
             console.log('📦 Product data from API:', {
               ingredients: productResponse.data.ingredients,
               usageInstructions: productResponse.data.usageInstructions,
@@ -121,6 +120,9 @@ export function ProductDetailPage() {
     )
   }
 
+  // Lấy ảnh thumbnail (ưu tiên từ API images, fallback từ product)
+  const thumbnailUrl = imageUrls.length > 0 ? imageUrls[0] : (product.thumbnailUrl || '')
+
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
       <SiteHeader />
@@ -148,28 +150,25 @@ export function ProductDetailPage() {
         {/* Phần 1: Gallery + Info - 2 cột */}
         <div className='mb-8 grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16'>
           <ProductDetailGallery
-            imageUrls={imageUrls.length > 0 ? imageUrls : (product.imageUrls || [])}
+            imageUrls={imageUrls.length > 0 ? imageUrls : []}
             productName={product.name}
           />
           <ProductDetailInfo
             productId={product.productId}
             name={product.name}
-            price={product.price}
             salePrice={product.salePrice}
             brandName={product.brandName}
             totalStock={product.totalStock}
             discountAmount={product.discountAmount}
-            discountType={product.discountType}
             discountValue={product.discountValue}
             hasActivePromotion={product.hasActivePromotion}
             promotionName={product.promotionName}
-            promotionDescription={product.promotionDescription}
-            promotionEndDate={product.promotionEndDate}
-            promotionDiscountType={product.promotionDiscountType}
-            promotionDiscountValue={product.promotionDiscountValue}
             promotionPrice={product.promotionPrice}
             promotionType={product.promotionType}
-            imageUrl={imageUrls.length > 0 ? imageUrls[0] : (product.imageUrls?.[0] || '')}
+            imageUrl={thumbnailUrl}
+            price={product.price}
+            promotionDescription={product.promotionDescription}
+            promotionEndDate={product.promotionEndDate}
           />
         </div>
 
