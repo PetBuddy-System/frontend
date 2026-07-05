@@ -59,12 +59,8 @@ export function ForgotPasswordPage() {
 
           {/* Heading */}
           <div className='mb-10 text-center'>
-            <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
-              {t('forgot.title')}
-            </h1>
-            <p className='mt-3 text-sm leading-relaxed text-muted-foreground md:text-base'>
-              {t('forgot.subtitle')}
-            </p>
+            <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>{t('forgot.title')}</h1>
+            <p className='mt-3 text-sm leading-relaxed text-muted-foreground md:text-base'>{t('forgot.subtitle')}</p>
           </div>
 
           {/* Error */}

@@ -8,6 +8,7 @@ export default [
   route('verify-email', 'routes/verify-email.tsx'),
   route('forgot-password', 'routes/forgot-password.tsx'),
   route('reset-password', 'routes/reset-password.tsx'),
+  route('oauth2/success', 'routes/oauth2-success.tsx'),
   route('blog', 'routes/blog.tsx'),
   route('blog/:postId', 'routes/blog-post-detail.tsx'),
   route('contact', 'routes/contact.tsx'),
@@ -20,6 +21,7 @@ export default [
   // ─── Authenticated General Routes ─────────────────────────────────────────
   layout('routes/auth-layout.tsx', [
     route('profile', 'routes/profile.tsx'),
+    route('change-password', 'routes/change-password.tsx'),
     route('profile/orders', 'routes/profile-orders.tsx'),
     route('profile/orders/:orderId', 'routes/profile-order-detail.tsx'),
     route('profile/services', 'routes/profile-services.tsx'),

@@ -21,8 +21,12 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = readStorage(STORAGE_KEYS.accessToken)
-    // Only inject Bearer token if it exists and we're not hitting auth endpoints
-    if (token && config.headers && !config.url?.includes('/auth/')) {
+    // Skip Bearer cho 2 endpoint xác thực dùng body credentials
+    // (login dùng email/password body, refresh dùng refreshToken body).
+    const url = config.url ?? ''
+    const isPublicAuthEndpoint =
+      url.includes('/auth/login') || url.includes('/auth/refresh') || url.includes('/auth/outbound/')
+    if (token && config.headers && !isPublicAuthEndpoint) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
 
@@ -65,10 +69,7 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Do not try to refresh if it's already an auth endpoint
-      if (
-        originalRequest.url?.includes('/auth/login') ||
-        originalRequest.url?.includes('/auth/refresh')
-      ) {
+      if (originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/refresh')) {
         return Promise.reject(error)
       }
 
@@ -122,10 +123,7 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest)
         }
       } catch (refreshError: unknown) {
-        processQueue(
-          refreshError instanceof Error ? refreshError : new Error('Refresh token failed'),
-          null
-        )
+        processQueue(refreshError instanceof Error ? refreshError : new Error('Refresh token failed'), null)
         removeStorage(STORAGE_KEYS.accessToken)
         removeStorage(STORAGE_KEYS.refreshToken)
         removeStorage(STORAGE_KEYS.user)
@@ -154,12 +152,15 @@ export async function customFetch<T>(options: RequestOptions): Promise<T> {
   const { url, method, headers, params, data, signal } = options
 
   const cleanParams = params
-    ? Object.entries(params).reduce((acc, [key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
-        acc[key] = value
-      }
-      return acc
-    }, {} as Record<string, string | number | boolean>)
+    ? Object.entries(params).reduce(
+        (acc, [key, value]) => {
+          if (value !== undefined && value !== null && value !== '') {
+            acc[key] = value
+          }
+          return acc
+        },
+        {} as Record<string, string | number | boolean>
+      )
     : undefined
 
   console.log('🔍 CustomFetch - Clean Params:', cleanParams) // Debug
@@ -172,7 +173,6 @@ export async function customFetch<T>(options: RequestOptions): Promise<T> {
     data,
     signal
   }
-
 
   try {
     const response = await axiosInstance(config)
@@ -187,9 +187,7 @@ export async function customFetch<T>(options: RequestOptions): Promise<T> {
         errorMessage = responseData.message
       } else if (responseData?.errors && typeof responseData.errors === 'object') {
         // Handle validation errors array
-        const errors = Array.isArray(responseData.errors)
-          ? responseData.errors
-          : Object.values(responseData.errors)
+        const errors = Array.isArray(responseData.errors) ? responseData.errors : Object.values(responseData.errors)
         errorMessage = errors[0] ?? 'Có lỗi xảy ra'
       } else {
         // Fallback based on HTTP status

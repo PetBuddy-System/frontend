@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import type { FormEvent, KeyboardEvent, ClipboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
@@ -7,7 +7,24 @@ import { resetPasswordApi, resendOtpApi } from '~/features/auth/services'
 import { MaterialIcon } from '~/shared/ui'
 
 const OTP_LENGTH = 6
+const RESEND_COOLDOWN_SECONDS = 59
 
+/**
+ * ResetPasswordPage — bước cuối của luồng "quên mật khẩu".
+ *
+ * Flow (đúng theo swagger BE):
+ *   1. `/forgot-password` → nhập email → gọi `POST /api/auth/forgot-password`
+ *      → BE gửi OTP qua email
+ *   2. `/reset-password?email=...` (trang này) → nhập OTP + MK mới + confirm
+ *      → gọi `POST /api/auth/reset-password` với body
+ *        { email, otp, newPassword, confirmNewPassword }
+ *
+ * Lưu ý: BE endpoint `/api/auth/verify-email` CHỈ dành cho signup flow
+ * (chuyển status user từ PENDING → ACTIVE). Khi user đã ACTIVE (đã verify
+ * trước đó), gọi lại `/verify-email` sẽ trả 400 "Email has already verified".
+ * Forgot-password flow KHÔNG cần gọi `/verify-email` — OTP được verify inline
+ * trong `/reset-password`.
+ */
 export function ResetPasswordPage() {
   const { t } = useTranslation('auth')
   const [searchParams] = useSearchParams()
@@ -20,8 +37,20 @@ export function ResetPasswordPage() {
   const [errorMessage, setErrorMessage] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
   const [isResending, setIsResending] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(RESEND_COOLDOWN_SECONDS)
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+
+  // Countdown cho nút "Gửi lại OTP"
+  useEffect(() => {
+    if (timeLeft <= 0) return
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1)
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [timeLeft])
 
   const focusInput = useCallback((index: number) => {
     inputRefs.current[index]?.focus()
@@ -99,12 +128,16 @@ export function ResetPasswordPage() {
   }
 
   async function handleResendOtp() {
-    if (isResending || !email) return
+    if (timeLeft > 0 || isResending || !email) return
+
     setIsResending(true)
     setErrorMessage('')
 
     try {
       await resendOtpApi(email)
+      setTimeLeft(RESEND_COOLDOWN_SECONDS)
+      setOtpValues(Array(OTP_LENGTH).fill(''))
+      focusInput(0)
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : t('otp.errorResend')
       setErrorMessage(message)
@@ -112,6 +145,8 @@ export function ResetPasswordPage() {
       setIsResending(false)
     }
   }
+
+  const isResendDisabled = timeLeft > 0 || isResending
 
   return (
     <main className='flex min-h-screen flex-col items-center justify-center bg-background p-6'>
@@ -143,15 +178,11 @@ export function ResetPasswordPage() {
 
           {/* Heading */}
           <div className='mb-10 text-center'>
-            <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
-              {t('resetPassword.title')}
-            </h1>
+            <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>{t('resetPassword.title')}</h1>
             <p className='mt-3 text-sm leading-relaxed text-muted-foreground md:text-base'>
               {t('resetPassword.subtitle')}
             </p>
-            {email && (
-              <p className='mt-2 text-sm font-semibold text-foreground'>{email}</p>
-            )}
+            {email && <p className='mt-2 text-sm font-semibold text-foreground'>{email}</p>}
           </div>
 
           {/* Error */}
@@ -173,14 +204,14 @@ export function ResetPasswordPage() {
           <form className='space-y-8' onSubmit={handleSubmit}>
             {/* OTP inputs */}
             <div>
-              <label className='mb-3 block text-sm font-semibold text-foreground'>
-                {t('resetPassword.otpLabel')}
-              </label>
+              <label className='mb-3 block text-sm font-semibold text-foreground'>{t('resetPassword.otpLabel')}</label>
               <div className='flex justify-between gap-2 md:gap-3'>
                 {otpValues.map((value, index) => (
                   <input
                     key={index}
-                    ref={(el) => { inputRefs.current[index] = el }}
+                    ref={(el) => {
+                      inputRefs.current[index] = el
+                    }}
                     type='text'
                     inputMode='numeric'
                     pattern='\d*'
@@ -197,15 +228,20 @@ export function ResetPasswordPage() {
                 ))}
               </div>
               {/* Gửi lại OTP */}
-              <div className='mt-3 text-right'>
+              <div className='mt-3 flex items-center justify-between'>
                 <button
                   type='button'
-                  disabled={isResending}
+                  disabled={isResendDisabled}
                   onClick={handleResendOtp}
-                  className='text-xs font-semibold text-primary hover:underline disabled:cursor-not-allowed disabled:opacity-60'
+                  className={
+                    isResendDisabled
+                      ? 'cursor-not-allowed text-xs font-semibold text-muted-foreground opacity-60'
+                      : 'cursor-pointer text-xs font-semibold text-primary hover:underline'
+                  }
                 >
                   {isResending ? t('otp.resending') : t('resetPassword.resendOtp')}
                 </button>
+                {timeLeft > 0 && <span className='text-xs font-semibold text-primary'>({timeLeft}s)</span>}
               </div>
             </div>
 
@@ -236,7 +272,10 @@ export function ResetPasswordPage() {
                 {t('resetPassword.confirmNewPassword')}
               </label>
               <div className='relative'>
-                <MaterialIcon name='verified_user' className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground' />
+                <MaterialIcon
+                  name='verified_user'
+                  className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground'
+                />
                 <input
                   id='confirm_new_password'
                   type='password'

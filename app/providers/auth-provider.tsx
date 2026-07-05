@@ -15,6 +15,8 @@ interface AuthContextValue {
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
+  /** Cập nhật state auth (dùng cho OAuth callback đã lưu token ở nơi khác). */
+  setSession: (session: { accessToken: string; user: UserResponse | null }) => void
 }
 
 // ─── Context ────────────────────────────────────────────────────────────────
@@ -99,8 +101,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const isAuthenticated = accessToken !== null && user !== null
 
+  const setSession = useCallback((session: { accessToken: string; user: UserResponse | null }) => {
+    setAccessToken(session.accessToken)
+    setUser(session.user)
+  }, [])
+
   return (
-    <AuthContext value={{ user, accessToken, isAuthenticated, isLoading, login, logout }}>
+    <AuthContext value={{ user, accessToken, isAuthenticated, isLoading, login, logout, setSession }}>
       {children}
     </AuthContext>
   )

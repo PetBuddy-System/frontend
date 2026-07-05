@@ -155,15 +155,9 @@ export function OtpVerificationPage() {
 
           {/* Heading */}
           <div className='mb-10 text-center'>
-            <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
-              {t('otp.title')}
-            </h1>
-            <p className='mt-3 text-sm leading-relaxed text-muted-foreground md:text-base'>
-              {t('otp.subtitle')}
-            </p>
-            {email && (
-              <p className='mt-2 text-sm font-semibold text-foreground'>{email}</p>
-            )}
+            <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>{t('otp.title')}</h1>
+            <p className='mt-3 text-sm leading-relaxed text-muted-foreground md:text-base'>{t('otp.subtitle')}</p>
+            {email && <p className='mt-2 text-sm font-semibold text-foreground'>{email}</p>}
           </div>
 
           {/* Error message */}
@@ -189,7 +183,9 @@ export function OtpVerificationPage() {
               {otpValues.map((value, index) => (
                 <input
                   key={index}
-                  ref={(el) => { inputRefs.current[index] = el }}
+                  ref={(el) => {
+                    inputRefs.current[index] = el
+                  }}
                   type='text'
                   inputMode='numeric'
                   pattern='\d*'
@@ -244,17 +240,13 @@ export function OtpVerificationPage() {
               >
                 {isResending ? t('otp.resending') : t('otp.resend')}
               </button>
-              {timeLeft > 0 && (
-                <span className='text-sm font-semibold text-primary'>({timeLeft}s)</span>
-              )}
+              {timeLeft > 0 && <span className='text-sm font-semibold text-primary'>({timeLeft}s)</span>}
             </div>
           </div>
         </div>
 
         {/* Footer text */}
-        <p className='mt-8 px-8 text-center text-xs text-muted-foreground opacity-60'>
-          {t('otp.footer')}
-        </p>
+        <p className='mt-8 px-8 text-center text-xs text-muted-foreground opacity-60'>{t('otp.footer')}</p>
       </div>
     </main>
   )

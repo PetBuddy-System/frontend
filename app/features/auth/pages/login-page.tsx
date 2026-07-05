@@ -3,24 +3,13 @@ import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '~/providers/auth-provider'
-import { STORAGE_KEYS } from '~/shared/config/site'
-import { getDashboardPathByRole } from '~/features/auth/services/auth'
-import { readStorage } from '~/shared/lib/storage'
+import { redirectToGoogle } from '~/features/auth/services/auth/google-auth'
 import { MaterialIcon } from '~/shared/ui'
 import { validateEmail, validatePassword } from '~/shared/lib/validation'
 
 import logo from '../assets/cho-login.jpg'
 
 function getRedirectPathByRole(): string {
-  const storedUser = readStorage(STORAGE_KEYS.user)
-  if (storedUser) {
-    try {
-      const parsed = JSON.parse(storedUser) as { role?: string }
-      return getDashboardPathByRole(parsed.role)
-    } catch {
-      // Fallback nếu parse lỗi
-    }
-  }
   return '/'
 }
 
@@ -51,13 +40,13 @@ export function LoginPage() {
       const result = validateEmail(email)
       setFieldErrors((prev) => ({
         ...prev,
-        email: result.valid ? undefined : result.message,
+        email: result.valid ? undefined : result.message
       }))
     } else if (field === 'password') {
       const result = validatePassword(password)
       setFieldErrors((prev) => ({
         ...prev,
-        password: result.valid ? undefined : result.message,
+        password: result.valid ? undefined : result.message
       }))
     }
   }
@@ -68,7 +57,7 @@ export function LoginPage() {
       const result = validateEmail(value)
       setFieldErrors((prev) => ({
         ...prev,
-        email: result.valid ? undefined : result.message,
+        email: result.valid ? undefined : result.message
       }))
     }
   }
@@ -79,7 +68,7 @@ export function LoginPage() {
       const result = validatePassword(value)
       setFieldErrors((prev) => ({
         ...prev,
-        password: result.valid ? undefined : result.message,
+        password: result.valid ? undefined : result.message
       }))
     }
   }
@@ -94,7 +83,7 @@ export function LoginPage() {
 
     setFieldErrors({
       email: emailResult.valid ? undefined : emailResult.message,
-      password: passwordResult.valid ? undefined : passwordResult.message,
+      password: passwordResult.valid ? undefined : passwordResult.message
     })
     setTouched({ email: true, password: true })
 
@@ -106,19 +95,17 @@ export function LoginPage() {
 
     try {
       await login(email, password)
-      // Redirect theo role sau khi login thành công
+      // Redirect về landing page sau khi login thành công
       window.location.href = getRedirectPathByRole()
     } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : t('login.error')
+      const message = error instanceof Error ? error.message : t('login.error')
       setErrorMessage(message)
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const hasFieldError = (field: 'email' | 'password') =>
-    touched[field] && fieldErrors[field]
+  const hasFieldError = (field: 'email' | 'password') => touched[field] && fieldErrors[field]
 
   return (
     <main className='relative flex min-h-screen items-center justify-center bg-background px-4 py-12 md:px-6'>
@@ -150,10 +137,7 @@ export function LoginPage() {
                 {t('login.fields.loginId.label')}
               </label>
               <div className='relative'>
-                <MaterialIcon
-                  name='mail'
-                  className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground'
-                />
+                <MaterialIcon name='mail' className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground' />
                 <input
                   id='login_id'
                   type='email'
@@ -256,7 +240,9 @@ export function LoginPage() {
           <div className='grid grid-cols-1 gap-4'>
             <button
               type='button'
-              className='flex w-full items-center justify-center gap-3 rounded-xl border border-border px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-muted'
+              onClick={() => redirectToGoogle()}
+              disabled={isSubmitting}
+              className='flex w-full items-center justify-center gap-3 rounded-xl border border-border px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60'
             >
               <svg className='h-5 w-5' viewBox='0 0 24 24' aria-hidden='true'>
                 <path

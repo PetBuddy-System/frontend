@@ -27,6 +27,9 @@ export interface ImportMetaEnv {
   readonly VITE_API_VOUCHERS_PATH?: string
   readonly VITE_API_SHIPPING_PATH?: string
   readonly VITE_API_BATCHES_PATH?: string
+  // ─── Google OAuth ─────────────────────────────────────────────────────────
+  readonly VITE_GOOGLE_CLIENT_ID?: string
+  readonly VITE_GOOGLE_REDIRECT_URI?: string
 }
 
 export const env = {
@@ -53,7 +56,9 @@ export const env = {
   API_VOUCHERS_PATH: import.meta.env.VITE_API_VOUCHERS_PATH ?? '/api/vouchers',
   API_SHIPPING_PATH: import.meta.env.VITE_API_SHIPPING_PATH ?? '/api/shipping-rules',
   API_BATCHES_PATH: import.meta.env.VITE_API_BATCHES_PATH ?? '/api/batches',
+  // ─── Google OAuth ─────────────────────────────────────────────────────────
+  GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '',
+  GOOGLE_REDIRECT_URI: import.meta.env.VITE_GOOGLE_REDIRECT_URI ?? ''
 } as const
 
 export type Env = typeof env
-
