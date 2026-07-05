@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 
 import { fetchProductsApi } from '~/features/products/services/products'
 import { addToCartApi } from '~/features/products/services/cart'
+import { useCart } from '~/providers/cart-provider'
 import { MaterialIcon } from '~/shared/ui'
 import type { ProductResponse } from '~/shared/lib/product'
 
@@ -11,12 +12,14 @@ const PRODUCT_LIMIT = 4
 
 export function LandingProducts() {
   const { t } = useTranslation('landing')
+  const { refreshCart } = useCart()
 
   const [products, setProducts] = useState<ProductResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [addingMap, setAddingMap] = useState<Record<string, boolean>>({})
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
 
   useEffect(() => {
     let active = true
@@ -66,6 +69,7 @@ export function LandingProducts() {
         price: product.salePrice ?? product.price ?? 0, // Sửa ở đây
         imageUrl: product.imageUrls?.[0] || product.thumbnail
       })
+      await refreshCart()
       setShowSuccessToast(true)
       setTimeout(() => setShowSuccessToast(false), 3000)
     } catch (err: unknown) {

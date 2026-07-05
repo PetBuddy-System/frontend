@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
 import { getPaymentByOrderIdApi } from '~/features/products/services'
+import { fetchOrderDetailApi } from '~/features/profile/services/order/order-api'
+
 
 export function PaymentFailedPage() {
   const navigate = useNavigate()
@@ -19,19 +21,32 @@ export function PaymentFailedPage() {
     setIsRetrying(true)
     setRetryError('')
     try {
-      const res = await getPaymentByOrderIdApi(Number(orderId))
-      if (res.success && res.data) {
-        const clientSecret = res.data.stripeClientSecret || ''
-        const amount = res.data.amount || 0
+      const [paymentRes, orderRes] = await Promise.all([
+        getPaymentByOrderIdApi(Number(orderId)),
+        fetchOrderDetailApi(Number(orderId))
+      ])
+
+      if (paymentRes.success && paymentRes.data && orderRes.success && orderRes.data) {
+        const clientSecret = paymentRes.data.stripeClientSecret || ''
+        const amount = paymentRes.data.amount || 0
+        const shippingFee = orderRes.data.shippingFee ?? 0
+        const isFreeShipping = shippingFee === 0
+
         navigate('/payment', {
           state: {
             orderId: Number(orderId),
             clientSecret,
             amount,
+            shippingFee,
+            isFreeShipping,
           }
         })
       } else {
-        setRetryError(res.message || 'Không thể lấy thông tin thanh toán cho đơn hàng này.')
+        setRetryError(
+          paymentRes.message ||
+          orderRes.message ||
+          'Không thể lấy thông tin thanh toán cho đơn hàng này.'
+        )
       }
     } catch (err) {
       setRetryError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi lấy thông tin thanh toán.')
@@ -39,6 +54,7 @@ export function PaymentFailedPage() {
       setIsRetrying(false)
     }
   }
+
   let reasonTitle = 'Thanh toán thất bại'
   let reasonDescription = 'Không thể hoàn tất giao dịch thanh toán trực tuyến.'
 

@@ -4,11 +4,18 @@ import { useNavigate } from 'react-router'
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFooter, SiteHeader } from '~/shared/components'
 import { fetchActiveVouchersApi } from '../services'
-import type { VoucherResponse } from '~/shared/lib/voucher'
-
-export const SESSION_KEY_VOUCHER_CODE = 'petbuddy_checkout_voucher_code'
-export const SESSION_KEY_VOUCHER_NAME = 'petbuddy_checkout_voucher_name'
-export const SESSION_KEY_VOUCHER_DISCOUNT = 'petbuddy_checkout_voucher_discount'
+import {
+  isVoucherEligible,
+  getIneligibleReason,
+  calculateVoucherDiscount,
+  type VoucherResponse,
+} from '~/shared/lib/voucher'
+import {
+  SESSION_KEY_VOUCHER_CODE,
+  SESSION_KEY_VOUCHER_NAME,
+  SESSION_KEY_VOUCHER_DISCOUNT,
+  SESSION_KEY_SUBTOTAL,
+} from '../lib/checkout-storage-keys'
 
 function formatPrice(value: number) {
   return `${new Intl.NumberFormat('vi-VN').format(value)}đ`
@@ -34,32 +41,6 @@ function getDiscountBadgeText(voucher: VoucherResponse) {
   return `Giảm ${formatPrice(voucher.discountValue)}`
 }
 
-function isVoucherEligible(voucher: VoucherResponse, orderSubtotal: number): boolean {
-  if (voucher.status !== 'ACTIVE') return false
-  if (voucher.minOrderValue && orderSubtotal < voucher.minOrderValue) return false
-  if (voucher.usageLimit && voucher.usedCount >= voucher.usageLimit) return false
-  return true
-}
-
-function getIneligibleReason(voucher: VoucherResponse, orderSubtotal: number): string {
-  if (voucher.status !== 'ACTIVE') return 'Voucher không còn hiệu lực'
-  if (voucher.usageLimit && voucher.usedCount >= voucher.usageLimit) return 'Voucher đã hết lượt sử dụng'
-  if (voucher.minOrderValue && orderSubtotal < voucher.minOrderValue) {
-    const missing = voucher.minOrderValue - orderSubtotal
-    return `Thiếu ${formatPrice(missing)} nữa`
-  }
-  return 'Chưa đủ điều kiện'
-}
-
-function calculateDiscount(voucher: VoucherResponse, subtotal: number): number {
-  if (voucher.discountType === 'PERCENTAGE') {
-    const discount = (subtotal * voucher.discountValue) / 100
-    if (voucher.maxDiscount) return Math.min(discount, voucher.maxDiscount)
-    return discount
-  }
-  return Math.min(voucher.discountValue, subtotal)
-}
-
 export interface VoucherPickerPageProps {
   orderSubtotal?: number
 }
@@ -72,7 +53,7 @@ export function VoucherPickerPage() {
   const [error, setError] = useState('')
   const [selectedCode, setSelectedCode] = useState<string>('')
 
-  const orderSubtotal = parseInt(sessionStorage.getItem('petbuddy_checkout_subtotal') ?? '0', 10)
+  const orderSubtotal = parseInt(sessionStorage.getItem(SESSION_KEY_SUBTOTAL) ?? '0', 10)
 
   useEffect(() => {
     const savedCode = sessionStorage.getItem(SESSION_KEY_VOUCHER_CODE) ?? ''
@@ -99,7 +80,7 @@ export function VoucherPickerPage() {
 
   function handleConfirm() {
     if (selectedVoucher) {
-      const discount = calculateDiscount(selectedVoucher, orderSubtotal)
+      const discount = calculateVoucherDiscount(selectedVoucher, orderSubtotal)
       sessionStorage.setItem(SESSION_KEY_VOUCHER_CODE, selectedVoucher.voucherCode)
       sessionStorage.setItem(SESSION_KEY_VOUCHER_NAME, selectedVoucher.voucherName)
       sessionStorage.setItem(SESSION_KEY_VOUCHER_DISCOUNT, String(Math.round(discount)))
@@ -115,8 +96,12 @@ export function VoucherPickerPage() {
     setSelectedCode('')
   }
 
-  const eligibleVouchers = vouchers.filter((v) => isVoucherEligible(v, orderSubtotal))
-  const ineligibleVouchers = vouchers.filter((v) => !isVoucherEligible(v, orderSubtotal))
+  const visibleVouchers = vouchers.filter(
+  (v) => !(v.perUserLimit && (v.usedByCurrentUser ?? 0) >= v.perUserLimit)
+)
+
+const eligibleVouchers = visibleVouchers.filter((v) => isVoucherEligible(v, orderSubtotal))
+const ineligibleVouchers = visibleVouchers.filter((v) => !isVoucherEligible(v, orderSubtotal))
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
@@ -163,7 +148,7 @@ export function VoucherPickerPage() {
           <div className='flex flex-col gap-3'>
             {eligibleVouchers.map((voucher) => {
               const isSelected = selectedCode === voucher.voucherCode
-              const discount = calculateDiscount(voucher, orderSubtotal)
+              const discount = calculateVoucherDiscount(voucher, orderSubtotal)
 
               return (
                 <label key={voucher.voucherId} className='block cursor-pointer'>

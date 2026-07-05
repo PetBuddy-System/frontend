@@ -2,6 +2,7 @@ import { AuthProvider } from './auth-provider'
 import { I18nProvider } from './i18n-provider'
 import { ThemeProvider } from './theme-provider'
 import { SidebarProvider } from './sidebar-provider'
+import { CartProvider } from './cart-provider'
 
 /**
  * Compose tất cả provider cấp ứng dụng. Dùng đúng 1 lần ở root.tsx.
@@ -15,13 +16,16 @@ import { SidebarProvider } from './sidebar-provider'
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
-      <ThemeProvider>
-        <I18nProvider>
-          <SidebarProvider>{children}</SidebarProvider>
-        </I18nProvider>
-      </ThemeProvider>
+      <CartProvider>
+        <ThemeProvider>
+          <I18nProvider>
+            <SidebarProvider>{children}</SidebarProvider>
+          </I18nProvider>
+        </ThemeProvider>
+      </CartProvider>
     </AuthProvider>
   )
 }
+
 
 export { themeInitScript } from './theme-provider'

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { addToCartApi } from '../../services'
+import { useCart } from '~/providers/cart-provider'
 import { MaterialIcon } from '~/shared/ui'
 import type { ProductResponse } from '~/shared/lib/product'
 
@@ -13,6 +14,7 @@ export interface ProductsGridProps {
 export function ProductsGrid({ products, isLoading = false }: ProductsGridProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
+  const { refreshCart } = useCart()
   const [addingMap, setAddingMap] = useState<Record<string, boolean>>({})
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -41,6 +43,7 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
     setError(null)
     setShowSuccessToast(false)
 
+
     try {
       await addToCartApi({
         productId: product.productId,
@@ -57,6 +60,7 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
     } finally {
       setAddingMap((prev) => ({ ...prev, [product.productId]: false }))
     }
+
   }
 
   const handleCardClick = (product: ProductResponse) => {

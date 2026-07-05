@@ -1,8 +1,3 @@
-/**
- * Products feature — order API service.
- * Chứa tất cả order-related API functions cho customer-facing pages.
- */
-
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type {

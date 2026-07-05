@@ -3,6 +3,8 @@ import type { AxiosRequestConfig } from 'axios'
 import { STORAGE_KEYS } from '~/shared/config/site'
 import { env } from '~/shared/config/env'
 import { readStorage, writeStorage, removeStorage } from '~/shared/lib/storage'
+import { ERROR_CODE_I18N_KEY } from '~/shared/config/error-codes'
+import i18n from '~/shared/lib/i18n'
 
 // ─── Axios Instance ──────────────────────────────────────────────────────────
 
@@ -183,7 +185,10 @@ export async function customFetch<T>(options: RequestOptions): Promise<T> {
       const responseData = error.response.data
       let errorMessage: string
 
-      if (responseData?.message) {
+      if (responseData?.code && ERROR_CODE_I18N_KEY[responseData.code]) {
+        errorMessage = i18n.t(ERROR_CODE_I18N_KEY[responseData.code])
+      }
+      else if (responseData?.message) {
         errorMessage = responseData.message
       } else if (responseData?.errors && typeof responseData.errors === 'object') {
         // Handle validation errors array
