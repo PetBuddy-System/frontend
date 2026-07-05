@@ -1,16 +1,14 @@
-/**
- * Cart types — chỉ chứa types/interfaces, không có API functions.
- * API functions nằm trong features/services/.
- */
-
 export interface CartItemResponse {
   cartItemId: string
   productId: string
   productName: string
   imageUrl: string
   price: number
+  salePrice?: number | null
+  description?: string
   quantity: number
   subtotal: number
+  adjusted?: boolean
 }
 
 export interface CartResponse {

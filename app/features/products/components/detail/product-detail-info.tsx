@@ -8,39 +8,38 @@ import { cn } from '~/shared/lib/cn'
 export interface ProductDetailInfoProps {
   productId: string
   name: string
-  price: number
-  salePrice?: number
+  salePrice: number
   brandName: string
   totalStock: number
   discountAmount?: number | null
-  discountType?: 'PERCENTAGE' | 'FIXED' | string | null
   discountValue?: number | null
   hasActivePromotion?: boolean
   promotionName?: string | null
+  promotionPrice?: number
+  promotionType?: 'PERCENTAGE' | 'FIXED_AMOUNT' | string
+  imageUrl?: string
+  // Optional
+  price?: number
   promotionDescription?: string | null
   promotionEndDate?: string | null
-  promotionDiscountType?: 'PERCENTAGE' | 'FIXED' | string | null
-  promotionDiscountValue?: number | null
-  imageUrl?: string
 }
 
 export function ProductDetailInfo({
   productId,
   name,
-  price,
   salePrice,
   brandName,
   totalStock,
   discountAmount,
-  discountType,
   discountValue,
   hasActivePromotion,
   promotionName,
+  promotionPrice,
+  promotionType,
+  imageUrl,
+  price,
   promotionDescription,
-  promotionEndDate,
-  promotionDiscountType,
-  promotionDiscountValue,
-  imageUrl
+  promotionEndDate
 }: ProductDetailInfoProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
@@ -49,161 +48,38 @@ export function ProductDetailInfo({
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [addError, setAddError] = useState<string | null>(null)
 
-  const safePrice = price || 0
-  const safeSalePrice = salePrice ?? safePrice
+  const originalPrice = salePrice || price || 0
+  const displayPrice = promotionPrice || originalPrice
   const safeTotalStock = totalStock || 0
-  const safeBrandName = brandName || 'N/A'
-  const isPromoted = Boolean(
-    hasActivePromotion ||
-      safeSalePrice < safePrice ||
-      promotionName ||
-      promotionDescription ||
-      promotionEndDate ||
-      promotionDiscountValue != null ||
-      discountValue != null
-  )
+  const isPromoted = Boolean(hasActivePromotion || promotionPrice || promotionName)
 
   const formatPrice = (value: number) => `${value.toLocaleString('vi-VN')}đ`
 
   const formatDate = (value?: string | null) => {
     if (!value) return null
-
-    const parsedDate = new Date(value)
-    if (Number.isNaN(parsedDate.getTime())) return value
-
-    return parsedDate.toLocaleDateString('vi-VN')
+    const d = new Date(value)
+    return isNaN(d.getTime()) ? value : d.toLocaleDateString('vi-VN')
   }
 
-  const formatDiscountBadge = () => {
-    const effectiveType = promotionDiscountType ?? discountType
-    const effectiveValue = promotionDiscountValue ?? discountValue ?? discountAmount
-
-    if (effectiveValue == null) return null
-
-    if (effectiveType === 'PERCENTAGE') {
-      return `-${effectiveValue}%`
-    }
-
-    return `-${formatPrice(effectiveValue)}`
+  const discountText = () => {
+    const val = discountValue ?? discountAmount
+    if (val == null) return null
+    return promotionType === 'PERCENTAGE' ? `-${val}%` : `-${formatPrice(val)}`
   }
 
-  const renderPromotionSummary = () => {
-    if (!isPromoted) return null
-
-    const discountText = formatDiscountBadge()
-    const effectiveDiscountValue = promotionDiscountValue ?? discountValue
-    const savingsText =
-      effectiveDiscountValue != null
-        ? promotionDiscountType === 'FIXED' || discountType === 'FIXED'
-          ? `Tiết kiệm ${formatPrice(effectiveDiscountValue)}`
-          : promotionDiscountType === 'PERCENTAGE' || discountType === 'PERCENTAGE'
-            ? `Giảm ${effectiveDiscountValue}%`
-            : null
-        : null
-
-    return (
-      <div className='mt-4 overflow-hidden rounded-[1.5rem] border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-accent/15 shadow-[0_14px_35px_-20px_rgba(37,99,235,0.35)]'>
-        <div className='flex items-center justify-between gap-3 border-b border-border/60 px-4 py-3 sm:px-5'>
-          <div className='flex items-center gap-2'>
-            <span className='inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm'>
-              <MaterialIcon name='local_fire_department' className='text-[18px]' />
-            </span>
-            <div>
-              <p className='text-sm font-semibold text-foreground'>Ưu đãi đang áp dụng</p>
-              <p className='text-xs text-muted-foreground'>Giá đã được tự động cập nhật</p>
-            </div>
-          </div>
-          {discountText && (
-            <span className='inline-flex items-center rounded-full bg-destructive px-3 py-1 text-xs font-bold text-destructive-foreground shadow-sm'>
-              {discountText}
-            </span>
-          )}
-        </div>
-
-        <div className='space-y-4 px-4 py-4 sm:px-5'>
-          <div className='flex flex-wrap items-end gap-3'>
-            <div className='text-4xl font-black tracking-tight text-primary md:text-5xl'>
-              {formatPrice(safeSalePrice)}
-            </div>
-            {safeSalePrice < safePrice && (
-              <div className='pb-1 text-lg text-muted-foreground line-through'>
-                {formatPrice(safePrice)}
-              </div>
-            )}
-          </div>
-
-          <div className='flex flex-wrap items-center gap-2'>
-            {promotionName && (
-              <span className='inline-flex items-center rounded-full bg-foreground/5 px-3 py-1 text-sm font-semibold text-foreground'>
-                {promotionName}
-              </span>
-            )}
-            {savingsText && (
-              <span className='inline-flex items-center rounded-full bg-success/10 px-3 py-1 text-sm font-semibold text-success'>
-                {savingsText}
-              </span>
-            )}
-          </div>
-
-          {promotionDescription && (
-            <p className='max-w-2xl text-sm leading-6 text-muted-foreground'>
-              {promotionDescription}
-            </p>
-          )}
-
-          <div className='grid gap-3 md:grid-cols-2'>
-            {promotionEndDate && (
-              <div className='rounded-2xl border border-border/70 bg-card/80 px-4 py-3 shadow-sm'>
-                <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>
-                  Hạn chót
-                </p>
-                <p className='mt-1 text-base font-semibold text-foreground'>
-                  {formatDate(promotionEndDate)}
-                </p>
-              </div>
-            )}
-            <div className='rounded-2xl border border-border/70 bg-card/80 px-4 py-3 shadow-sm'>
-              <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>
-                Tiết kiệm
-              </p>
-              <p className='mt-1 text-base font-semibold text-foreground'>
-                {discountAmount != null
-                  ? formatPrice(discountAmount)
-                  : safeSalePrice < safePrice
-                    ? formatPrice(safePrice - safeSalePrice)
-                    : '0đ'}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  const handleDecrease = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1)
-    }
-  }
-
-  const handleIncrease = () => {
-    if (quantity < safeTotalStock) {
-      setQuantity(quantity + 1)
-    }
-  }
+  const handleDecrease = () => quantity > 1 && setQuantity(quantity - 1)
+  const handleIncrease = () => quantity < safeTotalStock && setQuantity(quantity + 1)
 
   const handleAddToCart = async () => {
     if (isAdding) return
     setIsAdding(true)
     setAddError(null)
-    setShowSuccessToast(false)
-
     try {
-      await addToCartApi({ productId, quantity, productName: name, price: safePrice, imageUrl })
+      await addToCartApi({ productId, quantity, productName: name, price: displayPrice, imageUrl })
       setShowSuccessToast(true)
       setTimeout(() => setShowSuccessToast(false), 3000)
-    } catch (err: unknown) {
-      setAddError(err instanceof Error ? err.message : 'Lỗi khi thêm vào giỏ hàng')
+    } catch (err) {
+      setAddError(err instanceof Error ? err.message : 'Lỗi thêm vào giỏ')
     } finally {
       setIsAdding(false)
     }
@@ -212,13 +88,11 @@ export function ProductDetailInfo({
   const handleBuyNow = async () => {
     if (isAdding) return
     setIsAdding(true)
-    setAddError(null)
-
     try {
-      await addToCartApi({ productId, quantity, productName: name, price: safePrice, imageUrl })
+      await addToCartApi({ productId, quantity, productName: name, price: displayPrice, imageUrl })
       navigate('/checkout')
-    } catch (err: unknown) {
-      setAddError(err instanceof Error ? err.message : 'Lỗi xử lý mua ngay')
+    } catch (err) {
+      setAddError(err instanceof Error ? err.message : 'Lỗi mua ngay')
       setIsAdding(false)
     }
   }
@@ -230,9 +104,9 @@ export function ProductDetailInfo({
       </h1>
 
       <div className='mt-4 flex flex-wrap items-center gap-3'>
-        <div className='flex items-center gap-1 text-warning' aria-label={t('detail.product.ratingLabel')}>
-          {['star', 'star', 'star', 'star', 'star_half'].map((icon, index) => (
-            <MaterialIcon key={`${icon}-${index}`} name={icon} filled className='text-[24px]' />
+        <div className='flex items-center gap-1 text-warning'>
+          {['star', 'star', 'star', 'star', 'star_half'].map((icon, i) => (
+            <MaterialIcon key={i} name={icon} filled className='text-[24px]' />
           ))}
         </div>
         <span className='rounded-full bg-muted px-3 py-1 text-sm font-semibold text-muted-foreground'>
@@ -240,12 +114,52 @@ export function ProductDetailInfo({
         </span>
       </div>
 
-      {renderPromotionSummary()}
+      {isPromoted && (
+        <div className='mt-4 overflow-hidden rounded-[1.5rem] border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-accent/15'>
+          <div className='flex items-center justify-between gap-3 border-b border-border/60 px-4 py-3'>
+            <div className='flex items-center gap-2'>
+              <span className='inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground'>
+                <MaterialIcon name='local_fire_department' className='text-[18px]' />
+              </span>
+              <div>
+                <p className='text-sm font-semibold text-foreground'>Ưu đãi đang áp dụng</p>
+                <p className='text-xs text-muted-foreground'>Giá đã được tự động cập nhật</p>
+              </div>
+            </div>
+            {discountText() && (
+              <span className='inline-flex items-center rounded-full bg-destructive px-3 py-1 text-xs font-bold text-destructive-foreground'>
+                {discountText()}
+              </span>
+            )}
+          </div>
+
+          <div className='px-4 py-4'>
+            <div className='flex flex-wrap items-end gap-3'>
+              <span className='text-4xl font-black tracking-tight text-red-500 md:text-5xl'>
+                {formatPrice(displayPrice)}
+              </span>
+              {originalPrice > 0 && originalPrice !== displayPrice && (
+                <span className='pb-1 text-lg text-muted-foreground line-through'>
+                  {formatPrice(originalPrice)}
+                </span>
+              )}
+            </div>
+            {promotionName && <p className='mt-2 text-sm font-medium text-foreground'>{promotionName}</p>}
+            {promotionDescription && <p className='mt-1 text-sm text-muted-foreground'>{promotionDescription}</p>}
+            {promotionEndDate && (
+              <div className='mt-3 rounded-2xl border border-border/70 bg-card/80 px-4 py-3'>
+                <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>Hạn chót</p>
+                <p className='mt-1 text-base font-semibold text-foreground'>{formatDate(promotionEndDate)}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className='mt-5 space-y-3'>
         <div>
           <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>Thương hiệu</p>
-          <p className='mt-1 text-base font-semibold text-foreground'>{safeBrandName}</p>
+          <p className='mt-1 text-base font-semibold text-foreground'>{brandName || 'N/A'}</p>
         </div>
         <div>
           <p className={cn('text-base font-semibold', safeTotalStock > 0 ? 'text-success' : 'text-destructive')}>
@@ -259,21 +173,18 @@ export function ProductDetailInfo({
 
       {addError && (
         <div className='mt-4 flex items-center gap-2 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
-          <MaterialIcon name='error' className='shrink-0 text-[20px] text-destructive' />
+          <MaterialIcon name='error' className='shrink-0 text-[20px]' />
           <span>{addError}</span>
         </div>
       )}
 
       <div className='mt-8 flex flex-col gap-3'>
-        <label className='text-sm font-semibold text-foreground' htmlFor='quantity'>
-          {t('detail.quantity.label')}
-        </label>
+        <label className='text-sm font-semibold text-foreground' htmlFor='quantity'>Số lượng</label>
         <div className='flex w-fit items-center overflow-hidden rounded-2xl border border-border bg-card p-1 shadow-sm'>
           <button
             type='button'
             onClick={handleDecrease}
-            className='inline-flex h-12 w-12 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50'
-            aria-label={t('detail.quantity.decrease')}
+            className='inline-flex h-12 w-12 items-center justify-center rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50'
             disabled={isAdding}
           >
             <MaterialIcon name='remove' className='text-[22px]' />
@@ -288,8 +199,7 @@ export function ProductDetailInfo({
           <button
             type='button'
             onClick={handleIncrease}
-            className='inline-flex h-12 w-12 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50'
-            aria-label={t('detail.quantity.increase')}
+            className='inline-flex h-12 w-12 items-center justify-center rounded-xl text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50'
             disabled={quantity >= safeTotalStock || isAdding}
           >
             <MaterialIcon name='add' className='text-[22px]' />
@@ -302,7 +212,7 @@ export function ProductDetailInfo({
           type='button'
           disabled={safeTotalStock <= 0 || isAdding}
           onClick={handleAddToCart}
-          className='group flex items-center justify-center gap-3 rounded-2xl bg-primary px-8 py-4 text-base font-bold text-primary-foreground shadow-[0_18px_35px_-18px_rgba(37,99,235,0.75)] transition-all hover:-translate-y-0.5 hover:brightness-110 disabled:pointer-events-none disabled:translate-y-0 disabled:opacity-50'
+          className='group flex items-center justify-center gap-3 rounded-2xl bg-primary px-8 py-4 text-base font-bold text-primary-foreground shadow-[0_18px_35px_-18px_rgba(37,99,235,0.75)] transition-all hover:-translate-y-0.5 hover:brightness-110 disabled:opacity-50'
         >
           {isAdding ? (
             <MaterialIcon name='progress_activity' className='animate-spin text-[22px]' />
@@ -315,7 +225,7 @@ export function ProductDetailInfo({
           type='button'
           disabled={safeTotalStock <= 0 || isAdding}
           onClick={handleBuyNow}
-          className='rounded-2xl border-2 border-primary bg-card px-8 py-4 text-base font-bold text-primary shadow-sm transition-all hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground disabled:pointer-events-none disabled:opacity-50'
+          className='rounded-2xl border-2 border-primary bg-card px-8 py-4 text-base font-bold text-primary shadow-sm transition-all hover:-translate-y-0.5 hover:bg-primary hover:text-primary-foreground disabled:opacity-50'
         >
           {t('detail.actions.buyNow')}
         </button>
@@ -324,9 +234,7 @@ export function ProductDetailInfo({
       {showSuccessToast && (
         <div className='fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-2xl bg-success px-4 py-3 text-success-foreground shadow-lg animate-in fade-in slide-in-from-bottom-4'>
           <MaterialIcon name='check_circle' className='text-[20px]' />
-          <div className='text-left'>
-            <p className='text-sm font-bold'>{t('cart.addedToCart', 'Đã thêm sản phẩm vào giỏ hàng!')}</p>
-          </div>
+          <p className='text-sm font-bold'>{t('cart.addedToCart', 'Đã thêm vào giỏ hàng!')}</p>
         </div>
       )}
     </section>

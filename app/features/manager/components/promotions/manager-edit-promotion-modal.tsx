@@ -50,7 +50,7 @@ export function ManagerEditPromotionModal({
             description: promo.description,
             startDate: formatDateString(promo.startDate),
             endDate: formatDateString(promo.endDate),
-            status: promo.status as 'DRAFT' | 'ACTIVE' // Cast to Create status if needed or partial fields
+            status: promo.status as 'DRAFT' | 'ACTIVE'
           })
         }
       } catch (err: unknown) {

@@ -4,11 +4,20 @@ import { useParams, useNavigate } from 'react-router'
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
 import { MaterialIcon } from '~/shared/ui'
-import { fetchProductByIdApi, fetchCategoriesApi, updateProductApi } from '../services/product'
+import {
+    fetchProductManagementByIdApi,
+    fetchProductImagesApi,
+    fetchProductVideoApi,
+    fetchCategoriesApi,
+    updateProductApi
+} from '../services/product'
 import type { ProductDetailData, CategoryData } from '~/shared/lib/product'
 import { ManagerEditProductModal } from '../components/products/manager-edit-product-modal'
 import { ManagerProductBatchSection } from '../components/products/manager-product-batch-section'
 import { ManagerProductDeleteDialog } from '../components/products/manager-product-delete-dialog'
+import { ManagerProductInfoCard } from '../components/products/manager-product-info-card'  // 👈 THÊM IMPORT
+
+type MediaTab = 'images' | 'video'
 
 export function ManagerProductDetailPage() {
     const { productId } = useParams()
@@ -19,6 +28,23 @@ export function ManagerProductDetailPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
+    // ─── Images State ──────────────────────────────────────────
+    const [productImages, setProductImages] = useState<Array<{ mediaFileId: number; fileUrl: string }>>([])
+    const [isLoadingImages, setIsLoadingImages] = useState(false)
+    const [imagesError, setImagesError] = useState<string | null>(null)
+
+    // ─── Video State ───────────────────────────────────────────
+    const [productVideo, setProductVideo] = useState<{ fileUrl: string; mediaFileId: number } | null>(null)
+    const [isLoadingVideo, setIsLoadingVideo] = useState(false)
+    const [videoError, setVideoError] = useState<string | null>(null)
+
+    // ─── Tab State ─────────────────────────────────────────────
+    const [activeTab, setActiveTab] = useState<MediaTab>('images')
+
+    // ─── Thumbnail State ───────────────────────────────────────
+    const [isUpdatingThumbnail, setIsUpdatingThumbnail] = useState(false)
+    const [thumbnailUpdateError, setThumbnailUpdateError] = useState<string | null>(null)
+
     // ─── Categories (cho Edit Modal) ────────────────────────────
     const [categories, setCategories] = useState<CategoryData[]>([])
 
@@ -28,16 +54,18 @@ export function ManagerProductDetailPage() {
     const [isDeletingProduct, setIsDeletingProduct] = useState(false)
     const [deleteError, setDeleteError] = useState<string | null>(null)
 
-    // ─── Load Product ───────────────────────────────────────────
+    // ─── API 1: Load Product Detail ──────────────────────────────
     useEffect(() => {
         if (!productId) return
 
         async function loadProduct(id: string) {
             setIsLoading(true)
+            setError(null)
             try {
-                const response = await fetchProductByIdApi(id)
+                const response = await fetchProductManagementByIdApi(id)
                 if (response.success) {
                     setProduct(response.data)
+                    console.log('📦 Product data loaded:', response.data)  // 👈 THÊM LOG
                 } else {
                     setError('Không thể tải thông tin sản phẩm')
                 }
@@ -48,6 +76,61 @@ export function ManagerProductDetailPage() {
             }
         }
         void loadProduct(productId)
+    }, [productId])
+
+    // ─── API 2: Load Product Images ──────────────────────────────
+    useEffect(() => {
+        if (!productId) return
+
+        async function loadProductImages(id: string) {
+            setIsLoadingImages(true)
+            setImagesError(null)
+            try {
+                const response = await fetchProductImagesApi(id)
+                if (response.success) {
+                    const images = response.data
+                        .filter(item => item.fileType === 'IMAGE')
+                        .map(item => ({
+                            mediaFileId: item.mediaFileId,
+                            fileUrl: item.fileUrl
+                        }))
+                    setProductImages(images)
+                } else {
+                    setImagesError('Không thể tải hình ảnh sản phẩm')
+                }
+            } catch {
+                setImagesError('Không thể tải hình ảnh sản phẩm')
+            } finally {
+                setIsLoadingImages(false)
+            }
+        }
+        void loadProductImages(productId)
+    }, [productId])
+
+    // ─── API 3: Load Product Video ──────────────────────────────
+    useEffect(() => {
+        if (!productId) return
+
+        async function loadProductVideo(id: string) {
+            setIsLoadingVideo(true)
+            setVideoError(null)
+            try {
+                const response = await fetchProductVideoApi(id)
+                if (response.success) {
+                    setProductVideo({
+                        fileUrl: response.data.fileUrl,
+                        mediaFileId: response.data.mediaFileId
+                    })
+                } else {
+                    setVideoError('Không thể tải video sản phẩm')
+                }
+            } catch {
+                setVideoError('Không thể tải video sản phẩm')
+            } finally {
+                setIsLoadingVideo(false)
+            }
+        }
+        void loadProductVideo(productId)
     }, [productId])
 
     // ─── Load Categories (một lần, cho Edit Modal) ──────────────
@@ -63,6 +146,42 @@ export function ManagerProductDetailPage() {
         void loadCategories()
     }, [])
 
+    // ─── Update Thumbnail ────────────────────────────────────────
+    const handleSetThumbnail = async (mediaFileId: number) => {
+        if (!productId || !product) return
+
+        setIsUpdatingThumbnail(true)
+        setThumbnailUpdateError(null)
+
+        try {
+            const response = await updateProductApi(productId, {
+                name: product.name,
+                salePrice: product.salePrice ?? product.price,
+                brandName: product.brandName,
+                status: product.status as 'ACTIVE' | 'INACTIVE' | 'DELETED',
+                categoryId: product.categoryId,
+                description: product.description,
+                ingredients: product.ingredients,
+                usageInstructions: product.usageInstructions,
+                unit: product.unit,
+                thumbnailMediaId: mediaFileId
+            })
+            if (response.success) {
+                setProduct(prev => prev ? {
+                    ...prev,
+                    thumbnailMediaId: mediaFileId,
+                    thumbnailUrl: productImages.find(img => img.mediaFileId === mediaFileId)?.fileUrl
+                } : null)
+            } else {
+                setThumbnailUpdateError(response.message || 'Không thể cập nhật ảnh đại diện')
+            }
+        } catch (err) {
+            setThumbnailUpdateError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi cập nhật ảnh đại diện')
+        } finally {
+            setIsUpdatingThumbnail(false)
+        }
+    }
+
     // ─── Soft-delete product ────────────────────────────────────
     const handleDeleteProduct = async () => {
         if (!productId) return
@@ -71,7 +190,7 @@ export function ManagerProductDetailPage() {
         try {
             const response = await updateProductApi(productId, {
                 name: product?.name ?? '',
-                price: product?.price ?? 0,
+                salePrice: product?.salePrice ?? 0,
                 brandName: product?.brandName ?? '',
                 status: 'DELETED'
             })
@@ -99,7 +218,7 @@ export function ManagerProductDetailPage() {
         }
     }
 
-    // ✅ Hàm lấy label status tiếng Việt
+    // ─── Helpers ────────────────────────────────────────────────
     const getStatusLabel = (status: string) => {
         switch (status) {
             case 'ACTIVE':
@@ -113,8 +232,10 @@ export function ManagerProductDetailPage() {
         }
     }
 
-    // ✅ Kiểm tra sản phẩm đã xóa chưa
     const isDeleted = product?.status === 'DELETED'
+    const hasImages = productImages.length > 0
+    const hasVideo = !!productVideo
+    const currentThumbnailId = product?.thumbnailMediaId
 
     return (
         <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -122,7 +243,6 @@ export function ManagerProductDetailPage() {
             <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
                 <ManagerTopNav
                     titleKey='Chi tiết sản phẩm'
-                    subtitleKey={`Mã SP: ${productId || 'N/A'}`}
                 />
                 <main className='flex-1 overflow-y-auto p-4 md:p-6'>
                     <div className='mx-auto flex max-w-7xl flex-col gap-6'>
@@ -155,95 +275,189 @@ export function ManagerProductDetailPage() {
                                         Quay lại danh sách
                                     </button>
                                     <div className='flex items-center gap-3 self-end sm:self-auto'>
-                                        {/* ✅ Chỉ hiển thị nút Xóa nếu chưa bị xóa */}
                                         {!isDeleted && (
-                                            <button
-                                                onClick={() => { setDeleteError(null); setIsDeleteConfirmOpen(true) }}
-                                                className='flex items-center gap-2 px-4 py-2 bg-card hover:bg-destructive/10 text-destructive border border-destructive/40 rounded-lg text-sm font-semibold transition-colors'
-                                            >
-                                                <MaterialIcon name='delete' className='text-lg' />
-                                                Xóa sản phẩm
-                                            </button>
-                                        )}
-                                        {/* ✅ Chỉ hiển thị nút Chỉnh sửa nếu chưa bị xóa */}
-                                        {!isDeleted && (
-                                            <button
-                                                onClick={() => setIsEditModalOpen(true)}
-                                                className='flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold transition-colors shadow-sm'
-                                            >
-                                                <MaterialIcon name='edit' className='text-lg' />
-                                                Chỉnh sửa
-                                            </button>
+                                            <>
+                                                <button
+                                                    onClick={() => { setDeleteError(null); setIsDeleteConfirmOpen(true) }}
+                                                    className='flex items-center gap-2 px-4 py-2 bg-card hover:bg-destructive/10 text-destructive border border-destructive/40 rounded-lg text-sm font-semibold transition-colors'
+                                                >
+                                                    <MaterialIcon name='delete' className='text-lg' />
+                                                    Xóa sản phẩm
+                                                </button>
+                                                <button
+                                                    onClick={() => setIsEditModalOpen(true)}
+                                                    className='flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold transition-colors shadow-sm'
+                                                >
+                                                    <MaterialIcon name='edit' className='text-lg' />
+                                                    Chỉnh sửa
+                                                </button>
+                                            </>
                                         )}
                                     </div>
                                 </div>
 
-                                {/* Product Info Card */}
-                                <div className='bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col md:flex-row gap-6 justify-between'>
-                                    <div className='flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8'>
-                                        <div>
-                                            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Mã sản phẩm</span>
-                                            <span className='text-base font-bold text-foreground block'>{product.productCode || product.productId}</span>
-                                        </div>
-                                        <div>
-                                            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Tên sản phẩm</span>
-                                            <span className='text-base font-bold text-foreground block'>{product.name}</span>
-                                        </div>
-                                        <div>
-                                            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Trạng thái</span>
-                                            <div className='flex items-center gap-1.5 mt-0.5'>
-                                                <span className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-success' : product.status === 'DELETED' ? 'bg-destructive' : 'bg-muted-foreground'}`}></span>
-                                                <span className={`text-sm font-semibold ${product.status === 'ACTIVE' ? 'text-success' : product.status === 'DELETED' ? 'text-destructive' : 'text-muted-foreground'}`}>
-                                                    {getStatusLabel(product.status)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Danh mục</span>
-                                            <span className='text-sm font-semibold text-muted-foreground block'>{product.categoryName || 'N/A'}</span>
-                                        </div>
-                                        <div>
-                                            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Thương hiệu</span>
-                                            <div className='mt-0.5'>
-                                                <span className='bg-secondary/15 text-secondary-foreground text-xs font-semibold px-2 py-0.5 rounded'>
-                                                    {product.brandName || 'N/A'}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Giá bán</span>
-                                            <span className='text-base font-bold text-primary block'>{product.price?.toLocaleString('en-US')} VNĐ</span>
-                                        </div>
-                                        <div>
-                                            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Tổng kho</span>
-                                            <div className='flex items-baseline gap-1 mt-0.5'>
-                                                <span className='text-base font-bold text-foreground'>{product.totalStock}</span>
-                                                <span className='text-xs text-muted-foreground'>gói</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Tổng lô hàng</span>
-                                            <span className='text-base font-bold text-foreground block mt-0.5'>{product.batchCount}</span>
-                                        </div>
+                                {/* ✅ Product Info Card - SỬ DỤNG COMPONENT MỚI */}
+                                <ManagerProductInfoCard
+                                    product={product}
+                                    expiringSoonCount={0}
+                                    formatDate={formatDate}
+                                />
+
+                                {/* ─── Media Section with Tabs ─────────────────── */}
+                                <div className='bg-card rounded-2xl border border-border p-6 shadow-sm'>
+                                    {/* Tabs */}
+                                    <div className='flex items-center gap-1 border-b border-border mb-4'>
+                                        <button
+                                            onClick={() => setActiveTab('images')}
+                                            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-all border-b-2 ${activeTab === 'images'
+                                                ? 'border-primary text-primary'
+                                                : 'border-transparent text-muted-foreground hover:text-foreground'
+                                                }`}
+                                        >
+                                            <MaterialIcon name='photo_library' className='text-base' />
+                                            Hình ảnh
+                                            {isLoadingImages && (
+                                                <span className='ml-1 inline-block h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent'></span>
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('video')}
+                                            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold transition-all border-b-2 ${activeTab === 'video'
+                                                ? 'border-primary text-primary'
+                                                : 'border-transparent text-muted-foreground hover:text-foreground'
+                                                }`}
+                                        >
+                                            <MaterialIcon name='videocam' className='text-base' />
+                                            Video
+                                            {isLoadingVideo && (
+                                                <span className='ml-1 inline-block h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent'></span>
+                                            )}
+                                        </button>
                                     </div>
 
-                                    {/* Date Card */}
-                                    <div className='w-full md:w-64 shrink-0 bg-muted/30 border border-border/60 rounded-xl p-4 flex flex-col gap-4 self-start'>
-                                        <div className='flex items-start gap-3'>
-                                            <MaterialIcon name='calendar_month' className='text-muted-foreground text-xl mt-0.5' />
-                                            <div>
-                                                <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block'>Ngày tạo</span>
-                                                <span className='text-sm font-semibold text-muted-foreground block'>{formatDate(product.createdAt)}</span>
-                                            </div>
+                                    {/* Thumbnail update error */}
+                                    {thumbnailUpdateError && (
+                                        <div className='mb-4 flex items-center gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive'>
+                                            <MaterialIcon name='error' className='text-base' />
+                                            <span>{thumbnailUpdateError}</span>
                                         </div>
-                                        <div className='flex items-start gap-3 border-t border-border/50 pt-3'>
-                                            <MaterialIcon name='history' className='text-muted-foreground text-xl mt-0.5' />
-                                            <div>
-                                                <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block'>Cập nhật cuối</span>
-                                                <span className='text-sm font-semibold text-muted-foreground block'>{formatDate(product.updatedAt)}</span>
-                                            </div>
+                                    )}
+
+                                    {/* Tab Content: Images */}
+                                    {activeTab === 'images' && (
+                                        <div>
+                                            {isLoadingImages ? (
+                                                <div className='flex items-center justify-center py-12'>
+                                                    <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>
+                                                </div>
+                                            ) : imagesError ? (
+                                                <div className='flex items-center gap-2 text-muted-foreground py-8 justify-center'>
+                                                    <MaterialIcon name='image_not_supported' className='text-2xl' />
+                                                    <span className='text-sm'>{imagesError}</span>
+                                                </div>
+                                            ) : hasImages ? (
+                                                <>
+                                                    <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+                                                        {productImages.map((image) => {
+                                                            const isThumbnail = image.mediaFileId === currentThumbnailId
+                                                            return (
+                                                                <div
+                                                                    key={image.mediaFileId}
+                                                                    className={`relative aspect-square bg-muted/30 border-2 rounded-xl overflow-hidden flex flex-col ${isThumbnail
+                                                                        ? 'border-primary shadow-lg shadow-primary/20'
+                                                                        : 'border-border'
+                                                                        }`}
+                                                                >
+                                                                    <img
+                                                                        src={image.fileUrl}
+                                                                        alt={`${product.name} - image`}
+                                                                        className='object-cover w-full h-full'
+                                                                        loading='lazy'
+                                                                    />
+
+                                                                    {/* Thumbnail badge */}
+                                                                    {isThumbnail && (
+                                                                        <div className='absolute top-2 right-2 bg-primary text-primary-foreground text-[10px] font-bold uppercase px-2 py-0.5 rounded shadow-sm flex items-center gap-1'>
+                                                                            <MaterialIcon name='star' className='text-xs' />
+                                                                            <span>Đại diện</span>
+                                                                        </div>
+                                                                    )}
+
+                                                                    {/* Set as thumbnail button */}
+                                                                    {!isDeleted && !isThumbnail && (
+                                                                        <button
+                                                                            onClick={() => handleSetThumbnail(image.mediaFileId)}
+                                                                            disabled={isUpdatingThumbnail}
+                                                                            className='absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center'
+                                                                        >
+                                                                            {isUpdatingThumbnail ? (
+                                                                                <div className='animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent'></div>
+                                                                            ) : (
+                                                                                <span className='text-white text-xs font-semibold bg-primary/90 px-3 py-1.5 rounded-lg flex items-center gap-1'>
+                                                                                    <MaterialIcon name='star_border' className='text-sm' />
+                                                                                    Chọn làm đại diện
+                                                                                </span>
+                                                                            )}
+                                                                        </button>
+                                                                    )}
+
+                                                                    {/* Đang cập nhật overlay */}
+                                                                    {isUpdatingThumbnail && isThumbnail && (
+                                                                        <div className='absolute inset-0 bg-black/50 flex items-center justify-center'>
+                                                                            <div className='animate-spin rounded-full h-8 w-8 border-2 border-white border-t-transparent'></div>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                    {!isDeleted && (
+                                                        <p className='text-xs text-muted-foreground mt-4 flex items-center gap-1'>
+                                                            <MaterialIcon name='info' className='text-sm' />
+                                                            <span>Di chuột vào ảnh và nhấn "Chọn làm đại diện" để đặt ảnh thumbnail</span>
+                                                        </p>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <div className='flex items-center gap-2 text-muted-foreground py-8 justify-center'>
+                                                    <MaterialIcon name='image_not_supported' className='text-2xl' />
+                                                    <span className='text-sm'>Chưa có hình ảnh cho sản phẩm này</span>
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
+                                    )}
+
+                                    {/* Tab Content: Video */}
+                                    {activeTab === 'video' && (
+                                        <div>
+                                            {isLoadingVideo ? (
+                                                <div className='flex items-center justify-center py-12'>
+                                                    <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>
+                                                </div>
+                                            ) : videoError ? (
+                                                <div className='flex items-center gap-2 text-muted-foreground py-8 justify-center'>
+                                                    <MaterialIcon name='videocam_off' className='text-2xl' />
+                                                    <span className='text-sm'>{videoError}</span>
+                                                </div>
+                                            ) : hasVideo ? (
+                                                <div className='relative aspect-video w-full max-w-2xl mx-auto bg-black rounded-xl overflow-hidden'>
+                                                    <video
+                                                        src={productVideo.fileUrl}
+                                                        controls
+                                                        className='w-full h-full object-contain'
+                                                        poster={productImages.find(img => img.mediaFileId === currentThumbnailId)?.fileUrl || productImages[0]?.fileUrl}
+                                                    >
+                                                        Trình duyệt của bạn không hỗ trợ video.
+                                                    </video>
+                                                </div>
+                                            ) : (
+                                                <div className='flex items-center gap-2 text-muted-foreground py-8 justify-center'>
+                                                    <MaterialIcon name='videocam_off' className='text-2xl' />
+                                                    <span className='text-sm'>Chưa có video cho sản phẩm này</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Description Card */}
@@ -254,37 +468,7 @@ export function ManagerProductDetailPage() {
                                     </p>
                                 </div>
 
-                                {/* Product Images Gallery */}
-                                <div className='bg-card rounded-2xl border border-border p-6 shadow-sm'>
-                                    <h3 className='text-lg font-bold text-foreground font-display mb-4'>Hình ảnh sản phẩm</h3>
-                                    <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-                                        {[0, 1, 2, 3].map((index) => (
-                                            <div key={index} className='relative aspect-square bg-muted/30 border border-border rounded-xl overflow-hidden flex items-center justify-center group'>
-                                                {product.imageUrls && product.imageUrls[index] ? (
-                                                    <>
-                                                        <img
-                                                            src={product.imageUrls[index]}
-                                                            alt={`${product.name} - image ${index + 1}`}
-                                                            className='object-cover w-full h-full transition-transform group-hover:scale-105'
-                                                        />
-                                                        {index === 0 && (
-                                                            <span className='absolute bottom-3 left-3 bg-primary text-primary-foreground text-[10px] font-bold uppercase px-2 py-0.5 rounded shadow-sm'>
-                                                                Hình chính
-                                                            </span>
-                                                        )}
-                                                    </>
-                                                ) : (
-                                                    <div className='flex flex-col items-center justify-center gap-2 text-muted-foreground'>
-                                                        <MaterialIcon name='image_not_supported' className='text-3xl' />
-                                                        <span className='text-xs font-semibold'>Trống</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* ✅ Batch Management Section - Luôn hiển thị, truyền isDeleted vào component */}
+                                {/* Batch Management Section */}
                                 {productId && (
                                     <ManagerProductBatchSection
                                         productId={productId}
@@ -308,7 +492,7 @@ export function ManagerProductDetailPage() {
                         if (!productId) return
                         setIsLoading(true)
                         try {
-                            const res = await fetchProductByIdApi(productId)
+                            const res = await fetchProductManagementByIdApi(productId)
                             if (res.success) setProduct(res.data)
                         } catch (err) {
                             console.error('Reload product after edit error:', err)
@@ -319,7 +503,7 @@ export function ManagerProductDetailPage() {
                 />
             )}
 
-            {/* Delete Confirm Dialog - Extracted Component */}
+            {/* Delete Confirm Dialog */}
             <ManagerProductDeleteDialog
                 productName={product?.name ?? ''}
                 isOpen={isDeleteConfirmOpen}

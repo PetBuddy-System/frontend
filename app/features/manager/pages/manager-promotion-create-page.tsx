@@ -10,7 +10,9 @@ import { promotionApi, type CreatePromotionDTO } from '../services/promotion/pro
 import type { ProductManagementItem } from '~/shared/lib/product'
 import { MaterialIcon } from '~/shared/ui'
 
+// ✅ Thêm option "Tất cả sản phẩm"
 const NEAR_EXPIRED_DAY_OPTIONS = [
+  { label: 'Tất cả sản phẩm', value: 9999 },
   { label: '1 tháng (30 ngày)', value: 30 },
   { label: '2 tháng (60 ngày)', value: 60 },
   { label: '3 tháng (90 ngày)', value: 90 },
@@ -18,8 +20,9 @@ const NEAR_EXPIRED_DAY_OPTIONS = [
   { label: '6 tháng (180 ngày)', value: 180 }
 ] as const
 
+// ✅ SỬA: discountType → promotionType
 type ProductDiscountState = {
-  discountType: 'PERCENTAGE' | 'FIXED'
+  promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
   discountValue: number
 }
 
@@ -33,9 +36,8 @@ export function ManagerPromotionCreatePage() {
     endDate: '',
     status: 'ACTIVE' as 'DRAFT' | 'ACTIVE'
   })
-  const [nearExpiredDays, setNearExpiredDays] = useState(120)
+  const [nearExpiredDays, setNearExpiredDays] = useState(9999) // ✅ Mặc định là "Tất cả sản phẩm"
 
-  // ✅ State cho tìm kiếm
   const [keyword, setKeyword] = useState('')
   const [keywordInput, setKeywordInput] = useState('')
 
@@ -45,21 +47,17 @@ export function ManagerPromotionCreatePage() {
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
-  // State cho phân trang
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
   const pageSize = 10
 
-  // Lưu tất cả sản phẩm đã chọn (qua các trang)
   const [selectedProductMap, setSelectedProductMap] = useState<Map<string, ProductDiscountState>>(new Map())
 
-  // Lấy danh sách product IDs đã chọn
   const selectedProductIds = useMemo(() => {
     return Array.from(selectedProductMap.keys())
   }, [selectedProductMap])
 
-  // Lấy danh sách sản phẩm đã chọn từ trang hiện tại
   const selectedProducts = useMemo(() => {
     const currentPageSelected = products.filter((product) =>
       selectedProductMap.has(product.productId)
@@ -69,15 +67,22 @@ export function ManagerPromotionCreatePage() {
 
   const canSubmit = selectedProductMap.size > 0 && !isSubmitting
 
-  // ✅ Debounce tìm kiếm (delay 350ms)
   useEffect(() => {
     const timer = setTimeout(() => {
       setKeyword(keywordInput)
-      setCurrentPage(0) // Reset về trang đầu khi tìm kiếm
+      setCurrentPage(0)
     }, 350)
 
     return () => clearTimeout(timer)
   }, [keywordInput])
+
+  // ✅ Hàm formatPrice an toàn
+  const formatPrice = (value?: number) => {
+    if (value === undefined || value === null || isNaN(value)) {
+      return '0'
+    }
+    return value.toLocaleString('vi-VN')
+  }
 
   // Load products
   useEffect(() => {
@@ -87,11 +92,11 @@ export function ManagerPromotionCreatePage() {
 
       try {
         const response = await fetchProductsManagementApi({
-          keyword: keyword.trim() || undefined, // ✅ Thêm keyword vào API call
+          keyword: keyword.trim() || undefined,
           page: currentPage,
           size: pageSize,
           sortBy: 'date_desc',
-          nearExpiredDays
+          nearExpiredDays: nearExpiredDays === 9999 ? undefined : nearExpiredDays // ✅ Không truyền khi = 9999
         })
 
         if (!response.success) {
@@ -110,35 +115,32 @@ export function ManagerPromotionCreatePage() {
     }
 
     void loadProducts()
-  }, [nearExpiredDays, currentPage, keyword]) // ✅ Thêm keyword vào dependency
+  }, [nearExpiredDays, currentPage, keyword])
 
-  // Toggle chọn sản phẩm
   function toggleProduct(productId: string) {
     setSelectedProductMap((prev) => {
       const newMap = new Map(prev)
       if (newMap.has(productId)) {
         newMap.delete(productId)
       } else {
-        newMap.set(productId, { discountType: 'PERCENTAGE', discountValue: 20 })
+        newMap.set(productId, { promotionType: 'PERCENTAGE', discountValue: 20 })
       }
       return newMap
     })
   }
 
-  // Chọn tất cả sản phẩm trên trang hiện tại
   function handleSelectAllProducts() {
     setSelectedProductMap((prev) => {
       const newMap = new Map(prev)
       for (const product of products) {
         if (!newMap.has(product.productId)) {
-          newMap.set(product.productId, { discountType: 'PERCENTAGE', discountValue: 20 })
+          newMap.set(product.productId, { promotionType: 'PERCENTAGE', discountValue: 20 })
         }
       }
       return newMap
     })
   }
 
-  // Bỏ chọn tất cả sản phẩm trên trang hiện tại
   function handleDeselectAllProducts() {
     setSelectedProductMap((prev) => {
       const newMap = new Map(prev)
@@ -149,11 +151,11 @@ export function ManagerPromotionCreatePage() {
     })
   }
 
-  // Cập nhật discount cho sản phẩm
+  // ✅ SỬA: discountType → promotionType
   function updateProductDiscount(
     productId: string,
-    field: 'discountType' | 'discountValue',
-    value: 'PERCENTAGE' | 'FIXED' | number
+    field: 'promotionType' | 'discountValue',
+    value: 'PERCENTAGE' | 'FIXED_AMOUNT' | number
   ) {
     setSelectedProductMap((prev) => {
       const newMap = new Map(prev)
@@ -168,14 +170,12 @@ export function ManagerPromotionCreatePage() {
     })
   }
 
-  // Kiểm tra sản phẩm đã được chọn chưa
   const isProductSelected = (productId: string) => {
     return selectedProductMap.has(productId)
   }
 
-  // Lấy discount của sản phẩm
   const getProductDiscount = (productId: string): ProductDiscountState => {
-    return selectedProductMap.get(productId) || { discountType: 'PERCENTAGE', discountValue: 20 }
+    return selectedProductMap.get(productId) || { promotionType: 'PERCENTAGE', discountValue: 20 }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -212,7 +212,7 @@ export function ManagerPromotionCreatePage() {
     try {
       const allSelectedProducts = Array.from(selectedProductMap.entries()).map(([productId, discount]) => ({
         productId,
-        discountType: discount.discountType,
+        promotionType: discount.promotionType,
         discountValue: discount.discountValue
       }))
 
@@ -392,7 +392,7 @@ export function ManagerPromotionCreatePage() {
                   </div>
                 </div>
 
-                {/* ✅ Thanh tìm kiếm */}
+                {/* Thanh tìm kiếm */}
                 <div className='mb-4 flex items-center gap-4'>
                   <div className='relative flex-1'>
                     <MaterialIcon
@@ -482,7 +482,7 @@ export function ManagerPromotionCreatePage() {
                               </td>
                               <td className='px-4 py-3 text-sm text-muted-foreground'>{product.brandName}</td>
                               <td className='px-4 py-3 text-sm font-semibold text-foreground'>
-                                {product.price.toLocaleString('vi-VN')} đ
+                                {formatPrice(product.salePrice ?? 0)} đ
                               </td>
                               <td className='px-4 py-3 text-sm font-semibold text-foreground'>
                                 {product.totalStock}
@@ -490,18 +490,18 @@ export function ManagerPromotionCreatePage() {
                               <td className='px-4 py-3'>
                                 {checked ? (
                                   <select
-                                    value={discount.discountType}
+                                    value={discount.promotionType}
                                     onChange={(e) =>
                                       updateProductDiscount(
                                         product.productId,
-                                        'discountType',
-                                        e.target.value as 'PERCENTAGE' | 'FIXED'
+                                        'promotionType',
+                                        e.target.value as 'PERCENTAGE' | 'FIXED_AMOUNT'
                                       )
                                     }
                                     className='h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                                   >
                                     <option value='PERCENTAGE'>Phần trăm</option>
-                                    <option value='FIXED'>Số tiền cố định</option>
+                                    <option value='FIXED_AMOUNT'>Số tiền cố định</option>
                                   </select>
                                 ) : (
                                   <span className='text-sm text-muted-foreground'>-</span>

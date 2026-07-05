@@ -6,7 +6,6 @@ export interface CartOrderSummaryProps {
   itemCount: number
   subtotal: number
   formatPrice: (value: number) => string
-  onClearCart?: () => void | Promise<void>
   isMutating?: boolean
 }
 
@@ -14,7 +13,6 @@ export function CartOrderSummary({
   itemCount,
   subtotal,
   formatPrice,
-  onClearCart,
   isMutating = false,
 }: CartOrderSummaryProps) {
   const { t } = useTranslation('products')

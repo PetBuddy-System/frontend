@@ -230,7 +230,7 @@ export function PaymentPage() {
   async function handleCancelPayment() {
     if (timerRef.current) clearInterval(timerRef.current)
     sessionStorage.removeItem(`petbuddy_payment_start_${orderId}`)
-    navigate('/order')
+    navigate('/order', { state: { orderId } })
   }
 
   const minutes = Math.floor(timeLeft / 60)

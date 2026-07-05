@@ -10,7 +10,6 @@
 
 export interface ImportMetaEnv {
   readonly VITE_API_URL?: string
-  readonly VITE_LOCALHOST_API_URL?: string
   readonly VITE_APP_ENV?: 'development' | 'staging' | 'production'
   /** "true" de bat MSW mock. Chi dung trong moi truong dev. */
   readonly VITE_ENABLE_MOCK?: string
@@ -35,7 +34,6 @@ export interface ImportMetaEnv {
 export const env = {
   // ─── Base URLs ────────────────────────────────────────────────────────────
   API_URL: import.meta.env.VITE_API_URL ?? '',
-  LOCALHOST_API_URL: import.meta.env.VITE_LOCALHOST_API_URL ?? '',
   // ─── App Config ────────────────────────────────────────────────────────────
   APP_ENV: import.meta.env.VITE_APP_ENV ?? 'development',
   /** true khi VITE_ENABLE_MOCK=true. MSW chi khoi dong khi flag nay bat. */

@@ -3,7 +3,7 @@ import { customFetch } from '~/api/mutator/custom-fetch'
 import { readStorage } from '~/shared/lib/storage'
 import { STORAGE_KEYS } from '~/shared/config/site'
 import { guestCart } from '~/shared/lib/guest-cart'
-import type {CartResponse,AddToCartRequest,UpdateCartItemRequest,MergeCartRequest,} from '~/shared/lib/cart'
+import type {CartResponse,AddToCartRequest,UpdateCartItemRequest,MergeCartRequest, CartItemResponse,} from '~/shared/lib/cart'
 
 interface ApiResponse<T> {
   success: boolean
@@ -54,18 +54,25 @@ export async function addToCartApi(
 export async function updateCartItemApi(
   cartItemId: string,
   request: UpdateCartItemRequest
-): Promise<void> {
+): Promise<CartItemResponse> {
   if (!isLoggedIn()) {
-    guestCart.update(cartItemId, request)
-    return
+    const updated = guestCart.update(cartItemId, request)
+    if (Array.isArray(updated)) {
+      const found = updated.find((it) => it.cartItemId === cartItemId)
+      return (found ?? (updated[0] as any)) as CartItemResponse
+    }
+
+    return updated as CartItemResponse
   }
-  await customFetch<ApiResponse<void>>({
+
+  const response = await customFetch<ApiResponse<CartItemResponse>>({
     url: `${CART_BASE_URL}/items/${cartItemId}`,
     method: 'PUT',
     data: request,
   })
-}
 
+  return response.data
+}
 export async function removeCartItemApi(cartItemId: string): Promise<void> {
   if (!isLoggedIn()) {
     guestCart.remove(cartItemId)
@@ -77,18 +84,6 @@ export async function removeCartItemApi(cartItemId: string): Promise<void> {
   })
 }
 
-export async function clearCartApi(): Promise<void> {
-  if (!isLoggedIn()) {
-    guestCart.clear()
-    return
-  }
-  await customFetch<ApiResponse<void>>({
-    url: CART_BASE_URL,
-    method: 'DELETE',
-  })
-}
-
-/** Gọi ngay sau khi login thành công, để gộp guest cart vào cart của user. */
 export async function mergeCartApi(): Promise<CartResponse> {
   const guestItems = guestCart.getAll()
   if (guestItems.length === 0) {

@@ -7,6 +7,8 @@
   "loading": "Loading...",
   "errors": {
     "unknown": "An unexpected error occurred.",
-    "notFound": "The requested page could not be found."
+    "notFound": "The requested page could not be found.",
+    "locationOutsideHcm": "The selected location is outside the delivery area (HCMC), please choose a different address.",
+    "locationOnWater": "The selected location is on water, please choose a different address."
   }
 }
