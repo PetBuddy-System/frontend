@@ -96,8 +96,12 @@ export function VoucherPickerPage() {
     setSelectedCode('')
   }
 
-  const eligibleVouchers = vouchers.filter((v) => isVoucherEligible(v, orderSubtotal))
-  const ineligibleVouchers = vouchers.filter((v) => !isVoucherEligible(v, orderSubtotal))
+  const visibleVouchers = vouchers.filter(
+  (v) => !(v.perUserLimit && (v.usedByCurrentUser ?? 0) >= v.perUserLimit)
+)
+
+const eligibleVouchers = visibleVouchers.filter((v) => isVoucherEligible(v, orderSubtotal))
+const ineligibleVouchers = visibleVouchers.filter((v) => !isVoucherEligible(v, orderSubtotal))
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>

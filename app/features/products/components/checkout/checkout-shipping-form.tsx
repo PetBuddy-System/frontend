@@ -10,21 +10,15 @@ export interface CheckoutShippingFormProps {
 }
 
 export function toPhoneDisplay(phone: string): string {
-  const stripped = phone.trim()
-  if (!stripped) return ''
-  if (stripped.startsWith('+84')) return stripped
-  if (stripped.startsWith('0')) return '+84' + stripped.slice(1)
-  return '+84' + stripped
+  return phone.trim()
 }
 
 export function toPhoneSubmit(phone: string): string {
-  const stripped = phone.trim()
-  if (stripped.startsWith('+84')) return '0' + stripped.slice(3)
-  return stripped
+  return phone.trim()
 }
 
 function isValidPhone(phone: string): boolean {
-  return /^\+84\d{9}$/.test(phone.trim())
+  return /^0\d{10}$/.test(phone.trim())
 }
 
 export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }: CheckoutShippingFormProps) {
@@ -43,9 +37,8 @@ export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }
     }
 
     if (defaultPhone) {
-      const display = toPhoneDisplay(defaultPhone)
-      setSavedPhone(display)
-      sessionStorage.setItem('petbuddy_checkout_phone', display)
+      setSavedPhone(defaultPhone)
+      sessionStorage.setItem('petbuddy_checkout_phone', defaultPhone)
     } else {
       setSavedPhone(sessionStorage.getItem('petbuddy_checkout_phone') ?? '')
     }
@@ -57,35 +50,28 @@ export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }
   }
 
   function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
-    let value = e.target.value
-    if (!value.startsWith('+84')) {
-      const digits = value.replace(/\D/g, '')
-      value = '+84' + (digits.startsWith('84') ? digits.slice(2) : digits)
+    let digits = e.target.value.replace(/\D/g, '')
+
+    if (digits.length > 0 && !digits.startsWith('0')) {
+      digits = '0' + digits
     }
-    if (value.length > 12) return
+    if (digits.length > 11) {
+      digits = digits.slice(0, 11)
+    }
 
-    sessionStorage.setItem('petbuddy_checkout_phone', value)
-    setSavedPhone(value)
+    sessionStorage.setItem('petbuddy_checkout_phone', digits)
+    setSavedPhone(digits)
 
-    if (value.length > 3 && !isValidPhone(value)) {
-      setPhoneError('Số điện thoại phải có đúng 10 chữ số sau +84')
+    if (digits.length > 0 && !isValidPhone(digits)) {
+      setPhoneError('Số điện thoại phải có đúng 11 chữ số và bắt đầu bằng số 0')
     } else {
       setPhoneError('')
     }
   }
 
-  function handlePhoneFocus() {
-    if (!savedPhone) {
-      setSavedPhone('+84')
-    }
-  }
-
   function handlePhoneBlur() {
-    if (savedPhone === '+84' || savedPhone === '') {
-      setSavedPhone('')
-      setPhoneError('')
-    } else if (!isValidPhone(savedPhone)) {
-      setPhoneError('Số điện thoại phải có đúng 10 chữ số sau +84')
+    if (savedPhone.length > 0 && !isValidPhone(savedPhone)) {
+      setPhoneError('Số điện thoại phải có đúng 11 chữ số và bắt đầu bằng số 0')
     }
   }
 
@@ -121,17 +107,16 @@ export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }
           <label className='text-sm font-semibold text-foreground' htmlFor='phone'>
             Số điện thoại
           </label>
-          <input type='hidden' name='phoneNumber' value={toPhoneSubmit(savedPhone)} />
           <input
             id='phone'
+            name='phoneNumber'
             className={`w-full rounded-xl border bg-background px-4 py-3 text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${phoneError ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
               }`}
-            placeholder='+84912345678'
             required
             type='tel'
+            inputMode='numeric'
             value={savedPhone}
             onChange={handlePhoneChange}
-            onFocus={handlePhoneFocus}
             onBlur={handlePhoneBlur}
           />
           {phoneError && <p className='text-xs text-destructive'>{phoneError}</p>}
