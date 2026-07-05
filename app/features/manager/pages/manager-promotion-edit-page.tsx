@@ -16,8 +16,9 @@ const NEAR_EXPIRED_DAY_OPTIONS = [
   { label: '6 tháng (180 ngày)', value: 180 }
 ] as const
 
+// ✅ ĐÃ SỬA: discountType → promotionType
 type ProductDiscountState = {
-  discountType: 'PERCENTAGE' | 'FIXED'
+  promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
   discountValue: number
 }
 
@@ -44,6 +45,14 @@ export function ManagerPromotionEditPage() {
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
+  // ✅ Thêm hàm formatPrice an toàn
+  const formatPrice = (value?: number) => {
+    if (value === undefined || value === null || isNaN(value)) {
+      return '0'
+    }
+    return value.toLocaleString('vi-VN')
+  }
+
   // Load existing promotion data
   useEffect(() => {
     if (!promotionId) return
@@ -64,18 +73,20 @@ export function ManagerPromotionEditPage() {
           status: promo.status
         })
 
-        // Pre-fill selected products and discounts from promotionDetails
-        const details = (promo as unknown as { promotionDetails?: Array<{
-          productId: string
-          discountType: 'PERCENTAGE' | 'FIXED'
-          discountValue: number
-        }> }).promotionDetails
+        // ✅ ĐÃ SỬA: discountType → promotionType
+        const details = (promo as unknown as {
+          promotionDetails?: Array<{
+            productId: string
+            promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
+            discountValue: number
+          }>
+        }).promotionDetails
 
         if (details && details.length > 0) {
           setSelectedProductIds(details.map((d) => d.productId))
           const discountMap: Record<string, ProductDiscountState> = {}
           for (const d of details) {
-            discountMap[d.productId] = { discountType: d.discountType, discountValue: d.discountValue }
+            discountMap[d.productId] = { promotionType: d.promotionType, discountValue: d.discountValue }
           }
           setProductDiscountById(discountMap)
         }
@@ -141,7 +152,7 @@ export function ManagerPromotionEditPage() {
 
       return {
         ...currentDiscounts,
-        [productId]: currentDiscounts[productId] ?? { discountType: 'PERCENTAGE', discountValue: 20 }
+        [productId]: currentDiscounts[productId] ?? { promotionType: 'PERCENTAGE', discountValue: 20 }
       }
     })
   }
@@ -152,7 +163,7 @@ export function ManagerPromotionEditPage() {
     setProductDiscountById((current) => {
       const next = { ...current }
       for (const product of products) {
-        next[product.productId] = next[product.productId] ?? { discountType: 'PERCENTAGE', discountValue: 20 }
+        next[product.productId] = next[product.productId] ?? { promotionType: 'PERCENTAGE', discountValue: 20 }
       }
       return next
     })
@@ -163,15 +174,16 @@ export function ManagerPromotionEditPage() {
     setProductDiscountById({})
   }
 
+  // ✅ ĐÃ SỬA: discountType → promotionType
   function updateProductDiscount(
     productId: string,
-    field: 'discountType' | 'discountValue',
-    value: 'PERCENTAGE' | 'FIXED' | number
+    field: 'promotionType' | 'discountValue',
+    value: 'PERCENTAGE' | 'FIXED_AMOUNT' | number
   ) {
     setProductDiscountById((current) => ({
       ...current,
       [productId]: {
-        discountType: current[productId]?.discountType ?? 'PERCENTAGE',
+        promotionType: current[productId]?.promotionType ?? 'PERCENTAGE',
         discountValue: current[productId]?.discountValue ?? 20,
         [field]: value
       } as ProductDiscountState
@@ -216,7 +228,7 @@ export function ManagerPromotionEditPage() {
         ...(selectedProducts.length > 0 && {
           promotionDetails: selectedProducts.map((product) => ({
             productId: product.productId,
-            discountType: productDiscountById[product.productId]?.discountType ?? 'PERCENTAGE',
+            promotionType: productDiscountById[product.productId]?.promotionType ?? 'PERCENTAGE',
             discountValue: productDiscountById[product.productId]?.discountValue ?? 20
           }))
         })
@@ -509,7 +521,7 @@ export function ManagerPromotionEditPage() {
                               </td>
                               <td className='px-4 py-3 text-sm text-muted-foreground'>{product.brandName}</td>
                               <td className='px-4 py-3 text-sm font-semibold text-foreground'>
-                                {product.price.toLocaleString('vi-VN')} đ
+                                {formatPrice(product.salePrice)} đ
                               </td>
                               <td className='px-4 py-3 text-sm font-semibold text-foreground'>
                                 {product.totalStock}
@@ -517,18 +529,18 @@ export function ManagerPromotionEditPage() {
                               <td className='px-4 py-3'>
                                 {checked ? (
                                   <select
-                                    value={productDiscountById[product.productId]?.discountType ?? 'PERCENTAGE'}
+                                    value={productDiscountById[product.productId]?.promotionType ?? 'PERCENTAGE'}
                                     onChange={(e) =>
                                       updateProductDiscount(
                                         product.productId,
-                                        'discountType',
-                                        e.target.value as 'PERCENTAGE' | 'FIXED'
+                                        'promotionType',
+                                        e.target.value as 'PERCENTAGE' | 'FIXED_AMOUNT'
                                       )
                                     }
                                     className='h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                                   >
                                     <option value='PERCENTAGE'>Phần trăm</option>
-                                    <option value='FIXED'>Số tiền cố định</option>
+                                    <option value='FIXED_AMOUNT'>Số tiền cố định</option>
                                   </select>
                                 ) : (
                                   <span className='text-sm text-muted-foreground'>—</span>

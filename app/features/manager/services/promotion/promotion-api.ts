@@ -11,16 +11,16 @@ export interface GetPromotionsParams {
   sortBy?: 'createdAt_asc' | 'createdAt_desc' | 'endDate_asc' | 'endDate_desc' | 'startDate_asc' | 'startDate_desc'
 }
 
-// Response - promotion detail item (sản phẩm trong chương trình)
+// ✅ SỬA: Response - promotion detail item
 export interface PromotionDetail {
   promotionDetailId: string
   productId: string
   productName: string
   productCode: string
-  price: number
-  discountType: 'PERCENTAGE' | 'FIXED'
-  discountValue: number
   salePrice: number
+  promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
+  discountValue: number
+  promotionPrice: number
   discountAmount: number
 }
 
@@ -65,7 +65,6 @@ export interface PromotionResponse {
   timestamp: string
 }
 
-// Create DTO
 export interface CreatePromotionDTO {
   name: string
   description: string
@@ -74,13 +73,22 @@ export interface CreatePromotionDTO {
   status: 'DRAFT' | 'ACTIVE'
   promotionDetails: Array<{
     productId: string
-    discountType: 'PERCENTAGE' | 'FIXED'
+    promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
     discountValue: number
   }>
 }
 
-export interface UpdatePromotionDTO extends Partial<CreatePromotionDTO> {
+export interface UpdatePromotionDTO {
+  name?: string
+  description?: string
+  startDate?: string
+  endDate?: string
   status?: 'DRAFT' | 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'DELETED'
+  promotionDetails?: Array<{
+    productId: string
+    promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
+    discountValue: number
+  }>
 }
 
 const PROMOTIONS_BASE_URL = `${env.API_URL}/api/promotions`

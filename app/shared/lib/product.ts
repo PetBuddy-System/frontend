@@ -151,7 +151,7 @@ export interface ProductManagementItem {
   batchCount: number
   createdAt: string
   updatedAt: string
-  unit?: ProductUnit  // ✅ Sử dụng ProductUnit
+  unit?: ProductUnit
 }
 
 export interface PagedProductManagementResponse {

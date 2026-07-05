@@ -60,6 +60,11 @@ export function ManagerPromotionDetailDialog({
     return parsedDate.toLocaleDateString('vi-VN')
   }
 
+  const formatPrice = (value?: number) => {
+    if (value === undefined || value === null) return '0'
+    return value.toLocaleString('vi-VN')
+  }
+
   const getStatusClass = (status?: string) => {
     switch (status) {
       case 'ACTIVE':
@@ -169,19 +174,19 @@ export function ManagerPromotionDetailDialog({
                               {detail.productName}
                             </td>
                             <td className='px-4 py-3 text-right font-semibold text-foreground'>
-                              {detail.price.toLocaleString('vi-VN')} đ
+                              {formatPrice(detail.salePrice)} đ
                             </td>
                             <td className='px-4 py-3 text-center font-bold text-success'>
-                              {detail.discountType === 'PERCENTAGE' 
-                                ? `${detail.discountValue}%` 
-                                : `${detail.discountValue.toLocaleString('vi-VN')} đ`
+                              {detail.promotionType === 'PERCENTAGE'
+                                ? `${detail.discountValue}%`
+                                : `${formatPrice(detail.discountValue)} đ`
                               }
                             </td>
                             <td className='px-4 py-3 text-right font-semibold text-destructive'>
-                              -{detail.discountAmount.toLocaleString('vi-VN')} đ
+                              -{formatPrice(detail.discountAmount)} đ
                             </td>
                             <td className='px-4 py-3 text-right font-bold text-primary'>
-                              {detail.salePrice.toLocaleString('vi-VN')} đ
+                              {formatPrice(detail.promotionPrice)} đ  {/* ✅ Đổi từ salePrice → promotionPrice */}
                             </td>
                           </tr>
                         ))
