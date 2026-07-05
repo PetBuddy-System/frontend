@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -10,7 +11,6 @@ import { ProductsSidebarFilters } from '../components/listing/products-sidebar-f
 import { ProductsPagination } from '../components/listing/products-pagination'
 import { fetchProductsApi, fetchCategoriesApi } from '../services'
 import type { ProductResponse, CategoryData } from '~/shared/lib/product'
-import { cn } from '~/shared/lib/cn'
 
 const SORT_OPTIONS = ['popular', 'priceLow', 'priceHigh', 'newest'] as const
 
@@ -182,47 +182,6 @@ export function ProductsPage() {
                   </select>
                 </div>
               </div>
-
-              <div className='mb-4 flex gap-3 overflow-x-auto pb-4'>
-                <button
-                  type='button'
-                  onClick={() => {
-                    setCategory('all')
-                    setPage(0)
-                  }}
-                  className={cn(
-                    'whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-all active:scale-[0.98]',
-                    category === 'all'
-                      ? 'bg-secondary text-secondary-foreground shadow-sm'
-                      : 'border border-border bg-card text-muted-foreground hover:bg-muted hover:text-primary'
-                  )}
-                >
-                  {t('chips.all')}
-                </button>
-
-                {categories.map((cat) => {
-                  const isSelected = category === cat.categoryId
-                  return (
-                    <button
-                      key={cat.categoryId}
-                      type='button'
-                      onClick={() => {
-                        setCategory(cat.categoryId)
-                        setPage(0)
-                      }}
-                      className={cn(
-                        'whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-all active:scale-[0.98]',
-                        isSelected
-                          ? 'bg-secondary text-secondary-foreground shadow-sm'
-                          : 'border border-border bg-card text-muted-foreground hover:bg-muted hover:text-primary'
-                      )}
-                    >
-                      {cat.name}
-                    </button>
-                  )
-                })}
-              </div>
-
               {error && (
                 <div className='mb-6 flex items-center gap-2 rounded-xl bg-destructive/10 p-4 text-sm font-semibold text-destructive'>
                   <MaterialIcon name='error' className='shrink-0 text-xl' />

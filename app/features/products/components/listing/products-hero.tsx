@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import cat from '../../assets/hinh-nen-meo.png'
+import cat from '../../assets/PetFood.png'
 
 export function ProductsHero() {
   const { t } = useTranslation('products')

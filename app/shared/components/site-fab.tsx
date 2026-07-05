@@ -11,24 +11,24 @@ export function SiteFab() {
 
   return (
     <>
-      <div className='fixed bottom-8 right-8 z-50 hidden flex-col gap-4 md:flex'>
-        <button
-          type='button'
-          onClick={() => setIsChatOpen(true)}
-          aria-label={t('actions.supportChat')}
-          className='flex h-14 w-14 items-center justify-center rounded-full bg-brand-zalo text-brand-zalo-foreground shadow-lg transition-transform hover:scale-105'
-        >
-          <MaterialIcon name='chat' className='text-[30px]' />
-        </button>
+      <div className='fixed bottom-8 right-8 z-50 hidden flex-col items-end gap-3 md:flex'>
         <a
           href={ZALO_LINK}
           target='_blank'
           rel='noreferrer'
           aria-label={t('actions.callNow')}
-          className='flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105'
+          className='flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105'
         >
-          <MaterialIcon name='call' className='text-[28px]' />
+          <MaterialIcon name='call' className='text-[24px]' />
         </a>
+        <button
+          type='button'
+          onClick={() => setIsChatOpen((open) => !open)}
+          aria-label={t('actions.supportChat')}
+          className='flex h-14 w-14 items-center justify-center rounded-full bg-brand-zalo text-brand-zalo-foreground shadow-lg transition-transform hover:scale-105'
+        >
+          <MaterialIcon name='chat' className='text-[28px]' />
+        </button>
       </div>
 
       <SiteChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
