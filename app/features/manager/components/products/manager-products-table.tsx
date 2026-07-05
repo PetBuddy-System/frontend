@@ -28,6 +28,16 @@ export function ManagerProductsTable({
 }: ManagerProductsTableProps) {
   const { t } = useTranslation('manager')
 
+  // 👇 THÊM LOG Ở ĐÂY
+  console.log('📊 ManagerProductsTable - Products:', products)
+  console.log('📊 ManagerProductsTable - Total elements:', totalElements)
+  if (products.length > 0) {
+    console.log('📊 ManagerProductsTable - First product:', products[0])
+    console.log('📊 ManagerProductsTable - thumbnailUrl:', products[0]?.thumbnailUrl)
+    console.log('📊 ManagerProductsTable - salePrice:', products[0]?.salePrice)
+    console.log('📊 ManagerProductsTable - status:', products[0]?.status)
+  }
+
   const formatPrice = (price: number) => {
     return (price || 0).toLocaleString('vi-VN') + 'đ'
   }
@@ -164,9 +174,13 @@ export function ManagerProductsTable({
           </thead>
           <tbody className='divide-y divide-border'>
             {products.map((product) => {
-              const thumbnail = product.imageUrls?.[0] || 'https://placehold.co/100'
+              // ✅ SỬA: Dùng thumbnailUrl thay vì imageUrls
+              const thumbnail = product.thumbnailUrl || 'https://placehold.co/100'
               const status = getProductStatus(product)
               const isDeleted = product.status === 'DELETED'
+
+              // 👇 THÊM LOG CHO TỪNG SẢN PHẨM
+              console.log('🖼️ Product:', product.name, 'thumbnailUrl:', product.thumbnailUrl, 'salePrice:', product.salePrice)
 
               return (
                 <tr key={product.productId} className='group transition-colors hover:bg-muted/70'>
@@ -192,7 +206,10 @@ export function ManagerProductsTable({
                       {product.brandName || 'N/A'}
                     </span>
                   </td>
-                  <td className='px-4 py-4 font-bold text-primary'>{formatPrice(product.price)}</td>
+                  <td className='px-4 py-4 font-bold text-primary'>
+                    {/* ✅ SỬA: Dùng salePrice thay vì price */}
+                    {formatPrice(product.salePrice || 0)}
+                  </td>
                   <td className='px-4 py-4 text-center'>
                     <div className='flex flex-col items-center'>
                       <span className={product.totalStock === 0 ? 'font-bold text-destructive' : 'font-semibold text-foreground'}>

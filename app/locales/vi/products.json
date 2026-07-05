@@ -455,5 +455,48 @@
     "title": "Sản phẩm đã hết hàng",
     "description": "Rất tiếc! Sản phẩm này vừa được người khác mua hết. Sản phẩm đã được tự động xóa khỏi giỏ hàng của bạn.",
     "gotIt": "Đã hiểu"
+  },
+  "unit": {
+    "PIECE": "Cái",
+    "KG": "Kilogram",
+    "GRAM": "Gram",
+    "LITER": "Lít",
+    "MILLILITER": "Mililit",
+    "BAG": "Túi",
+    "BOX": "Hộp",
+    "PACK": "Gói",
+    "BOTTLE": "Chai",
+    "CAN": "Lon",
+    "TUBE": "Tuýp",
+    "SET": "Bộ"
+  },
+  "status": {
+    "ACTIVE": "Đang hoạt động",
+    "INACTIVE": "Ngừng kinh doanh",
+    "DELETED": "Đã xóa"
+  },
+  "import": {
+    "error": {
+      "PRODUCT_NAME_REQUIRED": "Tên sản phẩm là bắt buộc",
+      "PRODUCT_NAME_TOO_LONG": "Tên sản phẩm quá dài",
+      "PRODUCT_PRICE_INVALID": "Giá sản phẩm không hợp lệ",
+      "PRODUCT_PRICE_TOO_HIGH": "Giá sản phẩm quá cao",
+      "CATEGORY_NAME_REQUIRED": "Tên danh mục là bắt buộc",
+      "CATEGORY_NAME_TOO_LONG": "Tên danh mục quá dài",
+      "CATEGORY_NOT_FOUND": "Không tìm thấy danh mục",
+      "STOCK_QUANTITY_INVALID": "Số lượng tồn kho không hợp lệ",
+      "STOCK_QUANTITY_TOO_HIGH": "Số lượng tồn kho quá lớn",
+      "PRODUCT_UNIT_REQUIRED": "Đơn vị sản phẩm là bắt buộc",
+      "PRODUCT_UNIT_INVALID": "Đơn vị sản phẩm không hợp lệ",
+      "DESCRIPTION_TOO_LONG": "Mô tả quá dài",
+      "BRAND_NAME_TOO_LONG": "Tên thương hiệu quá dài",
+      "INGREDIENTS_TOO_LONG": "Thành phần quá dài",
+      "USAGE_INSTRUCTIONS_TOO_LONG": "Hướng dẫn sử dụng quá dài",
+      "EXPIRY_DATE_INVALID": "Ngày hết hạn không hợp lệ",
+      "BASE_PRICE_INVALID": "Giá gốc không hợp lệ",
+      "BASE_PRICE_MUST_BE_LESS_THAN_SALE_PRICE": "Giá gốc phải nhỏ hơn giá bán",
+      "PRODUCT_INACTIVE": "Sản phẩm đã ngừng kinh doanh",
+      "INVALID_EXCEL_TEMPLATE": "Template Excel không hợp lệ"
+    }
   }
 }

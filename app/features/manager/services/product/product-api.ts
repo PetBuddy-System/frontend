@@ -1,4 +1,5 @@
 // manager/services/product/product-api.ts
+
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type {
@@ -13,7 +14,11 @@ import type {
   UpdateProductResponse,
   CreateProductPayload,
   CreateProductResponse,
-  ImportProductsResponse
+  ImportProductsResponse,
+  ProductVideoResponse,
+  ProductImagesResponse,
+  UpdateProductImagesResponse,
+  UpdateProductVideoResponse
 } from '~/shared/lib/product'
 
 const PRODUCTS_BASE_URL = `${env.API_URL}${env.API_PRODUCTS_PATH}`
@@ -44,13 +49,11 @@ export async function fetchProductsManagementApi(
     nearExpiredDays
   } = params
 
-  // ✅ Build params rõ ràng, loại bỏ undefined
   const queryParams: Record<string, string | number> = {
     page,
-    size // ✅ Luôn có size
+    size
   }
 
-  // Chỉ thêm các param có giá trị
   if (keyword && keyword.trim()) {
     queryParams.keyword = keyword.trim()
   }
@@ -88,6 +91,80 @@ export async function fetchProductManagementByIdApi(
   })
 }
 
+// ─── Product Video API ────────────────────────────────────────────────────
+export async function fetchProductVideoApi(
+  productId: string
+): Promise<ProductVideoResponse> {
+  return customFetch<ProductVideoResponse>({
+    url: `${PRODUCTS_BASE_URL}/${productId}/video`,
+    method: 'GET'
+  })
+}
+
+// ─── Product Images API ───────────────────────────────────────────────────
+export async function fetchProductImagesApi(
+  productId: string
+): Promise<ProductImagesResponse> {
+  return customFetch<ProductImagesResponse>({
+    url: `${PRODUCTS_BASE_URL}/${productId}/images`,
+    method: 'GET'
+  })
+}
+
+export async function updateProductImagesApi(
+  productId: string,
+  images?: File[],
+  keepImageIds?: number[]
+): Promise<UpdateProductImagesResponse> {
+  const formData = new FormData()
+
+
+  if (images !== undefined) {
+    if (images.length === 0) {
+      // Xóa hết ảnh - gửi file rỗng
+      formData.append('images', new Blob([]), '')
+    } else {
+      for (const file of images) {
+        formData.append('images', file)
+      }
+    }
+  }
+
+  // Thêm keepImageIds nếu có
+  if (keepImageIds && keepImageIds.length > 0) {
+    for (const id of keepImageIds) {
+      formData.append('keepImageIds', id.toString())
+    }
+  }
+
+  return customFetch<UpdateProductImagesResponse>({
+    url: `${PRODUCTS_BASE_URL}/${productId}/images`,
+    method: 'PUT',
+    data: formData
+  })
+}
+
+export async function updateProductVideoApi(
+  productId: string,
+  video?: File | null
+): Promise<UpdateProductVideoResponse> {
+  const formData = new FormData()
+
+  if (video === null) {
+    // Xóa video - gửi file rỗng
+    formData.append('video', new Blob([]), '')
+  } else if (video !== undefined) {
+    // Thay thế video mới
+    formData.append('video', video)
+  }
+
+  return customFetch<UpdateProductVideoResponse>({
+    url: `${PRODUCTS_BASE_URL}/${productId}/video`,
+    method: 'PUT',
+    data: formData
+  })
+}
+
 // ─── Categories ────────────────────────────────────────────────────────────
 
 export async function fetchCategoriesApi(): Promise<ListCategoryResponse> {
@@ -100,22 +177,12 @@ export async function fetchCategoriesApi(): Promise<ListCategoryResponse> {
 // ─── Create / Update / Import ─────────────────────────────────────────────
 
 export async function createProductApi(
-  payload: CreateProductPayload,
-  images?: File[]
+  payload: CreateProductPayload
 ): Promise<CreateProductResponse> {
-  const formData = new FormData()
-  formData.append('data', JSON.stringify(payload))
-
-  if (images && images.length > 0) {
-    for (const file of images) {
-      formData.append('images', file)
-    }
-  }
-
   return customFetch<CreateProductResponse>({
     url: PRODUCTS_BASE_URL,
     method: 'POST',
-    data: formData
+    data: payload
   })
 }
 
@@ -124,19 +191,27 @@ export async function updateProductApi(
   payload: UpdateProductPayload,
   images?: File[]
 ): Promise<UpdateProductResponse> {
-  const formData = new FormData()
-  formData.append('data', JSON.stringify(payload))
-
+  // Nếu có images, gửi dạng FormData
   if (images && images.length > 0) {
+    const formData = new FormData()
+    formData.append('data', JSON.stringify(payload))
+
     for (const file of images) {
       formData.append('images', file)
     }
+
+    return customFetch<UpdateProductResponse>({
+      url: `${PRODUCTS_BASE_URL}/${productId}`,
+      method: 'PATCH',
+      data: formData
+    })
   }
 
+  // Nếu không có images, gửi JSON
   return customFetch<UpdateProductResponse>({
     url: `${PRODUCTS_BASE_URL}/${productId}`,
     method: 'PATCH',
-    data: formData
+    data: payload
   })
 }
 
@@ -164,7 +239,6 @@ export async function fetchProductStatsApi(
     nearExpiredDays?: number
   } = {}
 ): Promise<{ inStock: number; lowStock: number }> {
-  // ✅ Chỉ gọi 1 lần với size=1 để lấy total
   const response = await fetchProductsManagementApi({
     keyword: params.keyword,
     categoryId: params.categoryId,
@@ -178,10 +252,8 @@ export async function fetchProductStatsApi(
     throw new Error(response.message || 'Failed to fetch product stats')
   }
 
-
   return {
     inStock: 0,
     lowStock: 0
   }
-
 }

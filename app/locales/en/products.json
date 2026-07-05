@@ -455,5 +455,48 @@
     "title": "Product Out of Stock",
     "description": "We are sorry! This product was just bought by someone else. The product has been automatically removed from your cart.",
     "gotIt": "Got it"
+  },
+  "unit": {
+    "PIECE": "Piece",
+    "KG": "Kilogram",
+    "GRAM": "Gram",
+    "LITER": "Liter",
+    "MILLILITER": "Milliliter",
+    "BAG": "Bag",
+    "BOX": "Box",
+    "PACK": "Pack",
+    "BOTTLE": "Bottle",
+    "CAN": "Can",
+    "TUBE": "Tube",
+    "SET": "Set"
+  },
+  "status": {
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+    "DELETED": "Deleted"
+  },
+  "import": {
+    "error": {
+      "PRODUCT_NAME_REQUIRED": "Product name is required",
+      "PRODUCT_NAME_TOO_LONG": "Product name is too long",
+      "PRODUCT_PRICE_INVALID": "Product price is invalid",
+      "PRODUCT_PRICE_TOO_HIGH": "Product price is too high",
+      "CATEGORY_NAME_REQUIRED": "Category name is required",
+      "CATEGORY_NAME_TOO_LONG": "Category name is too long",
+      "CATEGORY_NOT_FOUND": "Category not found",
+      "STOCK_QUANTITY_INVALID": "Stock quantity is invalid",
+      "STOCK_QUANTITY_TOO_HIGH": "Stock quantity is too high",
+      "PRODUCT_UNIT_REQUIRED": "Product unit is required",
+      "PRODUCT_UNIT_INVALID": "Product unit is invalid",
+      "DESCRIPTION_TOO_LONG": "Description is too long",
+      "BRAND_NAME_TOO_LONG": "Brand name is too long",
+      "INGREDIENTS_TOO_LONG": "Ingredients is too long",
+      "USAGE_INSTRUCTIONS_TOO_LONG": "Usage instructions is too long",
+      "EXPIRY_DATE_INVALID": "Expiry date is invalid",
+      "BASE_PRICE_INVALID": "Base price is invalid",
+      "BASE_PRICE_MUST_BE_LESS_THAN_SALE_PRICE": "Base price must be less than sale price",
+      "PRODUCT_INACTIVE": "Product is inactive",
+      "INVALID_EXCEL_TEMPLATE": "Invalid Excel template"
+    }
   }
 }
