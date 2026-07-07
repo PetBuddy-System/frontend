@@ -10,3 +10,11 @@ export async function getPaymentByOrderIdApi(orderId: number): Promise<ApiRespon
     method: 'GET'
   })
 }
+
+export async function updatePaymentMethodApi(orderId: number, paymentMethod: 'CASH' | 'CARD'): Promise<ApiResponse<PaymentResponse>> {
+  return customFetch<ApiResponse<PaymentResponse>>({
+    url: `${PAYMENT_BASE_URL}/method/${orderId}`,
+    method: 'PUT',
+    params: { paymentMethod }
+  })
+}

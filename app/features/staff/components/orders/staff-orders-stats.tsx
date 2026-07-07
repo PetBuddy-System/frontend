@@ -9,7 +9,7 @@ interface StaffOrdersStatsProps {
         picking: number
         shipping: number
         completed: number
-        canceled: number
+        cancelled: number
     }
     statusFilter: string
     onStatusFilterChange: (status: string) => void
@@ -118,12 +118,11 @@ export function StaffOrdersStats({ stats, statusFilter, onStatusFilterChange }: 
                 </div>
             </button>
 
-            {/* Card 6: Canceled */}
             <button
-                onClick={() => onStatusFilterChange(statusFilter === 'CANCELED' ? 'ALL' : 'CANCELED')}
+                onClick={() => onStatusFilterChange(statusFilter === 'CANCELLED' ? 'ALL' : 'CANCELLED')}
                 className={cn(
                     'flex flex-col justify-between rounded-2xl border bg-card p-4 text-left transition-all hover:scale-[1.02] hover:border-primary',
-                    statusFilter === 'CANCELED' ? 'border-primary ring-2 ring-ring' : 'border-border'
+                    statusFilter === 'CANCELLED' ? 'border-primary ring-2 ring-ring' : 'border-border'
                 )}
             >
                 <div className='flex justify-between items-start w-full mb-4'>
@@ -133,7 +132,7 @@ export function StaffOrdersStats({ stats, statusFilter, onStatusFilterChange }: 
                     <span className='text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400'>Đã hủy</span>
                 </div>
                 <div>
-                    <span className='text-3xl font-extrabold text-foreground'>{stats.canceled}</span>
+                    <span className='text-3xl font-extrabold text-foreground'>{stats.cancelled}</span>
                     <span className='block text-xs text-muted-foreground mt-0.5'>Đã hủy</span>
                 </div>
             </button>

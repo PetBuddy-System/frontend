@@ -64,7 +64,7 @@ function renderStatusBadge(status: string) {
                     Hoàn thành
                 </span>
             )
-        case 'CANCELED':
+        case 'CANCELLED':
             return (
                 <span className='inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-xs font-bold uppercase text-red-700 dark:bg-red-950/40 dark:text-red-400'>
                     <span className='h-1.5 w-1.5 rounded-full bg-red-700 dark:bg-red-400' />
@@ -97,7 +97,6 @@ function renderPaymentStatusBadge(status?: string) {
                 </span>
             )
         case 'CANCELLED':
-        case 'CANCELED':
             return (
                 <span className='inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase text-gray-600 dark:bg-gray-800 dark:text-gray-400 border border-gray-200/30 w-fit'>
                     Đã hủy
@@ -271,7 +270,7 @@ export function StaffOrdersTable({
                                                         </button>
                                                     )}
                                                     <button
-                                                        onClick={() => onTransition(order.orderId, 'CANCELED')}
+                                                        onClick={() => onTransition(order.orderId, 'CANCELLED')}
                                                         className='rounded-xl bg-red-600 hover:bg-red-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
                                                     >
                                                         Hủy

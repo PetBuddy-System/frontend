@@ -15,6 +15,7 @@ export interface CheckoutOrderItem {
   price: number
   quantity: number
   title?: string
+  productId?: string
 }
 
 export interface CheckoutOrderSummaryProps {
@@ -28,6 +29,7 @@ export interface CheckoutOrderSummaryProps {
   isSubmitting?: boolean
   mode?: 'checkout' | 'retry-payment'
   onRetryPayment?: () => void
+  paymentMethod?: 'CASH' | 'CARD'
 }
 
 export function CheckoutOrderSummary({
@@ -41,6 +43,7 @@ export function CheckoutOrderSummary({
   isSubmitting = false,
   mode = 'checkout',
   onRetryPayment,
+  paymentMethod = 'CASH',
 }: CheckoutOrderSummaryProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
@@ -114,11 +117,11 @@ export function CheckoutOrderSummary({
           className='flex w-full items-center justify-center gap-3 rounded-full bg-secondary px-6 py-4 font-display font-semibold text-secondary-foreground shadow-md transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
         >
          <MaterialIcon
-            name={isSubmitting ? 'progress_activity' : 'lock'}
+            name={isSubmitting ? 'progress_activity' : (paymentMethod === 'CARD' ? 'credit_card' : 'lock')}
             filled={!isSubmitting}
             className={isSubmitting ? 'animate-spin text-[20px]' : 'text-[20px]'}
           />
-          {!isSubmitting && (isRetryMode ? 'Tiếp tục thanh toán' : t('checkout.summary.placeOrder'))}
+          {!isSubmitting && (paymentMethod === 'CARD' ? 'Thanh toán ngay' : t('checkout.summary.placeOrder', 'Đặt hàng ngay'))}
         </button>
 
         <div className='mt-6 flex flex-col gap-3 border-t border-border pt-4'>

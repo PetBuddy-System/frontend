@@ -8,7 +8,8 @@ export type OrderStatus =
   | 'SHIPPING'
   | 'DELIVERED'
   | 'COMPLETED'
-  | 'CANCELED'
+  | 'CANCELLED'
+  | 'EXPIRED'
   | (string & {})
 
 export interface PickingItemResponse {
@@ -57,6 +58,16 @@ export interface CreateOrderRequest {
   paymentMethod?: 'CASH' | 'CARD'
 }
 
+export interface UpdateOrderRequest {
+  recipientName?: string
+  phoneNumber?: string
+  address?: string
+  note?: string
+  voucherCode?: string
+  latitude?: number
+  longitude?: number
+}
+
 export interface OrderDetailResponse {
   orderDetailId: number
   productId: string
@@ -83,6 +94,7 @@ export interface OrderDetailFull {
   clientSecret?: string
   createdAt: string
   updatedAt?: string
+  paymentExpiredAt?: string
   orderDetails: OrderDetailResponse[]
   payment?: PaymentResponse  
   voucherCode?: string
@@ -102,6 +114,7 @@ export interface OrderResponse {
   clientSecret?: string
   createdAt: string
   updatedAt?: string
+  paymentExpiredAt?: string
   orderDetails?: OrderDetailResponse[]
   payment?: PaymentResponse
   voucher?: VoucherResponse

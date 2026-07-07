@@ -21,7 +21,7 @@ export function StaffOrdersPage() {
         picking: 0,
         shipping: 0,
         completed: 0,
-        canceled: 0
+        cancelled: 0
     })
 
     const [totalElements, setTotalElements] = useState(0)
@@ -61,7 +61,7 @@ export function StaffOrdersPage() {
                     picking: all.filter((o) => o.status === 'PICKING').length,
                     shipping: all.filter((o) => o.status === 'SHIPPING' || o.status === 'DELIVERED').length,
                     completed: all.filter((o) => o.status === 'COMPLETED').length,
-                    canceled: all.filter((o) => o.status === 'CANCELED').length
+                    cancelled: all.filter((o) => o.status === 'CANCELLED').length
                 })
             }
         } catch (err) {

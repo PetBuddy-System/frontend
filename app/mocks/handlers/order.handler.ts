@@ -158,7 +158,7 @@ const INITIAL_ORDERS: MockOrder[] = [
   {
     orderId: 2043,
     orderCode: 'PET-2043',
-    status: 'CANCELED',
+    status: 'CANCELLED',
     finalAmount: 50000,
     createdAt: '2024-10-24T09:00:00.000Z',
     userName: 'Đỗ Bảo Ngọc',
@@ -443,13 +443,11 @@ export const orderHandlers = [
     const nextStatus = status.toUpperCase()
     orders[orderIndex].status = nextStatus
 
-    // CASH: when staff confirms delivered (DELIVERED), payment status automatically updates to PAID
     if (orders[orderIndex].paymentMethod === 'CASH' && nextStatus === 'DELIVERED') {
       orders[orderIndex].paymentStatus = 'PAID'
     }
 
-    // If staff cancels the order (CANCELED), payment status becomes CANCELLED
-    if (nextStatus === 'CANCELED') {
+    if (nextStatus === 'CANCELLED') {
       orders[orderIndex].paymentStatus = 'CANCELLED'
     }
 

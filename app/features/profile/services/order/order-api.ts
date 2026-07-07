@@ -6,7 +6,8 @@ import type {
   OrderDetailFull,
   ApiResponse,
   PageResponse,
-  PageableParams
+  PageableParams,
+  UpdateOrderRequest
 } from '~/shared/lib/order'
 
 const ORDER_BASE_URL = `${env.API_URL}${env.API_ORDERS_PATH}`
@@ -35,5 +36,13 @@ export async function fetchOrderDetailApi(orderId: number): Promise<ApiResponse<
   return customFetch<ApiResponse<OrderDetailFull>>({
     url: `${ORDER_BASE_URL}/${orderId}`,
     method: 'GET'
+  })
+}
+
+export async function updateOrderApi(orderId: number, data: UpdateOrderRequest): Promise<ApiResponse<OrderResponse>> {
+  return customFetch<ApiResponse<OrderResponse>>({
+    url: `${ORDER_BASE_URL}/${orderId}`,
+    method: 'PUT',
+    data
   })
 }

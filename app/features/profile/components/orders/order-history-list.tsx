@@ -16,7 +16,7 @@ function matchesFilter(status: string, filter: OrderHistoryFilter) {
   if (filterLower === 'pending') return statusLower === 'pending'
   if (filterLower === 'shipping') return statusLower === 'shipping'
   if (filterLower === 'delivered') return statusLower === 'delivered'
-  if (filterLower === 'cancelled') return statusLower === 'canceled' || statusLower === 'cancelled'
+  if (filterLower === 'cancelled') return statusLower === 'cancelled'
 
   return statusLower === filterLower
 }
