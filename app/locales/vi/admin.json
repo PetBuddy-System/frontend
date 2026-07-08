@@ -714,6 +714,7 @@
       "user": "Người thực hiện",
       "action": "Hành động",
       "entityType": "Loại đối tượng",
+      "entityCode": "Mã code",
       "reason": "Lý do",
       "viewDetail": "Xem chi tiết",
       "empty": "Không có dữ liệu"

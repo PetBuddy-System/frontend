@@ -114,13 +114,10 @@ const getEntityColor = (entityType: string) => {
 // CHANGE ITEM COMPONENT
 // ============================================================
 const ChangeItem = ({ change, t }: { change: AuditChange; t: (key: string) => string }) => {
-    // ⭐ 1. promotionDetail
-    // ⭐ 1. promotionDetail
     if (change.field === 'promotionDetail') {
         const oldData = parsePromotionDetail(change.oldValue)
         const newData = parsePromotionDetail(change.newValue)
 
-        // ⭐ REMOVED - chỉ có oldData
         if (oldData && !newData) {
             return (
                 <div className="rounded-lg bg-red-50 p-3 dark:bg-red-950/20">
@@ -351,6 +348,11 @@ export function AdminAuditDetailPage() {
                                         >
                                             {getActionLabel(log.action, t)}
                                         </span>
+                                        {log.entityCode && (
+                                            <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-mono text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                                                {log.entityCode}
+                                            </span>
+                                        )}
                                     </div>
                                     <h1 className="text-xl font-bold text-card-foreground">{t('audit.detail.title')}</h1>
                                 </div>

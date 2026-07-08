@@ -276,6 +276,9 @@ export function AdminAuditPage() {
                                                     {t('audit.table.entityType')}
                                                 </th>
                                                 <th className='px-4 py-3 text-left text-sm font-semibold text-muted-foreground'>
+                                                    {t('audit.table.entityCode', 'Mã code')}
+                                                </th>
+                                                <th className='px-4 py-3 text-left text-sm font-semibold text-muted-foreground'>
                                                     {t('audit.table.reason')}
                                                 </th>
                                                 <th className='px-4 py-3 text-center text-sm font-semibold text-muted-foreground'>
@@ -321,6 +324,9 @@ export function AdminAuditPage() {
                                                             >
                                                                 {t(`audit.entityTypes.${log.entityType}`)}
                                                             </span>
+                                                        </td>
+                                                        <td className='px-4 py-3 text-sm font-mono'>
+                                                            {log.entityCode || '--'}
                                                         </td>
                                                         <td className='px-4 py-3 text-sm text-muted-foreground'>
                                                             {getReasonText(log.reason, t)}
