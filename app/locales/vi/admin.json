@@ -219,7 +219,8 @@
       "services": "Dịch vụ",
       "users": "Người dùng",
       "vouchers": "Voucher",
-      "shipping": "Cấu hình vận chuyển"
+      "shipping": "Cấu hình vận chuyển",
+      "auditLogs": "Lịch sử thay đổi"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
@@ -691,5 +692,116 @@
     "title": "Quản lý ưu đãi & điểm thưởng"
   },
   "shippingTitle": "Cấu hình phí vận chuyển",
-  "shippingSubtitle": "Thiết lập biểu phí dựa trên khoảng cách địa lý để tối ưu hóa chi phí vận hành."
+  "shippingSubtitle": "Thiết lập biểu phí dựa trên khoảng cách địa lý để tối ưu hóa chi phí vận hành.",
+  "audit": {
+    "title": "Lịch sử thay đổi",
+    "subtitle": "Theo dõi tất cả thay đổi trong hệ thống",
+    "filter": {
+      "entityType": "Loại đối tượng",
+      "action": "Hành động",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "performedBy": "Người thực hiện",
+      "all": "Tất cả",
+      "reset": "Đặt lại",
+      "apply": "Áp dụng",
+      "entityCode": "Mã code",
+      "entityCodePlaceholder": "PRD123, PRM456...",
+      "performedByPlaceholder": "email@example.com"
+    },
+    "table": {
+      "time": "Thời gian",
+      "user": "Người thực hiện",
+      "action": "Hành động",
+      "entityType": "Loại đối tượng",
+      "entityCode": "Mã code",
+      "reason": "Lý do",
+      "viewDetail": "Xem chi tiết",
+      "empty": "Không có dữ liệu"
+    },
+    "detail": {
+      "title": "Chi tiết thay đổi",
+      "back": "Quay lại danh sách",
+      "performedBy": "Người thực hiện",
+      "performedAt": "Thời gian",
+      "entityType": "Loại đối tượng",
+      "action": "Hành động",
+      "reason": "Lý do",
+      "note": "Ghi chú",
+      "changes": "Thay đổi",
+      "field": "Trường",
+      "oldValue": "Giá trị cũ",
+      "newValue": "Giá trị mới",
+      "entityChanges": "Thay đổi đối tượng",
+      "detailChanges": "Thay đổi chi tiết"
+    },
+    "actions": {
+      "CREATE": "Tạo mới",
+      "UPDATE": "Cập nhật",
+      "DELETE": "Xóa",
+      "ADDED": "Đã thêm",
+      "REMOVED": "Đã xóa",
+      "UPDATED": "Cập nhật"
+    },
+    "entityTypes": {
+      "PRODUCT": "Sản phẩm",
+      "PROMOTION": "Khuyến mãi",
+      "BATCH": "Lô hàng",
+      "ORDER": "Đơn hàng",
+      "USER": "Người dùng"
+    },
+    "fields": {
+      "name": "Tên",
+      "description": "Mô tả",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "status": "Trạng thái",
+      "promotionCode": "Mã khuyến mãi",
+      "productCode": "Mã sản phẩm",
+      "batchCode": "Mã lô",
+      "salePrice": "Giá bán",
+      "unit": "Đơn vị",
+      "brandName": "Thương hiệu",
+      "stockQuantity": "Số lượng tồn",
+      "expiryDate": "Ngày hết hạn",
+      "basePrice": "Giá nhập",
+      "promotionDetail": "Chi tiết sản phẩm",
+      "promotionDetails": "Chi tiết sản phẩm",
+      "promotionType": "Loại khuyến mãi",
+      "discountValue": "Giá trị giảm",
+      "productId": "Mã sản phẩm (ID)",
+      "ingredients": "Thành phần",
+      "usageInstructions": "Hướng dẫn sử dụng"
+    },
+    "reasonMap": {
+      "CREATE_PRODUCT": "Tạo mới sản phẩm",
+      "CREATE_PRODUCT_IMPORT": "Tạo mới sản phẩm từ import",
+      "UPDATE_PRODUCT": "Cập nhật sản phẩm",
+      "CREATE_PROMOTION": "Tạo mới chương trình khuyến mãi",
+      "UPDATE_PROMOTION": "Cập nhật chương trình khuyến mãi",
+      "CREATE_BATCH": "Tạo mới lô hàng",
+      "CREATE_BATCH_IMPORT": "Tạo mới lô hàng từ import",
+      "UPDATE_BATCH": "Cập nhật lô hàng"
+    },
+    "pagination": {
+      "showing": "Hiển thị",
+      "of": "của"
+    },
+    "reason": {
+      "default": "Cập nhật"
+    },
+    "error": {
+      "loadFailed": "Không thể tải dữ liệu"
+    },
+    "status": {
+      "DRAFT": "Nháp",
+      "ACTIVE": "Đang hoạt động",
+      "INACTIVE": "Không hoạt động",
+      "DELETED": "Đã xóa"
+    },
+    "promotionType": {
+      "PERCENTAGE": "Giảm theo %",
+      "FIXED_AMOUNT": "Giảm theo số tiền"
+    }
+  }
 }
