@@ -7,3 +7,4 @@
 export * from './voucher'
 export * from './shipping'
 export * from './blog'
+export * from './audit'

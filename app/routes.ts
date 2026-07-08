@@ -56,7 +56,9 @@ export default [
     route('admin/service-bookings', 'routes/admin-service-bookings.tsx'),
     route('admin/users', 'routes/admin-users.tsx'),
     route('admin/vouchers', 'routes/admin-vouchers.tsx'),
-    route('admin/shipping', 'routes/admin-shipping.tsx')
+    route('admin/shipping', 'routes/admin-shipping.tsx'),
+    route('admin/audit-logs', 'routes/admin-audit-logs.tsx'),
+    route('admin/audit-logs/:auditLogId', 'routes/admin-audit-detail.tsx')
   ]),
 
   // ─── Manager Only Routes ──────────────────────────────────────────────────

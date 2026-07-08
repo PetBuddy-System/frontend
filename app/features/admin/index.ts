@@ -6,4 +6,6 @@ export { AdminServicesPage } from './pages/admin-services-page'
 export { AdminUsersPage } from './pages/admin-users-page'
 export { AdminVouchersPage } from './pages/admin-vouchers-page'
 export { AdminShippingPage } from './pages/admin-shipping-page'
+export { AdminAuditPage } from './pages/admin-audit-page'
+export { AdminAuditDetailPage } from './pages/admin-audit-detail-page'
 
