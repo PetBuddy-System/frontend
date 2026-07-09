@@ -58,10 +58,6 @@ export function CheckoutPage() {
   const location = useLocation()
   const { user } = useAuth()
 
-  // orderId có thể đến từ điều hướng (location.state) hoặc từ sessionStorage
-  // (trường hợp F5 / mở lại tab khiến location.state bị mất). Nhờ vậy trang
-  // sẽ nhận đúng order đang PENDING thay vì tưởng nhầm là "chưa có order"
-  // và tạo mới một order trùng lặp khi người dùng đổi phương thức thanh toán.
   const pendingOrderIdFromState = (location.state as { orderId?: number } | null)?.orderId ?? null
 
   const [pendingOrderId] = useState<number | null>(() => {
@@ -80,8 +76,6 @@ export function CheckoutPage() {
   const [cartItems, setCartItems] = useState<CheckoutOrderItem[]>([])
 
   const [outOfStockProductName, setOutOfStockProductName] = useState<string | null>(null)
-
-  // Queue các sản phẩm bị giảm số lượng — hiển thị từng cái một
   const [adjustedQueue, setAdjustedQueue] = useState<CartItemResponse[]>([])
   const currentAdjustedItem = adjustedQueue[0] ?? null
 
@@ -123,10 +117,10 @@ export function CheckoutPage() {
           setPendingOrder((prev) =>
             prev
               ? {
-                  ...prev,
-                  clientSecret: res.data.stripeClientSecret ?? prev.clientSecret,
-                  finalAmount: res.data.amount ?? prev.finalAmount,
-                }
+                ...prev,
+                clientSecret: res.data.stripeClientSecret ?? prev.clientSecret,
+                finalAmount: res.data.amount ?? prev.finalAmount,
+              }
               : null
           )
         }
@@ -159,8 +153,6 @@ export function CheckoutPage() {
     sessionStorage.removeItem(SESSION_KEY_VOUCHER_NAME)
     sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
     sessionStorage.removeItem('petbuddy_checkout_subtotal')
-    // Order đã hoàn tất (hoặc bị huỷ) -> xoá luôn id đang pending,
-    // tránh lần checkout tiếp theo bị nhận nhầm là order cũ.
     sessionStorage.removeItem(SESSION_KEY_PENDING_ORDER_ID)
   }
 
@@ -191,7 +183,6 @@ export function CheckoutPage() {
           title: item.productName,
         }))
       )
-      // Đưa các sản phẩm bị điều chỉnh số lượng vào queue để hiển thị popup
       const adjustedItems = items.filter((item) => item.adjusted)
       if (adjustedItems.length > 0) {
         setAdjustedQueue(adjustedItems)
@@ -203,19 +194,16 @@ export function CheckoutPage() {
     }
   }, [t])
 
-  /** User đồng ý mua với số lượng đã giảm → chuyển sang item tiếp theo trong queue */
   function handleAdjustedConfirm() {
     setAdjustedQueue((prev) => prev.slice(1))
   }
 
-  /** User từ chối → xóa sản phẩm khỏi giỏ hàng rồi chuyển sang item tiếp theo */
   async function handleAdjustedDecline() {
     if (!currentAdjustedItem) return
     const itemId = currentAdjustedItem.cartItemId
     try {
       await removeCartItemApi(itemId)
     } catch {
-      // Bỏ qua lỗi xóa
     }
     setRawCartItems((prev) => prev.filter((i) => i.cartItemId !== itemId))
     setCartItems((prev) => prev.filter((i) => i.key !== itemId))
@@ -254,9 +242,6 @@ export function CheckoutPage() {
         finalAmount: order.finalAmount,
       })
     } catch {
-      // Order pending không còn hợp lệ (đã bị huỷ / hết hạn / không tìm thấy)
-      // -> xoá id cũ khỏi sessionStorage và fallback về giỏ hàng hiện tại,
-      // tránh việc trang bị kẹt mãi ở một orderId không còn dùng được.
       sessionStorage.removeItem(SESSION_KEY_PENDING_ORDER_ID)
       setErrorMessage(t('checkout.loadError', 'Không thể tải thông tin đơn hàng.'))
       await fetchCart()
@@ -297,242 +282,240 @@ export function CheckoutPage() {
   }, [subtotal])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-  event.preventDefault()
-  const form = event.currentTarget 
-  setErrorMessage('')
-  setIsSubmitting(true)
+    event.preventDefault()
+    const form = event.currentTarget
+    setErrorMessage('')
+    setIsSubmitting(true)
 
-  try {
-    if (voucherCode) {
-      try {
-        const voucherRes = await fetchActiveVouchersApi({ size: 100 })
-        const currentVoucher = voucherRes?.data?.content?.find((v) => v.voucherCode === voucherCode)
-        const stillEligible = currentVoucher ? isVoucherEligible(currentVoucher, subtotal) : false
-
-        if (!stillEligible) {
-          sessionStorage.removeItem(SESSION_KEY_VOUCHER_CODE)
-          sessionStorage.removeItem(SESSION_KEY_VOUCHER_NAME)
-          sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
-          setVoucherCode('')
-          setVoucherName('')
-          setVoucherDiscount(0)
-          setErrorMessage(t('checkout.voucherNoLongerValid', 'Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác.'))
-          return
-        }
-      } catch {
-      }
-    }
-
-    const formData = new FormData(form) 
-    const finalAddress = selectedAddress || getFormString(formData, 'address')
-
-    if (!finalAddress) {
-      setErrorMessage(t('checkout.addressRequired', 'Vui lòng chọn địa chỉ giao hàng.'))
-      return
-    }
-
-    if (!deliveryLat || !deliveryLng) {
-      setErrorMessage(t('checkout.addressRequired', 'Vui lòng chọn địa chỉ giao hàng trên bản đồ.'))
-      return
-    }
-
-    const phoneNumber = getFormString(formData, 'phoneNumber')
-if (!phoneNumber || !/^0\d{10}$/.test(phoneNumber)) {
-  setErrorMessage(t('checkout.phoneRequired', 'Vui lòng nhập số điện thoại hợp lệ (11 chữ số, bắt đầu bằng số 0).'))
-  return
-}
-
-    if (pendingOrder) {
-      const updateRequest: UpdateOrderRequest = {
-        recipientName: getFormString(formData, 'recipientName'),
-        phoneNumber,
-        address: finalAddress,
-        note: getFormString(formData, 'note') || undefined,
-        voucherCode: voucherCode || undefined,
-        latitude: deliveryLat,
-        longitude: deliveryLng,
-      }
-
-      const response = await updateOrderApi(pendingOrder.orderId, updateRequest)
-      const orderId = pendingOrder.orderId
-      clearCheckoutSession()
-      clearCheckoutSessionData()
-      guestCart.clear() 
-
-      const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế' : 'Tiền mặt'
-
-      const lastOrderDetails = {
-        orderId,
-        clientSecret: response.data?.clientSecret || pendingOrder.clientSecret || '',
-        orderCode: response.data?.orderCode || `PET-${orderId}`,
-        recipientName: updateRequest.recipientName,
-        phoneNumber: updateRequest.phoneNumber,
-        address: updateRequest.address,
-        note: updateRequest.note,
-        paymentMethod: paymentMethodLabel,
-        shippingFee: response.data?.shippingFee ?? pendingOrder.shippingFee,
-        isFreeShipping: (response.data?.shippingFee ?? pendingOrder.shippingFee) === 0,
-        voucherDiscount: response.data
-          ? Math.max(0, pendingOrder.subtotal + (response.data.shippingFee ?? pendingOrder.shippingFee) - response.data.finalAmount)
-          : pendingOrder.voucherDiscount,
-        subtotal: pendingOrder.subtotal,
-        finalAmount: response.data?.finalAmount || pendingOrder.finalAmount,
-        items: cartItems.map((item) => ({
-          productId: item.productId || item.key,
-          name: item.title || '',
-          price: item.price,
-          quantity: item.quantity,
-          imageUrl: item.image,
-        })),
-      }
-
-      sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
-
-      if (selectedPaymentMethod === 'CARD') {
-        let clientSecret = response.data?.clientSecret || pendingOrder.clientSecret || ''
-
-        if (!clientSecret) {
-          try {
-            const paymentRes = await getPaymentByOrderIdApi(orderId)
-            clientSecret = paymentRes.data?.stripeClientSecret || ''
-          } catch (payErr) {
-            console.error('Lỗi lấy thông tin PaymentIntent:', payErr)
-          }
-        }
-
-        navigate('/payment', {
-          state: {
-            orderId,
-            clientSecret,
-            amount: lastOrderDetails.finalAmount,
-            shippingFee: lastOrderDetails.shippingFee,
-            isFreeShipping: lastOrderDetails.isFreeShipping,
-          },
-        })
-      } else {
-        navigate('/order-success')
-      }
-    } else {
-      const request: CreateOrderRequest = {
-        recipientName: getFormString(formData, 'recipientName'),
-        phoneNumber,
-        address: finalAddress,
-        note: getFormString(formData, 'note') || undefined,
-        voucherCode: voucherCode || undefined,
-        latitude: deliveryLat,
-        longitude: deliveryLng,
-        paymentMethod: selectedPaymentMethod,
-      }
-
-      const response = await createOrderApi(request)
-      const orderId = response.data?.orderId
-      clearCheckoutSession()
-
-      if (!orderId) {
-        throw new Error('Không nhận được mã đơn hàng từ hệ thống.')
-      }
-
-      clearCheckoutSessionData()
-      guestCart.clear() 
-      const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế' : 'Tiền mặt'
-
-      const lastOrderDetails = {
-        orderId,
-        clientSecret: response.data?.clientSecret || '',
-        orderCode: response.data?.orderCode || `PET-${orderId}`,
-        recipientName: request.recipientName,
-        phoneNumber: request.phoneNumber,
-        address: request.address,
-        note: request.note,
-        paymentMethod: paymentMethodLabel,
-        shippingFee,
-        isFreeShipping,
-        voucherDiscount,
-        subtotal,
-        finalAmount:
-          response.data?.finalAmount ||
-          subtotal + (isFreeShipping ? 0 : shippingFee) - voucherDiscount,
-        items: rawCartItems.map((item) => ({
-          productId: item.productId,
-          name: item.productName,
-          price: item.price,
-          quantity: item.quantity,
-          imageUrl: item.imageUrl,
-        })),
-      }
-
-      sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
-
-      if (selectedPaymentMethod === 'CARD') {
-        let clientSecret = response.data?.clientSecret || ''
-
-        if (!clientSecret) {
-          try {
-            const paymentRes = await getPaymentByOrderIdApi(orderId)
-            clientSecret = paymentRes.data?.stripeClientSecret || ''
-          } catch (payErr) {
-            console.error('Lỗi lấy thông tin PaymentIntent:', payErr)
-          }
-        }
-
-        navigate('/payment', {
-          state: {
-            orderId,
-            clientSecret,
-            amount: lastOrderDetails.finalAmount,
-            shippingFee,
-            isFreeShipping,
-          },
-        })
-      } else {
-        navigate('/order-success')
-      }
-    }
-  } catch (error: unknown) {
-    const apiError = error as { message?: string; data?: { message?: string; code?: string | number } }
-    const rawMessage = apiError?.data?.message ?? (error instanceof Error ? error.message : '')
-
-    const isOutOfStock =
-      rawMessage?.toLowerCase().includes('out of stock') ||
-      rawMessage?.toLowerCase().includes('hết hàng') ||
-      apiError?.data?.code === 'PRODUCT_OUT_OF_STOCK' ||
-      String(apiError?.data?.code) === '1010'
-
-    if (isOutOfStock) {
-      let productName = rawMessage ?? ''
-
-      const matchedItem = rawCartItems.find((item) =>
-        rawMessage?.toLowerCase().includes(item.productName.toLowerCase())
-      )
-
-      if (matchedItem) {
-        productName = matchedItem.productName
+    try {
+      if (voucherCode) {
         try {
-          await removeCartItemApi(matchedItem.cartItemId)
+          const voucherRes = await fetchActiveVouchersApi({ size: 100 })
+          const currentVoucher = voucherRes?.data?.content?.find((v) => v.voucherCode === voucherCode)
+          const stillEligible = currentVoucher ? isVoucherEligible(currentVoucher, subtotal) : false
+
+          if (!stillEligible) {
+            sessionStorage.removeItem(SESSION_KEY_VOUCHER_CODE)
+            sessionStorage.removeItem(SESSION_KEY_VOUCHER_NAME)
+            sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
+            setVoucherCode('')
+            setVoucherName('')
+            setVoucherDiscount(0)
+            setErrorMessage(t('checkout.voucherNoLongerValid', 'Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác.'))
+            return
+          }
         } catch {
-          // Bỏ qua lỗi xóa
         }
-        setRawCartItems((prev) => prev.filter((i) => i.cartItemId !== matchedItem.cartItemId))
-        setCartItems((prev) => prev.filter((i) => i.key !== matchedItem.cartItemId))
-      } else if (rawCartItems.length === 1) {
-        const onlyItem = rawCartItems[0]
-        productName = onlyItem.productName
-        try {
-          await removeCartItemApi(onlyItem.cartItemId)
-        } catch {
-          // Bỏ qua lỗi xóa
-        }
-        setRawCartItems([])
-        setCartItems([])
       }
-      setOutOfStockProductName(productName || 'Sản phẩm đã hết hàng')
-    } else {
-      setErrorMessage(error instanceof Error ? error.message : t('checkout.createError'))
+
+      const formData = new FormData(form)
+      const finalAddress = selectedAddress || getFormString(formData, 'address')
+
+      if (!finalAddress) {
+        setErrorMessage(t('checkout.addressRequired', 'Vui lòng chọn địa chỉ giao hàng.'))
+        return
+      }
+
+      if (!deliveryLat || !deliveryLng) {
+        setErrorMessage(t('checkout.addressRequired', 'Vui lòng chọn địa chỉ giao hàng trên bản đồ.'))
+        return
+      }
+
+      const phoneNumber = getFormString(formData, 'phoneNumber')
+      if (!phoneNumber || !/^0\d{10}$/.test(phoneNumber)) {
+        setErrorMessage(t('checkout.phoneRequired', 'Vui lòng nhập số điện thoại hợp lệ (11 chữ số, bắt đầu bằng số 0).'))
+        return
+      }
+
+      if (pendingOrder) {
+        const updateRequest: UpdateOrderRequest = {
+          recipientName: getFormString(formData, 'recipientName'),
+          phoneNumber,
+          address: finalAddress,
+          note: getFormString(formData, 'note') || undefined,
+          voucherCode: voucherCode || undefined,
+          latitude: deliveryLat,
+          longitude: deliveryLng,
+        }
+
+        const response = await updateOrderApi(pendingOrder.orderId, updateRequest)
+        const orderId = pendingOrder.orderId
+        clearCheckoutSession()
+        clearCheckoutSessionData()
+        guestCart.clear()
+
+        const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế' : 'Tiền mặt'
+
+        const lastOrderDetails = {
+          orderId,
+          clientSecret: response.data?.clientSecret || pendingOrder.clientSecret || '',
+          orderCode: response.data?.orderCode || `PET-${orderId}`,
+          recipientName: updateRequest.recipientName,
+          phoneNumber: updateRequest.phoneNumber,
+          address: updateRequest.address,
+          note: updateRequest.note,
+          paymentMethod: paymentMethodLabel,
+          shippingFee: response.data?.shippingFee ?? pendingOrder.shippingFee,
+          isFreeShipping: (response.data?.shippingFee ?? pendingOrder.shippingFee) === 0,
+          voucherDiscount: response.data
+            ? Math.max(0, pendingOrder.subtotal + (response.data.shippingFee ?? pendingOrder.shippingFee) - response.data.finalAmount)
+            : pendingOrder.voucherDiscount,
+          subtotal: pendingOrder.subtotal,
+          finalAmount: response.data?.finalAmount || pendingOrder.finalAmount,
+          items: cartItems.map((item) => ({
+            productId: item.productId || item.key,
+            name: item.title || '',
+            price: item.price,
+            quantity: item.quantity,
+            imageUrl: item.image,
+          })),
+        }
+
+        sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
+
+        if (selectedPaymentMethod === 'CARD') {
+          let clientSecret = response.data?.clientSecret || pendingOrder.clientSecret || ''
+
+          if (!clientSecret) {
+            try {
+              const paymentRes = await getPaymentByOrderIdApi(orderId)
+              clientSecret = paymentRes.data?.stripeClientSecret || ''
+            } catch (payErr) {
+              console.error('Lỗi lấy thông tin PaymentIntent:', payErr)
+            }
+          }
+
+          navigate('/payment', {
+            state: {
+              orderId,
+              clientSecret,
+              amount: lastOrderDetails.finalAmount,
+              shippingFee: lastOrderDetails.shippingFee,
+              isFreeShipping: lastOrderDetails.isFreeShipping,
+            },
+          })
+        } else {
+          navigate('/order-success')
+        }
+      } else {
+        const request: CreateOrderRequest = {
+          recipientName: getFormString(formData, 'recipientName'),
+          phoneNumber,
+          address: finalAddress,
+          note: getFormString(formData, 'note') || undefined,
+          voucherCode: voucherCode || undefined,
+          latitude: deliveryLat,
+          longitude: deliveryLng,
+          paymentMethod: selectedPaymentMethod,
+        }
+
+        const response = await createOrderApi(request)
+        const orderId = response.data?.orderId
+        clearCheckoutSession()
+
+        if (!orderId) {
+          throw new Error('Không nhận được mã đơn hàng từ hệ thống.')
+        }
+
+        clearCheckoutSessionData()
+        guestCart.clear()
+        const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế' : 'Tiền mặt'
+
+        const lastOrderDetails = {
+          orderId,
+          clientSecret: response.data?.clientSecret || '',
+          orderCode: response.data?.orderCode || `PET-${orderId}`,
+          recipientName: request.recipientName,
+          phoneNumber: request.phoneNumber,
+          address: request.address,
+          note: request.note,
+          paymentMethod: paymentMethodLabel,
+          shippingFee,
+          isFreeShipping,
+          voucherDiscount,
+          subtotal,
+          finalAmount:
+            response.data?.finalAmount ||
+            subtotal + (isFreeShipping ? 0 : shippingFee) - voucherDiscount,
+          items: rawCartItems.map((item) => ({
+            productId: item.productId,
+            name: item.productName,
+            price: item.price,
+            quantity: item.quantity,
+            imageUrl: item.imageUrl,
+          })),
+        }
+
+        sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
+
+        if (selectedPaymentMethod === 'CARD') {
+          let clientSecret = response.data?.clientSecret || ''
+
+          if (!clientSecret) {
+            try {
+              const paymentRes = await getPaymentByOrderIdApi(orderId)
+              clientSecret = paymentRes.data?.stripeClientSecret || ''
+            } catch (payErr) {
+              console.error('Lỗi lấy thông tin PaymentIntent:', payErr)
+            }
+          }
+
+          navigate('/payment', {
+            state: {
+              orderId,
+              clientSecret,
+              amount: lastOrderDetails.finalAmount,
+              shippingFee,
+              isFreeShipping,
+            },
+          })
+        } else {
+          navigate('/order-success')
+        }
+      }
+    } catch (error: unknown) {
+      const apiError = error as { message?: string; data?: { message?: string; code?: string | number } }
+      const rawMessage = apiError?.data?.message ?? (error instanceof Error ? error.message : '')
+
+      const isOutOfStock =
+        rawMessage?.toLowerCase().includes('out of stock') ||
+        rawMessage?.toLowerCase().includes('hết hàng') ||
+        apiError?.data?.code === 'PRODUCT_OUT_OF_STOCK' ||
+        String(apiError?.data?.code) === '1010'
+
+      if (isOutOfStock) {
+        let productName = rawMessage ?? ''
+
+        const matchedItem = rawCartItems.find((item) =>
+          rawMessage?.toLowerCase().includes(item.productName.toLowerCase())
+        )
+
+        if (matchedItem) {
+          productName = matchedItem.productName
+          try {
+            await removeCartItemApi(matchedItem.cartItemId)
+          } catch {
+          }
+          setRawCartItems((prev) => prev.filter((i) => i.cartItemId !== matchedItem.cartItemId))
+          setCartItems((prev) => prev.filter((i) => i.key !== matchedItem.cartItemId))
+        } else if (rawCartItems.length === 1) {
+          const onlyItem = rawCartItems[0]
+          productName = onlyItem.productName
+          try {
+            await removeCartItemApi(onlyItem.cartItemId)
+          } catch {
+          }
+          setRawCartItems([])
+          setCartItems([])
+        }
+        setOutOfStockProductName(productName || 'Sản phẩm đã hết hàng')
+      } else {
+        setErrorMessage(error instanceof Error ? error.message : t('checkout.createError'))
+      }
+    } finally {
+      setIsSubmitting(false)
     }
-  } finally {
-    setIsSubmitting(false) 
   }
-}
 
   if (isLoading) {
     return (

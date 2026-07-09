@@ -28,14 +28,23 @@ export async function fetchAllOrdersApi(
   })
 }
 
-export async function updateOrderStatusApi(orderId: number, status: OrderStatus): Promise<ApiResponse<null>> {
+export async function updateOrderStatusApi(
+  orderId: number,
+  status: OrderStatus,
+  proofImage?: File
+): Promise<ApiResponse<null>> {
+  const formData = new FormData()
+  if (proofImage) {
+    formData.append('proofImage', proofImage)
+  }
+
   return customFetch<ApiResponse<null>>({
     url: `${ORDER_BASE_URL}/${orderId}/status`,
     method: 'PATCH',
-    params: { status }
+    params: { status },
+    data: formData
   })
 }
-
 export async function fetchPickingListApi(orderId: number): Promise<ApiResponse<PickingItemResponse[]>> {
   return customFetch<ApiResponse<PickingItemResponse[]>>({
     url: `${ORDER_BASE_URL}/${orderId}/picking-list`,

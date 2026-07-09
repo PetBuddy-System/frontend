@@ -7,3 +7,4 @@
 export * from './product'
 export * from './batch'
 export * from './promotion'
+export * from './store-location/store-location-api'

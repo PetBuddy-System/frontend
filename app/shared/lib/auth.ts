@@ -12,6 +12,7 @@ export interface UserResponse {
   gender: string
   dateOfBirth: string
   role: string
+  staffTask?: 'GROOMER' | 'SHIPPER' | 'CASHIER'
   status: UserStatus
   createdAt: string
   updatedAt: string

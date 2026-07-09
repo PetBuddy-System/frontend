@@ -24,6 +24,7 @@ export interface AuditLog {
     id: string
     entityType: AuditEntityType
     entityId: string
+    entityCode?: string | null
     action: AuditAction
     changes: AuditChange[] | null
     reason: string | null

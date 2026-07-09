@@ -147,7 +147,8 @@
       "staff": "Staff Coordination",
       "returnRequests": "Return approvals",
       "disposalApprovals": "Disposal approvals",
-      "promotions": "Promotions"
+      "promotions": "Promotions",
+      "storeLocations": "Store Locations"
     },
     "toggle": "Toggle sidebar"
   },
@@ -594,6 +595,34 @@
       "success": "Promotion updated successfully",
       "createSuccess": "Promotion created successfully",
       "error": "Operation failed"
+    }
+  },
+  "storeLocations": {
+    "title": "Branch Locations",
+    "subtitle": "Configure geographical coordinates and address of PetBuddy branches.",
+    "currentLocation": "Current Branch",
+    "history": "Location History",
+    "address": "Address",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "save": "Save Branch Location",
+    "saving": "Saving...",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "createdAt": "Created At",
+    "success": "Branch location saved successfully",
+    "error": "Failed to save branch location",
+    "searchPlaceholder": "Search location...",
+    "searchButton": "Search",
+    "myLocation": "My Location",
+    "mapLoading": "Loading map...",
+    "mapHint": "Click on map or drag marker to choose location.",
+    "errors": {
+      "outsideHcmc": "Branch location must be inside Ho Chi Minh City.",
+      "invalidLocation": "Cannot locate coordinates.",
+      "emptyAddress": "Please enter branch address.",
+      "boundaryLoading": "Loading city boundary..."
     }
   }
 }

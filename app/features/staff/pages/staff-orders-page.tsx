@@ -11,6 +11,7 @@ import { cn } from '~/shared/lib/cn'
 import { StaffOrdersStats } from '../components/orders/staff-orders-stats'
 import { StaffOrdersTable } from '../components/orders/staff-orders-table'
 import { StaffOrderPickingDialog } from '../components/orders/staff-order-picking-dialog'
+import { DeliveryProofDialog } from '../components/orders/delivery-proof-dialog'
 
 export function StaffOrdersPage() {
     const navigate = useNavigate()
@@ -35,6 +36,7 @@ export function StaffOrdersPage() {
 
     // Picking Modal state
     const [selectedOrderForPicking, setSelectedOrderForPicking] = useState<OrderResponse | null>(null)
+    const [selectedOrderForProof, setSelectedOrderForProof] = useState<OrderResponse | null>(null)
 
     // Load orders & recalculate counters
     async function loadData() {
@@ -131,7 +133,10 @@ export function StaffOrdersPage() {
                             onViewDetail={(order) => navigate(`/staff/orders/${order.orderId}`)}
                             onTransition={handleTransition}
                             onOpenPicking={handleOpenPicking}
-                            onTransitionToShipped={(orderId) => handleTransition(orderId, 'DELIVERED')}
+                            onTransitionToShipped={(orderId) => {
+                                 const o = orders.find(x => x.orderId === orderId)
+                                 if (o) setSelectedOrderForProof(o)
+                             }}
                         />
 
                         {/* Pagination */}
@@ -179,6 +184,15 @@ export function StaffOrdersPage() {
             <StaffOrderPickingDialog
                 order={selectedOrderForPicking}
                 onClose={() => setSelectedOrderForPicking(null)}
+                onSuccess={() => void loadData()}
+            />
+
+            {/* Delivery Proof Dialog */}
+            <DeliveryProofDialog
+                orderId={selectedOrderForProof?.orderId ?? 0}
+                orderCode={selectedOrderForProof?.orderCode ?? ''}
+                isOpen={!!selectedOrderForProof}
+                onClose={() => setSelectedOrderForProof(null)}
                 onSuccess={() => void loadData()}
             />
         </div>

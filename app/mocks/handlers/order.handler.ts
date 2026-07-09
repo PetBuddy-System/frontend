@@ -412,7 +412,7 @@ export const orderHandlers = [
     })
   }),
 
-  http.patch(`${BASE}/api/orders/:id/status`, ({ params, request }) => {
+  http.patch(`${BASE}/api/orders/:id/status`, async ({ params, request }) => {
     const orderId = Number(params.id)
     const url = new URL(request.url)
     const status = url.searchParams.get('status')
@@ -441,6 +441,34 @@ export const orderHandlers = [
     }
 
     const nextStatus = status.toUpperCase()
+
+    // Validate delivery proof image if status is DELIVERED
+    if (nextStatus === 'DELIVERED') {
+      let hasProofImage = false
+      try {
+        const contentType = request.headers.get('content-type') || ''
+        if (contentType.includes('multipart/form-data')) {
+          const formData = await request.formData()
+          const file = formData.get('proofImage')
+          if (file) {
+            hasProofImage = true
+          }
+        }
+      } catch (err) {
+        console.error('Failed to parse form data in MSW order status handler', err)
+      }
+
+      if (!hasProofImage) {
+        return HttpResponse.json({
+          code: 400,
+          message: 'Yêu cầu ảnh chụp bằng chứng khi giao hàng thành công.',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        }, { status: 400 })
+      }
+    }
+
     orders[orderIndex].status = nextStatus
 
     if (orders[orderIndex].paymentMethod === 'CASH' && nextStatus === 'DELIVERED') {
