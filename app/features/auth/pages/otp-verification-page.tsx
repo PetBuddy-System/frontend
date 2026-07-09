@@ -3,16 +3,32 @@ import type { FormEvent, KeyboardEvent, ClipboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router'
 
-import { verifyEmailApi, resendOtpApi } from '~/features/auth/services/otp'
+import { verifyEmailApi, verifyResetOtpApi, resendOtpApi } from '~/features/auth/services/otp'
 import { MaterialIcon } from '~/shared/ui'
 
 const OTP_LENGTH = 6
 const RESEND_COOLDOWN_SECONDS = 59
 
+const RESET_TOKEN_KEY = 'reset-password:token'
+const RESET_EMAIL_KEY = 'reset-password:email'
+
+/**
+ * Mục đích của OTP verification. FE tự phân loại để chọn đúng endpoint BE:
+ * - `signup`          → gọi `/verify-email` → redirect `/login`
+ * - `reset-password`  → gọi `/verify-reset-otp` → lưu `resetToken` vào
+ *                       sessionStorage → redirect `/reset-password`
+ */
+type OtpPurpose = 'signup' | 'reset-password'
+
+function resolvePurpose(raw: string | null): OtpPurpose {
+  return raw === 'reset-password' ? 'reset-password' : 'signup'
+}
+
 export function OtpVerificationPage() {
   const { t } = useTranslation('auth')
   const [searchParams] = useSearchParams()
   const email = searchParams.get('email') ?? ''
+  const purpose = resolvePurpose(searchParams.get('purpose'))
 
   const [otpValues, setOtpValues] = useState<string[]>(Array(OTP_LENGTH).fill(''))
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -89,12 +105,28 @@ export function OtpVerificationPage() {
     setIsSubmitting(true)
 
     try {
-      await verifyEmailApi({ email, otp })
+      if (purpose === 'reset-password') {
+        const response = await verifyResetOtpApi({ email, otp })
+        // BE trả về resetToken, lưu sessionStorage để dùng cho /reset-password
+        const resetToken = response.data?.resetToken
+        if (!resetToken) {
+          setErrorMessage(t('otp.errorVerify'))
+          setIsSubmitting(false)
+          return
+        }
+        sessionStorage.setItem(RESET_TOKEN_KEY, resetToken)
+        sessionStorage.setItem(RESET_EMAIL_KEY, email)
+      } else {
+        await verifyEmailApi({ email, otp })
+      }
+
       setIsSuccess(true)
 
-      // Redirect về trang login sau 2 giây
+      // Redirect theo mục đích
+      const redirectUrl = purpose === 'reset-password' ? '/reset-password' : '/login'
+
       setTimeout(() => {
-        window.location.href = '/login'
+        window.location.href = redirectUrl
       }, 2000)
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : t('otp.errorVerify')
@@ -122,13 +154,14 @@ export function OtpVerificationPage() {
   }
 
   const isResendDisabled = timeLeft > 0 || isResending
+  const backHref = purpose === 'reset-password' ? '/forgot-password' : '/register'
 
   return (
     <main className='flex min-h-screen flex-col items-center justify-center bg-background p-6'>
       {/* Nút quay lại */}
       <nav className='fixed left-8 top-8'>
         <a
-          href='/register'
+          href={backHref}
           className='group flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary'
         >
           <MaterialIcon name='arrow_back' className='text-[20px]' />
@@ -155,8 +188,12 @@ export function OtpVerificationPage() {
 
           {/* Heading */}
           <div className='mb-10 text-center'>
-            <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>{t('otp.title')}</h1>
-            <p className='mt-3 text-sm leading-relaxed text-muted-foreground md:text-base'>{t('otp.subtitle')}</p>
+            <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
+              {purpose === 'reset-password' ? t('otp.titleReset') : t('otp.title')}
+            </h1>
+            <p className='mt-3 text-sm leading-relaxed text-muted-foreground md:text-base'>
+              {purpose === 'reset-password' ? t('otp.subtitleReset') : t('otp.subtitle')}
+            </p>
             {email && <p className='mt-2 text-sm font-semibold text-foreground'>{email}</p>}
           </div>
 
@@ -172,7 +209,7 @@ export function OtpVerificationPage() {
           {isSuccess && (
             <div className='mb-6 flex items-center gap-3 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success'>
               <MaterialIcon name='check_circle' className='shrink-0 text-[20px]' />
-              <p>{t('otp.success')}</p>
+              <p>{purpose === 'reset-password' ? t('otp.successReset') : t('otp.success')}</p>
             </div>
           )}
 
