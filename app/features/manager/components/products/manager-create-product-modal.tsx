@@ -24,10 +24,6 @@ interface ManagerCreateProductModalProps {
 
 const UNIT_OPTIONS: { value: ProductUnit; label: string }[] = [
   { value: 'PIECE', label: 'Cái' },
-  { value: 'KG', label: 'Kilogram' },
-  { value: 'GRAM', label: 'Gram' },
-  { value: 'LITER', label: 'Lít' },
-  { value: 'MILLILITER', label: 'Mililit' },
   { value: 'BAG', label: 'Túi' },
   { value: 'BOX', label: 'Hộp' },
   { value: 'PACK', label: 'Gói' },

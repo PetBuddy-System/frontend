@@ -249,7 +249,7 @@
       "placeholder": "Nhập mã...",
       "apply": "Áp dụng"
     },
-     "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
+    "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
   },
   "orderSuccess": {
     "banner": {
@@ -458,7 +458,6 @@
     "description": "Rất tiếc! Sản phẩm này vừa được người khác mua hết. Sản phẩm đã được tự động xóa khỏi giỏ hàng của bạn.",
     "gotIt": "Đã hiểu"
   },
-
   "addressPicker": {
     "backButton": "Quay lại",
     "title": "Chọn địa chỉ giao hàng",
@@ -486,10 +485,6 @@
   },
   "unit": {
     "PIECE": "Cái",
-    "KG": "Kilogram",
-    "GRAM": "Gram",
-    "LITER": "Lít",
-    "MILLILITER": "Mililit",
     "BAG": "Túi",
     "BOX": "Hộp",
     "PACK": "Gói",

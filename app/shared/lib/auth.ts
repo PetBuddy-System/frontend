@@ -63,9 +63,12 @@ export interface OtpRequest {
   email: string
 }
 
+export interface ResetOtpResponse {
+  resetToken: string
+}
+
 export interface ResetPasswordRequest {
-  email: string
-  otp: string
+  resetToken: string
   newPassword: string
   confirmNewPassword: string
 }

@@ -1,19 +1,23 @@
+// app/features/manager/components/products/manager-product-info-card.tsx
+
+import { useTranslation } from 'react-i18next'
 import type { ProductDetailData } from '~/shared/lib/product'
 import { MaterialIcon } from '~/shared/ui'
 
 export interface ManagerProductInfoCardProps {
   product: ProductDetailData
-  expiringSoonCount: number
   formatDate: (dateStr: string) => string
 }
 
 export function ManagerProductInfoCard({
   product,
-  expiringSoonCount,
   formatDate
 }: ManagerProductInfoCardProps) {
+  const { t } = useTranslation('manager')
 
-  // ✅ SỬA: status có thể undefined
+  // ✅ Lấy unit label từ translation
+  const unitLabel = product.unit ? t(`unit.${product.unit}`, product.unit.toLowerCase()) : ''
+
   const getStatusLabel = (status: string | undefined) => {
     if (!status) return 'Không xác định'
     switch (status) {
@@ -28,13 +32,11 @@ export function ManagerProductInfoCard({
     }
   }
 
-  // ✅ SỬA: dateStr có thể undefined
   const formatDateSafe = (dateStr: string | undefined) => {
     if (!dateStr) return 'N/A'
     return formatDate(dateStr)
   }
 
-  // ✅ Hàm format giá với fallback
   const formatPrice = (price: number | undefined | null) => {
     if (price === undefined || price === null || isNaN(price)) {
       return '0'
@@ -42,7 +44,6 @@ export function ManagerProductInfoCard({
     return price.toLocaleString('en-US')
   }
 
-  // ✅ Lấy giá hiển thị: ưu tiên salePrice, fallback price
   const displayPrice = product.salePrice ?? product.price ?? 0
 
   return (
@@ -80,26 +81,33 @@ export function ManagerProductInfoCard({
         </div>
         <div>
           <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Giá bán</span>
-          <span className='text-base font-bold text-primary block'>
-            {formatPrice(displayPrice)} VNĐ
-          </span>
+          <div className='flex items-baseline gap-1 mt-0.5'>
+            <span className='text-base font-bold text-primary'>
+              {formatPrice(displayPrice)} VNĐ
+            </span>
+            {/* ⭐ Unit to hơn và đậm hơn */}
+            {unitLabel && (
+              <span className='text-sm font-semibold text-muted-foreground'>
+                /{unitLabel}
+              </span>
+            )}
+          </div>
         </div>
         <div>
           <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Tổng kho</span>
           <div className='flex items-baseline gap-1 mt-0.5'>
             <span className='text-base font-bold text-foreground'>{product.totalStock ?? 0}</span>
-            <span className='text-xs text-muted-foreground'>gói</span>
+            {/* ⭐ Unit to hơn và đậm hơn */}
+            {unitLabel && (
+              <span className='text-sm font-semibold text-muted-foreground'>
+                {unitLabel}
+              </span>
+            )}
           </div>
         </div>
         <div>
           <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Tổng lô hàng</span>
           <span className='text-base font-bold text-foreground block mt-0.5'>{product.batchCount ?? 0}</span>
-        </div>
-        <div>
-          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Hết hạn &lt; 3 tháng</span>
-          <span className={`text-base font-bold block mt-0.5 ${expiringSoonCount > 0 ? 'text-destructive' : 'text-foreground'}`}>
-            {expiringSoonCount}
-          </span>
         </div>
       </div>
 

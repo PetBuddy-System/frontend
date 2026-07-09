@@ -1,4 +1,5 @@
 // app/features/manager/pages/manager-product-detail.tsx
+
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
@@ -15,7 +16,7 @@ import type { ProductDetailData, CategoryData } from '~/shared/lib/product'
 import { ManagerEditProductModal } from '../components/products/manager-edit-product-modal'
 import { ManagerProductBatchSection } from '../components/products/manager-product-batch-section'
 import { ManagerProductDeleteDialog } from '../components/products/manager-product-delete-dialog'
-import { ManagerProductInfoCard } from '../components/products/manager-product-info-card'  // 👈 THÊM IMPORT
+import { ManagerProductInfoCard } from '../components/products/manager-product-info-card'
 
 type MediaTab = 'images' | 'video'
 
@@ -65,7 +66,7 @@ export function ManagerProductDetailPage() {
                 const response = await fetchProductManagementByIdApi(id)
                 if (response.success) {
                     setProduct(response.data)
-                    console.log('📦 Product data loaded:', response.data)  // 👈 THÊM LOG
+                    console.log('📦 Product data loaded:', response.data)
                 } else {
                     setError('Không thể tải thông tin sản phẩm')
                 }
@@ -183,7 +184,7 @@ export function ManagerProductDetailPage() {
     }
 
     // ─── Soft-delete product ────────────────────────────────────
-    const handleDeleteProduct = async () => {
+    const handleDeleteProduct = async (reason?: string, note?: string) => {
         if (!productId) return
         setIsDeletingProduct(true)
         setDeleteError(null)
@@ -192,7 +193,9 @@ export function ManagerProductDetailPage() {
                 name: product?.name ?? '',
                 salePrice: product?.salePrice ?? 0,
                 brandName: product?.brandName ?? '',
-                status: 'DELETED'
+                status: 'DELETED',
+                reason: reason,
+                note: note
             })
             if (response.success) {
                 navigate('/manager/products')
@@ -218,20 +221,6 @@ export function ManagerProductDetailPage() {
         }
     }
 
-    // ─── Helpers ────────────────────────────────────────────────
-    const getStatusLabel = (status: string) => {
-        switch (status) {
-            case 'ACTIVE':
-                return 'Đang hoạt động'
-            case 'INACTIVE':
-                return 'Ngừng kinh doanh'
-            case 'DELETED':
-                return 'Đã xóa'
-            default:
-                return status
-        }
-    }
-
     const isDeleted = product?.status === 'DELETED'
     const hasImages = productImages.length > 0
     const hasVideo = !!productVideo
@@ -241,9 +230,7 @@ export function ManagerProductDetailPage() {
         <div className='flex h-screen overflow-hidden bg-background text-foreground'>
             <ManagerSidebar activeItem='products' />
             <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-                <ManagerTopNav
-                    titleKey='Chi tiết sản phẩm'
-                />
+                <ManagerTopNav titleKey='Chi tiết sản phẩm' />
                 <main className='flex-1 overflow-y-auto p-4 md:p-6'>
                     <div className='mx-auto flex max-w-7xl flex-col gap-6'>
 
@@ -296,10 +283,9 @@ export function ManagerProductDetailPage() {
                                     </div>
                                 </div>
 
-                                {/* ✅ Product Info Card - SỬ DỤNG COMPONENT MỚI */}
+                                {/* Product Info Card */}
                                 <ManagerProductInfoCard
                                     product={product}
-                                    expiringSoonCount={0}
                                     formatDate={formatDate}
                                 />
 
@@ -460,12 +446,44 @@ export function ManagerProductDetailPage() {
                                     )}
                                 </div>
 
-                                {/* Description Card */}
-                                <div className='bg-card rounded-2xl border border-border p-6 shadow-sm'>
-                                    <h3 className='text-lg font-bold text-foreground font-display mb-3'>Mô tả sản phẩm</h3>
-                                    <p className='text-sm text-muted-foreground leading-relaxed whitespace-pre-line'>
-                                        {product.description || 'Chưa có mô tả cho sản phẩm này.'}
-                                    </p>
+                                {/* ─── Product Details Section: Description, Ingredients, Usage Instructions ─── */}
+                                <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+                                    {/* Mô tả */}
+                                    <div>
+                                        <h3 className="text-lg font-bold text-foreground font-display mb-3 flex items-center gap-2">
+                                            <MaterialIcon name="description" className="text-primary text-xl" />
+                                            Mô tả sản phẩm
+                                        </h3>
+                                        <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                                            {product.description || 'Chưa có mô tả cho sản phẩm này.'}
+                                        </p>
+                                    </div>
+
+                                    {/* Thành phần - chỉ hiển thị nếu có dữ liệu */}
+                                    {product.ingredients && (
+                                        <div className="border-t border-border pt-4 mt-4">
+                                            <h3 className="text-lg font-bold text-foreground font-display mb-3 flex items-center gap-2">
+                                                <MaterialIcon name="science" className="text-primary text-xl" />
+                                                Thành phần
+                                            </h3>
+                                            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                                                {product.ingredients}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {/* Hướng dẫn sử dụng - chỉ hiển thị nếu có dữ liệu */}
+                                    {product.usageInstructions && (
+                                        <div className="border-t border-border pt-4 mt-4">
+                                            <h3 className="text-lg font-bold text-foreground font-display mb-3 flex items-center gap-2">
+                                                <MaterialIcon name="info" className="text-primary text-xl" />
+                                                Hướng dẫn sử dụng
+                                            </h3>
+                                            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                                                {product.usageInstructions}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Batch Management Section */}

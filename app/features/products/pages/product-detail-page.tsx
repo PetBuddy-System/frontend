@@ -159,6 +159,7 @@ export function ProductDetailPage() {
             salePrice={product.salePrice}
             brandName={product.brandName}
             totalStock={product.totalStock}
+            unit={product.unit}
             discountAmount={product.discountAmount}
             discountValue={product.discountValue}
             hasActivePromotion={product.hasActivePromotion}
