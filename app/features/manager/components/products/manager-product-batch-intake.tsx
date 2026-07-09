@@ -1,3 +1,5 @@
+// app/features/manager/components/products/manager-product-batch-intake.tsx
+
 import { useState } from 'react'
 import { MaterialIcon } from '~/shared/ui'
 import { createBatchesApi } from '../../services/batch'
@@ -12,22 +14,25 @@ export function ManagerProductBatchIntake({
   productId,
   onSuccess
 }: ManagerProductBatchIntakeProps) {
-  const [newBatches, setNewBatches] = useState<{ quantity: number; expiryDate: string }[]>([
-    { quantity: 0, expiryDate: '' }
+  // ⭐ THÊM basePrice vào state
+  const [newBatches, setNewBatches] = useState<{ quantity: number; basePrice: number; expiryDate: string }[]>([
+    { quantity: 0, basePrice: 0, expiryDate: '' }
   ])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [showSuccess, setShowSuccess] = useState(false)
 
   const addBatchRow = () => {
-    setNewBatches([...newBatches, { quantity: 0, expiryDate: '' }])
+    // ⭐ THÊM basePrice: 0
+    setNewBatches([...newBatches, { quantity: 0, basePrice: 0, expiryDate: '' }])
   }
 
   const removeBatchRow = (index: number) => {
     setNewBatches(newBatches.filter((_, i) => i !== index))
   }
 
-  const updateBatchRow = (index: number, field: 'quantity' | 'expiryDate', value: string | number) => {
+  // ⭐ THÊM basePrice vào update
+  const updateBatchRow = (index: number, field: 'quantity' | 'basePrice' | 'expiryDate', value: string | number) => {
     const updated = [...newBatches]
     updated[index] = { ...updated[index], [field]: value }
     setNewBatches(updated)
@@ -37,25 +42,28 @@ export function ManagerProductBatchIntake({
     setSubmitError(null)
     setShowSuccess(false)
 
+    // ⭐ KIỂM TRA basePrice
     const validBatches = newBatches.filter(
-      (batch) => batch.quantity > 0 && batch.expiryDate.trim() !== ''
+      (batch) => batch.quantity > 0 && batch.basePrice >= 0 && batch.expiryDate.trim() !== ''
     )
 
     if (validBatches.length === 0) {
-      setSubmitError('Vui lòng nhập ít nhất 1 lô hàng')
+      setSubmitError('Vui lòng nhập đầy đủ thông tin (Số lượng > 0, Giá vốn >= 0, Ngày hết hạn)')
       return
     }
 
     setIsSubmitting(true)
     try {
+      // ⭐ THÊM basePrice vào payload
       const payload: CreateBatchPayload[] = validBatches.map((batch) => ({
         stockQuantity: batch.quantity,
+        basePrice: batch.basePrice,  // ⭐ THÊM
         expiryDate: batch.expiryDate
       }))
 
       const response = await createBatchesApi(productId, payload)
       if (response.success) {
-        setNewBatches([{ quantity: 0, expiryDate: '' }])
+        setNewBatches([{ quantity: 0, basePrice: 0, expiryDate: '' }])
         setShowSuccess(true)
         onSuccess()
         setTimeout(() => setShowSuccess(false), 3000)
@@ -106,6 +114,7 @@ export function ManagerProductBatchIntake({
             <tr className='bg-muted/40 border-b border-border'>
               <th className='w-16 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>STT</th>
               <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Số lượng</th>
+              <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Giá vốn</th> {/* ⭐ THÊM CỘT */}
               <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Ngày hết hạn</th>
               <th className='w-20 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>Thao tác</th>
             </tr>
@@ -117,8 +126,21 @@ export function ManagerProductBatchIntake({
                 <td className='px-4 py-3'>
                   <input
                     type='number'
+                    min='1'
                     value={batch.quantity || ''}
                     onChange={(e) => updateBatchRow(index, 'quantity', Number(e.target.value))}
+                    className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
+                    placeholder='0'
+                    disabled={isSubmitting}
+                  />
+                </td>
+                <td className='px-4 py-3'>
+                  <input
+                    type='number'
+                    min='0'
+                    step='1000'
+                    value={batch.basePrice || ''}  // ⭐ THÊM input basePrice
+                    onChange={(e) => updateBatchRow(index, 'basePrice', Number(e.target.value))}
                     className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
                     placeholder='0'
                     disabled={isSubmitting}
@@ -148,7 +170,6 @@ export function ManagerProductBatchIntake({
         </table>
       </div>
 
-      {/* Error & Success Messages */}
       {submitError && (
         <div className='mt-2 flex items-center gap-2 text-destructive text-sm font-semibold bg-destructive/10 p-3 rounded-lg'>
           <MaterialIcon name='error_outline' className='text-lg shrink-0' />

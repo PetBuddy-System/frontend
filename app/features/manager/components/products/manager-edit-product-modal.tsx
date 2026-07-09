@@ -28,10 +28,6 @@ const STATUS_OPTIONS = [
 
 const UNIT_OPTIONS: { value: ProductUnit; label: string }[] = [
   { value: 'PIECE', label: 'Cái' },
-  { value: 'KG', label: 'Kilogram' },
-  { value: 'GRAM', label: 'Gram' },
-  { value: 'LITER', label: 'Lít' },
-  { value: 'MILLILITER', label: 'Mililit' },
   { value: 'BAG', label: 'Túi' },
   { value: 'BOX', label: 'Hộp' },
   { value: 'PACK', label: 'Gói' },
@@ -65,6 +61,10 @@ export function ManagerEditProductModal({
   const [totalStock, setTotalStock] = useState(0)
   const [isDeleted, setIsDeleted] = useState(false)
 
+  // ⭐ REASON & NOTE
+  const [reason, setReason] = useState('')
+  const [note, setNote] = useState('')
+
   // Images
   const [existingImages, setExistingImages] = useState<{ mediaFileId: number; fileUrl: string }[]>([])
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
@@ -83,12 +83,15 @@ export function ManagerEditProductModal({
 
     async function loadData() {
       setLoading(true)
+      // ⭐ Reset reason và note khi mở modal
+      setReason('')
+      setNote('')
+
       try {
         const res = await fetchProductManagementByIdApi(productId!)
         if (active && res.success) {
           const p = res.data
 
-          // ✅ THÊM LOG DEBUG VÀO ĐÂY
           console.log('📦 Product data:', p)
           console.log('📝 Description:', p.description)
           console.log('📝 Ingredients:', p.ingredients)
@@ -159,7 +162,6 @@ export function ManagerEditProductModal({
     const files = e.target.files ? Array.from(e.target.files) : []
     setSelectedFiles(files)
     setPreviewUrls(files.map(f => URL.createObjectURL(f)))
-    // Reset input để có thể chọn lại cùng file
     e.target.value = ''
   }
 
@@ -189,7 +191,7 @@ export function ManagerEditProductModal({
     setError(null)
 
     try {
-      // 1. Update product info
+      // 1. Update product info (có thêm reason và note)
       const updateRes = await updateProductApi(productId, {
         name,
         salePrice,
@@ -199,7 +201,9 @@ export function ManagerEditProductModal({
         description,
         ingredients,
         usageInstructions,
-        unit: unit as ProductUnit | undefined
+        unit: unit as ProductUnit | undefined,
+        reason: reason || undefined,
+        note: note || undefined,
       })
       if (!updateRes.success) throw new Error(updateRes.message)
 
@@ -311,7 +315,6 @@ export function ManagerEditProductModal({
                 </SelectField>
               </div>
 
-
               <TextareaField
                 label='Mô tả'
                 value={description}
@@ -335,6 +338,47 @@ export function ManagerEditProductModal({
                 disabled={isDeleted}
                 rows={4}
               />
+
+              {/* ⭐ REASON & NOTE - Thêm vào form */}
+              <div className='border-t border-border pt-4 mt-2'>
+                <div className='grid grid-cols-1 gap-4'>
+                  <div className='flex flex-col gap-1.5'>
+                    <label className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Lý do thay đổi
+                      <span className='text-xs font-normal text-muted-foreground ml-1'>(không bắt buộc)</span>
+                    </label>
+                    <textarea
+                      rows={2}
+                      disabled={isDeleted}
+                      value={reason}
+                      onChange={(e) => setReason(e.target.value)}
+                      placeholder='Nhập lý do thay đổi sản phẩm...'
+                      className={cn(
+                        'w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring resize-y min-h-[60px]',
+                        isDeleted && 'opacity-60 cursor-not-allowed'
+                      )}
+                    />
+                  </div>
+                  <div className='flex flex-col gap-1.5'>
+                    <label className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Ghi chú
+                      <span className='text-xs font-normal text-muted-foreground ml-1'>(không bắt buộc)</span>
+                    </label>
+                    <textarea
+                      rows={2}
+                      disabled={isDeleted}
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                      placeholder='Nhập ghi chú thêm...'
+                      className={cn(
+                        'w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring resize-y min-h-[60px]',
+                        isDeleted && 'opacity-60 cursor-not-allowed'
+                      )}
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* Images Section */}
               <div className='border-t border-border pt-4'>
                 <label className='text-xs font-bold uppercase text-muted-foreground'>Hình ảnh sản phẩm</label>
@@ -380,7 +424,6 @@ export function ManagerEditProductModal({
                   </div>
                 )}
 
-                {/* ✅ Thêm ảnh mới - bỏ text "No file chosen" */}
                 <div className='mt-3'>
                   <label className='text-xs font-medium text-muted-foreground'>Thêm ảnh mới:</label>
                   <div className='mt-1'>
@@ -416,11 +459,10 @@ export function ManagerEditProductModal({
                 )}
               </div>
 
-              {/* ✅ Video Section - Hiển thị video cũ với nút xóa và thay thế */}
+              {/* Video Section */}
               <div className='border-t border-border pt-4'>
                 <label className='text-xs font-bold uppercase text-muted-foreground'>Video sản phẩm</label>
 
-                {/* Video cũ */}
                 {existingVideoUrl && !deleteVideo && !videoFile && (
                   <div className='mt-2 p-3 rounded-lg bg-muted/30 border border-border'>
                     <div className='flex items-center gap-3'>
@@ -445,7 +487,6 @@ export function ManagerEditProductModal({
                   </div>
                 )}
 
-                {/* Đã đánh dấu xóa */}
                 {deleteVideo && (
                   <div className='mt-2 p-3 rounded-lg bg-destructive/10 border border-destructive/30'>
                     <div className='flex items-center justify-between'>
@@ -461,7 +502,6 @@ export function ManagerEditProductModal({
                   </div>
                 )}
 
-                {/* Upload video mới */}
                 {!isDeleted && (
                   <div className='mt-3'>
                     <label className='text-xs font-medium text-muted-foreground'>Thay thế video mới:</label>
@@ -484,7 +524,6 @@ export function ManagerEditProductModal({
                   </div>
                 )}
 
-                {/* Trạng thái */}
                 {existingVideoUrl && !deleteVideo && !videoFile && (
                   <p className='text-xs text-muted-foreground mt-2'>✓ Đã có video. Chọn video mới để thay thế.</p>
                 )}
@@ -577,6 +616,7 @@ function SelectField({ label, value, onChange, disabled, children }: SelectField
     </div>
   )
 }
+
 interface TextareaFieldProps {
   label: string
   value: string

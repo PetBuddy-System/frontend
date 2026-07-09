@@ -550,6 +550,16 @@
       "error": "Cập nhật sản phẩm thất bại"
     }
   },
+  "unit": {
+    "PIECE": "cái",
+    "BAG": "túi",
+    "BOX": "hộp",
+    "PACK": "gói",
+    "BOTTLE": "chai",
+    "CAN": "lon",
+    "TUBE": "tuýp",
+    "SET": "bộ"
+  },
   "promotions": {
     "title": "Quản lý Khuyến mãi",
     "subtitle": "Quản lý các chương trình giảm giá và chiến dịch quảng bá.",
@@ -568,6 +578,7 @@
     },
     "table": {
       "columns": {
+        "code": "Mã SP",
         "name": "Tên khuyến mãi",
         "description": "Mô tả",
         "startDate": "Ngày bắt đầu",

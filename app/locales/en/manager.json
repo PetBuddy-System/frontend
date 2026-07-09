@@ -553,6 +553,16 @@
       "error": "Failed to update product"
     }
   },
+  "unit": {
+    "PIECE": "piece",
+    "BAG": "bag",
+    "BOX": "box",
+    "PACK": "pack",
+    "BOTTLE": "bottle",
+    "CAN": "can",
+    "TUBE": "tube",
+    "SET": "set"
+  },
   "promotions": {
     "title": "Promotions Management",
     "subtitle": "Manage discount programs and advertising campaigns.",
@@ -571,6 +581,7 @@
     },
     "table": {
       "columns": {
+        "code": "Product Code",
         "name": "Promotion Name",
         "description": "Description",
         "startDate": "Start Date",

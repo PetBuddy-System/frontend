@@ -1,6 +1,6 @@
 // app/features/manager/pages/manager-promotion-create-page.tsx
 
-import { useEffect, useMemo, useState, useRef, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
@@ -9,18 +9,22 @@ import { fetchProductsManagementApi } from '../services/product/product-api'
 import { promotionApi, type CreatePromotionDTO } from '../services/promotion/promotion-api'
 import type { ProductManagementItem } from '~/shared/lib/product'
 import { MaterialIcon } from '~/shared/ui'
+import { cn } from '~/shared/lib/cn'
 
-// ✅ Thêm option "Tất cả sản phẩm"
+// ⭐ Constants
+const PAGE_SIZE = 10
+const DEFAULT_DISCOUNT_VALUE = 20
+
+// ⭐ NEAR_EXPIRED_DAY_OPTIONS
 const NEAR_EXPIRED_DAY_OPTIONS = [
-  { label: 'Tất cả sản phẩm', value: 9999 },
-  { label: '1 tháng (30 ngày)', value: 30 },
-  { label: '2 tháng (60 ngày)', value: 60 },
-  { label: '3 tháng (90 ngày)', value: 90 },
-  { label: '4 tháng (120 ngày)', value: 120 },
-  { label: '6 tháng (180 ngày)', value: 180 }
+  { label: 'Tất cả sản phẩm', value: 'all' },
+  { label: '1 tháng (30 ngày)', value: '30' },
+  { label: '2 tháng (60 ngày)', value: '60' },
+  { label: '3 tháng (90 ngày)', value: '90' },
+  { label: '4 tháng (120 ngày)', value: '120' },
+  { label: '6 tháng (180 ngày)', value: '180' }
 ] as const
 
-// ✅ SỬA: discountType → promotionType
 type ProductDiscountState = {
   promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
   discountValue: number
@@ -36,7 +40,7 @@ export function ManagerPromotionCreatePage() {
     endDate: '',
     status: 'ACTIVE' as 'DRAFT' | 'ACTIVE'
   })
-  const [nearExpiredDays, setNearExpiredDays] = useState(9999) // ✅ Mặc định là "Tất cả sản phẩm"
+  const [nearExpiredDays, setNearExpiredDays] = useState<string>('all')
 
   const [keyword, setKeyword] = useState('')
   const [keywordInput, setKeywordInput] = useState('')
@@ -50,23 +54,17 @@ export function ManagerPromotionCreatePage() {
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
-  const pageSize = 10
 
   const [selectedProductMap, setSelectedProductMap] = useState<Map<string, ProductDiscountState>>(new Map())
 
-  const selectedProductIds = useMemo(() => {
-    return Array.from(selectedProductMap.keys())
-  }, [selectedProductMap])
-
-  const selectedProducts = useMemo(() => {
-    const currentPageSelected = products.filter((product) =>
-      selectedProductMap.has(product.productId)
-    )
-    return currentPageSelected
-  }, [products, selectedProductMap])
-
   const canSubmit = selectedProductMap.size > 0 && !isSubmitting
 
+  // ⭐ Hàm kiểm tra sản phẩm đang có promotion active
+  const isProductHasActivePromotion = (product: ProductManagementItem) => {
+    return product.hasActivePromotion === true
+  }
+
+  // ⭐ Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
       setKeyword(keywordInput)
@@ -76,7 +74,6 @@ export function ManagerPromotionCreatePage() {
     return () => clearTimeout(timer)
   }, [keywordInput])
 
-  // ✅ Hàm formatPrice an toàn
   const formatPrice = (value?: number) => {
     if (value === undefined || value === null || isNaN(value)) {
       return '0'
@@ -84,7 +81,7 @@ export function ManagerPromotionCreatePage() {
     return value.toLocaleString('vi-VN')
   }
 
-  // Load products
+  // ⭐ Load products
   useEffect(() => {
     async function loadProducts() {
       setIsLoadingProducts(true)
@@ -94,9 +91,9 @@ export function ManagerPromotionCreatePage() {
         const response = await fetchProductsManagementApi({
           keyword: keyword.trim() || undefined,
           page: currentPage,
-          size: pageSize,
+          size: PAGE_SIZE,
           sortBy: 'date_desc',
-          nearExpiredDays: nearExpiredDays === 9999 ? undefined : nearExpiredDays // ✅ Không truyền khi = 9999
+          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays)
         })
 
         if (!response.success) {
@@ -123,7 +120,10 @@ export function ManagerPromotionCreatePage() {
       if (newMap.has(productId)) {
         newMap.delete(productId)
       } else {
-        newMap.set(productId, { promotionType: 'PERCENTAGE', discountValue: 20 })
+        newMap.set(productId, {
+          promotionType: 'PERCENTAGE',
+          discountValue: DEFAULT_DISCOUNT_VALUE
+        })
       }
       return newMap
     })
@@ -134,7 +134,10 @@ export function ManagerPromotionCreatePage() {
       const newMap = new Map(prev)
       for (const product of products) {
         if (!newMap.has(product.productId)) {
-          newMap.set(product.productId, { promotionType: 'PERCENTAGE', discountValue: 20 })
+          newMap.set(product.productId, {
+            promotionType: 'PERCENTAGE',
+            discountValue: DEFAULT_DISCOUNT_VALUE
+          })
         }
       }
       return newMap
@@ -151,7 +154,6 @@ export function ManagerPromotionCreatePage() {
     })
   }
 
-  // ✅ SỬA: discountType → promotionType
   function updateProductDiscount(
     productId: string,
     field: 'promotionType' | 'discountValue',
@@ -175,7 +177,10 @@ export function ManagerPromotionCreatePage() {
   }
 
   const getProductDiscount = (productId: string): ProductDiscountState => {
-    return selectedProductMap.get(productId) || { promotionType: 'PERCENTAGE', discountValue: 20 }
+    return selectedProductMap.get(productId) || {
+      promotionType: 'PERCENTAGE',
+      discountValue: DEFAULT_DISCOUNT_VALUE
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -345,7 +350,7 @@ export function ManagerPromotionCreatePage() {
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lọc gần hết hạn</span>
                     <select
                       value={nearExpiredDays}
-                      onChange={(e) => setNearExpiredDays(Number(e.target.value))}
+                      onChange={(e) => setNearExpiredDays(e.target.value)}
                       className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                     >
                       {NEAR_EXPIRED_DAY_OPTIONS.map((option) => (
@@ -462,23 +467,48 @@ export function ManagerPromotionCreatePage() {
                         products.map((product) => {
                           const checked = isProductSelected(product.productId)
                           const discount = getProductDiscount(product.productId)
+                          const hasActivePromotion = isProductHasActivePromotion(product)
 
                           return (
-                            <tr key={product.productId} className={checked ? 'bg-primary/5' : undefined}>
+                            <tr
+                              key={product.productId}
+                              className={cn(
+                                checked && !hasActivePromotion ? 'bg-primary/5' : undefined,
+                                hasActivePromotion && 'opacity-60'
+                              )}
+                            >
                               <td className='px-4 py-3 text-center'>
-                                <input
-                                  type='checkbox'
-                                  checked={checked}
-                                  onChange={() => toggleProduct(product.productId)}
-                                  className='h-4 w-4 rounded border-border text-primary focus:ring-ring'
-                                />
+                                <div className='flex items-center justify-center gap-1'>
+                                  <input
+                                    type='checkbox'
+                                    checked={checked}
+                                    onChange={() => toggleProduct(product.productId)}
+                                    disabled={hasActivePromotion}
+                                    className={cn(
+                                      'h-4 w-4 rounded border-border text-primary focus:ring-ring',
+                                      hasActivePromotion && 'opacity-50 cursor-not-allowed'
+                                    )}
+                                  />
+                                  {hasActivePromotion && (
+                                    <span className='text-[10px] text-muted-foreground whitespace-nowrap'>
+                                      (đang KM)
+                                    </span>
+                                  )}
+                                </div>
                               </td>
                               <td className='px-4 py-3 font-mono text-sm font-semibold text-primary'>
                                 {product.productCode}
                               </td>
                               <td className='px-4 py-3'>
                                 <div className='font-semibold text-foreground'>{product.name}</div>
-                                <div className='text-xs text-muted-foreground'>{product.batchCount} lô hàng</div>
+                                <div className='flex items-center gap-2 text-xs text-muted-foreground'>
+                                  <span>{product.batchCount} lô hàng</span>
+                                  {hasActivePromotion && (
+                                    <span className='rounded-full bg-success/10 px-2 py-0.5 text-xs text-success'>
+                                      Đang KM
+                                    </span>
+                                  )}
+                                </div>
                               </td>
                               <td className='px-4 py-3 text-sm text-muted-foreground'>{product.brandName}</td>
                               <td className='px-4 py-3 text-sm font-semibold text-foreground'>
@@ -488,7 +518,7 @@ export function ManagerPromotionCreatePage() {
                                 {product.totalStock}
                               </td>
                               <td className='px-4 py-3'>
-                                {checked ? (
+                                {checked && !hasActivePromotion ? (
                                   <select
                                     value={discount.promotionType}
                                     onChange={(e) =>
@@ -508,7 +538,7 @@ export function ManagerPromotionCreatePage() {
                                 )}
                               </td>
                               <td className='px-4 py-3'>
-                                {checked ? (
+                                {checked && !hasActivePromotion ? (
                                   <input
                                     type='number'
                                     min={0}

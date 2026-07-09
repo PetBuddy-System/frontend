@@ -32,7 +32,7 @@ export function ProductsPage() {
   const { t } = useTranslation('products')
 
   const [searchInput, setSearchInput] = useState('')
-  const [keyword, setKeyword] = useState('')
+  const [keyword, setKeyword] = useState('')  // ⭐ Thêm keyword state
   const [category, setCategory] = useState<string | number>('all')
   const [brandName, setBrandName] = useState('')
   const [sort, setSort] = useState('popular')
@@ -45,6 +45,7 @@ export function ProductsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Load categories
   useEffect(() => {
     let active = true
     async function loadCategories() {
@@ -63,6 +64,7 @@ export function ProductsPage() {
     }
   }, [])
 
+  // ⭐ Debounce search input
   useEffect(() => {
     const handler = setTimeout(() => {
       setKeyword(searchInput)
@@ -71,6 +73,7 @@ export function ProductsPage() {
     return () => clearTimeout(handler)
   }, [searchInput])
 
+  // Fetch products
   useEffect(() => {
     let active = true
 
@@ -78,7 +81,7 @@ export function ProductsPage() {
       setIsLoading(true)
       try {
         const response = await fetchProductsApi({
-          keyword,
+          keyword,  // ⭐ Dùng keyword thay vì searchInput
           page,
           size: 12,
           categoryId: category !== 'all' ? Number(category) : undefined,
@@ -107,7 +110,7 @@ export function ProductsPage() {
     return () => {
       active = false
     }
-  }, [keyword, category, brandName, sort, page])
+  }, [keyword, category, brandName, sort, page])  // ⭐ Dùng keyword thay vì searchInput
 
   const resultsFrom = totalElements > 0 ? page * 12 + 1 : 0
   const resultsTo = Math.min((page + 1) * 12, totalElements)
@@ -182,6 +185,7 @@ export function ProductsPage() {
                   </select>
                 </div>
               </div>
+
               {error && (
                 <div className='mb-6 flex items-center gap-2 rounded-xl bg-destructive/10 p-4 text-sm font-semibold text-destructive'>
                   <MaterialIcon name='error' className='shrink-0 text-xl' />

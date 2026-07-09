@@ -28,6 +28,7 @@ export function ManagerProductsPage() {
   const [keyword, setKeyword] = useState('')
   const [category, setCategory] = useState<string | number>('all')
   const [status, setStatus] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<string>('date_desc')
   const [page, setPage] = useState(0)
 
   // API Data States
@@ -126,6 +127,7 @@ export function ManagerProductsPage() {
           keyword,
           categoryId: category !== 'all' ? Number(category) : undefined,
           status: status !== 'all' ? (status as 'ACTIVE' | 'INACTIVE' | 'DELETED') : undefined,
+          sortBy: sortBy,
           page,
           size: 10
         }
@@ -153,7 +155,7 @@ export function ManagerProductsPage() {
     return () => {
       active = false
     }
-  }, [keyword, category, status, page, refreshKey])
+  }, [keyword, category, status, sortBy, page, refreshKey])
 
   const handleEdit = (productId: string) => {
     setEditingProductId(productId)
@@ -214,6 +216,7 @@ export function ManagerProductsPage() {
         <ManagerTopNav titleKey='productManagement.title' subtitleKey='productManagement.subtitle' />
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
+            {/* ⭐ Header - đã bỏ search */}
             <section className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
               <div>
                 <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
@@ -221,20 +224,7 @@ export function ManagerProductsPage() {
                 </h1>
                 <p className='mt-2 max-w-3xl text-muted-foreground'>{t('productManagement.subtitle')}</p>
               </div>
-              <div className='flex flex-col gap-3 sm:flex-row sm:items-center w-full lg:w-auto lg:max-w-xl shrink-0'>
-                <div className='relative flex-1 lg:w-80'>
-                  <MaterialIcon
-                    name='search'
-                    className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'
-                  />
-                  <input
-                    type='search'
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    placeholder={t('productManagement.searchPlaceholder')}
-                    className='h-11 w-full rounded-full border border-input bg-card pl-10 pr-4 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring'
-                  />
-                </div>
+              <div className='flex flex-col gap-3 sm:flex-row sm:items-center w-full lg:w-auto shrink-0'>
                 <button
                   type='button'
                   onClick={() => setIsImportModalOpen(true)}
@@ -268,6 +258,7 @@ export function ManagerProductsPage() {
               isLoading={isStatsLoading}
             />
 
+            {/* ⭐ Toolbar với search + category dropdown + status + sort */}
             <ManagerProductsToolbar
               categories={categories}
               selectedCategory={category}
@@ -280,9 +271,15 @@ export function ManagerProductsPage() {
                 setStatus(stat)
                 setPage(0)
               }}
+              selectedSort={sortBy}
+              onSortSelect={(sort) => {
+                setSortBy(sort)
+                setPage(0)
+              }}
+              searchValue={searchInput}
+              onSearchChange={setSearchInput}
             />
 
-            {/* ✅ Truyền products vào table - đã có thumbnailUrl và salePrice từ API */}
             <ManagerProductsTable
               products={products}
               isLoading={isLoading}

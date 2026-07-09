@@ -771,7 +771,10 @@
       "discountValue": "Giá trị giảm",
       "productId": "Mã sản phẩm (ID)",
       "ingredients": "Thành phần",
-      "usageInstructions": "Hướng dẫn sử dụng"
+      "usageInstructions": "Hướng dẫn sử dụng",
+      "createdAt": "Ngày tạo",
+      "updatedAt": "Ngày cập nhật",
+      "deletedAt": "Ngày xóa"
     },
     "reasonMap": {
       "CREATE_PRODUCT": "Tạo mới sản phẩm",
