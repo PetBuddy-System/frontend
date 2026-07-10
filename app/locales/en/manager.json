@@ -144,7 +144,7 @@
     "nav": {
       "dashboard": "Operations overview",
       "products": "Product Management",
-      "staff": "Staff Coordination",
+      "staff": "Work Schedule Management",
       "returnRequests": "Return approvals",
       "disposalApprovals": "Disposal approvals",
       "promotions": "Promotions",
@@ -203,11 +203,11 @@
           "role": "Support staff"
         }
       },
-      "title": "Assign staff for {{bookingCode}}"
+      "title": "Choose staff for work schedule"
     },
     "bookingList": {
       "filter": "Filter",
-      "title": "Pending Booking Assignments",
+      "title": "Work schedules",
       "today": "Today"
     },
     "categories": {
@@ -216,13 +216,13 @@
       "vet": "Vet"
     },
     "pagination": {
-      "showing": "Showing 3 of 12 bookings"
+      "showing": "Showing work schedules"
     },
     "quickTip": {
-      "description": "Bookings marked as Pending assignment should be prioritized so the team can keep service timelines on track.",
+      "description": "Work schedules help staff see their shift, start time, end time, and daily responsibility.",
       "title": "Quick tip"
     },
-    "searchPlaceholder": "Search bookings...",
+    "searchPlaceholder": "Search work schedules...",
     "staffStatus": {
       "groups": {
         "grooming": {
@@ -251,14 +251,14 @@
       "viewAll": "View all staff"
     },
     "status": {
-      "pending": "Pending assignment",
-      "scheduled": "Pre-scheduled"
+      "pending": "No staff yet",
+      "scheduled": "Scheduled"
     },
-    "subtitle": "Assign staff based on pending service bookings.",
+    "subtitle": "Create, update, and manage work schedules so staff can follow their assigned shifts.",
     "table": {
       "columns": {
         "actions": "Actions",
-        "code": "Booking ID",
+        "code": "Schedule",
         "customerPet": "Customer & Pet",
         "service": "Service",
         "status": "Status",
@@ -291,7 +291,173 @@
         }
       }
     },
-    "title": "Staff Coordination"
+    "title": "Work Schedule Management",
+    "create": {
+      "title": "Create work schedule",
+      "subtitle": "Set the work date, shift time, and staff for a new work schedule."
+    },
+    "detailPage": {
+      "title": "Work schedule details",
+      "subtitle": "View work schedule information and assigned staff."
+    },
+    "editPage": {
+      "title": "Update work schedule",
+      "subtitle": "Update shift information, add staff, or reassign staff in this work schedule."
+    },
+    "staffPage": {
+      "title": "Staff in work schedule",
+      "subtitle": "View and manage staff assigned to this work schedule."
+    },
+    "workSchedules": {
+      "actions": {
+        "assign": "Add staff",
+        "backToDetail": "Back to details",
+        "backToList": "Back to list",
+        "cancel": "Cancel",
+        "cancelEdit": "Cancel edit",
+        "clearFilters": "Clear filters",
+        "create": "Create work schedule",
+        "edit": "Update schedule",
+        "refresh": "Refresh",
+        "reassign": "Reassign staff",
+        "remove": "Remove from schedule",
+        "update": "Update",
+        "viewDetails": "View details",
+        "viewStaffs": "View schedule staff"
+      },
+      "detail": {
+        "assignedAt": "Assigned",
+        "assignedStaffs": "Assigned staff",
+        "checkIn": "Check-in",
+        "checkOut": "Check-out",
+        "createdAt": "Created",
+        "date": "Work date",
+        "empty": "Select a schedule to view details and manage staff.",
+        "loading": "Loading work schedule details...",
+        "noStaffs": "No staff has been assigned to this schedule yet.",
+        "noNote": "No note.",
+        "note": "Note",
+        "scheduleId": "Work schedule",
+        "shift": "Shift",
+        "staffCount": "Staff count",
+        "staffCountText": "{{count}} staff assigned",
+        "staffScheduleId": "Assignment",
+        "time": "Time",
+        "title": "Schedule details",
+        "updatedAt": "Updated"
+      },
+      "empty": "No matching work schedules found.",
+      "filters": {
+        "fromDate": "From date",
+        "pageSize": "Rows",
+        "shiftType": "Shift",
+        "toDate": "To date"
+      },
+      "form": {
+        "createTitle": "Create work schedule",
+        "editTitle": "Update work schedule",
+        "endTime": "End time",
+        "note": "Note",
+        "shiftType": "Shift",
+        "staffIds": "Staff",
+        "staffIdsPlaceholder": "Choose staff for work schedule",
+        "staffs": "Choose staff",
+        "startTime": "Start time",
+        "subtitle": "Create a new schedule or update the selected schedule.",
+        "workDate": "Work date"
+      },
+      "list": {
+        "showing": "Showing {{from}}-{{to}} of {{total}} schedules",
+        "title": "Work schedule overview"
+      },
+      "messages": {
+        "assignFailed": "Failed to add staff to the schedule.",
+        "assigned": "Staff added to the work schedule.",
+        "createFailed": "Failed to create work schedule.",
+        "created": "Work schedule created successfully.",
+        "loadDetailFailed": "Failed to load work schedule details.",
+        "loadListFailed": "Failed to load work schedules.",
+        "loadStaffsFailed": "Failed to load staff list.",
+        "reassignFailed": "Failed to reassign staff.",
+        "reassignRequired": "Please choose the current assignment and replacement staff.",
+        "reassigned": "Staff reassigned successfully.",
+        "removeFailed": "Failed to remove staff from the schedule.",
+        "removed": "Staff removed from the work schedule.",
+        "staffIdsRequired": "Please select at least one staff member.",
+        "updateFailed": "Failed to update work schedule.",
+        "updated": "Work schedule updated successfully."
+      },
+      "errors": {
+        "badRequest": "The work schedule information is invalid. Please check the date, time, and selected staff.",
+        "duplicateSchedule": "This work schedule already exists for the same date and time range.",
+        "duplicateStaff": "The replacement staff is the same as the current staff. Please choose another staff member.",
+        "forbidden": "You do not have permission to perform this action.",
+        "invalidDateRange": "Invalid date range. The end date cannot be before the start date.",
+        "invalidRemoveStatus": "Staff can only be removed while the assignment is still scheduled.",
+        "invalidTime": "End time cannot be before start time.",
+        "network": "Cannot connect to the server. Please check your connection and try again.",
+        "notFound": "This work schedule does not exist or has been removed.",
+        "server": "The server is having trouble. Please try again later.",
+        "staffConflict": "This staff member already has a work schedule in the same date and time range.",
+        "updateLocked": "Cannot update a work schedule that has reached its work date or already started."
+      },
+      "pagination": {
+        "next": "Next page",
+        "page": "Page {{page}} / {{totalPages}}",
+        "previous": "Previous page"
+      },
+      "reassign": {
+        "chooseCurrent": "Choose current staff assignment",
+        "chooseNew": "Choose replacement staff",
+        "currentStaff": "Current staff",
+        "newStaff": "New staff",
+        "reason": "Reason",
+        "title": "Reassign staff"
+      },
+      "assign": {
+        "title": "Add staff to schedule"
+      },
+      "shiftTypes": {
+        "AFTERNOON": "Afternoon",
+        "ALL": "All",
+        "CUSTOM": "Custom",
+        "EVENING": "Evening",
+        "FULL_DAY": "Full day",
+        "MORNING": "Morning"
+      },
+      "stats": {
+        "assigned": "Assigned staff on page",
+        "page": "Current page",
+        "total": "Total schedules"
+      },
+      "staffSelect": {
+        "empty": "No staff available to select.",
+        "placeholder": "Choose staff for work schedule",
+        "selected": "{{count}} staff selected"
+      },
+      "staffTasks": {
+        "CASHIER": "Cashier",
+        "COORDINATOR": "Coordinator",
+        "GROOMER": "Groomer",
+        "SHIPPER": "Shipper"
+      },
+      "statuses": {
+        "ABSENT": "Absent",
+        "CANCELLED": "Cancelled",
+        "COMPLETED": "Completed",
+        "LEAVE": "On leave",
+        "SCHEDULED": "Scheduled",
+        "WORKING": "Working"
+      },
+      "table": {
+        "actions": "Actions",
+        "date": "Date",
+        "note": "Note",
+        "shift": "Shift",
+        "staffs": "Staff",
+        "time": "Time"
+      }
+    }
   },
   "table": {
     "columns": {

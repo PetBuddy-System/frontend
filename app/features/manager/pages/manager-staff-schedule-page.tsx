@@ -1,14 +1,22 @@
 import { useTranslation } from 'react-i18next'
-
-import { MaterialIcon } from '~/shared/ui'
+import { useLocation } from 'react-router'
 
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
-import { ManagerBookingAssignmentTable } from '../components/staff-schedule/manager-booking-assignment-table'
-import { ManagerStaffAvailabilityPanel } from '../components/staff-schedule/manager-staff-availability-panel'
+import { ManagerWorkScheduleWorkspace } from '../components/staff-schedule/manager-work-schedule-workspace'
+
+function getSuccessMessage(state: unknown) {
+  if (!state || typeof state !== 'object' || !('successMessage' in state)) return null
+
+  const { successMessage } = state
+
+  return typeof successMessage === 'string' ? successMessage : null
+}
 
 export function ManagerStaffSchedulePage() {
   const { t } = useTranslation('manager')
+  const location = useLocation()
+  const successMessage = getSuccessMessage(location.state)
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -24,23 +32,15 @@ export function ManagerStaffSchedulePage() {
                 </h1>
                 <p className='mt-2 text-muted-foreground'>{t('staffSchedule.subtitle')}</p>
               </div>
-              <div className='relative w-full md:w-80'>
-                <MaterialIcon
-                  name='search'
-                  className='absolute left-3 top-1/2 -translate-y-1/2 text-lg text-muted-foreground'
-                />
-                <input
-                  type='text'
-                  className='h-11 w-full rounded-full border border-input bg-card px-10 text-sm outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring'
-                  placeholder={t('staffSchedule.searchPlaceholder')}
-                />
-              </div>
             </section>
 
-            <div className='flex flex-col gap-6 lg:flex-row'>
-              <ManagerBookingAssignmentTable />
-              <ManagerStaffAvailabilityPanel />
-            </div>
+            {successMessage && (
+              <div className='rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm font-medium text-success'>
+                {successMessage}
+              </div>
+            )}
+
+            <ManagerWorkScheduleWorkspace />
           </div>
         </main>
       </div>
