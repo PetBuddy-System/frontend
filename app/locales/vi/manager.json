@@ -146,7 +146,8 @@
       "staff": "Điều phối nhân sự",
       "returnRequests": "Duyệt đổi trả",
       "disposalApprovals": "Duyệt hủy hàng",
-      "promotions": "Chương trình khuyến mãi"
+      "promotions": "Chương trình khuyến mãi",
+      "storeLocations": "Địa chỉ chi nhánh"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
@@ -591,6 +592,34 @@
       "success": "Cập nhật khuyến mãi thành công",
       "createSuccess": "Tạo chương trình khuyến mãi thành công",
       "error": "Thao tác thất bại"
+    }
+  },
+  "storeLocations": {
+    "title": "Quản lý địa chỉ chi nhánh",
+    "subtitle": "Cấu hình vị trí địa lý và địa chỉ chính thức của cửa hàng PetBuddy.",
+    "currentLocation": "Chi nhánh hiện tại",
+    "history": "Lịch sử chi nhánh",
+    "address": "Địa chỉ",
+    "latitude": "Vĩ độ",
+    "longitude": "Kinh độ",
+    "save": "Lưu địa chỉ chi nhánh",
+    "saving": "Đang lưu...",
+    "status": "Trạng thái",
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động",
+    "createdAt": "Ngày tạo",
+    "success": "Cập nhật địa chỉ chi nhánh thành công",
+    "error": "Lỗi cập nhật địa chỉ chi nhánh",
+    "searchPlaceholder": "Tìm kiếm vị trí...",
+    "searchButton": "Tìm",
+    "myLocation": "Vị trí của tôi",
+    "mapLoading": "Đang tải bản đồ...",
+    "mapHint": "Click trên bản đồ hoặc kéo marker để chọn vị trí.",
+    "errors": {
+      "outsideHcmc": "Vị trí chi nhánh phải nằm trong Thành phố Hồ Chí Minh.",
+      "invalidLocation": "Không thể định vị tọa độ này.",
+      "emptyAddress": "Vui lòng nhập địa chỉ chi nhánh.",
+      "boundaryLoading": "Đang tải ranh giới thành phố..."
     }
   }
 }

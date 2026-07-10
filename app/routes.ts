@@ -72,6 +72,7 @@ export default [
     route('manager/products/:productId', 'routes/manager-product-detail.tsx'),
     route('manager/promotions', 'routes/manager-promotions.tsx'),
     route('manager/promotions/new', 'routes/manager-promotion-create.tsx'),
-    route('manager/promotions/:promotionId/edit', 'routes/manager-promotion-edit.tsx')
+    route('manager/promotions/:promotionId/edit', 'routes/manager-promotion-edit.tsx'),
+    route('manager/store-locations', 'routes/manager-store-locations.tsx')
   ])
 ] satisfies RouteConfig

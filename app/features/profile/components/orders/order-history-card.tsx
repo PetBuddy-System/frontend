@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 
-import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { updateOrderStatusApi } from '~/features/profile/services'
 import { getPaymentByOrderIdApi } from '~/features/products/services/payment/payment-api'
@@ -42,8 +41,6 @@ export interface OrderHistoryCardProps {
   }
   onRefresh: () => void
 }
-
-// Badge style per status: "Nhãn tiếng Việt | STATUS" pill, matching reference design
 const STATUS_BADGE_STYLE: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-800',
   CONFIRMED: 'bg-sky-100 text-sky-800',
@@ -51,7 +48,8 @@ const STATUS_BADGE_STYLE: Record<string, string> = {
   SHIPPING: 'bg-blue-100 text-blue-800',
   DELIVERED: 'bg-purple-100 text-purple-800',
   COMPLETED: 'bg-green-100 text-green-800',
-  CANCELLED: 'bg-red-100 text-red-800'
+  CANCELLED: 'bg-red-100 text-red-800',
+  EXPIRED: 'bg-gray-200 text-gray-600'
 }
 
 function getStatusBadgeClassName(status: string) {
@@ -74,6 +72,8 @@ function getStatusLabel(status: string) {
       return 'Đã giao'
     case 'CANCELLED':
       return 'Đã hủy'
+    case 'EXPIRED':
+      return 'Hết hạn'
     default:
       return status
   }
@@ -119,7 +119,11 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
 
   const isCard = order.payment?.paymentMethod === 'CARD' || order.paymentMethod === 'CARD'
   const isPaid = order.payment?.status === 'PAID' || order.paymentStatus === 'PAID'
-  const canPayAgain = isCard && !isPaid && order.status !== 'CANCELLED'
+  const canPayAgain =
+    isCard &&
+    !isPaid &&
+    order.status !== 'CANCELLED' &&
+    order.status !== 'EXPIRED'
 
   return (
     <>
@@ -127,7 +131,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
         onClick={() => navigate(`/profile/orders/${order.orderId}`)}
         className={cn(
           'order-card flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer',
-          order.status === 'CANCELLED' && 'opacity-75'
+          (order.status === 'CANCELLED' || order.status === 'EXPIRED') && 'opacity-75'
         )}
       >
         <div className="flex flex-col gap-1">

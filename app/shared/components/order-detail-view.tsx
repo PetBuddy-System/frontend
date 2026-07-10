@@ -6,6 +6,8 @@ import type { OrderDetailFull } from '~/shared/lib/order'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { OrderShippingLabelModal } from './order-shipping-label-modal'
+import { useAuth } from '~/providers/auth-provider'
+import { DeliveryProofDialog } from '~/features/staff/components/orders/delivery-proof-dialog'
 
 interface OrderDetailViewProps {
   orderId: number
@@ -32,14 +34,14 @@ function formatDateTime(dateStr: string) {
 
 function getSecondsUntil(isoStr?: string): number {
   if (!isoStr) return 0
-  const normalized = isoStr.includes('Z') || isoStr.includes('+') ? isoStr : isoStr + 'Z'
-  const diff = Math.floor((new Date(normalized).getTime() - Date.now()) / 1000)
+  const d = new Date(isoStr) 
+  const diff = Math.floor((d.getTime() - Date.now()) / 1000)
   return Math.max(0, diff)
 }
 
 function formatCountdown(totalSeconds: number): string {
-  const h = Math.floor(totalSeconds / 4500)
-  const m = Math.floor((totalSeconds % 4500) / 60)
+  const h = Math.floor(totalSeconds / 3600)
+  const m = Math.floor((totalSeconds % 3600) / 60)
   const s = totalSeconds % 60
   return [h, m, s].map((v) => String(v).padStart(2, '0')).join(':')
 }
@@ -52,6 +54,9 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
   const [isCanceling, setIsCanceling] = useState(false)
   const [isPrintOpen, setIsPrintOpen] = useState(false)
   const [countdown, setCountdown] = useState(0)
+  const [isProofOpen, setIsProofOpen] = useState(false)
+  const { user } = useAuth()
+  const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
   const navigate = useNavigate()
 
   // Derived: has the countdown hit 0 while still rendering as PENDING?
@@ -167,7 +172,6 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           </div>
         )}
 
-        {/* ─── Pending Countdown Banner ─── */}
         {order && order.status === 'PENDING' && order.payment?.paymentMethod === 'CARD' && !isExpired && !isLoading && (
           <div className="flex items-center gap-3 rounded-xl border border-warning/40 bg-warning/10 px-5 py-4 text-warning">
             <MaterialIcon name="schedule" className="text-[22px] shrink-0" />
@@ -190,7 +194,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
               </span>
             </button>
             <div className="flex items-center gap-4 text-sm font-medium">
-              {order && <span className="text-muted-foreground">ORDER ID. {order.orderCode}</span>}
+              {order && <span className="text-muted-foreground">ORDER CODE. {order.orderCode}</span>}
               <span className="text-border">|</span>
               {order && (
                 <span
@@ -333,7 +337,6 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
 
         {order && !isLoading && (
           <>
-            {/* Shipping Address Section */}
             <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
               <div className="flex items-center gap-2 mb-4 border-b border-border pb-3">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -585,6 +588,62 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                   </button>
                 )}
 
+                {/* Shipper Actions */}
+                {isStaff && isShipper && order.status === 'CONFIRMED' && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const res = await updateOrderStatusApi(orderId, 'PICKING')
+                        if (res.success) {
+                          void loadDetail()
+                        } else {
+                          alert(res.message || 'Lỗi khi nhận giao hàng')
+                        }
+                      } catch (err: any) {
+                        alert(err?.message || 'Có lỗi xảy ra')
+                      }
+                    }}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm transition-colors shadow-sm"
+                  >
+                    <MaterialIcon name="local_shipping" className="text-[18px]" />
+                    <span>{t('orderDetail.startShipping', 'Giao hàng')}</span>
+                  </button>
+                )}
+
+                {isStaff && isShipper && order.status === 'PICKING' && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const res = await updateOrderStatusApi(orderId, 'SHIPPING')
+                        if (res.success) {
+                          void loadDetail()
+                        } else {
+                          alert(res.message || 'Lỗi khi bắt đầu giao hàng')
+                        }
+                      } catch (err: any) {
+                        alert(err?.message || 'Có lỗi xảy ra')
+                      }
+                    }}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm transition-colors shadow-sm"
+                  >
+                    <MaterialIcon name="inventory_2" className="text-[18px]" />
+                    <span>{t('orderDetail.startShipping', 'Giao hàng')}</span>
+                  </button>
+                )}
+
+                {isStaff && isShipper && order.status === 'SHIPPING' && (
+                  <button
+                    type="button"
+                    onClick={() => setIsProofOpen(true)}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm transition-colors shadow-sm"
+                  >
+                    <MaterialIcon name="check_circle" className="text-[18px]" />
+                    <span>{t('orderDetail.confirmDelivered', 'Đã giao')}</span>
+                  </button>
+                )}
+
                 {/* Pay Again – only for customer on PENDING CARD orders, disabled if expired */}
                 {!isStaff && order.status === 'PENDING' && order.payment?.paymentMethod === 'CARD' && (
                   <button
@@ -634,6 +693,16 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
         <OrderShippingLabelModal
           order={order}
           onClose={() => setIsPrintOpen(false)}
+        />
+      )}
+
+      {order && isProofOpen && (
+        <DeliveryProofDialog
+          orderId={order.orderId}
+          orderCode={order.orderCode}
+          isOpen={isProofOpen}
+          onClose={() => setIsProofOpen(false)}
+          onSuccess={() => void loadDetail()}
         />
       )}
     </div>

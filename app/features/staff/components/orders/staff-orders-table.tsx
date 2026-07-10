@@ -1,6 +1,7 @@
 // app/features/staff/components/orders/staff-orders-table.tsx
 import { MaterialIcon } from '~/shared/ui'
 import type { OrderResponse, OrderStatus } from '~/shared/lib/order'
+import { useAuth } from '~/providers/auth-provider'
 
 function formatPrice(value: number) {
     if (value == null || isNaN(Number(value))) return '—'
@@ -142,6 +143,9 @@ export function StaffOrdersTable({
     onOpenPicking,
     onTransitionToShipped
 }: StaffOrdersTableProps) {
+    const { user } = useAuth()
+    const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
+
     // Filter orders locally
     const filteredOrders = orders.filter((o) => {
         if (statusFilter !== 'ALL') {
@@ -278,7 +282,7 @@ export function StaffOrdersTable({
                                                 </>
                                             )}
 
-                                            {order.status === 'CONFIRMED' && (
+                                            {order.status === 'CONFIRMED' && isShipper && (
                                                 <button
                                                     onClick={() => onTransition(order.orderId, 'PICKING')}
                                                     className='rounded-xl bg-cyan-600 hover:bg-cyan-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
@@ -287,7 +291,7 @@ export function StaffOrdersTable({
                                                 </button>
                                             )}
 
-                                            {order.status === 'PICKING' && (
+                                            {order.status === 'PICKING' && isShipper && (
                                                 <button
                                                     onClick={() => onOpenPicking(order)}
                                                     className='rounded-xl bg-teal-600 hover:bg-teal-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
@@ -296,7 +300,7 @@ export function StaffOrdersTable({
                                                 </button>
                                             )}
 
-                                            {order.status === 'SHIPPING' && (
+                                            {order.status === 'SHIPPING' && isShipper && (
                                                 <button
                                                     onClick={() => onTransitionToShipped(order.orderId)}
                                                     className='rounded-xl bg-purple-600 hover:bg-purple-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'

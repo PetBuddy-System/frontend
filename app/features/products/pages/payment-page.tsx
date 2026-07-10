@@ -230,6 +230,7 @@ export function PaymentPage() {
   async function handleCancelPayment() {
     if (timerRef.current) clearInterval(timerRef.current)
     sessionStorage.removeItem(`petbuddy_payment_start_${orderId}`)
+    sessionStorage.removeItem('petbuddy_checkout_pending_order_id')
     navigate('/order', { state: { orderId } })
   }
 

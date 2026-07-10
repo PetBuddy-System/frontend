@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
+import { clearCheckoutSessionData } from '../../lib/checkout-storage-keys'
 
 export interface CartOrderSummaryProps {
   itemCount: number
@@ -16,7 +18,13 @@ export function CartOrderSummary({
   isMutating = false,
 }: CartOrderSummaryProps) {
   const { t } = useTranslation('products')
+  const navigate = useNavigate()
   const isEmpty = itemCount === 0
+
+  function handleCheckout() {
+    clearCheckoutSessionData()
+    navigate('/order')
+  }
 
   return (
     <aside className='space-y-6 lg:col-span-4 lg:sticky lg:top-28'>
@@ -43,9 +51,10 @@ export function CartOrderSummary({
           </div>
         </div>
 
-        <a
-          href={isEmpty ? undefined : '/order'}
-          aria-disabled={isEmpty || isMutating}
+        <button
+          type='button'
+          disabled={isEmpty || isMutating}
+          onClick={handleCheckout}
           className={`flex w-full items-center justify-center gap-3 rounded-xl px-6 py-4 font-display text-xl font-semibold shadow-lg transition-transform ${
             isEmpty || isMutating
               ? 'pointer-events-none bg-muted text-muted-foreground opacity-70'
@@ -54,7 +63,7 @@ export function CartOrderSummary({
         >
           {t('cart.summary.checkout')}
           <MaterialIcon name='arrow_forward' className='text-[22px]' />
-        </a>
+        </button>
 
         <div className='mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground'>
           <MaterialIcon name='verified_user' className='text-[20px] text-success' />

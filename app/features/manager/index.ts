@@ -8,4 +8,5 @@ export { ManagerPromotionsPage } from "./pages/manager-promotions-page";
 export { ManagerPromotionCreatePage } from './pages/manager-promotion-create-page'
 export { ManagerPromotionEditPage } from './pages/manager-promotion-edit-page'
 export { ManagerInventoryTransactionsPage } from './pages/manager-inventory-transactions-page'
+export { ManagerStoreLocationsPage } from './pages/manager-store-locations-page'
 

@@ -24,7 +24,22 @@ export async function fetchMyOrdersApi(
   })
 }
 
-export async function updateOrderStatusApi(orderId: number, status: OrderStatus): Promise<ApiResponse<null>> {
+export async function updateOrderStatusApi(
+  orderId: number,
+  status: OrderStatus,
+  proofImage?: File
+): Promise<ApiResponse<null>> {
+  if (proofImage) {
+    const formData = new FormData()
+    formData.append('proofImage', proofImage)
+    return customFetch<ApiResponse<null>>({
+      url: `${ORDER_BASE_URL}/${orderId}/status`,
+      method: 'PATCH',
+      params: { status },
+      data: formData
+    })
+  }
+
   return customFetch<ApiResponse<null>>({
     url: `${ORDER_BASE_URL}/${orderId}/status`,
     method: 'PATCH',
