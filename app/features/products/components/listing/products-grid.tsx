@@ -43,7 +43,6 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
     setError(null)
     setShowSuccessToast(false)
 
-
     try {
       await addToCartApi({
         productId: product.productId,
@@ -52,6 +51,7 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
         price: product.salePrice ?? product.price ?? 0,
         imageUrl: product.imageUrls?.[0] || product.thumbnail,
       })
+      await refreshCart()
       setShowSuccessToast(true)
       setTimeout(() => setShowSuccessToast(false), 3000)
     } catch (err: unknown) {
@@ -60,7 +60,6 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
     } finally {
       setAddingMap((prev) => ({ ...prev, [product.productId]: false }))
     }
-
   }
 
   const handleCardClick = (product: ProductResponse) => {
@@ -74,7 +73,7 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
           <div key={idx} className='flex flex-col rounded-2xl border border-border/60 bg-card p-4 shadow-sm animate-pulse'>
             <div className='aspect-square w-full rounded-xl bg-muted' />
             <div className='mt-4 h-4 w-2/3 bg-muted rounded' />
-            <div className='mt-2 h-4 w-full bg-muted rounded animate-pulse' />
+            <div className='mt-2 h-4 w-full bg-muted rounded' />
             <div className='mt-auto pt-3 flex justify-between items-center'>
               <div className='h-6 w-1/3 bg-muted rounded' />
             </div>
@@ -102,6 +101,7 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
     <div className='grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-3 xl:grid-cols-4 relative'>
       {products.map((product) => {
         const discountBadge = getDiscountBadge(product)
+        const hasPromotion = product.hasActivePromotion && product.promotionPrice !== undefined
 
         return (
           <article
@@ -129,18 +129,22 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
                 </div>
               )}
             </div>
+
             <div className='flex flex-1 flex-col p-4'>
-              <span className='text-xs uppercase tracking-wider text-muted-foreground font-semibold'>
-                {product.brandName}
+              {/* Brand */}
+              <span className='text-xs uppercase tracking-wider text-muted-foreground font-semibold h-[18px] truncate'>
+                {product.brandName || 'N/A'}
               </span>
-              <h3 className='mt-1 line-clamp-2 text-sm font-semibold text-foreground transition-colors group-hover:text-primary md:text-base'>
+
+              {/* Name - 2 lines */}
+              <h3 className='mt-1 line-clamp-2 text-sm font-semibold text-foreground transition-colors group-hover:text-primary md:text-base min-h-[44px]'>
                 {product.name}
               </h3>
 
-              <div className='mt-auto pt-3 space-y-1.5'>
-                {product.hasActivePromotion ? (
-                  <>
-                    {/* Dòng giá: luôn có 2 giá trên 1 dòng */}
+              {/* ⭐ Price section - KHÔNG có % giảm giá nữa */}
+              <div className='mt-auto pt-3 min-h-[60px]'>
+                {hasPromotion ? (
+                  <div>
                     <div className='flex items-center gap-2 flex-wrap'>
                       <span className='text-lg font-bold text-red-500 font-display'>
                         {formatPrice(product.promotionPrice)}
@@ -148,24 +152,10 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
                       <span className='text-sm line-through text-muted-foreground'>
                         {formatPrice(product.salePrice)}
                       </span>
+                      {/* ⭐ ĐÃ BỎ % giảm giá ở đây */}
                     </div>
-
-                    {/* Dòng tiết kiệm: luôn hiển thị cho cả 2 loại */}
-                    {product.discountAmount && product.discountAmount > 0 && (
-                      <div className='flex items-center gap-1'>
-                        <span className='text-xs text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full'>
-                          Tiết kiệm {formatPrice(product.discountAmount)}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Tên chương trình khuyến mãi */}
-                    {product.promotionName && (
-                      <p className='text-xs text-muted-foreground truncate'>
-                        {product.promotionName}
-                      </p>
-                    )}
-                  </>
+                    {/* ⭐ ĐÃ BỎ "Tiết kiệm" và "Promotion name" */}
+                  </div>
                 ) : (
                   <span className='text-lg font-bold text-primary font-display'>
                     {formatPrice(product.salePrice ?? product.price ?? 0)}
@@ -173,6 +163,7 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
                 )}
               </div>
 
+              {/* Button */}
               <button
                 type='button'
                 disabled={addingMap[product.productId]}
@@ -180,7 +171,7 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
                   e.stopPropagation()
                   handleAddToCart(product)
                 }}
-                className='mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed'
+                className='mt-3 flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-3 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed'
               >
                 {addingMap[product.productId] ? (
                   <MaterialIcon name='progress_activity' className='text-[18px] animate-spin' />
@@ -202,7 +193,6 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
           </div>
         </div>
       )}
-
 
       {error && (
         <div className='fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-xl bg-destructive px-4 py-3 text-destructive-foreground shadow-lg animate-in fade-in slide-in-from-bottom-4'>

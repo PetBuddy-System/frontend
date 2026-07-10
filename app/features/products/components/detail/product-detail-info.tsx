@@ -1,3 +1,5 @@
+// app/features/products/components/detail/product-detail-info.tsx
+
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
@@ -11,6 +13,7 @@ export interface ProductDetailInfoProps {
   salePrice: number
   brandName: string
   totalStock: number
+  unit?: string  // ⭐ Thêm unit
   discountAmount?: number | null
   discountValue?: number | null
   hasActivePromotion?: boolean
@@ -18,7 +21,6 @@ export interface ProductDetailInfoProps {
   promotionPrice?: number
   promotionType?: 'PERCENTAGE' | 'FIXED_AMOUNT' | string
   imageUrl?: string
-  // Optional
   price?: number
   promotionDescription?: string | null
   promotionEndDate?: string | null
@@ -30,6 +32,7 @@ export function ProductDetailInfo({
   salePrice,
   brandName,
   totalStock,
+  unit,  // ⭐ Nhận unit
   discountAmount,
   discountValue,
   hasActivePromotion,
@@ -52,6 +55,9 @@ export function ProductDetailInfo({
   const displayPrice = promotionPrice || originalPrice
   const safeTotalStock = totalStock || 0
   const isPromoted = Boolean(hasActivePromotion || promotionPrice || promotionName)
+
+  // ⭐ Lấy unit label từ translation
+  const unitLabel = unit ? t(`unit.${unit}`, unit.toLowerCase()) : ''
 
   const formatPrice = (value: number) => `${value.toLocaleString('vi-VN')}đ`
 
@@ -114,7 +120,8 @@ export function ProductDetailInfo({
         </span>
       </div>
 
-      {isPromoted && (
+      {/* Phần hiển thị giá */}
+      {isPromoted ? (
         <div className='mt-4 overflow-hidden rounded-[1.5rem] border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-accent/15'>
           <div className='flex items-center justify-between gap-3 border-b border-border/60 px-4 py-3'>
             <div className='flex items-center gap-2'>
@@ -122,8 +129,9 @@ export function ProductDetailInfo({
                 <MaterialIcon name='local_fire_department' className='text-[18px]' />
               </span>
               <div>
-                <p className='text-sm font-semibold text-foreground'>Ưu đãi đang áp dụng</p>
-                <p className='text-xs text-muted-foreground'>Giá đã được tự động cập nhật</p>
+                <p className='text-sm font-semibold text-foreground'>
+                  {promotionName || 'Ưu đãi đang áp dụng'}
+                </p>
               </div>
             </div>
             {discountText() && (
@@ -143,14 +151,33 @@ export function ProductDetailInfo({
                   {formatPrice(originalPrice)}
                 </span>
               )}
+              {/* ⭐ Hiển thị unit */}
+              {unitLabel && (
+                <span className='pb-1 text-lg font-medium text-muted-foreground'>
+                  /{unitLabel}
+                </span>
+              )}
             </div>
-            {promotionName && <p className='mt-2 text-sm font-medium text-foreground'>{promotionName}</p>}
-            {promotionDescription && <p className='mt-1 text-sm text-muted-foreground'>{promotionDescription}</p>}
+            {promotionDescription && <p className='mt-2 text-sm text-muted-foreground'>{promotionDescription}</p>}
             {promotionEndDate && (
               <div className='mt-3 rounded-2xl border border-border/70 bg-card/80 px-4 py-3'>
                 <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>Hạn chót</p>
                 <p className='mt-1 text-base font-semibold text-foreground'>{formatDate(promotionEndDate)}</p>
               </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className='mt-4'>
+          <div className='flex items-end gap-2'>
+            <span className='text-4xl font-black tracking-tight text-primary md:text-5xl'>
+              {formatPrice(originalPrice)}
+            </span>
+            {/* ⭐ Hiển thị unit */}
+            {unitLabel && (
+              <span className='pb-1 text-lg font-medium text-muted-foreground'>
+                /{unitLabel}
+              </span>
             )}
           </div>
         </div>
@@ -205,6 +232,12 @@ export function ProductDetailInfo({
             <MaterialIcon name='add' className='text-[22px]' />
           </button>
         </div>
+        {/* ⭐ Hiển thị đơn vị */}
+        {unitLabel && (
+          <span className='text-sm text-muted-foreground'>
+            Đơn vị: {unitLabel}
+          </span>
+        )}
       </div>
 
       <div className='mt-10 grid gap-4 sm:grid-cols-2'>

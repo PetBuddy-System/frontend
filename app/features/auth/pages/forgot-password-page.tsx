@@ -71,7 +71,7 @@ export function ForgotPasswordPage() {
             </div>
           )}
 
-          {/* Success → chuyển sang nhập OTP + mật khẩu mới */}
+          {/* Success → chuyển sang verify OTP */}
           {isSent ? (
             <div className='space-y-6'>
               <div className='flex items-center gap-3 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success'>
@@ -79,7 +79,7 @@ export function ForgotPasswordPage() {
                 <p>{t('forgot.sent')}</p>
               </div>
               <a
-                href={`/reset-password?email=${encodeURIComponent(email)}`}
+                href={`/verify-email?email=${encodeURIComponent(email)}&purpose=reset-password`}
                 className='flex w-full items-center justify-center rounded-xl bg-secondary px-4 py-4 text-base font-bold uppercase tracking-widest text-secondary-foreground shadow-md transition-all hover:opacity-90'
               >
                 {t('forgot.continue')}

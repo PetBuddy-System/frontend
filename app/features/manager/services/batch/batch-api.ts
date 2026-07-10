@@ -1,3 +1,5 @@
+// app/features/manager/services/batch.ts
+
 /**
  * Manager feature — batch API service.
  */

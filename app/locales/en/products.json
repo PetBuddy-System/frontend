@@ -458,7 +458,6 @@
     "description": "We are sorry! This product was just bought by someone else. The product has been automatically removed from your cart.",
     "gotIt": "Got it"
   },
-
   "addressPicker": {
     "backButton": "Back",
     "title": "Choose delivery address",
@@ -486,10 +485,6 @@
   },
   "unit": {
     "PIECE": "Piece",
-    "KG": "Kilogram",
-    "GRAM": "Gram",
-    "LITER": "Liter",
-    "MILLILITER": "Milliliter",
     "BAG": "Bag",
     "BOX": "Box",
     "PACK": "Pack",

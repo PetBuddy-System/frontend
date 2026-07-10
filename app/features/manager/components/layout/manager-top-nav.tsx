@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
+import { LanguageSwitcher, ThemeToggle } from '~/shared/components'
 import { useAuth } from '~/providers/auth-provider'
 
 const MANAGER_AVATAR_URL =
@@ -50,6 +51,11 @@ export function ManagerTopNav({
         >
           <MaterialIcon name='help' />
         </button>
+
+        <div className='mx-1 h-8 w-px bg-border' />
+
+        <LanguageSwitcher />
+        <ThemeToggle />
 
         <div className='mx-1 h-8 w-px bg-border' />
 

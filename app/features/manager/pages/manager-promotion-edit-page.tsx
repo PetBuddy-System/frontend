@@ -1,3 +1,5 @@
+// app/features/manager/pages/manager-promotion-edit-page.tsx
+
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate, useParams } from 'react-router'
 
@@ -7,16 +9,21 @@ import { fetchProductsManagementApi } from '../services/product/product-api'
 import { promotionApi, type UpdatePromotionDTO } from '../services/promotion/promotion-api'
 import type { ProductManagementItem } from '~/shared/lib/product'
 import { MaterialIcon } from '~/shared/ui'
+import { cn } from '~/shared/lib/cn'
 
+// ⭐ Constants
+const DEFAULT_DISCOUNT_VALUE = 20
+
+// ⭐ NEAR_EXPIRED_DAY_OPTIONS
 const NEAR_EXPIRED_DAY_OPTIONS = [
-  { label: '1 tháng (30 ngày)', value: 30 },
-  { label: '2 tháng (60 ngày)', value: 60 },
-  { label: '3 tháng (90 ngày)', value: 90 },
-  { label: '4 tháng (120 ngày)', value: 120 },
-  { label: '6 tháng (180 ngày)', value: 180 }
+  { label: 'Tất cả sản phẩm', value: 'all' },
+  { label: '1 tháng (30 ngày)', value: '30' },
+  { label: '2 tháng (60 ngày)', value: '60' },
+  { label: '3 tháng (90 ngày)', value: '90' },
+  { label: '4 tháng (120 ngày)', value: '120' },
+  { label: '6 tháng (180 ngày)', value: '180' }
 ] as const
 
-// ✅ ĐÃ SỬA: discountType → promotionType
 type ProductDiscountState = {
   promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
   discountValue: number
@@ -36,7 +43,7 @@ export function ManagerPromotionEditPage() {
     endDate: '',
     status: 'DRAFT' as 'DRAFT' | 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'DELETED'
   })
-  const [nearExpiredDays, setNearExpiredDays] = useState(120)
+  const [nearExpiredDays, setNearExpiredDays] = useState<string>('all')
   const [products, setProducts] = useState<ProductManagementItem[]>([])
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([])
   const [productDiscountById, setProductDiscountById] = useState<Record<string, ProductDiscountState>>({})
@@ -44,13 +51,22 @@ export function ManagerPromotionEditPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalElements, setTotalElements] = useState(0)
+  const [keywordInput, setKeywordInput] = useState('')
+  const [keyword, setKeyword] = useState('')
 
-  // ✅ Thêm hàm formatPrice an toàn
   const formatPrice = (value?: number) => {
     if (value === undefined || value === null || isNaN(value)) {
       return '0'
     }
     return value.toLocaleString('vi-VN')
+  }
+
+  // ⭐ Hàm kiểm tra sản phẩm đang có promotion active
+  const isProductHasActivePromotion = (product: ProductManagementItem) => {
+    return product.hasActivePromotion === true
   }
 
   // Load existing promotion data
@@ -73,7 +89,6 @@ export function ManagerPromotionEditPage() {
           status: promo.status
         })
 
-        // ✅ ĐÃ SỬA: discountType → promotionType
         const details = (promo as unknown as {
           promotionDetails?: Array<{
             productId: string
@@ -83,10 +98,16 @@ export function ManagerPromotionEditPage() {
         }).promotionDetails
 
         if (details && details.length > 0) {
-          setSelectedProductIds(details.map((d) => d.productId))
+          const validProductIds = details
+            .map(d => d.productId)
+            .filter(id => id)
+          setSelectedProductIds(validProductIds)
           const discountMap: Record<string, ProductDiscountState> = {}
           for (const d of details) {
-            discountMap[d.productId] = { promotionType: d.promotionType, discountValue: d.discountValue }
+            discountMap[d.productId] = {
+              promotionType: d.promotionType,
+              discountValue: d.discountValue
+            }
           }
           setProductDiscountById(discountMap)
         }
@@ -100,7 +121,17 @@ export function ManagerPromotionEditPage() {
     void loadPromotion()
   }, [promotionId])
 
-  // Load products filtered by nearExpiredDays
+  // ⭐ Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setKeyword(keywordInput)
+      setCurrentPage(0)
+    }, 350)
+
+    return () => clearTimeout(timer)
+  }, [keywordInput])
+
+  // Load products
   useEffect(() => {
     async function loadProducts() {
       setIsLoadingProducts(true)
@@ -108,10 +139,11 @@ export function ManagerPromotionEditPage() {
 
       try {
         const response = await fetchProductsManagementApi({
-          page: 0,
-          size: 100,
+          keyword: keyword.trim() || undefined,
+          page: currentPage,
+          size: 10,
           sortBy: 'date_desc',
-          nearExpiredDays
+          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays)
         })
 
         if (!response.success) {
@@ -119,6 +151,8 @@ export function ManagerPromotionEditPage() {
         }
 
         setProducts(response.data.content)
+        setTotalPages(response.data.totalPages)
+        setTotalElements(response.data.totalElements)
       } catch (err) {
         setProducts([])
         setError(err instanceof Error ? err.message : 'Không thể tải danh sách sản phẩm')
@@ -128,7 +162,7 @@ export function ManagerPromotionEditPage() {
     }
 
     void loadProducts()
-  }, [nearExpiredDays])
+  }, [nearExpiredDays, currentPage, keyword])
 
   const selectedProducts = useMemo(
     () => products.filter((product) => selectedProductIds.includes(product.productId)),
@@ -152,7 +186,10 @@ export function ManagerPromotionEditPage() {
 
       return {
         ...currentDiscounts,
-        [productId]: currentDiscounts[productId] ?? { promotionType: 'PERCENTAGE', discountValue: 20 }
+        [productId]: currentDiscounts[productId] ?? {
+          promotionType: 'PERCENTAGE',
+          discountValue: DEFAULT_DISCOUNT_VALUE
+        }
       }
     })
   }
@@ -163,7 +200,10 @@ export function ManagerPromotionEditPage() {
     setProductDiscountById((current) => {
       const next = { ...current }
       for (const product of products) {
-        next[product.productId] = next[product.productId] ?? { promotionType: 'PERCENTAGE', discountValue: 20 }
+        next[product.productId] = next[product.productId] ?? {
+          promotionType: 'PERCENTAGE',
+          discountValue: DEFAULT_DISCOUNT_VALUE
+        }
       }
       return next
     })
@@ -174,7 +214,6 @@ export function ManagerPromotionEditPage() {
     setProductDiscountById({})
   }
 
-  // ✅ ĐÃ SỬA: discountType → promotionType
   function updateProductDiscount(
     productId: string,
     field: 'promotionType' | 'discountValue',
@@ -184,10 +223,16 @@ export function ManagerPromotionEditPage() {
       ...current,
       [productId]: {
         promotionType: current[productId]?.promotionType ?? 'PERCENTAGE',
-        discountValue: current[productId]?.discountValue ?? 20,
+        discountValue: current[productId]?.discountValue ?? DEFAULT_DISCOUNT_VALUE,
         [field]: value
       } as ProductDiscountState
     }))
+  }
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setCurrentPage(newPage)
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -219,19 +264,24 @@ export function ManagerPromotionEditPage() {
     setError(null)
 
     try {
+      const promotionDetails = selectedProductIds
+        .filter(id => id)
+        .map((productId) => {
+          const discount = productDiscountById[productId]
+          return {
+            productId: productId,
+            promotionType: discount?.promotionType ?? 'PERCENTAGE',
+            discountValue: discount?.discountValue ?? DEFAULT_DISCOUNT_VALUE
+          }
+        })
+
       const payload: UpdatePromotionDTO = {
         name: form.name.trim(),
         description: form.description.trim(),
         startDate: form.startDate ? `${form.startDate}T00:00:00` : '',
         endDate: form.endDate ? `${form.endDate}T23:59:59` : '',
         status: form.status as 'DRAFT' | 'ACTIVE',
-        ...(selectedProducts.length > 0 && {
-          promotionDetails: selectedProducts.map((product) => ({
-            productId: product.productId,
-            promotionType: productDiscountById[product.productId]?.promotionType ?? 'PERCENTAGE',
-            discountValue: productDiscountById[product.productId]?.discountValue ?? 20
-          }))
-        })
+        promotionDetails: promotionDetails
       }
 
       await promotionApi.updatePromotion(promotionId, payload)
@@ -340,7 +390,6 @@ export function ManagerPromotionEditPage() {
                   </div>
                   <div>
                     <h2 className='text-lg font-bold text-foreground'>Thông tin chương trình</h2>
-                    <p className='text-xs text-muted-foreground'>PATCH /api/promotions/{promotionId}</p>
                   </div>
                 </div>
                 <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
@@ -410,7 +459,7 @@ export function ManagerPromotionEditPage() {
                     <div className='relative'>
                       <select
                         value={nearExpiredDays}
-                        onChange={(e) => setNearExpiredDays(Number(e.target.value))}
+                        onChange={(e) => setNearExpiredDays(e.target.value)}
                         className='h-11 w-full appearance-none rounded-xl border border-input bg-background pl-4 pr-10 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring cursor-pointer'
                       >
                         {NEAR_EXPIRED_DAY_OPTIONS.map((option) => (
@@ -437,14 +486,11 @@ export function ManagerPromotionEditPage() {
                     </div>
                     <div>
                       <h2 className='text-lg font-bold text-foreground'>Sản phẩm áp dụng</h2>
-                      <p className='text-xs text-muted-foreground'>
-                        GET /api/products?nearExpiredDays={nearExpiredDays} — mỗi sản phẩm đặt riêng loại &amp; giá trị giảm
-                      </p>
                     </div>
                   </div>
                   <div className='flex items-center gap-4'>
                     <span className='rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground'>
-                      Đã chọn {selectedProductIds.length} / {products.length}
+                      Đã chọn {selectedProductIds.length} / {totalElements} sản phẩm
                     </span>
                     <button
                       type='button'
@@ -463,6 +509,36 @@ export function ManagerPromotionEditPage() {
                       </button>
                     )}
                   </div>
+                </div>
+
+                {/* ⭐ Thanh tìm kiếm */}
+                <div className='mb-4 flex items-center gap-4'>
+                  <div className='relative flex-1'>
+                    <MaterialIcon
+                      name='search'
+                      className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-lg'
+                    />
+                    <input
+                      type='text'
+                      placeholder='Tìm kiếm sản phẩm theo tên, mã hoặc thương hiệu...'
+                      value={keywordInput}
+                      onChange={(e) => setKeywordInput(e.target.value)}
+                      className='h-11 w-full rounded-xl border border-input bg-background pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
+                    />
+                  </div>
+                  {keyword && (
+                    <button
+                      type='button'
+                      onClick={() => {
+                        setKeywordInput('')
+                        setKeyword('')
+                        setCurrentPage(0)
+                      }}
+                      className='shrink-0 rounded-xl border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted transition-colors'
+                    >
+                      Xóa tìm kiếm
+                    </button>
+                  )}
                 </div>
 
                 <div className='overflow-auto rounded-xl border border-border'>
@@ -492,32 +568,61 @@ export function ManagerPromotionEditPage() {
                       ) : products.length === 0 ? (
                         <tr>
                           <td colSpan={8} className='px-4 py-10 text-center text-sm text-muted-foreground'>
-                            Không có sản phẩm phù hợp với bộ lọc gần hết hạn.
+                            {keyword ? (
+                              <>
+                                Không tìm thấy sản phẩm nào với từ khóa "<strong>{keyword}</strong>"
+                              </>
+                            ) : (
+                              'Không có sản phẩm phù hợp với bộ lọc gần hết hạn.'
+                            )}
                           </td>
                         </tr>
                       ) : (
                         products.map((product) => {
                           const checked = selectedProductIds.includes(product.productId)
+                          const hasActivePromotion = isProductHasActivePromotion(product)
+                          const isDisabled = hasActivePromotion && !checked
 
                           return (
                             <tr
                               key={product.productId}
-                              className={checked ? 'bg-primary/5' : 'hover:bg-muted/40 transition-colors'}
+                              className={cn(
+                                checked && !hasActivePromotion ? 'bg-primary/5' : undefined,
+                                isDisabled && 'opacity-60'
+                              )}
                             >
                               <td className='px-4 py-3 text-center'>
-                                <input
-                                  type='checkbox'
-                                  checked={checked}
-                                  onChange={() => toggleProduct(product.productId)}
-                                  className='h-4 w-4 rounded border-border text-primary focus:ring-ring cursor-pointer'
-                                />
+                                <div className='flex items-center justify-center gap-1'>
+                                  <input
+                                    type='checkbox'
+                                    checked={checked}
+                                    onChange={() => toggleProduct(product.productId)}
+                                    disabled={isDisabled}
+                                    className={cn(
+                                      'h-4 w-4 rounded border-border text-primary focus:ring-ring',
+                                      isDisabled && 'opacity-50 cursor-not-allowed'
+                                    )}
+                                  />
+                                  {hasActivePromotion && (
+                                    <span className='text-[10px] text-muted-foreground whitespace-nowrap'>
+                                      (đang KM)
+                                    </span>
+                                  )}
+                                </div>
                               </td>
                               <td className='px-4 py-3 font-mono text-sm font-semibold text-primary'>
                                 {product.productCode}
                               </td>
                               <td className='px-4 py-3'>
                                 <div className='font-semibold text-foreground'>{product.name}</div>
-                                <div className='text-xs text-muted-foreground'>{product.batchCount} lô hàng</div>
+                                <div className='flex items-center gap-2 text-xs text-muted-foreground'>
+                                  <span>{product.batchCount} lô hàng</span>
+                                  {hasActivePromotion && (
+                                    <span className='rounded-full bg-success/10 px-2 py-0.5 text-xs text-success'>
+                                      Đang KM
+                                    </span>
+                                  )}
+                                </div>
                               </td>
                               <td className='px-4 py-3 text-sm text-muted-foreground'>{product.brandName}</td>
                               <td className='px-4 py-3 text-sm font-semibold text-foreground'>
@@ -527,7 +632,7 @@ export function ManagerPromotionEditPage() {
                                 {product.totalStock}
                               </td>
                               <td className='px-4 py-3'>
-                                {checked ? (
+                                {checked && !hasActivePromotion ? (
                                   <select
                                     value={productDiscountById[product.productId]?.promotionType ?? 'PERCENTAGE'}
                                     onChange={(e) =>
@@ -547,11 +652,11 @@ export function ManagerPromotionEditPage() {
                                 )}
                               </td>
                               <td className='px-4 py-3'>
-                                {checked ? (
+                                {checked && !hasActivePromotion ? (
                                   <input
                                     type='number'
                                     min={0}
-                                    value={productDiscountById[product.productId]?.discountValue ?? 20}
+                                    value={productDiscountById[product.productId]?.discountValue ?? DEFAULT_DISCOUNT_VALUE}
                                     onChange={(e) =>
                                       updateProductDiscount(
                                         product.productId,
@@ -572,6 +677,40 @@ export function ManagerPromotionEditPage() {
                     </tbody>
                   </table>
                 </div>
+
+                {/* Phân trang */}
+                {totalPages > 1 && (
+                  <div className='mt-4 flex items-center justify-between'>
+                    <div className='text-sm text-muted-foreground'>
+                      {keyword ? (
+                        <>Kết quả tìm kiếm: {totalElements} sản phẩm</>
+                      ) : (
+                        <>Hiển thị {products.length} trên {totalElements} sản phẩm</>
+                      )}
+                    </div>
+                    <div className='flex items-center gap-2'>
+                      <button
+                        type='button'
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 0}
+                        className='rounded-lg border border-border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+                      >
+                        <MaterialIcon name='chevron_left' className='text-lg' />
+                      </button>
+                      <span className='text-sm text-muted-foreground'>
+                        Trang {currentPage + 1} / {totalPages}
+                      </span>
+                      <button
+                        type='button'
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage >= totalPages - 1}
+                        className='rounded-lg border border-border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+                      >
+                        <MaterialIcon name='chevron_right' className='text-lg' />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </section>
 
               {/* Action bar */}

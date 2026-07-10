@@ -714,6 +714,7 @@
       "user": "User",
       "action": "Action",
       "entityType": "Entity Type",
+      "entityCode": "Entity Code",
       "reason": "Reason",
       "viewDetail": "View Detail",
       "empty": "No data"
@@ -770,7 +771,10 @@
       "discountValue": "Discount Value",
       "productId": "Product ID",
       "ingredients": "Ingredients",
-      "usageInstructions": "Usage Instructions"
+      "usageInstructions": "Usage Instructions",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "deletedAt": "Deleted At"
     },
     "reasonMap": {
       "CREATE_PRODUCT": "Create new product",

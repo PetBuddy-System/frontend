@@ -19,24 +19,24 @@ export function ProductDetailGallery({ imageUrls, productName, videoUrl }: Produ
   const hasVideo = Boolean(videoUrl)
 
   return (
-    <div className='flex flex-col gap-6'>
-      {/* Tab selector */}
-      <div className='flex gap-2 border-b border-border/60'>
-        <button
-          onClick={() => setActiveTab('images')}
-          className={cn(
-            'px-4 py-2 text-sm font-semibold transition-all border-b-2',
-            activeTab === 'images'
-              ? 'border-primary text-primary'
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-          )}
-        >
-          <div className='flex items-center gap-2'>
-            <MaterialIcon name='photo' className='text-[18px]' />
-            Ảnh ({safeImageUrls.length})
-          </div>
-        </button>
-        {hasVideo && (
+    <div className='flex flex-col gap-4'>
+      {/* ⭐ Chỉ hiển thị tab khi có video */}
+      {hasVideo && (
+        <div className='flex gap-2 border-b border-border/60'>
+          <button
+            onClick={() => setActiveTab('images')}
+            className={cn(
+              'px-4 py-2 text-sm font-semibold transition-all border-b-2',
+              activeTab === 'images'
+                ? 'border-primary text-primary'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            )}
+          >
+            <div className='flex items-center gap-2'>
+              <MaterialIcon name='photo' className='text-[18px]' />
+              Ảnh
+            </div>
+          </button>
           <button
             onClick={() => setActiveTab('video')}
             className={cn(
@@ -51,8 +51,8 @@ export function ProductDetailGallery({ imageUrls, productName, videoUrl }: Produ
               Video
             </div>
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Main display - Image hoặc Video */}
       <div className='relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-card p-8 shadow-sm'>
@@ -72,7 +72,7 @@ export function ProductDetailGallery({ imageUrls, productName, videoUrl }: Produ
         )}
       </div>
 
-      {/* Thumbnails - chỉ hiển thị khi ở tab ảnh */}
+      {/* Thumbnails - chỉ hiển thị khi ở tab ảnh và có nhiều hơn 1 ảnh */}
       {activeTab === 'images' && safeImageUrls.length > 1 && (
         <div className='grid grid-cols-4 gap-4'>
           {safeImageUrls.map((url, index) => (

@@ -3,28 +3,18 @@
  * API functions nằm trong features/services/.
  */
 
-// ✅ Định nghĩa enum ProductUnit
 export type ProductUnit =
-  | 'PIECE'      // Cái
-  | 'KG'         // Kilogram
-  | 'GRAM'       // Gram
-  | 'LITER'      // Lít
-  | 'MILLILITER' // Milliliter
-  | 'BAG'        // Túi
-  | 'BOX'        // Hộp
-  | 'PACK'       // Gói
-  | 'BOTTLE'     // Chai
-  | 'CAN'        // Lon
-  | 'TUBE'       // Tuýp
-  | 'SET'        // Bộ
+  | 'PIECE'
+  | 'BAG'
+  | 'BOX'
+  | 'PACK'
+  | 'BOTTLE'
+  | 'CAN'
+  | 'TUBE'
+  | 'SET'
 
-// ✅ Helper để lấy label tiếng Việt
 export const ProductUnitLabels: Record<ProductUnit, string> = {
   'PIECE': 'Cái',
-  'KG': 'Kilogram',
-  'GRAM': 'Gram',
-  'LITER': 'Lít',
-  'MILLILITER': 'Milliliter',
   'BAG': 'Túi',
   'BOX': 'Hộp',
   'PACK': 'Gói',
@@ -33,7 +23,6 @@ export const ProductUnitLabels: Record<ProductUnit, string> = {
   'TUBE': 'Tuýp',
   'SET': 'Bộ'
 }
-
 export interface ProductResponse {
   productId: string
   name: string
@@ -152,6 +141,7 @@ export interface ProductManagementItem {
   createdAt: string
   updatedAt: string
   unit?: ProductUnit
+  hasActivePromotion?: boolean
 }
 
 export interface PagedProductManagementResponse {
@@ -194,6 +184,8 @@ export interface UpdateProductPayload {
   usageInstructions?: string
   unit?: ProductUnit
   thumbnailMediaId?: number
+  reason?: string
+  note?: string
 }
 
 export interface UpdateProductResponse {

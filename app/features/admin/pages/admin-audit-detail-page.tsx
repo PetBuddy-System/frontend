@@ -253,7 +253,15 @@ export function AdminAuditDetailPage() {
             try {
                 const res = await fetchAuditLogByIdApi(auditLogId)
                 if (res.success && res.data) {
-                    setLog(res.data)
+                    // Lọc bỏ các field không mong muốn (deletedAt, updatedAt, createdAt)
+                    const filteredChanges = res.data.changes?.filter(
+                        change => change.field !== 'deletedAt' && change.field !== 'updatedAt' && change.field !== 'createdAt'
+                    ) || []
+
+                    setLog({
+                        ...res.data,
+                        changes: filteredChanges
+                    })
                 } else {
                     setErrorMsg('Không tìm thấy audit log')
                 }

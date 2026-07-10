@@ -84,8 +84,11 @@ export interface CreateBatchResponse {
 
 export interface UpdateBatchPayload {
     stockQuantity?: number
+    basePrice?: number
     expiryDate?: string
     status?: 'ACTIVE' | 'INACTIVE' | 'DELETED'
+    reason?: string
+    note?: string
 }
 
 export interface UpdateBatchResponse {
