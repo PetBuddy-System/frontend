@@ -51,7 +51,7 @@
       "attendanceHistory": "Attendance history",
       "shiftRequest": "Create shift request",
       "violations": "View violations",
-      "weeklySchedule": "Weekly work schedule",
+      "weeklySchedule": "Weekly shifts",
       "disposalRequest": "Disposal request",
       "inventory": "Inventory management"
     },
@@ -61,6 +61,99 @@
   },
   "staff": {
     "name": "Nguyen Van An"
+  },
+  "staffSchedule": {
+    "pageTitle": "Weekly shifts",
+    "pageSubtitle": "Track your work schedule and check in or check out for shifts.",
+    "heading": "Weekly shifts",
+    "description": "View your assigned shifts for the week, open a shift for details, and check in or check out when working.",
+    "actions": {
+      "backToSchedule": "Back to schedule",
+      "checkIn": "Check in",
+      "checkOut": "Check out",
+      "clearFilters": "Clear filters",
+      "nextWeek": "Next week",
+      "previousWeek": "Previous week",
+      "refresh": "Refresh",
+      "thisWeek": "This week"
+    },
+    "detail": {
+      "actionsTitle": "Check-in / Check-out",
+      "actionHint": "The system will validate the shift status before recording check-in or check-out.",
+      "assignedAt": "Assigned at",
+      "checkInAt": "Check-in time",
+      "checkOutAt": "Check-out time",
+      "date": "Work date",
+      "empty": "Select a shift in the weekly board to view details.",
+      "endTime": "Shift end time",
+      "noNote": "No note.",
+      "note": "Note",
+      "pageSubtitle": "View shift information and record check-in/check-out.",
+      "pageTitle": "Shift details",
+      "startTime": "Shift start",
+      "status": "Status",
+      "subtitle": "Shift details and attendance actions.",
+      "time": "Time",
+      "title": "Shift details",
+      "updatedAt": "Updated"
+    },
+    "errors": {
+      "badRequest": "This action could not be processed. Please check the shift again.",
+      "checkInNotAllowed": "You can only check in when the shift is scheduled.",
+      "checkOutNotAllowed": "You can only check out when the shift is working.",
+      "forbidden": "You do not have permission to update this shift.",
+      "invalidDateRange": "Invalid date range. The end date cannot be before the start date.",
+      "network": "Cannot connect to the server. Please try again.",
+      "notFound": "This shift does not exist or is no longer assigned to you.",
+      "server": "The server is having trouble. Please try again later."
+    },
+    "filters": {
+      "fromDate": "From date",
+      "status": "Status",
+      "toDate": "To date",
+      "week": "Viewing week"
+    },
+    "messages": {
+      "checkInFailed": "Check-in failed.",
+      "checkInSuccess": "Shift checked in successfully.",
+      "checkOutFailed": "Check-out failed.",
+      "checkOutSuccess": "Shift checked out successfully.",
+      "loadDetailFailed": "Failed to load shift details.",
+      "loadFailed": "Failed to load weekly shifts."
+    },
+    "shiftTypes": {
+      "AFTERNOON": "Afternoon",
+      "CUSTOM": "Custom",
+      "EVENING": "Evening",
+      "FULL_DAY": "Full day",
+      "MORNING": "Morning"
+    },
+    "stats": {
+      "completed": "Completed",
+      "scheduled": "Scheduled",
+      "total": "Total shifts",
+      "working": "Working"
+    },
+    "statuses": {
+      "ABSENT": "Absent",
+      "ALL": "All",
+      "CANCELLED": "Cancelled",
+      "COMPLETED": "Completed",
+      "LEAVE": "On leave",
+      "SCHEDULED": "Scheduled",
+      "WORKING": "Working"
+    },
+    "scheduleBoard": {
+      "emptyRange": "Please choose a valid date range to view your schedule.",
+      "monthYear": "Month / year",
+      "noShift": "No shift",
+      "rangeCount": "{{count}} days"
+    },
+    "weekGrid": {
+      "noShift": "No shift",
+      "subtitle": "Shifts are grouped by day so you can scan the weekly distribution clearly.",
+      "title": "Weekly schedule board"
+    }
   },
   "stats": {
     "completed": {

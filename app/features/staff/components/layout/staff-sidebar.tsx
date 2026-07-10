@@ -12,7 +12,7 @@ const STAFF_NAV_ITEMS = [
   { icon: 'delete_sweep', key: 'disposalRequest', href: '/staff/disposal-request' },
   { icon: 'inventory_2', key: 'inventory', href: '/staff/add-product' },
   { icon: 'report_problem', key: 'violations', href: '#' },
-  { icon: 'calendar_view_week', key: 'weeklySchedule', href: '#' },
+  { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule' },
   { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance' }
 ] as const
 

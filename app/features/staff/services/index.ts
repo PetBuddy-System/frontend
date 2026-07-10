@@ -3,3 +3,4 @@
  */
 
 export * from './order'
+export * from './staff-schedule'
