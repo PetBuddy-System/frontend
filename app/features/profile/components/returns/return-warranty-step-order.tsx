@@ -4,33 +4,38 @@ import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 
 export interface ReturnProduct {
-  id: string
+  id: string // maps to orderDetailId or string identifier
   name: string
-  quantity: number
-  price: string
+  quantity: number // maximum order quantity
+  price: string // formatted price
   image: string
 }
 
 export interface ReturnOrder {
-  id: string
-  date: string
+  id: string // maps to orderId
+  orderCode: string // human-readable order code
+  date: string // formatted order date
   products: ReturnProduct[]
 }
 
 export interface ReturnWarrantyStepOrderProps {
   selectedOrderId: string
   selectedProducts: Record<string, boolean>
+  selectedQuantities: Record<string, number>
   orders: ReturnOrder[]
   onOrderChange: (e: ChangeEvent<HTMLSelectElement>) => void
   onProductToggle: (productId: string) => void
+  onQuantityChange: (productId: string, quantity: number) => void
 }
 
 export function ReturnWarrantyStepOrder({
   selectedOrderId,
   selectedProducts,
+  selectedQuantities,
   orders,
   onOrderChange,
-  onProductToggle
+  onProductToggle,
+  onQuantityChange
 }: ReturnWarrantyStepOrderProps) {
   const { t } = useTranslation('profile')
   const selectedOrder = orders.find((o) => o.id === selectedOrderId)
@@ -53,7 +58,7 @@ export function ReturnWarrantyStepOrder({
           <option value=''>{t('returnWarranty.order.placeholder')}</option>
           {orders.map((order) => (
             <option key={order.id} value={order.id}>
-              {order.id} - {order.date} ({order.products.length} {t('sidebar.nav.orders').toLowerCase()})
+              Đơn hàng #{order.orderCode} - {order.date} ({order.products.length} sản phẩm)
             </option>
           ))}
         </select>
@@ -70,30 +75,64 @@ export function ReturnWarrantyStepOrder({
             {t('returnWarranty.order.selectProducts')}
           </p>
           <div className='space-y-3'>
-            {selectedOrder.products.map((product) => (
-              <label
-                key={product.id}
-                className={cn(
-                  'flex items-center gap-4 rounded-xl border border-border bg-card p-3 cursor-pointer transition-colors hover:bg-muted/50',
-                  selectedProducts[product.id] && 'border-primary bg-primary/5'
-                )}
-              >
-                <input
-                  type='checkbox'
-                  checked={!!selectedProducts[product.id]}
-                  onChange={() => onProductToggle(product.id)}
-                  className='h-5 w-5 rounded border-border text-primary focus:ring-primary focus:ring-offset-0'
-                />
-                <img src={product.image} alt={product.name} className='h-16 w-16 rounded-lg object-cover' />
-                <div className='flex-1'>
-                  <p className='text-sm font-semibold text-foreground'>{product.name}</p>
-                  <p className='text-xs text-muted-foreground mt-1'>
-                    {t('returnWarranty.order.quantity', { qty: product.quantity })} |{' '}
-                    {t('returnWarranty.order.price', { price: product.price })}
-                  </p>
+            {selectedOrder.products.map((product) => {
+              const isChecked = !!selectedProducts[product.id]
+              const currentQty = selectedQuantities[product.id] || 1
+
+              return (
+                <div
+                  key={product.id}
+                  className={cn(
+                    'flex flex-col sm:flex-row sm:items-center gap-4 rounded-xl border border-border bg-card p-4 transition-colors',
+                    isChecked && 'border-primary bg-primary/5'
+                  )}
+                >
+                  <label className='flex flex-1 items-center gap-4 cursor-pointer select-none'>
+                    <input
+                      type='checkbox'
+                      checked={isChecked}
+                      onChange={() => onProductToggle(product.id)}
+                      className='h-5 w-5 rounded border-border text-primary focus:ring-primary focus:ring-offset-0 shrink-0'
+                    />
+                    {product.image && (
+                      <img src={product.image} alt={product.name} className='h-16 w-16 rounded-lg object-cover shrink-0' />
+                    )}
+                    <div className='flex-1 min-w-0'>
+                      <p className='text-sm font-semibold text-foreground break-words'>{product.name}</p>
+                      <p className='text-xs text-muted-foreground mt-1'>
+                        Số lượng đã mua: {product.quantity} | Đơn giá: {product.price}
+                      </p>
+                    </div>
+                  </label>
+
+                  {/* Quantity modifier when checked */}
+                  {isChecked && (
+                    <div className='flex items-center gap-3 self-end sm:self-center bg-card border border-border rounded-lg p-1 shrink-0 shadow-sm'>
+                      <span className='text-xs text-muted-foreground px-1.5'>Số lượng trả:</span>
+                      <div className='flex items-center gap-1'>
+                        <button
+                          type='button'
+                          onClick={() => onQuantityChange(product.id, Math.max(1, currentQty - 1))}
+                          disabled={currentQty <= 1}
+                          className='flex h-7 w-7 items-center justify-center rounded bg-muted text-foreground hover:bg-muted/80 disabled:opacity-40 disabled:pointer-events-none transition-colors'
+                        >
+                          <MaterialIcon name='remove' className='text-sm' />
+                        </button>
+                        <span className='w-8 text-center text-xs font-bold text-foreground'>{currentQty}</span>
+                        <button
+                          type='button'
+                          onClick={() => onQuantityChange(product.id, Math.min(product.quantity, currentQty + 1))}
+                          disabled={currentQty >= product.quantity}
+                          className='flex h-7 w-7 items-center justify-center rounded bg-muted text-foreground hover:bg-muted/80 disabled:opacity-40 disabled:pointer-events-none transition-colors'
+                        >
+                          <MaterialIcon name='add' className='text-sm' />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </label>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}

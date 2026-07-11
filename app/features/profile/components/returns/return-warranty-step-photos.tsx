@@ -1,27 +1,39 @@
-import { useRef, type ChangeEvent } from 'react'
+import { useRef, type ChangeEvent, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 
 export interface ReturnWarrantyStepPhotosProps {
-  photos: string[]
-  onPhotosChange: (photos: string[]) => void
+  files: File[]
+  onFilesChange: (files: File[]) => void
 }
 
-export function ReturnWarrantyStepPhotos({ photos, onPhotosChange }: ReturnWarrantyStepPhotosProps) {
+export function ReturnWarrantyStepPhotos({ files, onFilesChange }: ReturnWarrantyStepPhotosProps) {
   const { t } = useTranslation('profile')
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [previews, setPreviews] = useState<string[]>([])
+
+  // Generate previews whenever files change
+  useEffect(() => {
+    const urls = files.map((file) => URL.createObjectURL(file))
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPreviews(urls)
+
+    // Cleanup previews on unmount or file change
+    return () => {
+      urls.forEach((url) => URL.revokeObjectURL(url))
+    }
+  }, [files])
 
   const handleFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files)
-      const newUrls = filesArray.map((file) => URL.createObjectURL(file))
-      const combined = [...photos, ...newUrls].slice(0, 5) // Max 5 images
-      onPhotosChange(combined)
+      const combined = [...files, ...filesArray].slice(0, 5) // Max 5 images
+      onFilesChange(combined)
     }
   }
 
   const removePhoto = (indexToRemove: number) => {
-    onPhotosChange(photos.filter((_, idx) => idx !== indexToRemove))
+    onFilesChange(files.filter((_, idx) => idx !== indexToRemove))
   }
 
   const triggerFileInput = () => {
@@ -49,20 +61,21 @@ export function ReturnWarrantyStepPhotos({ photos, onPhotosChange }: ReturnWarra
         <button
           type='button'
           onClick={triggerFileInput}
-          className='flex aspect-square flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-card text-muted-foreground hover:bg-muted hover:text-primary transition-all active:scale-95'
+          disabled={files.length >= 5}
+          className='flex aspect-square flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-card text-muted-foreground hover:bg-muted hover:text-primary transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none'
         >
           <MaterialIcon name='add_a_photo' className='text-3xl' />
           <span className='text-[10px] font-bold uppercase'>{t('returnWarranty.photos.upload')}</span>
         </button>
 
         {/* Render uploaded image previews */}
-        {photos.map((url, idx) => (
+        {previews.map((url, idx) => (
           <div key={idx} className='group relative aspect-square overflow-hidden rounded-xl bg-muted shadow-sm'>
             <img src={url} alt='Upload preview' className='h-full w-full object-cover' />
             <button
               type='button'
               onClick={() => removePhoto(idx)}
-              className='absolute right-1 top-1 rounded-full bg-black/50 p-1 text-white opacity-0 transition-opacity hover:bg-black/70 group-hover:opacity-100'
+              className='absolute right-1.5 top-1.5 rounded-full bg-black/50 p-1 text-white opacity-0 transition-opacity hover:bg-black/70 group-hover:opacity-100'
             >
               <MaterialIcon name='close' className='text-sm' />
             </button>

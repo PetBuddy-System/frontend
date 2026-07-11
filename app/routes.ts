@@ -46,7 +46,8 @@ export default [
     route('staff/weekly-schedule/:staffScheduleId', 'routes/staff-schedule-detail.tsx'),
     route('staff/add-product', 'routes/staff-add-product.tsx'),
     route('staff/orders', 'routes/staff-orders.tsx'),
-    route('staff/orders/:orderId', 'routes/staff-order-detail.tsx')
+    route('staff/orders/:orderId', 'routes/staff-order-detail.tsx'),
+    route('staff/returns', 'routes/staff-returns.tsx')
   ]),
 
   // ─── Admin Only Routes ────────────────────────────────────────────────────
