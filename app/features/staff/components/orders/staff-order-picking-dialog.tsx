@@ -111,12 +111,10 @@ export function StaffOrderPickingDialog({ order, onClose, onSuccess }: StaffOrde
                                     key={`${item.productId}-${index}`}
                                     className='border border-border rounded-2xl p-4 flex items-center bg-card hover:border-teal-300 dark:hover:border-teal-700 transition-colors group'
                                 >
-                                    {/* Sequential number */}
                                     <div className='flex-shrink-0 w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-6'>
                                         <span className='text-primary font-bold text-lg'>{index + 1}</span>
                                     </div>
 
-                                    {/* Product image — smaller as per reference */}
                                     <div className='flex-shrink-0 w-20 h-20 bg-muted/30 rounded-xl overflow-hidden mr-6 flex items-center justify-center p-2 border border-border'>
                                         <img
                                             src={item.imageUrl || 'https://placehold.co/120'}

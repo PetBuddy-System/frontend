@@ -69,6 +69,39 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
+    if (error.response) {
+      const status = error.response.status
+      const responseData = error.response.data
+      const msg = (responseData?.message || '').toLowerCase()
+      const isBlocked =
+        msg.includes('tài khoản của bạn đã bị') ||
+        msg.includes('tài khoản đã bị') ||
+        msg.includes('bị khóa') ||
+        msg.includes('bị đình chỉ') ||
+        msg.includes('ngưng hoạt động') ||
+        responseData?.status === 'SUSPENDED' ||
+        responseData?.status === 'DELETED' ||
+        responseData?.status === 'INACTIVE'
+
+      if (isBlocked) {
+        removeStorage(STORAGE_KEYS.accessToken)
+        removeStorage(STORAGE_KEYS.refreshToken)
+        removeStorage(STORAGE_KEYS.user)
+
+        let errMsg = responseData?.message
+        if (!errMsg && responseData?.status && responseData?.reason) {
+          errMsg = `Tài khoản của bạn đã bị ${responseData.status} do ${responseData.reason}`
+        } else if (!errMsg) {
+          errMsg = 'Tài khoản của bạn đã bị khóa hoặc đình chỉ hoạt động.'
+        }
+
+        if (typeof window !== 'undefined') {
+          window.location.href = `/login?error=${encodeURIComponent(errMsg)}`
+        }
+        return Promise.reject(error)
+      }
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Do not try to refresh if it's already an auth endpoint
       if (originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/refresh')) {

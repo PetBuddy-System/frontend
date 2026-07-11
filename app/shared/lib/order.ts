@@ -10,6 +10,7 @@ export type OrderStatus =
   | 'COMPLETED'
   | 'CANCELLED'
   | 'EXPIRED'
+  | 'CANCEL_REQUESTED'
   | (string & {})
 
 export interface PickingItemResponse {

@@ -22,7 +22,8 @@ export function StaffOrdersPage() {
         picking: 0,
         shipping: 0,
         completed: 0,
-        cancelled: 0
+        cancelled: 0,
+        refundPending: 0
     })
 
     const [totalElements, setTotalElements] = useState(0)
@@ -63,7 +64,8 @@ export function StaffOrdersPage() {
                     picking: all.filter((o) => o.status === 'PICKING').length,
                     shipping: all.filter((o) => o.status === 'SHIPPING' || o.status === 'DELIVERED').length,
                     completed: all.filter((o) => o.status === 'COMPLETED').length,
-                    cancelled: all.filter((o) => o.status === 'CANCELLED').length
+                    cancelled: all.filter((o) => o.status === 'CANCELLED').length,
+                    refundPending: all.filter((o) => o.status === 'CANCEL_REQUESTED').length
                 })
             }
         } catch (err) {
@@ -137,6 +139,7 @@ export function StaffOrdersPage() {
                                  const o = orders.find(x => x.orderId === orderId)
                                  if (o) setSelectedOrderForProof(o)
                              }}
+                            onRefresh={() => void loadData()}
                         />
 
                         {/* Pagination */}

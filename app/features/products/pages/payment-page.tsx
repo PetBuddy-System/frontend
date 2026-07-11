@@ -36,10 +36,12 @@ function CheckoutForm({
   clientSecret,
   orderId,
   amount,
+  onPaymentSuccess,
 }: {
   clientSecret: string
   orderId: number
   amount: number
+  onPaymentSuccess: () => void
 }) {
   const stripe = useStripe()
   const elements = useElements()
@@ -90,6 +92,7 @@ function CheckoutForm({
     }
 
     if (paymentIntent?.status === 'succeeded') {
+      onPaymentSuccess() // stop the timer before navigating
       sessionStorage.removeItem(`petbuddy_payment_start_${orderId}`)
       sessionStorage.removeItem(SESSION_KEY_CARDHOLDER)
       navigate('/order-success')
@@ -307,6 +310,9 @@ export function PaymentPage() {
                 clientSecret={clientSecret}
                 orderId={orderId}
                 amount={amount}
+                onPaymentSuccess={() => {
+                  if (timerRef.current) clearInterval(timerRef.current)
+                }}
               />
             </Elements>
 

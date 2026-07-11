@@ -1,7 +1,7 @@
-// app/features/staff/components/orders/staff-orders-table.tsx
 import { MaterialIcon } from '~/shared/ui'
 import type { OrderResponse, OrderStatus } from '~/shared/lib/order'
 import { useAuth } from '~/providers/auth-provider'
+import { confirmRefundApi } from '../../services/order'
 
 function formatPrice(value: number) {
     if (value == null || isNaN(Number(value))) return '—'
@@ -72,6 +72,13 @@ function renderStatusBadge(status: string) {
                     Đã hủy
                 </span>
             )
+        case 'CANCEL_REQUESTED':
+            return (
+                <span className='inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 animate-pulse'>
+                    <span className='h-1.5 w-1.5 rounded-full bg-amber-700 dark:bg-amber-400' />
+                    Chờ hoàn tiền
+                </span>
+            )
         default:
             return (
                 <span className='inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-bold uppercase text-gray-700'>
@@ -129,6 +136,7 @@ interface StaffOrdersTableProps {
     onTransition: (orderId: number, nextStatus: OrderStatus) => void
     onOpenPicking: (order: OrderResponse) => void
     onTransitionToShipped: (orderId: number) => void
+    onRefresh: () => void
 }
 
 export function StaffOrdersTable({
@@ -141,7 +149,8 @@ export function StaffOrdersTable({
     onViewDetail,
     onTransition,
     onOpenPicking,
-    onTransitionToShipped
+    onTransitionToShipped,
+    onRefresh
 }: StaffOrdersTableProps) {
     const { user } = useAuth()
     const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
@@ -262,6 +271,27 @@ export function StaffOrdersTable({
                                             >
                                                 Xem
                                             </button>
+
+                                            {order.status === 'CANCEL_REQUESTED' && (
+                                                <button
+                                                    onClick={async () => {
+                                                        if (!window.confirm(`Xác nhận hoàn tiền cho đơn #${order.orderCode}?`)) return
+                                                        try {
+                                                            const res = await confirmRefundApi(order.orderId)
+                                                            if (res.success) {
+                                                                onRefresh()
+                                                            } else {
+                                                                alert(res.message || 'Không thể xác nhận hoàn tiền')
+                                                            }
+                                                        } catch (err: unknown) {
+                                                            alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+                                                        }
+                                                    }}
+                                                    className='rounded-xl bg-amber-500 hover:bg-amber-600 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
+                                                >
+                                                    Xác nhận hoàn tiền
+                                                </button>
+                                            )}
 
                                             {order.status === 'PENDING' && (
                                                 <>

@@ -16,6 +16,7 @@ export interface UserResponse {
   status: UserStatus
   createdAt: string
   updatedAt: string
+  paymentFailStreak?: number
 }
 
 export interface AuthenticationRequest {

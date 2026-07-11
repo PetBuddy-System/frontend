@@ -10,6 +10,7 @@ interface StaffOrdersStatsProps {
         shipping: number
         completed: number
         cancelled: number
+        refundPending: number
     }
     statusFilter: string
     onStatusFilterChange: (status: string) => void
@@ -17,7 +18,7 @@ interface StaffOrdersStatsProps {
 
 export function StaffOrdersStats({ stats, statusFilter, onStatusFilterChange }: StaffOrdersStatsProps) {
     return (
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6'>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7'>
             {/* Card 1: Pending */}
             <button
                 onClick={() => onStatusFilterChange(statusFilter === 'PENDING' ? 'ALL' : 'PENDING')}
@@ -134,6 +135,25 @@ export function StaffOrdersStats({ stats, statusFilter, onStatusFilterChange }: 
                 <div>
                     <span className='text-3xl font-extrabold text-foreground'>{stats.cancelled}</span>
                     <span className='block text-xs text-muted-foreground mt-0.5'>Đã hủy</span>
+                </div>
+            </button>
+
+            <button
+                onClick={() => onStatusFilterChange(statusFilter === 'CANCEL_REQUESTED' ? 'ALL' : 'CANCEL_REQUESTED')}
+                className={cn(
+                    'flex flex-col justify-between rounded-2xl border bg-card p-4 text-left transition-all hover:scale-[1.02] hover:border-primary',
+                    statusFilter === 'CANCEL_REQUESTED' ? 'border-primary ring-2 ring-ring' : 'border-border'
+                )}
+            >
+                <div className='flex justify-between items-start w-full mb-4'>
+                    <div className='rounded-xl bg-amber-100 p-2 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400'>
+                        <MaterialIcon name='currency_exchange' className='text-[22px]' />
+                    </div>
+                    <span className='text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 animate-pulse'>Chờ hoàn tiền</span>
+                </div>
+                <div>
+                    <span className='text-3xl font-extrabold text-foreground'>{stats.refundPending}</span>
+                    <span className='block text-xs text-muted-foreground mt-0.5'>Cần xác nhận</span>
                 </div>
             </button>
         </div>

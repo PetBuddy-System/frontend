@@ -24,6 +24,7 @@ export default [
     route('change-password', 'routes/change-password.tsx'),
     route('profile/orders', 'routes/profile-orders.tsx'),
     route('profile/orders/:orderId', 'routes/profile-order-detail.tsx'),
+    route('profile/orders/:orderId/cancel', 'routes/profile-order-cancel.tsx'),
     route('profile/services', 'routes/profile-services.tsx'),
     route('profile/returns', 'routes/profile-returns.tsx'),
     route('checkout', 'routes/checkout.tsx'),
