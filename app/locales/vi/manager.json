@@ -147,7 +147,8 @@
       "returnRequests": "Duyệt đổi trả",
       "disposalApprovals": "Duyệt hủy hàng",
       "promotions": "Chương trình khuyến mãi",
-      "storeLocations": "Địa chỉ chi nhánh"
+      "storeLocations": "Địa chỉ chi nhánh",
+      "reviews": "Quản lý đánh giá"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
@@ -764,6 +765,8 @@
       "startDate": "Ngày bắt đầu",
       "endDate": "Ngày kết thúc",
       "status": "Trạng thái",
+      "reason": "Lý do thay đổi",
+      "note": "Ghi chú",
       "save": "Lưu thay đổi",
       "cancel": "Hủy",
       "success": "Cập nhật khuyến mãi thành công",
@@ -798,5 +801,9 @@
       "emptyAddress": "Vui lòng nhập địa chỉ chi nhánh.",
       "boundaryLoading": "Đang tải ranh giới thành phố..."
     }
+  },
+  "reviews": {
+    "title": "Quản lý đánh giá",
+    "subtitle": "Xem, kiểm duyệt và quản lý các đánh giá sản phẩm từ người dùng."
   }
 }

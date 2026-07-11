@@ -304,3 +304,98 @@ export interface UpdateProductVideoResponse {
   success: boolean
   timestamp: string
 }
+
+// ─── Product Reviews ────────────────────────────────────────────────────────
+export interface ProductReview {
+  reviewId: string
+  productId: string
+  productName: string
+  userId: string
+  fullName: string
+  avatar: string | null
+  rating: number
+  content: string
+  anonymous: boolean
+  status: 'ACTIVE' | 'INACTIVE' | 'DELETED' | string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PagedProductReviewResponse {
+  code: number
+  message: string
+  success: boolean
+  data: {
+    content: ProductReview[]
+    pageable: {
+      pageNumber: number
+      pageSize: number
+    }
+    totalElements: number
+    totalPages: number
+    size: number
+    number: number
+    empty: boolean
+  }
+  timestamp: string
+}
+
+export interface ProductReviewMeResponse {
+  code: number
+  message: string
+  success: boolean
+  data: ProductReview | null
+  timestamp: string
+}
+
+export interface CreateProductReviewPayload {
+  rating: number
+  content: string
+  anonymous: boolean
+}
+
+// ─── Manager Reviews ────────────────────────────────────────────────────────
+export interface ManagerReviewItem {
+  reviewId: string
+  rating: number
+  content: string
+  anonymous: boolean
+  status: 'ACTIVE' | 'HIDDEN' | 'DELETED' | string
+  createdAt: string
+  updatedAt: string
+  deletedAt: string | null
+  productId: string
+  productCode: string
+  productName: string
+  userId: string
+  userEmail: string
+  userFullName: string
+  userAvatar: string | null
+}
+
+export interface PagedManagerReviewResponse {
+  code: number
+  message: string
+  success: boolean
+  data: {
+    content: ManagerReviewItem[]
+    pageable: {
+      pageNumber: number
+      pageSize: number
+    }
+    totalElements: number
+    totalPages: number
+    size: number
+    number: number
+    empty: boolean
+  }
+  timestamp: string
+}
+
+export interface ManagerReviewDetailResponse {
+  code: number
+  message: string
+  success: boolean
+  data: ManagerReviewItem
+  timestamp: string
+}

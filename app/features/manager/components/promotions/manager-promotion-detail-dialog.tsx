@@ -55,9 +55,14 @@ export function ManagerPromotionDetailDialog({
 
   const formatDate = (value?: string) => {
     if (!value) return 'N/A'
-    const parsedDate = new Date(value)
-    if (Number.isNaN(parsedDate.getTime())) return value
-    return parsedDate.toLocaleDateString('vi-VN')
+    const d = new Date(value)
+    if (Number.isNaN(d.getTime())) return value
+    const hours = String(d.getHours()).padStart(2, '0')
+    const minutes = String(d.getMinutes()).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const year = d.getFullYear()
+    return `${hours}:${minutes} ${day}/${month}/${year}`
   }
 
   const formatPrice = (value?: number) => {
@@ -132,12 +137,28 @@ export function ManagerPromotionDetailDialog({
                     {promotion.status}
                   </span>
                 </div>
-                <div className='sm:col-span-2'>
+                <div className='sm:col-span-2 border-t border-border/50 pt-3'>
                   <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Mô tả chương trình</h3>
                   <p className='whitespace-pre-line text-sm leading-6 text-foreground mt-1'>
                     {promotion.description || 'Không có mô tả'}
                   </p>
                 </div>
+                {(promotion.reason || promotion.note) && (
+                  <div className='sm:col-span-2 grid gap-4 sm:grid-cols-2 border-t border-border/50 pt-3'>
+                    {promotion.reason && (
+                      <div>
+                        <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lý do thay đổi</h3>
+                        <p className='text-sm text-foreground mt-1'>{promotion.reason}</p>
+                      </div>
+                    )}
+                    {promotion.note && (
+                      <div>
+                        <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ghi chú</h3>
+                        <p className='text-sm text-foreground mt-1'>{promotion.note}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Products Table */}
