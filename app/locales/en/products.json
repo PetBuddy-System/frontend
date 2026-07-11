@@ -107,6 +107,34 @@
           "badge": "New"
         }
       }
+    },
+    "reviews": {
+      "title": "Customer Reviews",
+      "averageRating": "Average Rating",
+      "stars": "stars",
+      "all": "All",
+      "write": "Write a Review",
+      "submit": "Submit Review",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "anonymous": "Anonymous",
+      "anonymousUser": "Anonymous User",
+      "contentPlaceholder": "Write your review content here (minimum 10 characters)...",
+      "anonymousHint": "Post anonymously (hides your real name and avatar)",
+      "ratingRequired": "Please select a rating",
+      "contentRequired": "Please enter your review content",
+      "empty": "No reviews yet for this product.",
+      "loginRequired": "You need to log in to write a review.",
+      "yourReview": "Your Review",
+      "confirmDelete": "Are you sure you want to delete this review?",
+      "editTitle": "Edit your review",
+      "createTitle": "Write a new review",
+      "sortBy": "Sort by:",
+      "newest": "Newest",
+      "highestRating": "Highest Rating",
+      "lowestRating": "Lowest Rating",
+      "verified": "Verified Purchase"
     }
   },
   "cart": {

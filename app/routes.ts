@@ -22,6 +22,10 @@ export default [
   layout('routes/auth-layout.tsx', [
     route('profile', 'routes/profile.tsx'),
     route('change-password', 'routes/change-password.tsx'),
+    route('profile/pets', 'routes/profile-pets.tsx'),
+    route('profile/pets/new', 'routes/profile-pet-new.tsx'),
+    route('profile/pets/:petId/edit', 'routes/profile-pet-edit.tsx'),
+    route('profile/pets/:petId', 'routes/profile-pet-detail.tsx'),
     route('profile/orders', 'routes/profile-orders.tsx'),
     route('profile/orders/:orderId', 'routes/profile-order-detail.tsx'),
     route('profile/orders/:orderId/cancel', 'routes/profile-order-cancel.tsx'),
@@ -43,9 +47,12 @@ export default [
     route('staff/attendance', 'routes/staff-attendance.tsx'),
     route('staff/disposal-request', 'routes/staff-disposal-request.tsx'),
     route('staff/shift-request', 'routes/staff-shift-request.tsx'),
+    route('staff/weekly-schedule', 'routes/staff-weekly-schedule.tsx'),
+    route('staff/weekly-schedule/:staffScheduleId', 'routes/staff-schedule-detail.tsx'),
     route('staff/add-product', 'routes/staff-add-product.tsx'),
     route('staff/orders', 'routes/staff-orders.tsx'),
-    route('staff/orders/:orderId', 'routes/staff-order-detail.tsx')
+    route('staff/orders/:orderId', 'routes/staff-order-detail.tsx'),
+    route('staff/returns', 'routes/staff-returns.tsx')
   ]),
 
   // ─── Admin Only Routes ────────────────────────────────────────────────────
@@ -78,6 +85,7 @@ export default [
     route('manager/promotions', 'routes/manager-promotions.tsx'),
     route('manager/promotions/new', 'routes/manager-promotion-create.tsx'),
     route('manager/promotions/:promotionId/edit', 'routes/manager-promotion-edit.tsx'),
-    route('manager/store-locations', 'routes/manager-store-locations.tsx')
+    route('manager/store-locations', 'routes/manager-store-locations.tsx'),
+    route('manager/reviews', 'routes/manager-reviews.tsx')
   ])
 ] satisfies RouteConfig

@@ -3,3 +3,6 @@
  */
 
 export * from './order/order-api'
+export * from './pet'
+export * from './returns/returns-api'
+

@@ -221,10 +221,20 @@ export function ManagerPromotionCreatePage() {
         discountValue: discount.discountValue
       }))
 
+      const formatToBackendISO = (localDateTimeStr: string) => {
+        if (!localDateTimeStr) return ''
+        if (localDateTimeStr.length === 16) {
+          return `${localDateTimeStr}:00`
+        }
+        return localDateTimeStr
+      }
+
       const payload: CreatePromotionDTO = {
-        ...form,
-        startDate: form.startDate ? `${form.startDate}T00:00:00` : '',
-        endDate: form.endDate ? `${form.endDate}T23:59:59` : '',
+        name: form.name.trim(),
+        description: form.description.trim(),
+        startDate: formatToBackendISO(form.startDate),
+        endDate: formatToBackendISO(form.endDate),
+        status: form.status,
         promotionDetails: allSelectedProducts
       }
 
@@ -310,7 +320,7 @@ export function ManagerPromotionCreatePage() {
                   <label className='flex flex-col gap-1.5'>
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày bắt đầu</span>
                     <input
-                      type='date'
+                      type='datetime-local'
                       value={form.startDate}
                       onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
                       className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
@@ -319,7 +329,7 @@ export function ManagerPromotionCreatePage() {
                   <label className='flex flex-col gap-1.5'>
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày kết thúc</span>
                     <input
-                      type='date'
+                      type='datetime-local'
                       value={form.endDate}
                       onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
                       className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'

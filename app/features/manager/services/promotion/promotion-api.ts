@@ -35,6 +35,8 @@ export interface Promotion {
   createdAt?: string
   updatedAt?: string
   promotionDetails?: PromotionDetail[]
+  reason?: string
+  note?: string
 }
 
 // Response - Pagination
@@ -89,6 +91,8 @@ export interface UpdatePromotionDTO {
     promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
     discountValue: number
   }>
+  reason?: string
+  note?: string
 }
 
 const PROMOTIONS_BASE_URL = `${env.API_URL}/api/promotions`

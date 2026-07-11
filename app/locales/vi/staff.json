@@ -51,9 +51,10 @@
       "attendanceHistory": "Lịch sử chấm công",
       "shiftRequest": "Tạo yêu cầu đổi ca",
       "violations": "Xem các lần vi phạm",
-      "weeklySchedule": "Xem các ca làm việc trong tuần",
+      "weeklySchedule": "Ca làm việc trong tuần",
       "disposalRequest": "Tạo yêu cầu hủy hàng",
-      "inventory": "Quản lý kho hàng"
+      "inventory": "Quản lý kho hàng",
+      "returns": "Quản lý đổi trả"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Nhân viên cửa hàng",
@@ -61,6 +62,99 @@
   },
   "staff": {
     "name": "Nguyễn Văn An"
+  },
+  "staffSchedule": {
+    "pageTitle": "Ca làm việc trong tuần",
+    "pageSubtitle": "Theo dõi lịch làm việc của bạn và check-in/check-out ca làm.",
+    "heading": "Ca làm việc trong tuần",
+    "description": "Xem các ca được phân bổ trong tuần, mở từng ca để xem chi tiết và thực hiện check-in hoặc check-out khi làm việc.",
+    "actions": {
+      "backToSchedule": "Quay lại lịch làm việc",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "clearFilters": "Xóa lọc",
+      "nextWeek": "Tuần sau",
+      "previousWeek": "Tuần trước",
+      "refresh": "Tải lại",
+      "thisWeek": "Tuần này"
+    },
+    "detail": {
+      "actionsTitle": "Check-in / Check-out",
+      "actionHint": "Hệ thống sẽ kiểm tra trạng thái ca trước khi ghi nhận check-in hoặc check-out.",
+      "assignedAt": "Được phân công",
+      "checkInAt": "Giờ check-in",
+      "checkOutAt": "Giờ check-out",
+      "date": "Ngày làm",
+      "empty": "Chọn một ca trong bảng tuần để xem chi tiết.",
+      "endTime": "Giờ tan ca",
+      "noNote": "Không có ghi chú.",
+      "note": "Ghi chú",
+      "pageSubtitle": "Xem thông tin ca làm và ghi nhận check-in/check-out.",
+      "pageTitle": "Chi tiết ca làm",
+      "startTime": "Giờ vào ca",
+      "status": "Trạng thái",
+      "subtitle": "Thông tin ca và thao tác chấm công.",
+      "time": "Thời gian",
+      "title": "Chi tiết ca làm",
+      "updatedAt": "Cập nhật"
+    },
+    "errors": {
+      "badRequest": "Không thể xử lý thao tác này. Vui lòng kiểm tra lại ca làm.",
+      "checkInNotAllowed": "Chỉ có thể check-in khi ca làm đang ở trạng thái đã lên lịch.",
+      "checkOutNotAllowed": "Chỉ có thể check-out khi ca làm đang ở trạng thái đang làm.",
+      "forbidden": "Bạn không có quyền thao tác trên ca làm này.",
+      "invalidDateRange": "Khoảng ngày không hợp lệ. Ngày kết thúc không được trước ngày bắt đầu.",
+      "network": "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
+      "notFound": "Ca làm này không tồn tại hoặc không còn thuộc lịch của bạn.",
+      "server": "Máy chủ đang gặp sự cố. Vui lòng thử lại sau."
+    },
+    "filters": {
+      "fromDate": "Từ ngày",
+      "status": "Trạng thái",
+      "toDate": "Đến ngày",
+      "week": "Tuần đang xem"
+    },
+    "messages": {
+      "checkInFailed": "Check-in thất bại.",
+      "checkInSuccess": "Check-in ca làm thành công.",
+      "checkOutFailed": "Check-out thất bại.",
+      "checkOutSuccess": "Check-out ca làm thành công.",
+      "loadDetailFailed": "Không thể tải chi tiết ca làm.",
+      "loadFailed": "Không thể tải lịch làm việc trong tuần."
+    },
+    "shiftTypes": {
+      "AFTERNOON": "Ca chiều",
+      "CUSTOM": "Tùy chỉnh",
+      "EVENING": "Ca tối",
+      "FULL_DAY": "Cả ngày",
+      "MORNING": "Ca sáng"
+    },
+    "stats": {
+      "completed": "Đã hoàn thành",
+      "scheduled": "Đã lên lịch",
+      "total": "Tổng ca",
+      "working": "Đang làm"
+    },
+    "statuses": {
+      "ABSENT": "Vắng mặt",
+      "ALL": "Tất cả",
+      "CANCELLED": "Đã hủy",
+      "COMPLETED": "Hoàn thành",
+      "LEAVE": "Nghỉ phép",
+      "SCHEDULED": "Đã lên lịch",
+      "WORKING": "Đang làm"
+    },
+    "scheduleBoard": {
+      "emptyRange": "Vui lòng chọn khoảng ngày hợp lệ để xem lịch làm việc.",
+      "monthYear": "Tháng / năm",
+      "noShift": "Không có ca",
+      "rangeCount": "{{count}} ngày"
+    },
+    "weekGrid": {
+      "noShift": "Không có ca",
+      "subtitle": "Các ca được nhóm theo ngày để bạn dễ theo dõi phân bổ trong tuần.",
+      "title": "Bảng lịch tuần"
+    }
   },
   "stats": {
     "completed": {
@@ -358,5 +452,87 @@
   },
   "inventory": {
     "title": "Kho hàng"
+  },
+  "returns": {
+    "title": "Quản lý đổi trả hàng",
+    "subtitle": "Xem xét, phê duyệt hoặc từ chối các yêu cầu hoàn trả/bảo hành từ khách hàng.",
+    "breadcrumb": {
+      "ops": "Vận hành",
+      "current": "Quản lý đổi trả"
+    },
+    "stats": {
+      "all": "Tổng số yêu cầu",
+      "pending": "Chờ duyệt",
+      "approved": "Đã duyệt",
+      "rejected": "Đã từ chối",
+      "completed": "Hoàn thành",
+      "cancelled": "Đã hủy"
+    },
+    "filters": {
+      "status": "Trạng thái",
+      "type": "Loại yêu cầu",
+      "refundMethod": "Phương thức hoàn tiền",
+      "keyword": "Tìm kiếm",
+      "searchPlaceholder": "Tìm theo Tên KH, Mã đơn, Mã đổi trả...",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "clear": "Xóa bộ lọc",
+      "all": "Tất cả"
+    },
+    "table": {
+      "columns": {
+        "code": "Mã đổi trả",
+        "order": "Mã đơn hàng",
+        "customer": "Khách hàng",
+        "type": "Loại",
+        "refund": "Hoàn tiền",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo",
+        "actions": "Thao tác"
+      },
+      "actions": {
+        "view": "Xem chi tiết",
+        "process": "Xử lý"
+      },
+      "empty": "Không tìm thấy yêu cầu đổi trả nào."
+    },
+    "detail": {
+      "title": "Chi tiết yêu cầu đổi trả",
+      "code": "Mã yêu cầu",
+      "orderCode": "Mã đơn hàng",
+      "type": "Loại yêu cầu",
+      "createdAt": "Thời gian gửi",
+      "status": "Trạng thái",
+      "customerInfo": "Thông tin khách hàng",
+      "customerName": "Họ và tên",
+      "customerEmail": "Email",
+      "reason": "Lý do đổi trả",
+      "description": "Mô tả của khách hàng",
+      "refundInfo": "Thông tin hoàn tiền",
+      "refundMethod": "Phương thức hoàn",
+      "refundStatus": "Trạng thái hoàn",
+      "refundAmount": "Số tiền hoàn trả",
+      "bankName": "Tên ngân hàng",
+      "bankAccountNumber": "Số tài khoản",
+      "bankAccountHolder": "Chủ tài khoản",
+      "media": "Hình ảnh/Video đính kèm",
+      "mediaEmpty": "Không có tệp đính kèm",
+      "items": "Danh sách sản phẩm đổi trả",
+      "processInfo": "Thông tin xử lý",
+      "processedBy": "Người xử lý",
+      "processedAt": "Thời gian xử lý",
+      "completedAt": "Thời gian hoàn thành",
+      "staffNote": "Ghi chú của nhân viên",
+      "actionTitle": "Xử lý yêu cầu",
+      "notePlaceholder": "Nhập lý do duyệt/từ chối hoặc ghi chú bổ sung...",
+      "btnApprove": "Duyệt yêu cầu",
+      "btnReject": "Từ chối",
+      "btnComplete": "Hoàn thành",
+      "successApprove": "Đã duyệt yêu cầu thành công",
+      "successReject": "Đã từ chối yêu cầu thành công",
+      "successComplete": "Đã hoàn thành yêu cầu đổi trả",
+      "errorUpdate": "Cập nhật trạng thái thất bại",
+      "requiredNote": "Vui lòng nhập ghi chú khi từ chối yêu cầu."
+    }
   }
 }

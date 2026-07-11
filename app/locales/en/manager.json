@@ -148,7 +148,8 @@
       "returnRequests": "Return approvals",
       "disposalApprovals": "Disposal approvals",
       "promotions": "Promotions",
-      "storeLocations": "Store Locations"
+      "storeLocations": "Store Locations",
+      "reviews": "Review Management"
     },
     "toggle": "Toggle sidebar"
   },
@@ -767,6 +768,8 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "status": "Status",
+      "reason": "Reason for change",
+      "note": "Note",
       "save": "Save Changes",
       "cancel": "Cancel",
       "success": "Promotion updated successfully",
@@ -801,5 +804,9 @@
       "emptyAddress": "Please enter branch address.",
       "boundaryLoading": "Loading city boundary..."
     }
+  },
+  "reviews": {
+    "title": "Review Management",
+    "subtitle": "View, moderate and manage customer product reviews."
   }
 }

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { AxiosRequestConfig } from 'axios'
+import { AxiosHeaders, type AxiosRequestConfig } from 'axios'
 import { STORAGE_KEYS } from '~/shared/config/site'
 import { env } from '~/shared/config/env'
 import { readStorage, writeStorage, removeStorage } from '~/shared/lib/storage'
@@ -12,7 +12,6 @@ export const axiosInstance = axios.create({
   baseURL: env.API_URL,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
     Accept: 'application/json'
   }
 })
@@ -35,8 +34,12 @@ axiosInstance.interceptors.request.use(
     // When sending FormData, delete Content-Type so Axios auto-sets
     // 'multipart/form-data; boundary=...' correctly. Without this,
     // the instance-level 'application/json' default wins and causes 415.
-    if (config.data instanceof FormData) {
-      delete config.headers['Content-Type']
+    if (config.data instanceof FormData && config.headers) {
+      if (config.headers instanceof AxiosHeaders) {
+        config.headers.delete('Content-Type')
+      } else {
+        delete config.headers['Content-Type']
+      }
     }
 
     return config
