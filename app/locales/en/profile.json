@@ -11,6 +11,7 @@
   "sidebar": {
     "nav": {
       "profile": "Personal information",
+      "pets": "Pet profiles",
       "tracking": "Track order",
       "orders": "My orders",
       "services": "Booked services",
@@ -67,6 +68,12 @@
   "pets": {
     "title": "My pets",
     "add": "Add pet",
+    "empty": "No pet profiles yet.",
+    "age": {
+      "months": "{{count}} month(s) old",
+      "unknown": "Age not provided",
+      "years": "{{count}} year(s) old"
+    },
     "items": {
       "lu": {
         "name": "Lu",
@@ -78,6 +85,115 @@
         "description": "Poodle • 1.5 years old",
         "imageAlt": "White Poodle dog named Mimi"
       }
+    }
+  },
+  "petProfiles": {
+    "headerTitle": "Pet profiles",
+    "headerSubtitle": "Manage your pets' information, health notes, and photos.",
+    "title": "Pet profiles",
+    "description": "Track your pets, view details, and keep profiles updated for smoother service booking.",
+    "actions": {
+      "backToDetail": "Back to details",
+      "backToList": "Back to list",
+      "cancel": "Cancel",
+      "create": "Create pet profile",
+      "edit": "Edit",
+      "saveCreate": "Save profile",
+      "saveUpdate": "Save changes",
+      "viewDetails": "View details"
+    },
+    "create": {
+      "headerTitle": "Create pet profile",
+      "headerSubtitle": "Add basic information and photos for a new pet.",
+      "title": "Create pet profile",
+      "description": "Fill in the details so PetBuddy can keep a care profile for your pet."
+    },
+    "detail": {
+      "headerTitle": "Pet profile details",
+      "headerSubtitle": "View identity, health, and care notes.",
+      "title": "Pet profile details",
+      "description": "Detailed information helps staff care for your pet according to its needs."
+    },
+    "edit": {
+      "headerTitle": "Edit pet profile",
+      "headerSubtitle": "Update the latest information for your pet.",
+      "title": "Edit pet profile",
+      "description": "Update health, weight, photos, or any information that has changed."
+    },
+    "empty": {
+      "title": "You do not have any pet profiles yet.",
+      "description": "Create the first profile to book services faster and help PetBuddy care for your pet better."
+    },
+    "errors": {
+      "badRequest": "The pet profile information is invalid. Please check it again.",
+      "forbidden": "You do not have permission to update this pet profile.",
+      "network": "Cannot connect to the server. Please try again.",
+      "notFound": "Pet profile not found.",
+      "server": "The server is having trouble. Please try again later."
+    },
+    "fields": {
+      "allergyNote": "Allergies",
+      "behaviorNote": "Behavior",
+      "birthDate": "Birth date",
+      "breed": "Breed",
+      "color": "Color",
+      "createdAt": "Created",
+      "gender": "Gender",
+      "healthNote": "Health",
+      "species": "Species",
+      "vaccination": "Vaccination",
+      "weight": "Weight"
+    },
+    "form": {
+      "allergyNote": "Allergy notes",
+      "behaviorNote": "Behavior notes",
+      "breed": "Breed",
+      "color": "Color",
+      "dateOfBirth": "Birth date",
+      "gender": "Gender",
+      "healthNote": "Health notes",
+      "images": "Images",
+      "petAvatar": "Pet avatar",
+      "petName": "Pet name",
+      "petStatus": "Profile status",
+      "selectedAvatar": "{{name}} selected",
+      "selectedImages": "{{count}} image(s) selected",
+      "species": "Species",
+      "vaccinationStatus": "Vaccination status",
+      "weight": "Weight (kg)"
+    },
+    "messages": {
+      "createFailed": "Failed to create pet profile.",
+      "detailFailed": "Failed to load pet profile details.",
+      "listFailed": "Failed to load pet profiles.",
+      "updateFailed": "Failed to update pet profile."
+    },
+    "petStatus": {
+      "ACTIVE": "Active",
+      "DECEASED": "Deceased"
+    },
+    "gender": {
+      "FEMALE": "Female",
+      "MALE": "Male"
+    },
+    "species": {
+      "CAT": "Cat",
+      "DOG": "Dog"
+    },
+    "stats": {
+      "active": "Active",
+      "fullyVaccinated": "Fully vaccinated",
+      "total": "Total profiles"
+    },
+    "vaccinationStatus": {
+      "EXPIRED": "Expired",
+      "FULLY_VACCINATED": "Fully vaccinated",
+      "NOT_VACCINATED": "Not vaccinated",
+      "PARTIALLY_VACCINATED": "Partially vaccinated",
+      "UNKNOWN": "Unknown"
+    },
+    "values": {
+      "weightKg": "{{value}} kg"
     }
   },
   "support": {
