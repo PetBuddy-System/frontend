@@ -22,6 +22,10 @@ export default [
   layout('routes/auth-layout.tsx', [
     route('profile', 'routes/profile.tsx'),
     route('change-password', 'routes/change-password.tsx'),
+    route('profile/pets', 'routes/profile-pets.tsx'),
+    route('profile/pets/new', 'routes/profile-pet-new.tsx'),
+    route('profile/pets/:petId/edit', 'routes/profile-pet-edit.tsx'),
+    route('profile/pets/:petId', 'routes/profile-pet-detail.tsx'),
     route('profile/orders', 'routes/profile-orders.tsx'),
     route('profile/orders/:orderId', 'routes/profile-order-detail.tsx'),
     route('profile/services', 'routes/profile-services.tsx'),
