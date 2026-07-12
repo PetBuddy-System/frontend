@@ -41,7 +41,9 @@ export function ManagerPromotionEditPage() {
     description: '',
     startDate: '',
     endDate: '',
-    status: 'DRAFT' as 'DRAFT' | 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'DELETED'
+    status: 'DRAFT' as 'DRAFT' | 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'DELETED',
+    reason: '',
+    note: ''
   })
   const [nearExpiredDays, setNearExpiredDays] = useState<string>('all')
   const [products, setProducts] = useState<ProductManagementItem[]>([])
@@ -79,14 +81,30 @@ export function ManagerPromotionEditPage() {
 
       try {
         const promo = await promotionApi.getPromotion(promotionId!)
-        const formatDate = (dtStr: string) => (dtStr ? dtStr.split('T')[0] : '')
+        const formatForDateTimeLocal = (dtStr: string) => {
+          if (!dtStr) return ''
+          try {
+            const d = new Date(dtStr)
+            if (isNaN(d.getTime())) return ''
+            const year = d.getFullYear()
+            const month = String(d.getMonth() + 1).padStart(2, '0')
+            const day = String(d.getDate()).padStart(2, '0')
+            const hours = String(d.getHours()).padStart(2, '0')
+            const minutes = String(d.getMinutes()).padStart(2, '0')
+            return `${year}-${month}-${day}T${hours}:${minutes}`
+          } catch {
+            return ''
+          }
+        }
 
         setForm({
           name: promo.name,
           description: promo.description,
-          startDate: formatDate(promo.startDate),
-          endDate: formatDate(promo.endDate),
-          status: promo.status
+          startDate: formatForDateTimeLocal(promo.startDate),
+          endDate: formatForDateTimeLocal(promo.endDate),
+          status: promo.status,
+          reason: promo.reason || '',
+          note: promo.note || ''
         })
 
         const details = (promo as unknown as {
@@ -275,13 +293,23 @@ export function ManagerPromotionEditPage() {
           }
         })
 
+      const formatToBackendISO = (localDateTimeStr: string) => {
+        if (!localDateTimeStr) return ''
+        if (localDateTimeStr.length === 16) {
+          return `${localDateTimeStr}:00`
+        }
+        return localDateTimeStr
+      }
+
       const payload: UpdatePromotionDTO = {
         name: form.name.trim(),
         description: form.description.trim(),
-        startDate: form.startDate ? `${form.startDate}T00:00:00` : '',
-        endDate: form.endDate ? `${form.endDate}T23:59:59` : '',
-        status: form.status as 'DRAFT' | 'ACTIVE',
-        promotionDetails: promotionDetails
+        startDate: formatToBackendISO(form.startDate),
+        endDate: formatToBackendISO(form.endDate),
+        status: form.status,
+        promotionDetails: promotionDetails,
+        reason: form.reason.trim() || undefined,
+        note: form.note.trim() || undefined
       }
 
       await promotionApi.updatePromotion(promotionId, payload)
@@ -405,7 +433,7 @@ export function ManagerPromotionEditPage() {
                   <label className='flex flex-col gap-1.5'>
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày bắt đầu</span>
                     <input
-                      type='date'
+                      type='datetime-local'
                       value={form.startDate}
                       onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
                       className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
@@ -414,7 +442,7 @@ export function ManagerPromotionEditPage() {
                   <label className='flex flex-col gap-1.5'>
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày kết thúc</span>
                     <input
-                      type='date'
+                      type='datetime-local'
                       value={form.endDate}
                       onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
                       className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
@@ -430,7 +458,25 @@ export function ManagerPromotionEditPage() {
                       placeholder='Mô tả ngắn gọn về chương trình...'
                     />
                   </label>
-                  <label className='flex flex-col gap-1.5'>
+                  <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lý do thay đổi</span>
+                    <input
+                      value={form.reason}
+                      onChange={(e) => setForm((prev) => ({ ...prev, reason: e.target.value }))}
+                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
+                      placeholder='Ví dụ: Cập nhật thời gian chạy, bổ sung sản phẩm...'
+                    />
+                  </label>
+                  <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ghi chú</span>
+                    <input
+                      value={form.note}
+                      onChange={(e) => setForm((prev) => ({ ...prev, note: e.target.value }))}
+                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
+                      placeholder='Ghi chú thêm nếu có...'
+                    />
+                  </label>
+                  <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Trạng thái</span>
                     <div className='relative'>
                       <select
@@ -454,7 +500,7 @@ export function ManagerPromotionEditPage() {
                       />
                     </div>
                   </label>
-                  <label className='flex flex-col gap-1.5'>
+                  <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lọc sản phẩm gần hết hạn</span>
                     <div className='relative'>
                       <select

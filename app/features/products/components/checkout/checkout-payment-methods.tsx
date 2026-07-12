@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { MaterialIcon } from '~/shared/ui'
+import { useAuth } from '~/providers/auth-provider'
 
 export type SelectedPaymentMethod = 'CASH' | 'CARD'
 
@@ -24,6 +25,8 @@ const PAYMENT_METHODS = [
 ] as const
 
 export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: CheckoutPaymentMethodsProps) {
+  const { user } = useAuth()
+
   return (
     <section className='rounded-xl border border-border/60 bg-card p-6 shadow-sm md:p-8'>
       <div className='mb-6 flex items-center gap-3'>
@@ -67,6 +70,19 @@ export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: Check
           )
         })}
       </div>
+
+      {selectedMethod === 'CARD' && user && user.paymentFailStreak !== undefined && user.paymentFailStreak >= 3 && (
+        <div className='mt-4 flex items-start gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive dark:border-destructive/30 dark:bg-destructive/10 animate-fade-in'>
+          <MaterialIcon name='warning' className='mt-0.5 shrink-0 text-[20px] text-destructive' />
+          <div className='flex flex-col gap-1'>
+            <span className='font-semibold'>Cảnh báo thanh toán quá hạn</span>
+            <p className='text-muted-foreground text-xs leading-relaxed'>
+              Tài khoản của bạn đã có {user.paymentFailStreak} lần thanh toán quá hạn.
+              Vui lòng hoàn thành giao dịch trước khi hết thời gian chờ (timeout) để tránh ảnh hưởng đến tài khoản hoặc bị hủy dịch vụ.
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

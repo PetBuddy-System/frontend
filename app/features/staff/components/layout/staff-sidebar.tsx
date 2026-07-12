@@ -9,6 +9,7 @@ import { MaterialIcon } from '~/shared/ui'
 const STAFF_NAV_ITEMS = [
   { icon: 'shopping_cart', key: 'orders', href: '/staff/orders' },
   { icon: 'delete_sweep', key: 'disposalRequest', href: '/staff/disposal-request' },
+  { icon: 'assignment_return', key: 'returns', href: '/staff/returns' },
   { icon: 'inventory_2', key: 'inventory', href: '/staff/add-product' },
   { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule' },
   { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance' }

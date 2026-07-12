@@ -51,7 +51,7 @@ export function ServiceDetailInfo() {
 
       <div className='flex flex-col gap-4 pt-2 sm:flex-row'>
         <a
-          href='/services/bath/book'
+          href='/booking'
           className='flex flex-1 items-center justify-center gap-2 rounded-xl bg-secondary px-6 py-4 text-sm font-semibold text-secondary-foreground shadow-sm transition-colors hover:opacity-90'
         >
           <MaterialIcon name='calendar_month' className='text-[20px]' />

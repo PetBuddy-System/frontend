@@ -107,6 +107,34 @@
           "badge": "Mới"
         }
       }
+    },
+    "reviews": {
+      "title": "Đánh giá của khách hàng",
+      "averageRating": "Đánh giá trung bình",
+      "stars": "sao",
+      "all": "Tất cả",
+      "write": "Viết đánh giá",
+      "submit": "Gửi đánh giá",
+      "cancel": "Hủy",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "anonymous": "Ẩn danh",
+      "anonymousUser": "Người dùng ẩn danh",
+      "contentPlaceholder": "Nhập nội dung đánh giá của bạn ở đây (tối thiểu 10 ký tự)...",
+      "anonymousHint": "Đăng ẩn danh (không hiện tên thật và ảnh đại diện)",
+      "ratingRequired": "Vui lòng chọn số sao đánh giá",
+      "contentRequired": "Vui lòng nhập nội dung đánh giá",
+      "empty": "Chưa có đánh giá nào cho sản phẩm này.",
+      "loginRequired": "Bạn cần đăng nhập để viết đánh giá.",
+      "yourReview": "Đánh giá của bạn",
+      "confirmDelete": "Bạn có chắc chắn muốn xóa đánh giá này?",
+      "editTitle": "Chỉnh sửa đánh giá của bạn",
+      "createTitle": "Viết đánh giá mới",
+      "sortBy": "Sắp xếp theo:",
+      "newest": "Mới nhất",
+      "highestRating": "Đánh giá cao nhất",
+      "lowestRating": "Đánh giá thấp nhất",
+      "verified": "Đã mua hàng"
     }
   },
   "cart": {

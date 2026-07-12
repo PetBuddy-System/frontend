@@ -490,6 +490,53 @@ export const orderHandlers = [
     })
   }),
 
+  // POST /api/orders/:id/cancel - Hủy đơn hàng và hoàn tiền
+  http.post(`${BASE}/api/orders/:id/cancel`, async ({ params, request }) => {
+    const orderId = Number(params.id)
+    const body = (await request.json()) as { cancelReason?: string }
+    const cancelReason = body?.cancelReason || 'Không có lý do cụ thể'
+    const orders = getStoredOrders()
+    const orderIndex = orders.findIndex((o) => o.orderId === orderId)
+
+    if (orderIndex === -1) {
+      return HttpResponse.json({
+        code: 404,
+        message: 'Không tìm thấy đơn hàng',
+        success: false,
+        data: null,
+        timestamp: new Date().toISOString()
+      }, { status: 404 })
+    }
+
+    orders[orderIndex].status = 'CANCELLED'
+    if (orders[orderIndex].paymentMethod === 'CARD') {
+      orders[orderIndex].paymentStatus = 'REFUNDED'
+    } else {
+      orders[orderIndex].paymentStatus = 'CANCELLED'
+    }
+
+    saveOrders(orders)
+
+    return HttpResponse.json({
+      code: 200,
+      message: 'Refund successfully',
+      success: true,
+      data: {
+        paymentId: Math.floor(Math.random() * 10000),
+        orderId: orderId,
+        orderCode: orders[orderIndex].orderCode,
+        paymentMethod: orders[orderIndex].paymentMethod,
+        status: orders[orderIndex].paymentMethod === 'CARD' ? 'REFUNDED' : 'CANCELLED',
+        amount: orders[orderIndex].finalAmount,
+        cancelReason: cancelReason,
+        paidAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      timestamp: new Date().toISOString()
+    })
+  }),
+
   // GET /api/orders/:id/picking-list
   http.get(`${BASE}/api/orders/:id/picking-list`, ({ params }) => {
     const orderId = Number(params.id)

@@ -51,7 +51,8 @@
       "attendanceHistory": "Attendance history",
       "weeklySchedule": "Weekly shifts",
       "disposalRequest": "Disposal request",
-      "inventory": "Inventory management"
+      "inventory": "Inventory management",
+      "returns": "Manage Returns"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Store Staff",
@@ -412,5 +413,87 @@
   },
   "inventory": {
     "title": "Inventory"
+  },
+  "returns": {
+    "title": "Returns Management",
+    "subtitle": "Review, approve, or reject customer return and warranty requests.",
+    "breadcrumb": {
+      "ops": "Operations",
+      "current": "Returns"
+    },
+    "stats": {
+      "all": "Total requests",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "filters": {
+      "status": "Status",
+      "type": "Request Type",
+      "refundMethod": "Refund Method",
+      "keyword": "Search",
+      "searchPlaceholder": "Search by Customer Name, Order/Return code...",
+      "fromDate": "From date",
+      "toDate": "To date",
+      "clear": "Clear filters",
+      "all": "All"
+    },
+    "table": {
+      "columns": {
+        "code": "Return Code",
+        "order": "Order Code",
+        "customer": "Customer",
+        "type": "Type",
+        "refund": "Refund Method",
+        "status": "Status",
+        "createdAt": "Date Created",
+        "actions": "Actions"
+      },
+      "actions": {
+        "view": "View Details",
+        "process": "Process"
+      },
+      "empty": "No return requests found."
+    },
+    "detail": {
+      "title": "Return Request Details",
+      "code": "Request Code",
+      "orderCode": "Order Code",
+      "type": "Request Type",
+      "createdAt": "Time Submitted",
+      "status": "Status",
+      "customerInfo": "Customer Information",
+      "customerName": "Full Name",
+      "customerEmail": "Email",
+      "reason": "Reason for Return",
+      "description": "Customer Description",
+      "refundInfo": "Refund Information",
+      "refundMethod": "Refund Method",
+      "refundStatus": "Refund Status",
+      "refundAmount": "Refund Amount",
+      "bankName": "Bank Name",
+      "bankAccountNumber": "Account Number",
+      "bankAccountHolder": "Account Holder",
+      "media": "Attached Photos/Videos",
+      "mediaEmpty": "No attachments",
+      "items": "Items to Return",
+      "processInfo": "Processing Information",
+      "processedBy": "Processed By",
+      "processedAt": "Processed Time",
+      "completedAt": "Completed Time",
+      "staffNote": "Staff Note",
+      "actionTitle": "Process Request",
+      "notePlaceholder": "Enter reason for approval/rejection or additional notes...",
+      "btnApprove": "Approve Request",
+      "btnReject": "Reject",
+      "btnComplete": "Complete",
+      "successApprove": "Request approved successfully",
+      "successReject": "Request rejected successfully",
+      "successComplete": "Return request completed successfully",
+      "errorUpdate": "Failed to update status",
+      "requiredNote": "Please enter a staff note when rejecting the request."
+    }
   }
 }

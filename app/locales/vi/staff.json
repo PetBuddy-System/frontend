@@ -51,7 +51,8 @@
       "attendanceHistory": "Lịch sử chấm công",
       "weeklySchedule": "Ca làm việc trong tuần",
       "disposalRequest": "Tạo yêu cầu hủy hàng",
-      "inventory": "Quản lý kho hàng"
+      "inventory": "Quản lý kho hàng",
+      "returns": "Quản lý đổi trả"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Nhân viên cửa hàng",
@@ -412,5 +413,87 @@
   },
   "inventory": {
     "title": "Kho hàng"
+  },
+  "returns": {
+    "title": "Quản lý đổi trả hàng",
+    "subtitle": "Xem xét, phê duyệt hoặc từ chối các yêu cầu hoàn trả/bảo hành từ khách hàng.",
+    "breadcrumb": {
+      "ops": "Vận hành",
+      "current": "Quản lý đổi trả"
+    },
+    "stats": {
+      "all": "Tổng số yêu cầu",
+      "pending": "Chờ duyệt",
+      "approved": "Đã duyệt",
+      "rejected": "Đã từ chối",
+      "completed": "Hoàn thành",
+      "cancelled": "Đã hủy"
+    },
+    "filters": {
+      "status": "Trạng thái",
+      "type": "Loại yêu cầu",
+      "refundMethod": "Phương thức hoàn tiền",
+      "keyword": "Tìm kiếm",
+      "searchPlaceholder": "Tìm theo Tên KH, Mã đơn, Mã đổi trả...",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "clear": "Xóa bộ lọc",
+      "all": "Tất cả"
+    },
+    "table": {
+      "columns": {
+        "code": "Mã đổi trả",
+        "order": "Mã đơn hàng",
+        "customer": "Khách hàng",
+        "type": "Loại",
+        "refund": "Hoàn tiền",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo",
+        "actions": "Thao tác"
+      },
+      "actions": {
+        "view": "Xem chi tiết",
+        "process": "Xử lý"
+      },
+      "empty": "Không tìm thấy yêu cầu đổi trả nào."
+    },
+    "detail": {
+      "title": "Chi tiết yêu cầu đổi trả",
+      "code": "Mã yêu cầu",
+      "orderCode": "Mã đơn hàng",
+      "type": "Loại yêu cầu",
+      "createdAt": "Thời gian gửi",
+      "status": "Trạng thái",
+      "customerInfo": "Thông tin khách hàng",
+      "customerName": "Họ và tên",
+      "customerEmail": "Email",
+      "reason": "Lý do đổi trả",
+      "description": "Mô tả của khách hàng",
+      "refundInfo": "Thông tin hoàn tiền",
+      "refundMethod": "Phương thức hoàn",
+      "refundStatus": "Trạng thái hoàn",
+      "refundAmount": "Số tiền hoàn trả",
+      "bankName": "Tên ngân hàng",
+      "bankAccountNumber": "Số tài khoản",
+      "bankAccountHolder": "Chủ tài khoản",
+      "media": "Hình ảnh/Video đính kèm",
+      "mediaEmpty": "Không có tệp đính kèm",
+      "items": "Danh sách sản phẩm đổi trả",
+      "processInfo": "Thông tin xử lý",
+      "processedBy": "Người xử lý",
+      "processedAt": "Thời gian xử lý",
+      "completedAt": "Thời gian hoàn thành",
+      "staffNote": "Ghi chú của nhân viên",
+      "actionTitle": "Xử lý yêu cầu",
+      "notePlaceholder": "Nhập lý do duyệt/từ chối hoặc ghi chú bổ sung...",
+      "btnApprove": "Duyệt yêu cầu",
+      "btnReject": "Từ chối",
+      "btnComplete": "Hoàn thành",
+      "successApprove": "Đã duyệt yêu cầu thành công",
+      "successReject": "Đã từ chối yêu cầu thành công",
+      "successComplete": "Đã hoàn thành yêu cầu đổi trả",
+      "errorUpdate": "Cập nhật trạng thái thất bại",
+      "requiredNote": "Vui lòng nhập ghi chú khi từ chối yêu cầu."
+    }
   }
 }

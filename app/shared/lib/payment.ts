@@ -17,6 +17,7 @@ export interface PaymentResponse {
   status: PaymentStatus
   amount: number
   stripeClientSecret?: string
+  cancelReason?: string
   paidAt?: string
   createdAt: string
   updatedAt?: string

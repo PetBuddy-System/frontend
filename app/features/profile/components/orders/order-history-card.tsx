@@ -49,7 +49,8 @@ const STATUS_BADGE_STYLE: Record<string, string> = {
   DELIVERED: 'bg-purple-100 text-purple-800',
   COMPLETED: 'bg-green-100 text-green-800',
   CANCELLED: 'bg-red-100 text-red-800',
-  EXPIRED: 'bg-gray-200 text-gray-600'
+  EXPIRED: 'bg-gray-200 text-gray-600',
+  CANCEL_REQUESTED: 'bg-amber-100 text-amber-800'
 }
 
 function getStatusBadgeClassName(status: string) {
@@ -74,6 +75,8 @@ function getStatusLabel(status: string) {
       return 'Đã hủy'
     case 'EXPIRED':
       return 'Hết hạn'
+    case 'CANCEL_REQUESTED':
+      return 'Chờ hoàn tiền'
     default:
       return status
   }

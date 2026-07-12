@@ -6,7 +6,7 @@ import { MaterialIcon } from '~/shared/ui'
 
 import { ManagerReturnRequestDetailsModal } from './manager-return-request-details-modal'
 
-type RequestType = 'return' | 'warranty'
+type RequestType = 'return' | 'exchange'
 type RequestStatus = 'pending' | 'urgent' | 'verified'
 
 interface ReturnRequest {
@@ -30,12 +30,12 @@ const RETURN_REQUESTS: ReturnRequest[] = [
     status: 'pending'
   },
   {
-    key: 'war90123',
-    code: '#WAR-90123',
+    key: 'exg90123',
+    code: '#EXG-90123',
     customer: 'Sarah Johnson',
     email: 's.johnson@workmail.com',
     productKey: 'feeder',
-    type: 'warranty',
+    type: 'exchange',
     status: 'urgent'
   },
   {
@@ -60,7 +60,7 @@ const RETURN_REQUESTS: ReturnRequest[] = [
 
 const TYPE_CLASS_BY_TYPE = {
   return: 'bg-secondary/20 text-secondary-foreground',
-  warranty: 'bg-primary/10 text-primary'
+  exchange: 'bg-primary/10 text-primary'
 } as const
 
 const STATUS_CLASS_BY_STATUS = {

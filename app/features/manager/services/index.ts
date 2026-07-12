@@ -9,3 +9,5 @@ export * from './batch'
 export * from './promotion'
 export * from './store-location/store-location-api'
 export * from './work-schedule'
+export * from './review/review-api'
+

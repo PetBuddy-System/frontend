@@ -256,6 +256,89 @@
       }
     }
   },
+  "myBookings": {
+    "headerTitle": "Lịch đặt của tôi",
+    "headerSubtitle": "Theo dõi lịch spa, thanh toán và trạng thái chăm sóc thú cưng.",
+    "eyebrow": "Lịch sử đặt dịch vụ",
+    "title": "Các lịch chăm sóc thú cưng",
+    "subtitle": "Mỗi lịch được phân theo trạng thái để bạn tiếp tục thanh toán, theo dõi tiến độ hoặc xem lại các buổi đã hoàn tất.",
+    "stats": {
+      "all": "Tất cả lịch",
+      "pendingPayment": "Cần thanh toán",
+      "inProgress": "Đang chăm sóc",
+      "completed": "Đã hoàn tất"
+    },
+    "tabs": {
+      "ALL": "Tất cả",
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "FAILED": "Thất bại",
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "ACCEPTED": "Đã nhận lịch",
+      "IN_PROGRESS": "Đang thực hiện",
+      "READY_FOR_PICKUP": "Sẵn sàng đón",
+      "COMPLETED": "Hoàn tất",
+      "CANCELLED": "Đã hủy"
+    },
+    "status": {
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "FAILED": "Thanh toán thất bại",
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "ACCEPTED": "Đã nhận lịch",
+      "IN_PROGRESS": "Đang thực hiện",
+      "READY_FOR_PICKUP": "Sẵn sàng đón",
+      "COMPLETED": "Hoàn tất",
+      "CANCELLED": "Đã hủy"
+    },
+    "bookingTypes": {
+      "AT_HOME": "Tại nhà",
+      "AT_STORE": "Tại tiệm",
+      "IN_STORE": "Tại tiệm"
+    },
+    "actions": {
+      "refresh": "Tải lại",
+      "viewDetail": "Xem chi tiết",
+      "payNow": "Thanh toán ngay",
+      "retryPayment": "Thanh toán lại"
+    },
+    "card": {
+      "services": "Dịch vụ",
+      "pets": "Thú cưng",
+      "total": "Tổng tiền",
+      "deposit": "Đặt cọc",
+      "remaining": "Còn lại",
+      "noService": "Dịch vụ spa thú cưng"
+    },
+    "detail": {
+      "title": "Chi tiết lịch đặt",
+      "customer": "Khách hàng",
+      "phone": "Số điện thoại",
+      "staff": "Nhân viên",
+      "unassigned": "Chưa phân công",
+      "address": "Địa chỉ",
+      "cancelReason": "Lý do hủy",
+      "paymentTitle": "Tóm tắt thanh toán"
+    },
+    "payment": {
+      "title": "Hoàn tất thanh toán đặt cọc",
+      "subtitle": "Thanh toán lịch {{code}} an toàn bằng thẻ.",
+      "cardholder": "Tên chủ thẻ",
+      "cardInfo": "Thông tin thẻ",
+      "pay": "Thanh toán {{amount}}",
+      "processing": "Đang xử lý thanh toán...",
+      "success": "Thanh toán thành công. Lịch của bạn đang chờ nhân viên xác nhận.",
+      "failed": "Thanh toán thất bại. Vui lòng kiểm tra thẻ và thử lại.",
+      "stripeMissing": "Thiếu Stripe publishable key. Vui lòng cấu hình VITE_STRIPE_PK.",
+      "cardElementMissing": "Không thể tải ô nhập thẻ. Vui lòng tải lại và thử lại.",
+      "cardholderMissing": "Vui lòng nhập tên chủ thẻ."
+    },
+    "feedback": {
+      "loadFailed": "Không thể tải lịch đặt của bạn. Vui lòng thử lại.",
+      "detailFailed": "Không thể tải chi tiết lịch đặt.",
+      "retryFailed": "Không thể tạo thanh toán mới. Vui lòng thử lại.",
+      "emptyTitle": "Chưa có lịch đặt",
+      "emptyText": "Các lịch spa và grooming sẽ hiển thị tại đây sau khi bạn đặt dịch vụ."
+    }
+  },
   "orderHistory": {
     "headerTitle": "Đơn hàng của tôi",
     "headerSubtitle": "Theo dõi và quản lý lịch sử mua sắm của bạn.",

@@ -70,6 +70,12 @@ export function ManagerCreateProductModal({
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files)
+      if (images.length + filesArray.length > 4) {
+        setError('Chỉ được chọn tối đa 4 hình ảnh')
+        e.target.value = ''
+        return
+      }
+      setError(null)
       setImages((prev) => [...prev, ...filesArray])
       const newPreviews = filesArray.map((file) => URL.createObjectURL(file))
       setImagePreviews((prev) => [...prev, ...newPreviews])
@@ -118,6 +124,10 @@ export function ManagerCreateProductModal({
     }
     if (!form.categoryId) {
       setError('Vui lòng chọn danh mục')
+      return
+    }
+    if (images.length > 4) {
+      setError('Chỉ được chọn tối đa 4 hình ảnh')
       return
     }
 
@@ -403,7 +413,7 @@ export function ManagerCreateProductModal({
                   <div className='flex flex-col items-center justify-center pb-2 pt-2 text-center px-4'>
                     <MaterialIcon name='cloud_upload' className='text-3xl text-muted-foreground' />
                     <p className='text-xs text-muted-foreground mt-2 font-semibold'>Chọn tệp hình ảnh để tải lên</p>
-                    <p className='text-[10px] text-muted-foreground/80 mt-1'>Định dạng JPG, PNG tối đa 5MB</p>
+                    <p className='text-[10px] text-muted-foreground/80 mt-1'>Định dạng JPG, PNG tối đa 5MB (Tối đa 4 ảnh)</p>
                   </div>
                   <input
                     type='file'

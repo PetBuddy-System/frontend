@@ -29,21 +29,16 @@ export async function updateOrderStatusApi(
   status: OrderStatus,
   proofImage?: File
 ): Promise<ApiResponse<null>> {
+  const formData = new FormData()
   if (proofImage) {
-    const formData = new FormData()
     formData.append('proofImage', proofImage)
-    return customFetch<ApiResponse<null>>({
-      url: `${ORDER_BASE_URL}/${orderId}/status`,
-      method: 'PATCH',
-      params: { status },
-      data: formData
-    })
   }
 
   return customFetch<ApiResponse<null>>({
     url: `${ORDER_BASE_URL}/${orderId}/status`,
     method: 'PATCH',
-    params: { status }
+    params: { status },
+    data: formData
   })
 }
 
@@ -59,5 +54,25 @@ export async function updateOrderApi(orderId: number, data: UpdateOrderRequest):
     url: `${ORDER_BASE_URL}/${orderId}`,
     method: 'PUT',
     data
+  })
+}
+
+export async function requestRefundCancelApi(
+  orderId: number,
+  cancelReason: string
+): Promise<ApiResponse<any>> {
+  return customFetch<ApiResponse<any>>({
+    url: `${ORDER_BASE_URL}/${orderId}/cancel-request`,
+    method: 'POST',
+    data: { cancelReason }
+  })
+}
+
+export async function confirmRefundApi(
+  orderId: number
+): Promise<ApiResponse<any>> {
+  return customFetch<ApiResponse<any>>({
+    url: `${ORDER_BASE_URL}/${orderId}/cancel-confirm`,
+    method: 'POST'
   })
 }

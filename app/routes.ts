@@ -28,8 +28,11 @@ export default [
     route('profile/pets/:petId', 'routes/profile-pet-detail.tsx'),
     route('profile/orders', 'routes/profile-orders.tsx'),
     route('profile/orders/:orderId', 'routes/profile-order-detail.tsx'),
+    route('profile/orders/:orderId/cancel', 'routes/profile-order-cancel.tsx'),
     route('profile/services', 'routes/profile-services.tsx'),
+    route('my-bookings', 'routes/my-bookings.tsx'),
     route('profile/returns', 'routes/profile-returns.tsx'),
+    route('booking', 'routes/booking.tsx'),
     route('checkout', 'routes/checkout.tsx'),
     route('payment', 'routes/payment.tsx'),
     route('payment-failed', 'routes/payment-failed.tsx'),
@@ -49,7 +52,8 @@ export default [
     route('staff/weekly-schedule/:staffScheduleId', 'routes/staff-schedule-detail.tsx'),
     route('staff/add-product', 'routes/staff-add-product.tsx'),
     route('staff/orders', 'routes/staff-orders.tsx'),
-    route('staff/orders/:orderId', 'routes/staff-order-detail.tsx')
+    route('staff/orders/:orderId', 'routes/staff-order-detail.tsx'),
+    route('staff/returns', 'routes/staff-returns.tsx')
   ]),
 
   // ─── Admin Only Routes ────────────────────────────────────────────────────
@@ -58,6 +62,7 @@ export default [
     route('admin/blog', 'routes/admin-blog-management.tsx'),
     route('admin/employees', 'routes/admin-employees.tsx'),
     route('admin/services', 'routes/admin-services.tsx'),
+    route('admin/bookings', 'routes/admin-bookings.tsx'),
     route('admin/service-bookings', 'routes/admin-service-bookings.tsx'),
     route('admin/users', 'routes/admin-users.tsx'),
     route('admin/vouchers', 'routes/admin-vouchers.tsx'),
@@ -82,6 +87,7 @@ export default [
     route('manager/promotions', 'routes/manager-promotions.tsx'),
     route('manager/promotions/new', 'routes/manager-promotion-create.tsx'),
     route('manager/promotions/:promotionId/edit', 'routes/manager-promotion-edit.tsx'),
-    route('manager/store-locations', 'routes/manager-store-locations.tsx')
+    route('manager/store-locations', 'routes/manager-store-locations.tsx'),
+    route('manager/reviews', 'routes/manager-reviews.tsx')
   ])
 ] satisfies RouteConfig

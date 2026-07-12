@@ -101,7 +101,7 @@ export function OrderHistoryList() {
           >
             <MaterialIcon name='chevron_left' className='text-[20px]' />
           </button>
-          
+
           <span className='text-sm font-semibold text-muted-foreground'>
             Trang <span className='text-foreground'>{currentPage + 1}</span> / {totalPages}
           </span>

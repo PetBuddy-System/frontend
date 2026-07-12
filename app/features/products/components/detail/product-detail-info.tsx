@@ -109,7 +109,7 @@ export function ProductDetailInfo({
         {name}
       </h1>
 
-      <div className='mt-4 flex flex-wrap items-center gap-3'>
+      {/* <div className='mt-4 flex flex-wrap items-center gap-3'>
         <div className='flex items-center gap-1 text-warning'>
           {['star', 'star', 'star', 'star', 'star_half'].map((icon, i) => (
             <MaterialIcon key={i} name={icon} filled className='text-[24px]' />
@@ -118,7 +118,7 @@ export function ProductDetailInfo({
         <span className='rounded-full bg-muted px-3 py-1 text-sm font-semibold text-muted-foreground'>
           {t('detail.product.reviews')}
         </span>
-      </div>
+      </div> */}
 
       {/* Phần hiển thị giá */}
       {isPromoted ? (
@@ -151,12 +151,6 @@ export function ProductDetailInfo({
                   {formatPrice(originalPrice)}
                 </span>
               )}
-              {/* ⭐ Hiển thị unit */}
-              {unitLabel && (
-                <span className='pb-1 text-lg font-medium text-muted-foreground'>
-                  /{unitLabel}
-                </span>
-              )}
             </div>
             {promotionDescription && <p className='mt-2 text-sm text-muted-foreground'>{promotionDescription}</p>}
             {promotionEndDate && (
@@ -173,12 +167,6 @@ export function ProductDetailInfo({
             <span className='text-4xl font-black tracking-tight text-primary md:text-5xl'>
               {formatPrice(originalPrice)}
             </span>
-            {/* ⭐ Hiển thị unit */}
-            {unitLabel && (
-              <span className='pb-1 text-lg font-medium text-muted-foreground'>
-                /{unitLabel}
-              </span>
-            )}
           </div>
         </div>
       )}
@@ -232,12 +220,6 @@ export function ProductDetailInfo({
             <MaterialIcon name='add' className='text-[22px]' />
           </button>
         </div>
-        {/* ⭐ Hiển thị đơn vị */}
-        {unitLabel && (
-          <span className='text-sm text-muted-foreground'>
-            Đơn vị: {unitLabel}
-          </span>
-        )}
       </div>
 
       <div className='mt-10 grid gap-4 sm:grid-cols-2'>
