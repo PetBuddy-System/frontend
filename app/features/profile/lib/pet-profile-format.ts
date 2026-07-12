@@ -4,6 +4,7 @@ const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
 const DATE_TIME_PATTERN =
   /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?$/
 const VIETNAM_TIME_ZONE = 'Asia/Ho_Chi_Minh'
+const VIETNAM_UTC_OFFSET_HOURS = 7
 
 const dateFormatter = new Intl.DateTimeFormat('vi-VN', {
   day: '2-digit',
@@ -25,9 +26,16 @@ function buildLocalDate(year: string, month: string, day: string) {
   return new Date(Number(year), Number(month) - 1, Number(day))
 }
 
-function buildUtcDateTime(year: string, month: string, day: string, hour: string, minute: string, second = '0') {
+function buildVietnamDateTime(year: string, month: string, day: string, hour: string, minute: string, second = '0') {
   return new Date(
-    Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second))
+    Date.UTC(
+      Number(year),
+      Number(month) - 1,
+      Number(day),
+      Number(hour) - VIETNAM_UTC_OFFSET_HOURS,
+      Number(minute),
+      Number(second)
+    )
   )
 }
 
@@ -59,7 +67,7 @@ export function formatPetDateTime(value?: string) {
   const match = DATE_TIME_PATTERN.exec(value)
   if (match) {
     const [, year, month, day, hour, minute, second] = match
-    return dateTimeFormatter.format(buildUtcDateTime(year, month, day, hour, minute, second))
+    return dateTimeFormatter.format(buildVietnamDateTime(year, month, day, hour, minute, second))
   }
 
   const date = parseBrowserDate(value)

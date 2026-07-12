@@ -328,6 +328,7 @@
       "detail": {
         "assignedAt": "Phân công",
         "assignedStaffs": "Staff trong lịch",
+        "attendanceStatus": "Trạng thái chấm công",
         "checkIn": "Check-in",
         "checkOut": "Check-out",
         "createdAt": "Ngày tạo",
@@ -425,6 +426,12 @@
         "FULL_DAY": "Cả ngày",
         "MORNING": "Ca sáng"
       },
+      "attendanceStatuses": {
+        "ABSENT": "Vắng mặt",
+        "LEAVE": "Nghỉ phép",
+        "LATE": "Trễ giờ",
+        "ON_TIME": "Đúng giờ"
+      },
       "stats": {
         "assigned": "Staff đã phân công trên trang",
         "page": "Trang hiện tại",
@@ -442,10 +449,8 @@
         "SHIPPER": "Shipper"
       },
       "statuses": {
-        "ABSENT": "Vắng mặt",
         "CANCELLED": "Đã hủy",
         "COMPLETED": "Hoàn thành",
-        "LEAVE": "Nghỉ phép",
         "SCHEDULED": "Đã lên lịch",
         "WORKING": "Đang làm"
       },

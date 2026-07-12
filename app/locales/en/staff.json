@@ -49,8 +49,6 @@
     "nav": {
       "orders": "Manage Orders",
       "attendanceHistory": "Attendance history",
-      "shiftRequest": "Create shift request",
-      "violations": "View violations",
       "weeklySchedule": "Weekly shifts",
       "disposalRequest": "Disposal request",
       "inventory": "Inventory management"
@@ -80,8 +78,10 @@
     "detail": {
       "actionsTitle": "Check-in / Check-out",
       "actionHint": "The system will validate the shift status before recording check-in or check-out.",
+      "attendanceStatus": "Attendance status",
       "assignedAt": "Assigned at",
       "checkInAt": "Check-in time",
+      "checkInWindow": "Check-in opens {{before}} minutes before the shift. The first {{onTime}} minutes after start count as on time; after that it is late and closes after {{close}} minutes.",
       "checkOutAt": "Check-out time",
       "date": "Work date",
       "empty": "Select a shift in the weekly board to view details.",
@@ -99,8 +99,14 @@
     },
     "errors": {
       "badRequest": "This action could not be processed. Please check the shift again.",
+      "checkInAlreadyDone": "You have already checked in for this shift.",
+      "checkInClosed": "The check-in window has closed. This shift will be recorded as absent.",
       "checkInNotAllowed": "You can only check in when the shift is scheduled.",
-      "checkOutNotAllowed": "You can only check out when the shift is working.",
+      "checkInTooEarly": "It is not time to check in yet. Please come back during the allowed window.",
+      "checkOutAlreadyDone": "You have already checked out for this shift.",
+      "checkOutNotAllowed": "This shift cannot be checked out right now.",
+      "checkOutRequiresCheckIn": "You can only check out after you have checked in for this shift.",
+      "checkOutTooEarly": "It is not time to check out yet. You can only check out after the shift end time.",
       "forbidden": "You do not have permission to update this shift.",
       "invalidDateRange": "Invalid date range. The end date cannot be before the start date.",
       "network": "Cannot connect to the server. Please try again.",
@@ -128,6 +134,12 @@
       "FULL_DAY": "Full day",
       "MORNING": "Morning"
     },
+    "attendanceStatuses": {
+      "ABSENT": "Absent",
+      "LEAVE": "On leave",
+      "LATE": "Late",
+      "ON_TIME": "On time"
+    },
     "stats": {
       "completed": "Completed",
       "scheduled": "Scheduled",
@@ -135,11 +147,9 @@
       "working": "Working"
     },
     "statuses": {
-      "ABSENT": "Absent",
       "ALL": "All",
       "CANCELLED": "Cancelled",
       "COMPLETED": "Completed",
-      "LEAVE": "On leave",
       "SCHEDULED": "Scheduled",
       "WORKING": "Working"
     },
@@ -264,55 +274,6 @@
       },
       "day5": {
         "dayLabel": "Mon, Oct 21"
-      }
-    }
-  },
-  "shiftRequest": {
-    "pageTitle": "Create Shift Request",
-    "pageSubtitle": "Fill in the details below to request a shift swap",
-    "heading": "Create Shift Request",
-    "description": "Fill in the details below to request a shift swap or find a replacement.",
-    "form": {
-      "shiftLabel": "Shift to swap",
-      "shiftPlaceholder": "Select a shift...",
-      "shiftOptions": {
-        "morning": "Morning: 08:00 - 14:00 | Thu, 24/10/2023 | Grooming",
-        "afternoon": "Afternoon: 14:00 - 20:00 | Fri, 25/10/2023 | Sales"
-      },
-      "reasonLabel": "Reason for swap",
-      "reasonPlaceholder": "Enter your reason in detail...",
-      "solutionLabel": "Replacement option",
-      "solutionOptions": {
-        "specific": "Swap directly with a colleague",
-        "open": "Post on bulletin board (Find a replacement)"
-      },
-      "colleagueLabel": "Select colleague",
-      "colleaguePlaceholder": "Search by name...",
-      "compensationLabel": "Compensation shift (Optional)",
-      "cancel": "Cancel",
-      "submit": "Submit request"
-    },
-    "recent": {
-      "title": "Recent Requests",
-      "viewAll": "View all",
-      "status": {
-        "pending": "Pending",
-        "approved": "Approved",
-        "rejected": "Rejected"
-      },
-      "items": {
-        "req1": {
-          "title": "Swap with: Nguyen Van A",
-          "shift": "Shift: Morning Oct 22"
-        },
-        "req2": {
-          "title": "Posted on bulletin",
-          "shift": "Shift: Afternoon Oct 18"
-        },
-        "req3": {
-          "title": "Swap with: Tran Thi B",
-          "shift": "Shift: Morning Oct 10"
-        }
       }
     }
   },
