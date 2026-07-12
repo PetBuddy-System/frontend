@@ -2,30 +2,39 @@ import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
 
-const SERVICE_STATS = [
-  { key: 'total', icon: 'medical_services', value: '24' },
-  { key: 'active', icon: 'check_circle', value: '18' },
-  { key: 'promotions', icon: 'campaign', value: '06' }
-] as const
+export interface AdminServicesStatsGridProps {
+  stats: {
+    total: number
+    active: number
+    promotions: number
+  }
+}
 
-export function AdminServicesStatsGrid() {
+const SERVICE_STAT_ICONS = {
+  total: 'medical_services',
+  active: 'check_circle',
+  promotions: 'pause_circle'
+} as const
+
+export function AdminServicesStatsGrid({ stats }: AdminServicesStatsGridProps) {
   const { t } = useTranslation('admin')
 
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-      {SERVICE_STATS.map((stat) => (
-        <article
-          key={stat.key}
-          className='flex items-center gap-5 rounded-xl border border-border bg-card p-5 shadow-sm'
-        >
+      {Object.entries(stats).map(([key, value]) => (
+        <article key={key} className='flex items-center gap-5 rounded-xl border border-border bg-card p-5 shadow-sm'>
           <div className='flex h-14 w-14 items-center justify-center rounded-full bg-muted text-primary'>
-            <MaterialIcon name={stat.icon} filled className='text-3xl' />
+            <MaterialIcon
+              name={SERVICE_STAT_ICONS[key as keyof typeof SERVICE_STAT_ICONS]}
+              filled
+              className='text-3xl'
+            />
           </div>
           <div>
             <p className='text-xs font-bold uppercase tracking-wide text-muted-foreground'>
-              {t(`serviceManagement.stats.${stat.key}`)}
+              {t(`serviceManagement.stats.${key}`)}
             </p>
-            <p className='font-display text-2xl font-bold text-card-foreground'>{stat.value}</p>
+            <p className='font-display text-2xl font-bold text-card-foreground'>{String(value).padStart(2, '0')}</p>
           </div>
         </article>
       ))}

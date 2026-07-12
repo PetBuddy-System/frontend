@@ -10,7 +10,7 @@ const MAIN_NAV = [
   { key: 'profile', icon: 'person', href: '/profile' },
   { key: 'pets', icon: 'pets', href: '/profile/pets' },
   { key: 'orders', icon: 'shopping_bag', href: '/profile/orders' },
-  { key: 'services', icon: 'calendar_today', href: '/profile/services' },
+  { key: 'services', icon: 'calendar_today', href: '/my-bookings' },
   { key: 'returns', icon: 'assignment_return', href: '/profile/returns' },
   { key: 'addresses', icon: 'location_on', href: '#' }
 ] as const

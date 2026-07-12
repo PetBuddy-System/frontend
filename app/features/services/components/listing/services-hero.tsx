@@ -13,13 +13,13 @@ export function ServicesHero() {
         <div className='w-full md:w-1/2'>
           <h1 className='font-display text-3xl font-bold text-white md:text-5xl'>{t('hero.title')}</h1>
           <p className='mt-4 max-w-md text-base text-white/80 md:text-lg'>{t('hero.subtitle')}</p>
-          <button
-            type='button'
+          <a
+            href='/booking'
             className='mt-8 flex w-max items-center gap-2 rounded-full bg-secondary px-8 py-4 text-sm font-semibold text-secondary-foreground shadow-lg transition-colors hover:opacity-90'
           >
-            <MaterialIcon name='calendar_month' className='text-[20px]' />
-            {t('hero.cta')}
-          </button>
+             <MaterialIcon name='calendar_month' className='text-[20px]' />
+             {t('hero.cta')}
+          </a>
         </div>
       </div>
     </section>

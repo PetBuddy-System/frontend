@@ -1,17 +1,185 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { MaterialIcon } from '~/shared/ui'
+import { Button, MaterialIcon } from '~/shared/ui'
 
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
+import { AdminFooter } from '../components/layout/admin-footer'
 import { AdminCreateServiceModal } from '../components/services/admin-create-service-modal'
 import { AdminServicesStatsGrid } from '../components/services/admin-services-stats-grid'
 import { AdminServicesTable } from '../components/services/admin-services-table'
+import {
+  createCatalogApi,
+  createTimeSlotApi,
+  fetchCatalogsApi,
+  fetchTimeSlotsByCatalogApi,
+  updateCatalogApi,
+  updateCatalogStatusApi,
+  toggleTimeSlotActiveApi
+} from '../services/catalog'
+import {
+  mapAdminCatalogToCatalogRequest,
+  mapCatalogResponseToAdminCatalog,
+  mapTimeSlotResponseToAdminTimeSlot,
+  type AdminCatalog,
+  type AdminTimeSlot,
+  type CatalogStatus,
+  type CatalogRequest,
+  type TimeSlotRequest
+} from '../lib/catalog-management'
 
 export function AdminServicesPage() {
   const { t } = useTranslation('admin')
   const [isCreateServiceOpen, setIsCreateServiceOpen] = useState(false)
+  const [catalogs, setCatalogs] = useState<AdminCatalog[]>([])
+  const [timeSlotsByCatalogId, setTimeSlotsByCatalogId] = useState<Record<number, AdminTimeSlot[]>>({})
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadCatalogs() {
+      try {
+        const response = await fetchCatalogsApi()
+        const mappedCatalogs = response.data.map(mapCatalogResponseToAdminCatalog)
+
+        if (isMounted) {
+          setCatalogs(mappedCatalogs)
+          setErrorMessage(null)
+        }
+      } catch (error) {
+        if (isMounted) {
+          setErrorMessage(error instanceof Error ? error.message : t('serviceManagement.feedback.loadFailed'))
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    void loadCatalogs()
+
+    return () => {
+      isMounted = false
+    }
+  }, [t])
+
+  const serviceStats = useMemo(() => {
+    const activeCount = catalogs.filter((catalog) => catalog.status === 'AVAILABLE').length
+    const pausedCount = catalogs.filter((catalog) => catalog.status === 'UNAVAILABLE').length
+
+    return {
+      total: catalogs.length,
+      active: activeCount,
+      promotions: pausedCount
+    }
+  }, [catalogs])
+
+  async function handleCreateCatalog(payload: CatalogRequest) {
+    setIsSaving(true)
+    try {
+      const response = await createCatalogApi(payload)
+      const createdCatalog = mapCatalogResponseToAdminCatalog(response.data)
+      setCatalogs((currentCatalogs) => [createdCatalog, ...currentCatalogs])
+      setIsCreateServiceOpen(false)
+      setErrorMessage(null)
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t('serviceManagement.feedback.saveFailed'))
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  async function handleUpdateCatalog(service: AdminCatalog) {
+    setIsSaving(true)
+    try {
+      const response = await updateCatalogApi(service.catalogId, mapAdminCatalogToCatalogRequest(service))
+      const updatedCatalog = mapCatalogResponseToAdminCatalog(response.data)
+      setCatalogs((currentCatalogs) =>
+        currentCatalogs.map((catalog) => (catalog.catalogId === updatedCatalog.catalogId ? updatedCatalog : catalog))
+      )
+      setErrorMessage(null)
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t('serviceManagement.feedback.saveFailed'))
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  async function handleToggleCatalogStatus(service: AdminCatalog) {
+    const nextStatus: CatalogStatus = service.status === 'AVAILABLE' ? 'UNAVAILABLE' : 'AVAILABLE'
+
+    setIsSaving(true)
+    try {
+      const response = await updateCatalogStatusApi(service.catalogId, nextStatus)
+      const updatedCatalog = mapCatalogResponseToAdminCatalog(response.data)
+      setCatalogs((currentCatalogs) =>
+        currentCatalogs.map((catalog) => (catalog.catalogId === updatedCatalog.catalogId ? updatedCatalog : catalog))
+      )
+      setErrorMessage(null)
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t('serviceManagement.feedback.saveFailed'))
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  async function handleLoadTimeSlots(catalogId: number) {
+    if (timeSlotsByCatalogId[catalogId]) {
+      return
+    }
+
+    try {
+      const response = await fetchTimeSlotsByCatalogApi(catalogId)
+      setTimeSlotsByCatalogId((currentSlots) => ({
+        ...currentSlots,
+        [catalogId]: response.data.map(mapTimeSlotResponseToAdminTimeSlot)
+      }))
+      setErrorMessage(null)
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t('serviceManagement.feedback.loadSlotsFailed'))
+    }
+  }
+
+  async function handleCreateTimeSlot(payload: TimeSlotRequest) {
+    setIsSaving(true)
+    try {
+      const response = await createTimeSlotApi(payload)
+      const createdSlot = mapTimeSlotResponseToAdminTimeSlot(response.data)
+      setTimeSlotsByCatalogId((currentSlots) => ({
+        ...currentSlots,
+        [createdSlot.catalogId]: [...(currentSlots[createdSlot.catalogId] ?? []), createdSlot]
+      }))
+      setErrorMessage(null)
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t('serviceManagement.feedback.saveFailed'))
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  async function handleToggleTimeSlot(slot: AdminTimeSlot) {
+    setIsSaving(true)
+    try {
+      const response = await toggleTimeSlotActiveApi(slot.timeSlotId)
+      const updatedSlot = mapTimeSlotResponseToAdminTimeSlot(response.data)
+      setTimeSlotsByCatalogId((currentSlots) => ({
+        ...currentSlots,
+        [updatedSlot.catalogId]: (currentSlots[updatedSlot.catalogId] ?? []).map((currentSlot) =>
+          currentSlot.timeSlotId === updatedSlot.timeSlotId ? updatedSlot : currentSlot
+        )
+      }))
+      setErrorMessage(null)
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t('serviceManagement.feedback.saveFailed'))
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -27,23 +195,46 @@ export function AdminServicesPage() {
                 </h1>
                 <p className='mt-2 text-muted-foreground'>{t('serviceManagement.subtitle')}</p>
               </div>
-              <button
+              <Button
                 type='button'
+                variant='secondary'
+                size='lg'
                 onClick={() => setIsCreateServiceOpen(true)}
-                className='inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-secondary px-6 text-sm font-bold text-secondary-foreground shadow-sm transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring'
+                className='rounded-xl font-bold shadow-sm hover:shadow-md'
               >
                 <MaterialIcon name='add' className='text-lg' />
                 <span>{t('serviceManagement.actions.add')}</span>
-              </button>
+              </Button>
             </section>
 
-            <AdminServicesStatsGrid />
-            <AdminServicesTable />
+            {errorMessage ? (
+              <div className='rounded-xl border border-destructive bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive'>
+                {errorMessage}
+              </div>
+            ) : null}
+            <AdminServicesStatsGrid stats={serviceStats} />
+            <AdminServicesTable
+              services={catalogs}
+              timeSlotsByCatalogId={timeSlotsByCatalogId}
+              isLoading={isLoading}
+              isSaving={isSaving}
+              onUpdateCatalog={handleUpdateCatalog}
+              onToggleCatalogStatus={handleToggleCatalogStatus}
+              onLoadTimeSlots={handleLoadTimeSlots}
+              onCreateTimeSlot={handleCreateTimeSlot}
+              onToggleTimeSlot={handleToggleTimeSlot}
+            />
+            <AdminFooter />
           </div>
         </main>
       </div>
 
-      <AdminCreateServiceModal isOpen={isCreateServiceOpen} onClose={() => setIsCreateServiceOpen(false)} />
+      <AdminCreateServiceModal
+        isOpen={isCreateServiceOpen}
+        isSaving={isSaving}
+        onClose={() => setIsCreateServiceOpen(false)}
+        onSubmit={handleCreateCatalog}
+      />
     </div>
   )
 }
