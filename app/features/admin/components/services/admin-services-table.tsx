@@ -27,6 +27,7 @@ export interface AdminServicesTableProps {
   onToggleCatalogStatus: (service: AdminCatalog) => void | Promise<void>
   onLoadTimeSlots: (catalogId: number) => void | Promise<void>
   onCreateTimeSlot: (payload: TimeSlotRequest) => void | Promise<void>
+  onUpdateTimeSlot: (timeSlotId: number, payload: any) => void | Promise<void>
   onToggleTimeSlot: (slot: AdminTimeSlot) => void | Promise<void>
 }
 
@@ -37,9 +38,8 @@ const STATUS_CLASS_BY_STATUS: Record<CatalogStatus, string> = {
 }
 
 const CATEGORY_CLASS_BY_TYPE: Record<CatalogType, string> = {
-  GROOMING: 'bg-primary/10 text-primary',
-  HOTEL: 'bg-secondary text-secondary-foreground',
-  SPA: 'bg-tertiary text-tertiary-foreground'
+  AT_STORE: 'bg-primary/10 text-primary',
+  AT_HOME: 'bg-secondary text-secondary-foreground'
 }
 
 const formatCurrency = (value: number) => new Intl.NumberFormat('vi-VN').format(value)
@@ -54,6 +54,7 @@ export function AdminServicesTable({
   onToggleCatalogStatus,
   onLoadTimeSlots,
   onCreateTimeSlot,
+  onUpdateTimeSlot,
   onToggleTimeSlot
 }: AdminServicesTableProps) {
   const { t } = useTranslation('admin')
@@ -63,6 +64,7 @@ export function AdminServicesTable({
   const [detailMode, setDetailMode] = useState<'view' | 'edit'>('view')
   const [scheduleService, setScheduleService] = useState<AdminCatalog | null>(null)
   const [isCreateSlotOpen, setIsCreateSlotOpen] = useState(false)
+  const [editingSlot, setEditingSlot] = useState<AdminTimeSlot | null>(null)
 
   const filteredServices = useMemo(() => {
     const normalizedSearchTerm = searchTerm.trim().toLowerCase()
@@ -256,17 +258,6 @@ export function AdminServicesTable({
               total: services.length
             })}
           </p>
-          <div className='flex gap-2'>
-            <Button type='button' size='icon' variant='outline' aria-label={t('serviceManagement.pagination.previous')}>
-              <MaterialIcon name='chevron_left' className='text-lg' />
-            </Button>
-            <Button type='button' size='icon' variant='primary'>
-              1
-            </Button>
-            <Button type='button' size='icon' variant='outline' aria-label={t('serviceManagement.pagination.next')}>
-              <MaterialIcon name='chevron_right' className='text-lg' />
-            </Button>
-          </div>
         </div>
       </section>
 
@@ -286,6 +277,7 @@ export function AdminServicesTable({
         isSaving={isSaving}
         onClose={() => setScheduleService(null)}
         onCreateSlot={() => setIsCreateSlotOpen(true)}
+        onEditSlot={(slot) => setEditingSlot(slot)}
         onToggleSlot={onToggleTimeSlot}
       />
       <CreateTimeSlotModal
@@ -296,6 +288,15 @@ export function AdminServicesTable({
         onSubmit={(payload) => {
           void onCreateTimeSlot(payload)
           setIsCreateSlotOpen(false)
+        }}
+      />
+      <EditTimeSlotModal
+        slot={editingSlot}
+        isSaving={isSaving}
+        onClose={() => setEditingSlot(null)}
+        onSubmit={(timeSlotId, payload) => {
+          void onUpdateTimeSlot(timeSlotId, payload)
+          setEditingSlot(null)
         }}
       />
     </>
@@ -472,6 +473,7 @@ function WeeklyScheduleModal({
   isSaving,
   onClose,
   onCreateSlot,
+  onEditSlot,
   onToggleSlot
 }: {
   service: AdminCatalog | null
@@ -479,6 +481,7 @@ function WeeklyScheduleModal({
   isSaving: boolean
   onClose: () => void
   onCreateSlot: () => void
+  onEditSlot: (slot: AdminTimeSlot) => void
   onToggleSlot: (slot: AdminTimeSlot) => void | Promise<void>
 }) {
   const { t } = useTranslation('admin')
@@ -523,7 +526,9 @@ function WeeklyScheduleModal({
         <div className='min-h-0 flex-1 overflow-y-auto p-5'>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-7'>
             {WEEK_DAYS.map((day) => {
-              const daySlots = slots.filter((slot) => slot.dayOfWeek === day)
+              const daySlots = slots
+                .filter((slot) => slot.dayOfWeek === day)
+                .sort((a, b) => a.startTime.localeCompare(b.startTime))
 
               return (
                 <article key={day} className='min-h-44 rounded-xl border border-border bg-muted/40 p-3'>
@@ -535,25 +540,37 @@ function WeeklyScheduleModal({
                       daySlots.map((slot) => (
                         <div
                           key={slot.timeSlotId}
-                          className='flex items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 py-2'
+                          className='flex flex-col gap-2 rounded-lg border border-border bg-card p-3 shadow-sm'
                         >
-                          <span className='font-mono text-sm font-bold text-card-foreground'>
-                            {formatTime(slot.startTime)}
-                          </span>
-                          <button
-                            type='button'
-                            onClick={() => void onToggleSlot(slot)}
-                            disabled={isSaving}
-                            className={cn(
-                              'relative h-6 w-11 rounded-full transition-colors disabled:opacity-50 after:absolute after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-card after:transition-all',
-                              slot.isActive ? 'bg-success after:right-0.5' : 'bg-muted-foreground after:left-0.5'
-                            )}
-                            aria-label={
-                              slot.isActive
-                                ? t('serviceManagement.schedule.active')
-                                : t('serviceManagement.schedule.inactive')
-                            }
-                          />
+                          <div className='flex items-center justify-between'>
+                            <span className='font-mono text-sm font-bold text-card-foreground'>
+                              {formatTime(slot.startTime)}
+                            </span>
+                            <button
+                              type='button'
+                              onClick={() => void onToggleSlot(slot)}
+                              disabled={isSaving}
+                              className={cn(
+                                'relative h-6 w-11 rounded-full transition-colors disabled:opacity-50 after:absolute after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-card after:transition-all',
+                                slot.isActive ? 'bg-success after:right-0.5' : 'bg-muted-foreground after:left-0.5'
+                              )}
+                              aria-label={
+                                slot.isActive
+                                  ? t('serviceManagement.schedule.active')
+                                  : t('serviceManagement.schedule.inactive')
+                              }
+                            />
+                          </div>
+                          <div className='flex justify-end border-t border-border/50 pt-2'>
+                            <button
+                              type='button'
+                              onClick={() => onEditSlot(slot)}
+                              className='flex items-center gap-1 text-xs font-semibold text-primary hover:underline'
+                            >
+                              <MaterialIcon name='edit' className='text-sm' />
+                              Sửa giờ
+                            </button>
+                          </div>
                         </div>
                       ))
                     ) : (
@@ -644,6 +661,97 @@ function CreateTimeSlotModal({
               name='isActive'
               type='checkbox'
               defaultChecked
+              className='h-5 w-5 rounded border-border text-primary focus:ring-ring'
+            />
+          </label>
+          <div className='flex justify-end gap-2 pt-2'>
+            <Button type='button' variant='outline' onClick={onClose}>
+              {t('serviceManagement.timeSlot.cancel')}
+            </Button>
+            <Button type='submit' disabled={isSaving}>
+              <MaterialIcon name='save' />
+              {isSaving ? t('serviceManagement.feedback.saving') : t('serviceManagement.timeSlot.save')}
+            </Button>
+          </div>
+        </form>
+      </section>
+    </div>
+  )
+}
+
+function EditTimeSlotModal({
+  slot,
+  isSaving,
+  onClose,
+  onSubmit
+}: {
+  slot: AdminTimeSlot | null
+  isSaving: boolean
+  onClose: () => void
+  onSubmit: (timeSlotId: number, payload: { dayOfWeek: string; startTime: string; isActive: boolean }) => void
+}) {
+  const { t } = useTranslation('admin')
+
+  if (!slot) {
+    return null
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!slot) {
+      return
+    }
+
+    const formData = new FormData(event.currentTarget)
+    const timeVal = String(formData.get('startTime') ?? '08:00')
+    const startTimeFormatted = timeVal.length === 5 ? `${timeVal}:00` : timeVal
+
+    onSubmit(slot.timeSlotId, {
+      dayOfWeek: String(formData.get('dayOfWeek') ?? slot.dayOfWeek),
+      startTime: startTimeFormatted,
+      isActive: formData.get('isActive') === 'on'
+    })
+  }
+
+  const currentStartTime = slot.startTime.slice(0, 5)
+
+  return (
+    <div className='fixed inset-0 z-[60] flex items-center justify-center p-4'>
+      <button
+        type='button'
+        aria-label={t('serviceManagement.timeSlot.close')}
+        className='absolute inset-0 bg-foreground/40 backdrop-blur-sm'
+        onClick={onClose}
+      />
+      <section className='relative w-full max-w-xl overflow-hidden rounded-xl border border-border bg-card shadow-xl'>
+        <header className='border-b border-border p-5'>
+          <p className='text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>TimeSlot ID: #{slot.timeSlotId}</p>
+          <h2 className='font-display text-2xl font-bold text-card-foreground'>
+            Chỉnh sửa khung giờ
+          </h2>
+        </header>
+        <form className='space-y-4 p-5' onSubmit={handleSubmit}>
+          <SelectField
+            name='dayOfWeek'
+            label={t('serviceManagement.timeSlot.fields.dayOfWeek')}
+            defaultValue={slot.dayOfWeek}
+            options={[...WEEK_DAYS]}
+          />
+          <Field
+            name='startTime'
+            label={t('serviceManagement.timeSlot.fields.startTime')}
+            defaultValue={currentStartTime}
+            type='time'
+            required
+          />
+          <label className='flex items-center justify-between gap-3 rounded-lg border border-border bg-muted p-4'>
+            <span className='font-semibold text-card-foreground'>
+              {t('serviceManagement.timeSlot.fields.isActive')}
+            </span>
+            <input
+              name='isActive'
+              type='checkbox'
+              defaultChecked={slot.isActive}
               className='h-5 w-5 rounded border-border text-primary focus:ring-ring'
             />
           </label>

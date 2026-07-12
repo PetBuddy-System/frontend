@@ -551,16 +551,17 @@
       }
     },
     "weightRanges": {
-      "SMALL_0_5KG": "Dưới 5kg",
-      "MEDIUM_5_15KG": "Từ 5kg đến 15kg",
-      "LARGE_15_30KG": "Từ 15kg đến 30kg",
-      "GIANT_30KG_PLUS": "Trên 30kg"
+      "EXTRA_SMALL": "Dưới 5kg",
+      "SMALL": "Từ 5kg đến 8kg",
+      "MEDIUM": "Từ 8kg đến 12kg",
+      "LARGE": "Từ 12kg đến 18kg",
+      "EXTRA_LARGE": "Từ 18kg đến 25kg",
+      "EXTRA_EXTRA_LARGE": "Trên 25kg"
     },
     "searchPlaceholder": "Tìm tên dịch vụ hoặc mã catalog...",
     "catalogTypes": {
-      "SPA": "Spa",
-      "GROOMING": "Grooming",
-      "HOTEL": "Khách sạn"
+      "AT_STORE": "Tại tiệm",
+      "AT_HOME": "Tại nhà"
     },
     "catalogStatus": {
       "AVAILABLE": "Đang mở",
