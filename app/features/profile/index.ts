@@ -1,6 +1,7 @@
 export { ProfilePage } from './pages/profile-page'
 export { ProfileOrdersPage } from './pages/profile-orders-page'
 export { ProfileServicesPage } from './pages/profile-services-page'
+export { MyBookingsPage } from './pages/my-bookings-page'
 export { ProfileOrderDetailPage } from './pages/profile-order-detail-page'
 export { ProfilePetCreatePage } from './pages/profile-pet-create-page'
 export { ProfilePetDetailPage } from './pages/profile-pet-detail-page'

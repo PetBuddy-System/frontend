@@ -381,6 +381,122 @@
       "confirm": "Confirm booking"
     }
   },
+  "bookingFlow": {
+    "eyebrow": "Checkout & booking",
+    "title": "Book spa and grooming",
+    "subtitle": "Fill in your contact details, choose service details, review the booking, and pay the 20% deposit.",
+    "steps": {
+      "step": "Step {{step}}",
+      "items": {
+        "1": "Info & pets",
+        "2": "Service",
+        "3": "Date & time",
+        "4": "Checkout"
+      }
+    },
+    "capacity": {
+      "title": "Slot capacity",
+      "value": "{{selected}}/{{max}} pets selected",
+      "progress": "Pets in this booking"
+    },
+    "service": {
+      "title": "Select service",
+      "subtitle": "Catalog data is loaded from the backend service catalog.",
+      "duration": "{{minutes}} minutes"
+    },
+    "pet": {
+      "title": "Select pets",
+      "subtitle": "Pet profiles are loaded from your account.",
+      "profile": "{{breed}}, {{weight}}kg",
+      "empty": "No pet profiles were found for this account."
+    },
+    "time": {
+      "title": "Select date and time",
+      "subtitle": "Only active time slots for the chosen service and date are shown.",
+      "dateLabel": "Appointment date",
+      "duration": "{{minutes}} minutes",
+      "empty": "No active time slots are available for this service on the selected date."
+    },
+    "review": {
+      "title": "Review and pay",
+      "subtitle": "Review your booking like checkout, then pay the deposit securely by card.",
+      "customerSection": "Customer",
+      "serviceSection": "Service booking",
+      "created": "Booking {{code}} is ready for payment.",
+      "createdHint": "Keep this page open until the card payment succeeds."
+    },
+    "summary": {
+      "title": "Booking summary",
+      "bookingType": "Service type",
+      "service": "Service",
+      "pets": "Pets",
+      "schedule": "Schedule",
+      "subtotal": "Subtotal",
+      "deposit": "20% deposit",
+      "remaining": "Remaining",
+      "empty": "Not selected",
+      "depositNote": "The booking uses one shared time slot for all selected pets. At-home bookings include the service address."
+    },
+    "myBookings": {
+      "title": "Recent bookings",
+      "empty": "No bookings yet."
+    },
+    "actions": {
+      "back": "Back",
+      "next": "Continue",
+      "checkout": "Checkout",
+      "submit": "Create booking",
+      "submitting": "Creating booking..."
+    },
+    "toast": {
+      "loadError": "Could not load booking data.",
+      "timeSlotLoadError": "Could not load available time slots.",
+      "submitError": "Could not create booking.",
+      "success": "Booking created successfully.",
+      "paymentSuccess": "Deposit paid successfully.",
+      "selectService": "Please select a service first.",
+      "selectPet": "Please select at least one pet.",
+      "selectTime": "Please select an appointment date and time slot.",
+      "customerMissing": "Please enter customer name and phone number.",
+      "addressMissing": "Please enter the at-home service address.",
+      "slotLimit": "A time slot can include up to 5 pets.",
+      "paymentSecretMissing": "The booking was created but no Stripe payment secret was returned.",
+      "retryPaymentFailed": "Could not create a new payment attempt.",
+      "cardElementMissing": "Could not load the card input.",
+      "cardholderMissing": "Please enter the cardholder name.",
+      "paymentFailed": "Payment failed. Please try again.",
+      "paymentIncomplete": "Payment is not complete yet. Please try again."
+    },
+    "bookingTypes": {
+      "AT_STORE": "At store",
+      "AT_HOME": "At home"
+    },
+    "customer": {
+      "title": "Customer information",
+      "subtitle": "Choose where the service happens first, then provide the required contact details.",
+      "name": "Customer name",
+      "phone": "Phone number",
+      "address": "Service address",
+      "note": "Booking note"
+    },
+    "schedule": {
+      "title": "Select pets, date and time",
+      "subtitle": "Available slots are loaded by service and selected date."
+    },
+    "payment": {
+      "title": "Pay secure deposit",
+      "bookingReady": "Booking created",
+      "cardholder": "Cardholder name",
+      "cardInfo": "Credit or debit card",
+      "payDeposit": "Pay deposit {{amount}}",
+      "processing": "Processing payment...",
+      "successTitle": "Payment successful",
+      "successDescription": "Your deposit for booking {{code}} has been paid successfully.",
+      "failedTitle": "Payment failed",
+      "retry": "Retry payment",
+      "retrying": "Creating new payment..."
+    }
+  },
   "gallery": {
     "title": "Adorable Moments",
     "images": {

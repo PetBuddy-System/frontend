@@ -228,7 +228,16 @@
     "actions": {
       "create": "Tạo lịch hẹn mới",
       "edit": "Chỉnh sửa lịch hẹn",
+      "openActions": "Mở thao tác lịch hẹn",
+      "refresh": "Làm mới",
       "view": "Xem lịch hẹn"
+    },
+    "actionsByStatus": {
+      "ACCEPTED": "Nhận lịch",
+      "IN_PROGRESS": "Bắt đầu dịch vụ",
+      "READY_FOR_PICKUP": "Báo sẵn sàng đón",
+      "COMPLETED": "Hoàn thành lịch",
+      "CANCELLED": "Hủy lịch"
     },
     "pagination": {
       "label": "Phân trang lịch đặt",
@@ -250,7 +259,15 @@
       "cancelled": "Đã hủy",
       "completed": "Đã xong",
       "confirmed": "Đã xác nhận",
-      "pending": "Đang chờ"
+      "pending": "Đang chờ",
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "FAILED": "Thanh toán lỗi",
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "ACCEPTED": "Đã nhận",
+      "IN_PROGRESS": "Đang thực hiện",
+      "READY_FOR_PICKUP": "Sẵn sàng đón",
+      "COMPLETED": "Hoàn thành",
+      "CANCELLED": "Đã hủy"
     },
     "subtitle": "Theo dõi và điều phối lịch hẹn chăm sóc thú cưng.",
     "table": {
@@ -261,8 +278,10 @@
         "dateTime": "Ngày & giờ",
         "pet": "Thú cưng",
         "service": "Dịch vụ",
-        "status": "Trạng thái"
+        "status": "Trạng thái",
+        "deposit": "Tiền cọc"
       },
+      "emptyValue": "—",
       "rows": {
         "cj9915": {
           "customer": "Hoàng Kim Yến",
@@ -280,9 +299,46 @@
           "customer": "Nguyễn Văn An",
           "pet": "Bơ (Poodle)"
         }
-      }
+      },
+      "remaining": "Còn lại {{value}}"
     },
     "title": "Quản lý lịch đặt dịch vụ",
+    "tabs": {
+      "ALL": "Tất cả",
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "FAILED": "Thanh toán lỗi",
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "ACCEPTED": "Đã nhận",
+      "IN_PROGRESS": "Đang thực hiện",
+      "READY_FOR_PICKUP": "Sẵn sàng đón",
+      "COMPLETED": "Hoàn thành",
+      "CANCELLED": "Đã hủy"
+    },
+    "filters": {
+      "status": "Trạng thái lịch",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "clear": "Xóa lọc"
+    },
+    "feedback": {
+      "loadFailed": "Không thể tải danh sách booking.",
+      "detailFailed": "Không thể tải chi tiết booking.",
+      "updateFailed": "Không thể cập nhật trạng thái booking.",
+      "updateSuccess": "Đã cập nhật trạng thái booking.",
+      "emptyTitle": "Không tìm thấy booking",
+      "emptyText": "Thử chọn tab trạng thái khác hoặc điều chỉnh khoảng ngày."
+    },
+    "cancelModal": {
+      "close": "Đóng hộp thoại hủy lịch",
+      "title": "Hủy booking",
+      "subtitle": "Nhập lý do hủy cho booking {{code}}.",
+      "reasonLabel": "Lý do hủy",
+      "reasonPlaceholder": "Nhập lý do hủy booking...",
+      "reasonRequired": "Vui lòng nhập lý do hủy.",
+      "keep": "Giữ lịch",
+      "confirm": "Hủy lịch",
+      "submitting": "Đang hủy..."
+    },
     "toolbar": {
       "customerLabel": "Tìm kiếm khách hàng",
       "dateLabel": "Khoảng ngày",
@@ -296,6 +352,32 @@
         "earCare": "Vệ sinh tai",
         "grooming": "Cắt tỉa lông"
       }
+    },
+    "bookingTypes": {
+      "IN_STORE": "Tại cửa hàng",
+      "AT_HOME": "Tại nhà"
+    },
+    "detail": {
+      "close": "Đóng chi tiết booking",
+      "title": "Chi tiết booking dịch vụ",
+      "cancel": "Đóng",
+      "save": "Cập nhật trạng thái",
+      "paymentTitle": "Tóm tắt thanh toán",
+      "unassigned": "Chưa phân công",
+      "fields": {
+        "service": "Dịch vụ",
+        "pet": "Thú cưng",
+        "schedule": "Lịch hẹn",
+        "bookingType": "Hình thức booking",
+        "totalAmount": "Tổng tiền",
+        "depositAmount": "Tiền cọc",
+        "remainingAmount": "Còn lại",
+        "status": "Trạng thái",
+        "note": "Ghi chú",
+        "staff": "Nhân viên",
+        "address": "Địa chỉ",
+        "cancelReason": "Lý do hủy"
+      }
     }
   },
   "serviceManagement": {
@@ -303,7 +385,10 @@
       "add": "Thêm dịch vụ mới",
       "delete": "Xóa dịch vụ",
       "edit": "Chỉnh sửa dịch vụ",
-      "view": "Xem dịch vụ"
+      "view": "Xem dịch vụ",
+      "schedule": "Xem lịch tuần",
+      "activate": "Kích hoạt dịch vụ",
+      "deactivate": "Tạm ngừng dịch vụ"
     },
     "create": {
       "accent": {
@@ -322,7 +407,13 @@
         "category": "Danh mục",
         "description": "Mô tả dịch vụ",
         "name": "Tên dịch vụ",
-        "status": "Trạng thái hoạt động"
+        "status": "Trạng thái hoạt động",
+        "catalogType": "Loại catalog",
+        "petSpecies": "Loại áp dụng",
+        "price": "Giá tiền",
+        "weightRange": "Khoảng cân nặng",
+        "durationMinute": "Thời lượng phút",
+        "bufferTime": "Thời gian đệm"
       },
       "media": {
         "hint": "PNG, JPG tối đa 10MB",
@@ -352,7 +443,12 @@
         "text": "Hình ảnh chất lượng cao và mô tả chi tiết giúp khách hàng ra quyết định nhanh hơn và tăng tỷ lệ đặt lịch dịch vụ.",
         "title": "Mẹo nhỏ"
       },
-      "title": "Thêm dịch vụ mới"
+      "title": "Thêm dịch vụ mới",
+      "dto": {
+        "label": "Catalog DTO",
+        "title": "Sẵn sàng cho payload tạo/cập nhật",
+        "text": "Form này bám các trường catalogName, description, catalogType, petSpecies, price, weightRange, durationMinute, bufferTime và status."
+      }
     },
     "categories": {
       "grooming": "Grooming & Spa",
@@ -363,9 +459,10 @@
       "advanced": "Lọc nâng cao",
       "categories": {
         "all": "Tất cả",
-        "grooming": "Grooming & Spa",
+        "grooming": "Grooming",
         "hotel": "Khách sạn",
-        "vet": "Thú y"
+        "vet": "Thú y",
+        "spa": "Spa"
       },
       "status": {
         "active": "Đang hoạt động",
@@ -373,12 +470,22 @@
         "inactive": "Ngừng hoạt động"
       }
     },
+    "feedback": {
+      "empty": "Không tìm thấy dịch vụ.",
+      "loadFailed": "Không thể tải danh sách dịch vụ.",
+      "loadSlotsFailed": "Không thể tải time slot.",
+      "loading": "Đang tải dịch vụ...",
+      "saveFailed": "Không thể lưu thay đổi.",
+      "saving": "Đang lưu..."
+    },
     "pagination": {
-      "showing": "Hiển thị 1 - 10 trên tổng số 24 dịch vụ"
+      "showing": "Hiển thị {{shown}} trên {{total}} dịch vụ",
+      "previous": "Trang trước",
+      "next": "Trang sau"
     },
     "stats": {
       "active": "Đang hoạt động",
-      "promotions": "Khuyến mãi",
+      "promotions": "Tạm khóa",
       "total": "Tổng số dịch vụ"
     },
     "status": {
@@ -393,7 +500,8 @@
         "name": "Tên dịch vụ",
         "price": "Giá cơ bản",
         "status": "Trạng thái",
-        "updatedAt": "Cập nhật"
+        "updatedAt": "Cập nhật",
+        "duration": "Thời lượng"
       },
       "rows": {
         "bathTrimCombo": {
@@ -408,7 +516,8 @@
           "description": "Phòng đơn điều hòa",
           "name": "Khách sạn thú cưng VIP"
         }
-      }
+      },
+      "durationValue": "{{duration}} phút"
     },
     "title": "Quản lý dịch vụ",
     "pricing": {
@@ -440,6 +549,72 @@
           "title": "Cắt tỉa & tạo kiểu"
         }
       }
+    },
+    "weightRanges": {
+      "SMALL_0_5KG": "Dưới 5kg",
+      "MEDIUM_5_15KG": "Từ 5kg đến 15kg",
+      "LARGE_15_30KG": "Từ 15kg đến 30kg",
+      "GIANT_30KG_PLUS": "Trên 30kg"
+    },
+    "searchPlaceholder": "Tìm tên dịch vụ hoặc mã catalog...",
+    "catalogTypes": {
+      "SPA": "Spa",
+      "GROOMING": "Grooming",
+      "HOTEL": "Khách sạn"
+    },
+    "catalogStatus": {
+      "AVAILABLE": "Đang mở",
+      "UNAVAILABLE": "Tạm khóa",
+      "DISCONTINUED": "Ngừng kinh doanh"
+    },
+    "detail": {
+      "close": "Đóng chi tiết dịch vụ",
+      "viewTitle": "Chi tiết dịch vụ",
+      "editTitle": "Chỉnh sửa dịch vụ",
+      "cancel": "Đóng",
+      "save": "Lưu thay đổi",
+      "fields": {
+        "catalogName": "Tên dịch vụ",
+        "catalogType": "Loại catalog",
+        "petSpecies": "Loại áp dụng",
+        "weightRange": "Khoảng cân nặng",
+        "price": "Giá tiền",
+        "durationMinute": "Thời lượng phút",
+        "bufferTime": "Thời gian đệm",
+        "status": "Trạng thái",
+        "description": "Mô tả"
+      }
+    },
+    "schedule": {
+      "close": "Đóng lịch tuần",
+      "title": "Lịch time slot theo tuần",
+      "subtitle": "{{duration}} phút mỗi ca, nghỉ đệm {{buffer}} phút giữa các ca.",
+      "closeButton": "Đóng",
+      "createSlot": "Tạo time slot",
+      "active": "Khung giờ đang mở",
+      "inactive": "Khung giờ đang khóa",
+      "empty": "Chưa có slot"
+    },
+    "timeSlot": {
+      "close": "Đóng form time slot",
+      "title": "Tạo time slot",
+      "cancel": "Hủy",
+      "save": "Lưu time slot",
+      "fields": {
+        "catalog": "Catalog",
+        "dayOfWeek": "Thứ trong tuần",
+        "startTime": "Giờ bắt đầu",
+        "isActive": "Mở khung giờ này"
+      }
+    },
+    "weekDays": {
+      "MONDAY": "Thứ 2",
+      "TUESDAY": "Thứ 3",
+      "WEDNESDAY": "Thứ 4",
+      "THURSDAY": "Thứ 5",
+      "FRIDAY": "Thứ 6",
+      "SATURDAY": "Thứ 7",
+      "SUNDAY": "Chủ nhật"
     }
   },
   "topNav": {
@@ -850,5 +1025,11 @@
     "unexpectedError": "Có lỗi xảy ra. Vui lòng thử lại.",
     "emptyPlaceholder": "Để trống = không giới hạn",
     "emptyOrderPlaceholder": "Để trống = không yêu cầu"
+  },
+  "footer": {
+    "label": "Chọn trang quản trị",
+    "version": "PETBUDDY ADMIN v2.4.0",
+    "privacy": "Chính sách bảo mật",
+    "terms": "Điều khoản dịch vụ"
   }
 }
