@@ -1,7 +1,14 @@
-export const CATALOG_TYPES = ['SPA', 'GROOMING', 'HOTEL'] as const
+export const CATALOG_TYPES = ['AT_STORE', 'AT_HOME'] as const
 export const PET_SPECIES = ['DOG', 'CAT', 'ALL'] as const
-export const WEIGHT_RANGES = ['SMALL_0_5KG', 'MEDIUM_5_15KG', 'LARGE_15_30KG', 'GIANT_30KG_PLUS'] as const
-export const CATALOG_STATUSES = ['AVAILABLE', 'UNAVAILABLE', 'DISCONTINUED'] as const
+export const WEIGHT_RANGES = [
+  'EXTRA_SMALL',
+  'SMALL',
+  'MEDIUM',
+  'LARGE',
+  'EXTRA_LARGE',
+  'EXTRA_EXTRA_LARGE'
+] as const
+export const CATALOG_STATUSES = ['AVAILABLE', 'UNAVAILABLE'] as const
 export const WEEK_DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as const
 
 export type CatalogType = (typeof CATALOG_TYPES)[number]
@@ -79,13 +86,12 @@ export interface AdminTimeSlot {
 }
 
 const ICON_BY_CATALOG_TYPE: Record<CatalogType, string> = {
-  SPA: 'spa',
-  GROOMING: 'content_cut',
-  HOTEL: 'hotel'
+  AT_STORE: 'storefront',
+  AT_HOME: 'home_pin'
 }
 
 function coerceCatalogType(value: string): CatalogType {
-  return CATALOG_TYPES.includes(value as CatalogType) ? (value as CatalogType) : 'SPA'
+  return CATALOG_TYPES.includes(value as CatalogType) ? (value as CatalogType) : 'AT_STORE'
 }
 
 function coercePetSpecies(value: string): PetSpecies {
@@ -93,7 +99,7 @@ function coercePetSpecies(value: string): PetSpecies {
 }
 
 function coerceWeightRange(value: string): WeightRange {
-  return WEIGHT_RANGES.includes(value as WeightRange) ? (value as WeightRange) : 'SMALL_0_5KG'
+  return WEIGHT_RANGES.includes(value as WeightRange) ? (value as WeightRange) : 'SMALL'
 }
 
 function coerceCatalogStatus(value: string): CatalogStatus {

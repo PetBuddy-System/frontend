@@ -48,7 +48,7 @@ export function OrderProductList({ order, formatPrice }: OrderProductListProps) 
                   >
                     {detail.productName}
                   </button>
-                  {((detail.price && detail.unitPrice < detail.price) || (detail.salePrice && detail.price && detail.salePrice < detail.price)) && (
+                  {detail.salePrice != null && detail.salePrice < detail.unitPrice && (
                     <span className="bg-destructive/10 text-destructive text-[9px] font-bold px-1.5 py-0.5 rounded uppercase shrink-0">
                       {t('orderDetail.discountBadge', 'Giảm giá')}
                     </span>
@@ -59,13 +59,13 @@ export function OrderProductList({ order, formatPrice }: OrderProductListProps) 
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {t('orderDetail.unitPrice', 'Đơn giá')}:{' '}
-                  {((detail.price && detail.unitPrice < detail.price) || (detail.salePrice && detail.price && detail.salePrice < detail.price)) ? (
+                  {detail.salePrice != null && detail.salePrice < detail.unitPrice ? (
                     <>
                       <span className="line-through mr-1 text-[11px] text-muted-foreground">
-                        {formatPrice(detail.price ?? detail.unitPrice)}
+                        {formatPrice(detail.unitPrice)}
                       </span>
                       <span className="font-semibold text-foreground">
-                        {formatPrice(detail.unitPrice)}
+                        {formatPrice(detail.salePrice)}
                       </span>
                     </>
                   ) : (

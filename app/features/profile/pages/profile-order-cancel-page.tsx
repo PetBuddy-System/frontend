@@ -184,7 +184,6 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
                 </div>
               </section>
 
-              {/* Form Section: Reason & Solution */}
               <section className="bg-card border border-border/60 rounded-xl overflow-hidden shadow-sm">
                 <div className="p-6 border-b border-border/50 flex flex-col gap-3">
                   <label htmlFor="select-reason" className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
@@ -217,17 +216,6 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
                       />
                     </div>
                   )}
-                </div>
-
-                <div className="p-6">
-                  <div className="flex flex-col">
-                    <span className="text-muted-foreground text-xs font-semibold mb-2">Phương án giải quyết</span>
-                    <span className="text-foreground font-semibold text-sm md:text-base">
-                      {isCardPayment
-                        ? 'Chờ nhân viên xác nhận hoàn tiền (CANCEL_REQUESTED)'
-                        : 'Hủy đơn hàng (không phát sinh hoàn tiền)'}
-                    </span>
-                  </div>
                 </div>
               </section>
             </div>

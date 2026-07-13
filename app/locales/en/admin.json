@@ -551,16 +551,17 @@
       }
     },
     "weightRanges": {
-      "SMALL_0_5KG": "Under 5kg",
-      "MEDIUM_5_15KG": "5kg to 15kg",
-      "LARGE_15_30KG": "15kg to 30kg",
-      "GIANT_30KG_PLUS": "Over 30kg"
+      "EXTRA_SMALL": "Under 5kg",
+      "SMALL": "5kg to 8kg",
+      "MEDIUM": "8kg to 12kg",
+      "LARGE": "12kg to 18kg",
+      "EXTRA_LARGE": "18kg to 25kg",
+      "EXTRA_EXTRA_LARGE": "Over 25kg"
     },
     "searchPlaceholder": "Search service name or catalog ID...",
     "catalogTypes": {
-      "SPA": "Spa",
-      "GROOMING": "Grooming",
-      "HOTEL": "Hotel"
+      "AT_STORE": "At store",
+      "AT_HOME": "At home"
     },
     "catalogStatus": {
       "AVAILABLE": "Available",

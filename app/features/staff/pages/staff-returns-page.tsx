@@ -121,17 +121,20 @@ export function StaffReturnsPage() {
         return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
       case 'APPROVED':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+      case 'PICKED_UP':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
       case 'REJECTED':
         return 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400'
       case 'CANCELLED':
         return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-400'
       case 'COMPLETED':
         return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
+      case 'DELIVERY_FAILED':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
       default:
-        return 'bg-muted text-muted-foreground'
+        return 'bg-muted text-muted-foregroundforeground'
     }
   }
-
   function getStatusLabel(status: string) {
     switch (status) {
       case 'PENDING':
@@ -144,6 +147,10 @@ export function StaffReturnsPage() {
         return t('returns.stats.cancelled')
       case 'COMPLETED':
         return t('returns.stats.completed')
+      case 'PICKED_UP':
+        return t('returns.stats.pickedUp')
+      case 'DELIVERY_FAILED':
+        return t('returns.stats.deliveryFailed')
       default:
         return status
     }
@@ -440,25 +447,14 @@ export function StaffReturnsPage() {
                             {formatDate(req.createdAt)}
                           </td>
                           <td className='px-6 py-4 text-right'>
-                            {(req.status === 'PENDING' || req.status === 'APPROVED') ? (
-                              <button
-                                type='button'
-                                onClick={() => void handleOpenDetail(req.returnRequestId)}
-                                className='inline-flex items-center gap-1.5 rounded-xl bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-sm hover:opacity-90 active:scale-95 transition-all'
-                              >
-                                <MaterialIcon name='edit_note' className='text-sm shrink-0' />
-                                {t('returns.table.actions.process')}
-                              </button>
-                            ) : (
-                              <button
-                                type='button'
-                                onClick={() => void handleOpenDetail(req.returnRequestId)}
-                                className='inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3.5 py-1.5 text-xs font-bold text-muted-foreground hover:bg-muted hover:text-foreground active:scale-95 transition-all'
-                              >
-                                <MaterialIcon name='visibility' className='text-sm shrink-0' />
-                                {t('returns.table.actions.view')}
-                              </button>
-                            )}
+                            <button
+                              type='button'
+                              onClick={() => void handleOpenDetail(req.returnRequestId)}
+                              className='inline-flex items-center gap-1.5 rounded-xl bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-sm hover:opacity-90 active:scale-95 transition-all'
+                            >
+                              <MaterialIcon name='visibility' className='text-sm shrink-0' />
+                              {t('returns.table.actions.view')}
+                            </button>
                           </td>
                         </tr>
                       ))}

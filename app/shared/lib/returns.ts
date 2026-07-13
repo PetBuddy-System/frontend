@@ -77,7 +77,12 @@ export interface ReturnRequestResponse {
   bankAccountHolder?: string | null
   createdAt: string
   returnItems: ReturnItemResponse[]
-  mediaFiles: string[]
+  mediaFiles: string[] | ReturnMediaFile[]
+  processedBy?: ReturnProcessedStaff | null
+  processedAt?: string | null
+  completedAt?: string | null
+  staffNote?: string | null
+  updatedAt?: string
 }
 
 export interface ReturnUser {

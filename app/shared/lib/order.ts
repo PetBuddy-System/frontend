@@ -1,10 +1,11 @@
-import type {PaymentResponse} from './payment'
-import type {VoucherResponse} from './voucher'
+import type { PaymentResponse } from './payment'
+import type { VoucherResponse } from './voucher'
 
 export type OrderStatus =
   | 'PENDING'
   | 'CONFIRMED'
   | 'PICKING'
+  | 'PICKED'
   | 'SHIPPING'
   | 'DELIVERED'
   | 'COMPLETED'
@@ -12,6 +13,14 @@ export type OrderStatus =
   | 'EXPIRED'
   | 'CANCEL_REQUESTED'
   | (string & {})
+
+export interface ShipperSuggestionResponse {
+  staffId: string
+  staffName: string
+  currentLoad: number
+  maxCapacity: number
+  distanceToClusterKm: number | null
+}
 
 export interface PickingItemResponse {
   productId: string
@@ -75,7 +84,6 @@ export interface OrderDetailResponse {
   productName: string
   productImage?: string
   unitPrice: number
-  price?: number
   salePrice?: number | null
   quantity: number
   totalPrice: number
@@ -120,4 +128,14 @@ export interface OrderResponse {
   payment?: PaymentResponse
   voucher?: VoucherResponse
   shippingFee?: number
+}
+
+export interface DeliveryStopResponse {
+  orderId: number
+  orderCode: string
+  address: string
+  recipientName: string
+  phoneNumber: string
+  sequence: number
+  distanceFromPreviousKm: number
 }
