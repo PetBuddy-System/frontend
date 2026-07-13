@@ -8,10 +8,7 @@ import { Button, MaterialIcon } from '~/shared/ui'
 import { StaffSidebar } from '../components/layout/staff-sidebar'
 import { StaffTopNav } from '../components/layout/staff-top-nav'
 import { getStaffScheduleErrorMessage } from '../lib/staff-schedule-error'
-import {
-  formatStaffScheduleDate,
-  formatStaffScheduleDateTime
-} from '../lib/staff-schedule-format'
+import { formatStaffScheduleDate, formatStaffScheduleDateTime } from '../lib/staff-schedule-format'
 import {
   getStaffAttendanceStatusClassName,
   getStaffScheduleShiftClassName,
@@ -46,14 +43,7 @@ function parseScheduleDateTime(workDate: string, time: string) {
   }
 
   return new Date(
-    Date.UTC(
-      yearValue,
-      monthValue - 1,
-      dayValue,
-      hourValue - VIETNAM_UTC_OFFSET_HOURS,
-      minuteValue,
-      secondValue
-    )
+    Date.UTC(yearValue, monthValue - 1, dayValue, hourValue - VIETNAM_UTC_OFFSET_HOURS, minuteValue, secondValue)
   )
 }
 
@@ -220,12 +210,7 @@ export function StaffScheduleDetailPage() {
             ) : schedule ? (
               <div className='grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]'>
                 <section className='rounded-xl border border-border bg-card p-5 shadow-sm'>
-                  <div
-                    className={cn(
-                      'mb-5 rounded-lg border p-5',
-                      getStaffScheduleShiftClassName(schedule.shiftType)
-                    )}
-                  >
+                  <div className={cn('mb-5 rounded-lg border p-5', getStaffScheduleShiftClassName(schedule.shiftType))}>
                     <div className='flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between'>
                       <div>
                         <h2 className='font-display text-3xl font-bold'>
@@ -269,16 +254,8 @@ export function StaffScheduleDetailPage() {
                       label={t('staffSchedule.detail.date')}
                       value={formatStaffScheduleDate(schedule.workDate)}
                     />
-                    <DetailItem
-                      icon='login'
-                      label={t('staffSchedule.detail.startTime')}
-                      value={schedule.startTime}
-                    />
-                    <DetailItem
-                      icon='logout'
-                      label={t('staffSchedule.detail.endTime')}
-                      value={schedule.endTime}
-                    />
+                    <DetailItem icon='login' label={t('staffSchedule.detail.startTime')} value={schedule.startTime} />
+                    <DetailItem icon='logout' label={t('staffSchedule.detail.endTime')} value={schedule.endTime} />
                     <DetailItem
                       icon='fact_check'
                       label={t('staffSchedule.detail.attendanceStatus')}
@@ -297,11 +274,6 @@ export function StaffScheduleDetailPage() {
                       icon='logout'
                       label={t('staffSchedule.detail.checkOutAt')}
                       value={formatStaffScheduleDateTime(schedule.checkOutAt)}
-                    />
-                    <DetailItem
-                      icon='update'
-                      label={t('staffSchedule.detail.updatedAt')}
-                      value={formatStaffScheduleDateTime(schedule.updatedAt)}
                     />
                   </div>
 

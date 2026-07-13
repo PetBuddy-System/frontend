@@ -212,43 +212,37 @@
     "description": "Xem chi tiết giờ làm việc và trạng thái chuyên cần.",
     "previousMonth": "Tháng trước",
     "nextMonth": "Tháng sau",
-    "months": {
-      "oct2024": "Tháng 10/2024",
-      "sep2024": "Tháng 09/2024",
-      "aug2024": "Tháng 08/2024"
-    },
     "summary": {
       "totalDays": {
         "label": "Tổng ngày công",
-        "value": "22",
         "unit": "ngày"
       },
       "totalHours": {
         "label": "Số giờ làm việc",
-        "value": "176",
         "unit": "giờ"
       },
       "lateEarly": {
-        "label": "Đi muộn/Về sớm",
-        "value": "2",
+        "label": "Đi trễ",
         "unit": "lần"
       },
       "daysOff": {
-        "label": "Ngày nghỉ",
-        "value": "1",
+        "label": "Nghỉ/Vắng",
         "unit": "ngày"
       }
     },
     "status": {
       "onTime": "Đúng giờ",
-      "late": "Đi muộn",
-      "earlyLeave": "Về sớm",
-      "dayOff": "Nghỉ phép"
+      "late": "Đi trễ",
+      "leave": "Nghỉ phép",
+      "absent": "Vắng mặt",
+      "pending": "Chưa chấm công"
     },
     "table": {
       "title": "Chi tiết theo ngày",
       "export": "Xuất báo cáo",
       "showing": "Hiển thị {{from}}-{{to}} của {{total}} bản ghi",
+      "showingEmpty": "Không có bản ghi chấm công.",
+      "empty": "Không có dữ liệu chấm công trong tháng này.",
       "columns": {
         "date": "Ngày",
         "checkIn": "Giờ vào",
@@ -258,24 +252,8 @@
         "note": "Ghi chú"
       }
     },
-    "records": {
-      "day1": {
-        "dayLabel": "Thứ 6, 25/10"
-      },
-      "day2": {
-        "dayLabel": "Thứ 5, 24/10",
-        "note": "Tắc đường khu vực Cầu Giấy"
-      },
-      "day3": {
-        "dayLabel": "Thứ 4, 23/10"
-      },
-      "day4": {
-        "dayLabel": "Thứ 3, 22/10",
-        "note": "Nghỉ phép năm (Đã duyệt)"
-      },
-      "day5": {
-        "dayLabel": "Thứ 2, 21/10"
-      }
+    "messages": {
+      "loadFailed": "Không thể tải lịch sử chấm công."
     }
   },
   "disposalRequest": {
