@@ -15,5 +15,6 @@ export { ManagerInventoryTransactionsPage } from './pages/manager-inventory-tran
 export { ManagerStoreLocationsPage } from './pages/manager-store-locations-page'
 export { ManagerReviewsPage } from './pages/manager-reviews-page'
 export { ManagerRestockPage } from './pages/manager-restock-page'
+export { ManagerShipperAssignmentPage } from './pages/manager-shipper-assignment-page'
 
 

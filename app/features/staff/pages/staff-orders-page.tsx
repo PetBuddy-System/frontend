@@ -12,9 +12,14 @@ import { StaffOrdersStats } from '../components/orders/staff-orders-stats'
 import { StaffOrdersTable } from '../components/orders/staff-orders-table'
 import { StaffOrderPickingDialog } from '../components/orders/staff-order-picking-dialog'
 import { DeliveryProofDialog } from '../components/orders/delivery-proof-dialog'
+import { useAuth } from '~/providers/auth-provider'
+import { DeliveryRouteDialog } from '../components/orders/delivery-route-dialog'
 
 export function StaffOrdersPage() {
     const navigate = useNavigate()
+    const { user } = useAuth()
+    const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
+    const [isRouteOpen, setIsRouteOpen] = useState(false)
     const [orders, setOrders] = useState<OrderResponse[]>([])
     const [stats, setStats] = useState({
         pending: 0,
@@ -110,11 +115,20 @@ export function StaffOrdersPage() {
                 <main className='flex-1 overflow-y-auto p-4 md:p-6 pb-20'>
                     <div className='mx-auto flex max-w-7xl flex-col gap-6'>
                         {/* Header section */}
-                        <div className='flex justify-between items-end'>
+                        <div className='flex justify-between items-end gap-4'>
                             <div>
                                 <h2 className='font-display text-2xl font-bold text-foreground mb-1'>Danh sách đơn hàng</h2>
                                 <p className='text-sm text-muted-foreground'>Theo dõi và xử lý các đơn hàng của hệ thống.</p>
                             </div>
+                            {isShipper && (
+                                <button
+                                    onClick={() => setIsRouteOpen(true)}
+                                    className='flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-95 transition-all shadow-md active:scale-95'
+                                >
+                                    <MaterialIcon name='alt_route' className='text-[18px]' />
+                                    <span>Gợi ý tuyến đường</span>
+                                </button>
+                            )}
                         </div>
 
                         {/* Stats Grid - Extracted Component */}
@@ -196,8 +210,20 @@ export function StaffOrdersPage() {
                 orderCode={selectedOrderForProof?.orderCode ?? ''}
                 isOpen={!!selectedOrderForProof}
                 onClose={() => setSelectedOrderForProof(null)}
-                onSuccess={() => void loadData()}
+                onSuccess={() => {
+                    void loadData()
+                    setIsRouteOpen(true)
+                }}
             />
+
+            {/* Delivery Route Dialog */}
+            {isShipper && (
+                <DeliveryRouteDialog
+                    staffId={user?.userId ?? ''}
+                    isOpen={isRouteOpen}
+                    onClose={() => setIsRouteOpen(false)}
+                />
+            )}
         </div>
     )
 }

@@ -583,6 +583,13 @@
     "uploadProofTypeError": "Please select an image file.",
     "confirm": "Confirm Delivered",
     "cancel": "Cancel",
+    "suggestRouteBtn": "Suggest Route",
+    "routeModalTitle": "Suggested Delivery Route",
+    "routeModalSubtitle": "Optimal sequence based on Nearest Neighbor routing.",
+    "routeStop": "Stop {{seq}}",
+    "distanceFromPrev": "Distance from previous: {{distance}} km",
+    "distanceFromStore": "Distance from store: {{distance}} km",
+    "noActiveDeliveryOrders": "No active shipping orders for route suggestion.",
     "steps": {
       "ordered": "Order placed",
       "confirmed": "Order confirmed",

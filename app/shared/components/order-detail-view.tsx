@@ -8,6 +8,7 @@ import { cn } from '~/shared/lib/cn'
 import { OrderShippingLabelModal } from './order-shipping-label-modal'
 import { useAuth } from '~/providers/auth-provider'
 import { DeliveryProofDialog } from '~/features/staff/components/orders/delivery-proof-dialog'
+import { DeliveryRouteDialog } from '~/features/staff/components/orders/delivery-route-dialog'
 
 import { OrderStatusSteps } from './order-detail/order-status-steps'
 import { OrderShippingInfo } from './order-detail/order-shipping-info'
@@ -61,6 +62,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
   const [isPrintOpen, setIsPrintOpen] = useState(false)
   const [countdown, setCountdown] = useState(0)
   const [isProofOpen, setIsProofOpen] = useState(false)
+  const [isRouteOpen, setIsRouteOpen] = useState(false)
   const { user } = useAuth()
   const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
   const navigate = useNavigate()
@@ -112,11 +114,13 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
 
 
   async function handleCancelOrder() {
-    if (!isStaff) {
+    // Khách hàng thanh toán bằng CARD (đã trả tiền) -> phải gửi yêu cầu hủy để staff xác nhận hoàn tiền
+    if (!isStaff && order?.payment?.paymentMethod === 'CARD') {
       navigate(`/profile/orders/${orderId}/cancel`)
       return
     }
 
+    // Còn lại (staff, hoặc khách hàng thanh toán CASH chưa trả tiền) -> chỉ cần popup confirm rồi hủy trực tiếp
     if (!window.confirm(t('orderDetail.cancelConfirm', 'Bạn có chắc chắn muốn hủy đơn hàng này không?'))) return
     setIsCanceling(true)
     try {
@@ -174,6 +178,19 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
     return order.status === 'PENDING' || order.status === 'CONFIRMED' || order.status === 'PICKING'
   })()
 
+  const showCancelButton = (() => {
+    if (!order) return false
+    if (isRefundPending) return false
+    return (
+      order.status === 'PENDING' ||
+      order.status === 'CONFIRMED' ||
+      order.status === 'PICKING' ||
+      order.status === 'PICKED'
+    )
+  })()
+
+  const isCancelDisabled = order?.status === 'PICKED'
+
   const canRetryPayment =
     !isStaff &&
     order?.status === 'PENDING' &&
@@ -207,14 +224,14 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           <div className="flex items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-50 dark:bg-amber-950/20 px-5 py-4 text-amber-700 dark:text-amber-400">
             <MaterialIcon name="hourglass_top" className="text-[22px] shrink-0 animate-pulse" />
             <div>
-              <p className="font-bold text-sm">Yêu cầu hoàn tiền đang chờ xác nhận</p>
+              <p className="font-bold text-base">Yêu cầu hoàn tiền đang chờ xác nhận</p>
               {isStaff ? (
-                <p className="text-xs opacity-90 mt-1">
+                <p className="text-sm font-medium opacity-90 mt-1.5">
                   <span className="font-semibold">Lý do khách hủy:</span>{' '}
                   {order.payment?.cancelReason || 'Khách hàng không cung cấp lý do'}
                 </p>
               ) : (
-                <p className="text-xs opacity-80 mt-0.5">
+                <p className="text-sm font-medium opacity-80 mt-1">
                   Nhân viên sẽ xem xét và xác nhận hoàn tiền cho bạn sớm nhất có thể.
                 </p>
               )}
@@ -301,12 +318,13 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
               discount={discount}
             />
 
-            {(isStaff || canCancel || canRetryPayment) && (
+            {(isStaff || showCancelButton || canRetryPayment) && (
               <OrderActionButtons
                 order={order}
                 isStaff={isStaff}
                 isShipper={isShipper}
-                canCancel={canCancel}
+                showCancelButton={showCancelButton}
+                isCancelDisabled={isCancelDisabled}
                 isExpired={isExpired}
                 isCanceling={isCanceling}
                 onPrint={() => setIsPrintOpen(true)}
@@ -333,7 +351,18 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           orderCode={order.orderCode}
           isOpen={isProofOpen}
           onClose={() => setIsProofOpen(false)}
-          onSuccess={() => void loadDetail()}
+          onSuccess={() => {
+            void loadDetail()
+            setIsRouteOpen(true)
+          }}
+        />
+      )}
+
+      {order && isRouteOpen && isShipper && (
+        <DeliveryRouteDialog
+          staffId={user?.userId ?? ''}
+          isOpen={isRouteOpen}
+          onClose={() => setIsRouteOpen(false)}
         />
       )}
     </div>
