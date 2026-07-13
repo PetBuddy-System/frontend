@@ -145,6 +145,7 @@
       "products": "Quản lý sản phẩm",
       "staff": "Quản lý lịch làm việc",
       "returnRequests": "Duyệt đổi trả",
+      "restock": "Nhập hàng trả về",
       "disposalApprovals": "Duyệt hủy hàng",
       "promotions": "Chương trình khuyến mãi",
       "storeLocations": "Địa chỉ chi nhánh",
@@ -458,6 +459,14 @@
         "staffs": "Staff",
         "time": "Thời gian"
       }
+    }
+  },
+  "restock": {
+    "title": "Nhập hàng trả về",
+    "subtitle": "Xác nhận nhập kho các sản phẩm đã được khách hàng hoàn trả.",
+    "breadcrumb": {
+      "ops": "Kho vận",
+      "current": "Nhập hàng trả về"
     }
   },
   "table": {

@@ -83,6 +83,7 @@ export default [
     route('manager/staff-schedule/new', 'routes/manager-staff-schedule-new.tsx'),
     route('manager/staff-schedule/:workScheduleId/edit', 'routes/manager-staff-schedule-edit.tsx'),
     route('manager/staff-schedule/:workScheduleId/staff', 'routes/manager-staff-schedule-staff.tsx'),
+    route('manager/restock', 'routes/manager-restock.tsx'),
     route('manager/staff-schedule/:workScheduleId', 'routes/manager-staff-schedule-detail.tsx'),
     route('manager/products/:productId', 'routes/manager-product-detail.tsx'),
     route('manager/promotions', 'routes/manager-promotions.tsx'),

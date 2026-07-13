@@ -1,5 +1,5 @@
-import type {PaymentResponse} from './payment'
-import type {VoucherResponse} from './voucher'
+import type { PaymentResponse } from './payment'
+import type { VoucherResponse } from './voucher'
 
 export type OrderStatus =
   | 'PENDING'
@@ -97,7 +97,7 @@ export interface OrderDetailFull {
   updatedAt?: string
   paymentExpiredAt?: string
   orderDetails: OrderDetailResponse[]
-  payment?: PaymentResponse  
+  payment?: PaymentResponse
   voucherCode?: string
   voucher?: VoucherResponse
   shippingFee?: number
@@ -120,4 +120,5 @@ export interface OrderResponse {
   payment?: PaymentResponse
   voucher?: VoucherResponse
   shippingFee?: number
+  paymentMethod?: 'CASH' | 'CARD'
 }

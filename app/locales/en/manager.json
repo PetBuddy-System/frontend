@@ -146,6 +146,7 @@
       "products": "Product Management",
       "staff": "Work Schedule Management",
       "returnRequests": "Return approvals",
+      "restock": "Restock returns",
       "disposalApprovals": "Disposal approvals",
       "promotions": "Promotions",
       "storeLocations": "Store Locations",
@@ -458,6 +459,14 @@
         "staffs": "Staff",
         "time": "Time"
       }
+    }
+  },
+  "restock": {
+    "title": "Restock Returns",
+    "subtitle": "Confirm restocking of products returned by customers.",
+    "breadcrumb": {
+      "ops": "Warehouse",
+      "current": "Restock Returns"
     }
   },
   "table": {
