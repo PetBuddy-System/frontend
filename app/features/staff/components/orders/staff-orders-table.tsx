@@ -44,6 +44,13 @@ function renderStatusBadge(status: string) {
                     Đang lấy hàng
                 </span>
             )
+        case 'PICKED':
+            return (
+                <span className='inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold uppercase text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400'>
+                    <span className='h-1.5 w-1.5 rounded-full bg-indigo-700 dark:bg-indigo-400' />
+                    Đã chuẩn bị xong
+                </span>
+            )
         case 'SHIPPING':
             return (
                 <span className='inline-flex items-center gap-1.5 rounded-full bg-teal-100 px-3 py-1 text-xs font-bold uppercase text-teal-700 dark:bg-teal-950/40 dark:text-teal-400'>
@@ -317,7 +324,7 @@ export function StaffOrdersTable({
                                                     onClick={() => onTransition(order.orderId, 'PICKING')}
                                                     className='rounded-xl bg-cyan-600 hover:bg-cyan-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
                                                 >
-                                                    Lấy hàng
+                                                    Bắt đầu lấy hàng
                                                 </button>
                                             )}
 

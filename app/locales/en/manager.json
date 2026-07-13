@@ -149,7 +149,8 @@
       "disposalApprovals": "Disposal approvals",
       "promotions": "Promotions",
       "storeLocations": "Store Locations",
-      "reviews": "Review Management"
+      "reviews": "Review Management",
+      "shipperAssignment": "Shipper Assignment"
     },
     "toggle": "Toggle sidebar"
   },
@@ -808,5 +809,33 @@
   "reviews": {
     "title": "Review Management",
     "subtitle": "View, moderate and manage customer product reviews."
+  },
+  "shipperAssignment": {
+    "title": "Shipper Assignment",
+    "subtitle": "Group orders in nearby areas and assign a delivery staff.",
+    "searchPlaceholder": "Search orders, customers, address...",
+    "noOrdersTitle": "No orders need assignment",
+    "noOrdersDesc": "There are currently no orders in PICKED status to assign shippers.",
+    "loadingOrders": "Loading order list...",
+    "otherArea": "Other Area",
+    "statusPicked": "To Deliver",
+    "orderDate": "Order Date",
+    "totalAmount": "Total Amount",
+    "suggestionsHeader": "Suggested Shippers",
+    "loadingSuggestions": "Loading shipper suggestions...",
+    "noSuggestions": "No active shippers found for today.",
+    "unknownDistance": "Distance: N/A",
+    "currentLoadLabel": "Current Load:",
+    "assignBtn": "Assign",
+    "stats": {
+      "pendingPickup": "Orders to Deliver",
+      "areas": "Active Areas"
+    },
+    "errors": {
+      "loadOrdersFailed": "Failed to load order list.",
+      "loadSuggestionsFailed": "Failed to load shipper suggestions.",
+      "assignFailed": "Failed to assign shipper to this order.",
+      "unknownError": "An error occurred."
+    }
   }
 }

@@ -14,5 +14,6 @@ export { ManagerPromotionEditPage } from './pages/manager-promotion-edit-page'
 export { ManagerInventoryTransactionsPage } from './pages/manager-inventory-transactions-page'
 export { ManagerStoreLocationsPage } from './pages/manager-store-locations-page'
 export { ManagerReviewsPage } from './pages/manager-reviews-page'
+export { ManagerShipperAssignmentPage } from './pages/manager-shipper-assignment-page'
 
 

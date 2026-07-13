@@ -14,7 +14,8 @@ const MANAGER_NAV_ITEMS = [
   { icon: 'delete_sweep', key: 'disposalApprovals', href: '/manager/disposal-approvals' },
   { icon: 'local_offer', key: 'promotions', href: '/manager/promotions' },
   { icon: 'storefront', key: 'storeLocations', href: '/manager/store-locations' },
-  { icon: 'rate_review', key: 'reviews', href: '/manager/reviews' }
+  { icon: 'rate_review', key: 'reviews', href: '/manager/reviews' },
+  { icon: 'local_shipping', key: 'shipperAssignment', href: '/manager/shipper-assignment' }
 ] as const
 
 export type ManagerNavKey = (typeof MANAGER_NAV_ITEMS)[number]['key']
