@@ -1,3 +1,4 @@
+// app/features/profile/components/returns/return-warranty-form.tsx
 import { useState, type ChangeEvent, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -56,7 +57,7 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
   const [reason, setReason] = useState<ReturnReason>('WRONG_PRODUCT')
   const [description, setDescription] = useState<string>('')
   const [refundMethod, setRefundMethod] = useState<RefundMethod>('STRIPE_PAYMENT')
-  
+
   // Bank details state
   const [bankName, setBankName] = useState<string>('')
   const [bankAccountNumber, setBankAccountNumber] = useState<string>('')
@@ -128,7 +129,7 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
       } finally {
         setIsCalculating(false)
       }
-    }, 400) // Debounce API requests
+    }, 400)
 
     return () => clearTimeout(timer)
   }, [selectedOrderId, selectedProducts, selectedQuantities, reason])
@@ -182,7 +183,6 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
   const handleProductToggle = (productId: string) => {
     setSelectedProducts((prev) => {
       const updated = { ...prev, [productId]: !prev[productId] }
-      // Initialize quantity if checked
       if (updated[productId] && !selectedQuantities[productId]) {
         setSelectedQuantities((qPrev) => ({ ...qPrev, [productId]: 1 }))
       }
@@ -241,7 +241,6 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         type: requestType,
         reason,
         description,
-        // Chỉ gửi refundMethod khi Trả hàng hoàn tiền
         ...(requestType === 'RETURN' && {
           refundMethod,
           bankName: refundMethod === 'BANK_TRANSFER' ? bankName : undefined,
@@ -254,8 +253,7 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
       const res = await createReturnRequestApi(payload)
       if (res.success && res.data) {
         const returnId = res.data.returnRequestId
-        
-        // If there are files, upload them
+
         if (files.length > 0) {
           await uploadReturnMediaApi(returnId, files)
         }
@@ -329,7 +327,6 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         requestType={requestType}
         onChange={(val) => {
           setRequestType(val)
-          // Reset refund fields khi không phải Trả hàng hoàn tiền
           if (val !== 'RETURN') {
             setRefundMethod('STRIPE_PAYMENT')
             setBankName('')
@@ -386,7 +383,8 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
             <span className='text-xs text-muted-foreground'>({calculatedRefund.items.length} sản phẩm)</span>
           </div>
 
-          <div className='space-y-2.5 max-h-48 overflow-y-auto pr-1'>
+          {/* ✅ Bỏ max-h-48 và overflow-y-auto ở đây */}
+          <div className='space-y-2.5'>
             {calculatedRefund.items.map((item) => (
               <div key={item.orderDetailId} className='flex justify-between gap-4 text-xs text-muted-foreground'>
                 <span className='truncate font-medium text-foreground'>{item.productName}</span>

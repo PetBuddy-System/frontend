@@ -60,12 +60,12 @@ export function ServicesIndividual() {
                     <MaterialIcon name='info' className='text-[18px]' />
                     {t('individual.detailsCta')}
                   </a>
-                  <button
-                    type='button'
-                    className='rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:opacity-90'
+                  <a
+                    href='/booking'
+                    className='flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:opacity-90'
                   >
                     {t('individual.cta')}
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>

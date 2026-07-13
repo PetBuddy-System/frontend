@@ -381,6 +381,122 @@
       "confirm": "Xác nhận đặt lịch"
     }
   },
+  "bookingFlow": {
+    "eyebrow": "Thanh toán & đặt lịch",
+    "title": "Đặt lịch spa và grooming",
+    "subtitle": "Nhập thông tin liên hệ, chọn dịch vụ, kiểm tra lại lịch đặt và thanh toán cọc 20%.",
+    "steps": {
+      "step": "Bước {{step}}",
+      "items": {
+        "1": "Thông tin & thú cưng",
+        "2": "Dịch vụ",
+        "3": "Ngày & giờ",
+        "4": "Tổng hợp"
+      }
+    },
+    "capacity": {
+      "title": "Sức chứa khung giờ",
+      "value": "Đã chọn {{selected}}/{{max}} thú cưng",
+      "progress": "Số thú cưng trong lịch này"
+    },
+    "service": {
+      "title": "Chọn dịch vụ",
+      "subtitle": "Danh sách catalog được tải trực tiếp từ backend.",
+      "duration": "{{minutes}} phút"
+    },
+    "pet": {
+      "title": "Chọn thú cưng",
+      "subtitle": "Danh sách thú cưng được tải từ tài khoản của bạn.",
+      "profile": "{{breed}}, {{weight}}kg",
+      "empty": "Chưa tìm thấy hồ sơ thú cưng cho tài khoản này."
+    },
+    "time": {
+      "title": "Chọn ngày và giờ",
+      "subtitle": "Chỉ hiển thị khung giờ đang hoạt động theo dịch vụ và ngày đã chọn.",
+      "dateLabel": "Ngày hẹn",
+      "duration": "{{minutes}} phút",
+      "empty": "Không có khung giờ đang hoạt động cho dịch vụ này vào ngày đã chọn."
+    },
+    "review": {
+      "title": "Tổng hợp và thanh toán",
+      "subtitle": "Kiểm tra thông tin như trang checkout, sau đó thanh toán cọc an toàn bằng thẻ.",
+      "customerSection": "Khách hàng",
+      "serviceSection": "Lịch dịch vụ",
+      "created": "Lịch đặt {{code}} đã sẵn sàng thanh toán.",
+      "createdHint": "Giữ trang này mở cho đến khi thanh toán thẻ thành công."
+    },
+    "summary": {
+      "title": "Tóm tắt đặt lịch",
+      "bookingType": "Hình thức",
+      "service": "Dịch vụ",
+      "pets": "Thú cưng",
+      "schedule": "Lịch hẹn",
+      "subtotal": "Tạm tính",
+      "deposit": "Cọc 20%",
+      "remaining": "Còn lại",
+      "empty": "Chưa chọn",
+      "depositNote": "Lịch đặt dùng một time slot chung cho tất cả thú cưng đã chọn. Lịch tại nhà sẽ gửi kèm địa chỉ sử dụng dịch vụ."
+    },
+    "actions": {
+      "back": "Quay lại",
+      "next": "Tiếp tục",
+      "checkout": "Thanh toán",
+      "submit": "Tạo đặt lịch",
+      "submitting": "Đang tạo đặt lịch..."
+    },
+    "toast": {
+      "loadError": "Không thể tải dữ liệu đặt lịch.",
+      "timeSlotLoadError": "Không thể tải khung giờ khả dụng.",
+      "submitError": "Không thể tạo đặt lịch.",
+      "success": "Tạo đặt lịch thành công.",
+      "paymentSuccess": "Thanh toán cọc thành công.",
+      "selectService": "Vui lòng chọn dịch vụ trước.",
+      "selectPet": "Vui lòng chọn ít nhất một thú cưng.",
+      "selectTime": "Vui lòng chọn ngày hẹn và khung giờ.",
+      "customerMissing": "Vui lòng nhập tên khách hàng và số điện thoại.",
+      "addressMissing": "Vui lòng nhập địa chỉ sử dụng dịch vụ tại nhà.",
+      "slotLimit": "Một khung giờ tối đa 5 thú cưng.",
+      "paymentSecretMissing": "Lịch đặt đã được tạo nhưng backend chưa trả Stripe payment secret.",
+      "retryPaymentFailed": "Không thể tạo lượt thanh toán mới.",
+      "cardElementMissing": "Không thể tải ô nhập thẻ.",
+      "cardholderMissing": "Vui lòng nhập tên chủ thẻ.",
+      "paymentFailed": "Thanh toán thất bại. Vui lòng thử lại.",
+      "paymentIncomplete": "Thanh toán chưa hoàn tất. Vui lòng thử lại."
+    },
+    "myBookings": {
+      "title": "Lịch đặt gần đây",
+      "empty": "Chưa có lịch đặt nào."
+    },
+    "bookingTypes": {
+      "AT_STORE": "Tại tiệm",
+      "AT_HOME": "Tại nhà"
+    },
+    "customer": {
+      "title": "Thông tin khách hàng",
+      "subtitle": "Chọn hình thức sử dụng dịch vụ trước, sau đó nhập thông tin liên hệ cần thiết.",
+      "name": "Tên khách hàng",
+      "phone": "Số điện thoại",
+      "address": "Địa chỉ sử dụng dịch vụ",
+      "note": "Ghi chú đặt lịch"
+    },
+    "schedule": {
+      "title": "Chọn thú cưng, ngày và giờ",
+      "subtitle": "Khung giờ khả dụng được tải theo dịch vụ và ngày đã chọn."
+    },
+    "payment": {
+      "title": "Thanh toán cọc an toàn",
+      "bookingReady": "Đã tạo lịch đặt",
+      "cardholder": "Tên chủ thẻ",
+      "cardInfo": "Thông tin thẻ tín dụng/ghi nợ",
+      "payDeposit": "Thanh toán cọc {{amount}}",
+      "processing": "Đang xử lý thanh toán...",
+      "successTitle": "Thanh toán thành công",
+      "successDescription": "Bạn đã thanh toán cọc thành công cho lịch đặt {{code}}.",
+      "failedTitle": "Thanh toán thất bại",
+      "retry": "Thanh toán lại",
+      "retrying": "Đang tạo lượt thanh toán mới..."
+    }
+  },
   "gallery": {
     "title": "Khoảnh Khắc Đáng Yêu",
     "images": {

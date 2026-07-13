@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchMyReturnsApi, cancelReturnRequestApi } from '~/features/profile/services'
+import { fetchMyReturnsApi, cancelReturnRequestApi, fetchReturnDetailApi } from '~/features/profile/services'
 import type { ReturnRequestResponse } from '~/shared/lib/returns'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
@@ -7,9 +7,11 @@ import { cn } from '~/shared/lib/cn'
 const STATUS_BADGE_STYLE: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
   APPROVED: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  PICKED_UP: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
   REJECTED: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
   CANCELLED: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400',
-  COMPLETED: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+  COMPLETED: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+  DELIVERY_FAILED: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
 }
 
 function getStatusBadgeClassName(status: string) {
@@ -22,12 +24,16 @@ function getStatusLabel(status: string) {
       return 'Chờ duyệt'
     case 'APPROVED':
       return 'Đã chấp thuận'
+    case 'PICKED_UP':
+      return 'Đã lấy hàng'
     case 'REJECTED':
       return 'Từ chối'
     case 'CANCELLED':
       return 'Đã hủy'
     case 'COMPLETED':
       return 'Hoàn thành'
+    case 'DELIVERY_FAILED':
+      return 'Giao thất bại'
     default:
       return status
   }
@@ -99,7 +105,9 @@ export function ReturnHistoryList() {
   const [returns, setReturns] = useState<ReturnRequestResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [expandedId, setExpandedId] = useState<number | null>(null)
-  
+  const [detailData, setDetailData] = useState<Record<number, ReturnRequestResponse>>({})
+  const [isLoadingDetail, setIsLoadingDetail] = useState<number | null>(null)
+
   // Canceling states
   const [confirmCancelId, setConfirmCancelId] = useState<number | null>(null)
   const [isCanceling, setIsCanceling] = useState(false)
@@ -119,12 +127,30 @@ export function ReturnHistoryList() {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadReturns()
   }, [])
 
-  const toggleExpand = (id: number) => {
-    setExpandedId(prev => (prev === id ? null : id))
+  const toggleExpand = async (id: number) => {
+    if (expandedId === id) {
+      setExpandedId(null)
+      return
+    }
+
+    if (!detailData[id]) {
+      setIsLoadingDetail(id)
+      try {
+        const res = await fetchReturnDetailApi(id)
+        if (res.success && res.data) {
+          setDetailData(prev => ({ ...prev, [id]: res.data }))
+        }
+      } catch (err) {
+        console.error('Failed to load return detail', err)
+      } finally {
+        setIsLoadingDetail(null)
+      }
+    }
+
+    setExpandedId(id)
   }
 
   async function handleCancelRequest(returnId: number) {
@@ -134,6 +160,11 @@ export function ReturnHistoryList() {
       if (res.success) {
         setConfirmCancelId(null)
         void loadReturns()
+        setDetailData(prev => {
+          const newData = { ...prev }
+          delete newData[returnId]
+          return newData
+        })
       } else {
         alert(res.message || 'Hủy yêu cầu thất bại')
       }
@@ -142,6 +173,10 @@ export function ReturnHistoryList() {
     } finally {
       setIsCanceling(false)
     }
+  }
+
+  const getDetailData = (id: number) => {
+    return detailData[id] || returns.find(r => r.returnRequestId === id)
   }
 
   if (isLoading) {
@@ -164,7 +199,10 @@ export function ReturnHistoryList() {
     <div className='space-y-4'>
       {returns.map((req) => {
         const isExpanded = expandedId === req.returnRequestId
-        const isPending = req.status === 'PENDING'
+        const canCancel = req.status === 'PENDING' || req.status === 'APPROVED'
+        const isLoadingThis = isLoadingDetail === req.returnRequestId
+        const detail = getDetailData(req.returnRequestId)
+        const mediaFiles = detail?.mediaFiles || req.mediaFiles || []
 
         return (
           <div
@@ -173,7 +211,7 @@ export function ReturnHistoryList() {
           >
             {/* Header info */}
             <div
-              onClick={() => toggleExpand(req.returnRequestId)}
+              onClick={() => void toggleExpand(req.returnRequestId)}
               className='flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 cursor-pointer bg-card hover:bg-muted/30 transition-colors'
             >
               <div className='space-y-1.5 min-w-0'>
@@ -212,111 +250,157 @@ export function ReturnHistoryList() {
             {/* Detailed view (Expandable) */}
             {isExpanded && (
               <div className='border-t border-border bg-muted/10 p-5 space-y-5 animate-in slide-in-from-top-1 duration-200'>
-                {/* Reason & Description */}
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                  <div>
-                    <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider mb-1'>Lý do đổi trả</h5>
-                    <p className='text-sm text-foreground font-semibold'>{getReasonLabel(req.reason)}</p>
+                {isLoadingThis ? (
+                  <div className='text-center text-muted-foreground py-8 animate-pulse'>
+                    Đang tải chi tiết...
                   </div>
-                  {req.description && (
-                    <div>
-                      <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider mb-1'>Mô tả chi tiết</h5>
-                      <p className='text-sm text-foreground whitespace-pre-line bg-muted/40 p-3 rounded-lg border border-border'>{req.description}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Refund Payment Details — chỉ hiện khi Trả hàng hoàn tiền */}
-                {req.type === 'RETURN' && (
-                  <div className='rounded-xl border border-border bg-card p-4 space-y-3'>
-                    <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider border-b border-border pb-1.5'>
-                      Thông tin hoàn tiền
-                    </h5>
-                    <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm'>
+                ) : detail ? (
+                  <>
+                    {/* Reason & Description */}
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                       <div>
-                        <span className='text-muted-foreground'>Phương thức hoàn:</span>{' '}
-                        <strong className='text-foreground'>
-                          {req.refundMethod === 'STRIPE_PAYMENT' ? 'Tài khoản gốc thanh toán' : 'Chuyển khoản ngân hàng'}
-                        </strong>
+                        <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider mb-1'>Lý do đổi trả</h5>
+                        <p className='text-sm text-foreground font-semibold'>{getReasonLabel(detail.reason)}</p>
                       </div>
-                      {req.refundStatus && (
+                      {detail.description && (
                         <div>
-                          <span className='text-muted-foreground'>Trạng thái hoàn tiền:</span>{' '}
-                          <span className='font-semibold text-primary'>{getRefundStatusLabel(req.refundStatus)}</span>
+                          <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider mb-1'>Mô tả chi tiết</h5>
+                          <p className='text-sm text-foreground whitespace-pre-line bg-muted/40 p-3 rounded-lg border border-border'>{detail.description}</p>
                         </div>
                       )}
-                      <div>
-                        <span className='text-muted-foreground'>Tổng số tiền:</span>{' '}
-                        <strong className='text-primary'>{formatPrice(req.refundAmount)}</strong>
-                      </div>
                     </div>
 
-                    {req.refundMethod === 'BANK_TRANSFER' && (req.bankName || req.bankAccountNumber) && (
-                      <div className='mt-2 pt-2 border-t border-border/60 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-muted-foreground bg-muted/20 p-2.5 rounded-lg'>
-                        <div>Tên ngân hàng: <strong className='text-foreground'>{req.bankName || 'N/A'}</strong></div>
-                        <div>Số tài khoản: <strong className='text-foreground'>{req.bankAccountNumber || 'N/A'}</strong></div>
-                        <div>Chủ tài khoản: <strong className='text-foreground'>{req.bankAccountHolder || 'N/A'}</strong></div>
+                    {/* Refund Payment Details — chỉ hiện khi Trả hàng hoàn tiền */}
+                    {detail.type === 'RETURN' && (
+                      <div className='rounded-xl border border-border bg-card p-4 space-y-3'>
+                        <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider border-b border-border pb-1.5'>
+                          Thông tin hoàn tiền
+                        </h5>
+                        <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm'>
+                          <div>
+                            <span className='text-muted-foreground'>Phương thức hoàn:</span>{' '}
+                            <strong className='text-foreground'>
+                              {detail.refundMethod === 'STRIPE_PAYMENT' ? 'Tài khoản gốc thanh toán' : 'Chuyển khoản ngân hàng'}
+                            </strong>
+                          </div>
+                          {detail.refundStatus && (
+                            <div>
+                              <span className='text-muted-foreground'>Trạng thái hoàn tiền:</span>{' '}
+                              <span className='font-semibold text-primary'>{getRefundStatusLabel(detail.refundStatus)}</span>
+                            </div>
+                          )}
+                          <div>
+                            <span className='text-muted-foreground'>Tổng số tiền:</span>{' '}
+                            <strong className='text-primary'>{formatPrice(detail.refundAmount)}</strong>
+                          </div>
+                        </div>
+
+                        {detail.refundMethod === 'BANK_TRANSFER' && (detail.bankName || detail.bankAccountNumber) && (
+                          <div className='mt-2 pt-2 border-t border-border/60 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-muted-foreground bg-muted/20 p-2.5 rounded-lg'>
+                            <div>Tên ngân hàng: <strong className='text-foreground'>{detail.bankName || 'N/A'}</strong></div>
+                            <div>Số tài khoản: <strong className='text-foreground'>{detail.bankAccountNumber || 'N/A'}</strong></div>
+                            <div>Chủ tài khoản: <strong className='text-foreground'>{detail.bankAccountHolder || 'N/A'}</strong></div>
+                          </div>
+                        )}
                       </div>
                     )}
-                  </div>
-                )}
 
-                {/* Return Items */}
-                <div className='space-y-2'>
-                  <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider'>
-                    Danh sách sản phẩm hoàn trả ({req.returnItems.length})
-                  </h5>
-                  <div className='space-y-2'>
-                    {req.returnItems.map((item) => (
-                      <div
-                        key={item.returnItemId}
-                        className='flex items-center justify-between gap-4 p-3 rounded-lg border border-border/60 bg-card text-sm'
-                      >
-                        <div className='font-semibold text-foreground'>{item.productName}</div>
-                        <div className='flex items-center gap-6 shrink-0 text-xs'>
-                          <span className='text-muted-foreground'>Số lượng: <strong className='text-foreground'>{item.quantity}</strong></span>
-                          {req.type === 'RETURN' && (
-                            <span className='text-muted-foreground'>Số tiền hoàn: <strong className='text-primary'>{formatPrice(item.refundAmount)}</strong></span>
-                          )}
+                    {/* Return Items */}
+                    <div className='space-y-2'>
+                      <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider'>
+                        Danh sách sản phẩm hoàn trả ({detail.returnItems.length})
+                      </h5>
+                      <div className='space-y-2'>
+                        {detail.returnItems.map((item) => (
+                          <div
+                            key={item.returnItemId}
+                            className='flex items-center justify-between gap-4 p-3 rounded-lg border border-border/60 bg-card text-sm'
+                          >
+                            <div className='font-semibold text-foreground'>{item.productName}</div>
+                            <div className='flex items-center gap-6 shrink-0 text-xs'>
+                              <span className='text-muted-foreground'>Số lượng: <strong className='text-foreground'>{item.quantity}</strong></span>
+                              {detail.type === 'RETURN' && (
+                                <span className='text-muted-foreground'>Số tiền hoàn: <strong className='text-primary'>{formatPrice(item.refundAmount)}</strong></span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Media Files - Sử dụng từ detail API */}
+                    {mediaFiles && mediaFiles.length > 0 && (
+                      <div className='space-y-2'>
+                        <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider'>Hình ảnh đính kèm</h5>
+                        <div className='flex flex-wrap gap-3.5'>
+                          {mediaFiles.map((media, idx) => {
+                            const url = typeof media === 'string' ? media : (media as any).fileUrl
+                            return (
+                              <a
+                                key={idx}
+                                href={url}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className='relative w-20 h-20 overflow-hidden rounded-lg border border-border shadow-sm hover:opacity-90 transition-opacity'
+                              >
+                                <img src={url} alt={`Minh họa ${idx + 1}`} className='w-full h-full object-cover' />
+                              </a>
+                            )
+                          })}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    )}
 
-                {/* Media Files */}
-                {req.mediaFiles && req.mediaFiles.length > 0 && (
-                  <div className='space-y-2'>
-                    <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider'>Hình ảnh đính kèm</h5>
-                    <div className='flex flex-wrap gap-3.5'>
-                      {req.mediaFiles.map((url, idx) => (
-                        <a
-                          key={idx}
-                          href={url}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='relative w-20 h-20 overflow-hidden rounded-lg border border-border shadow-sm hover:opacity-90 transition-opacity'
+                    {/* Processing Info */}
+                    {detail.processedBy && (
+                      <div className='rounded-xl border border-border bg-card p-4 space-y-2'>
+                        <h5 className='text-xs font-bold uppercase text-muted-foreground tracking-wider border-b border-border pb-1.5'>
+                          Thông tin xử lý
+                        </h5>
+                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm'>
+                          <div>
+                            <span className='text-muted-foreground'>Người xử lý:</span>{' '}
+                            <strong className='text-foreground'>{detail.processedBy.fullName}</strong>
+                          </div>
+                          {detail.processedAt && (
+                            <div>
+                              <span className='text-muted-foreground'>Thời gian xử lý:</span>{' '}
+                              <span className='text-foreground'>{formatDate(detail.processedAt)}</span>
+                            </div>
+                          )}
+                          {detail.completedAt && (
+                            <div>
+                              <span className='text-muted-foreground'>Thời gian hoàn thành:</span>{' '}
+                              <span className='text-foreground'>{formatDate(detail.completedAt)}</span>
+                            </div>
+                          )}
+                        </div>
+                        {detail.staffNote && (
+                          <div className='mt-2 pt-2 border-t border-border/60'>
+                            <span className='text-muted-foreground block mb-1'>Ghi chú:</span>
+                            <p className='bg-muted/20 p-2 rounded border border-border text-sm text-foreground'>
+                              {detail.staffNote}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Actions (Cancel button) - Cho phép hủy ở PENDING và APPROVED */}
+                    {canCancel && (
+                      <div className='flex justify-end pt-2'>
+                        <button
+                          type='button'
+                          onClick={() => setConfirmCancelId(req.returnRequestId)}
+                          className='flex items-center gap-1.5 rounded-lg border border-destructive bg-destructive/5 px-4 py-2 text-xs font-bold text-destructive hover:bg-destructive hover:text-white active:scale-95 transition-all duration-150'
                         >
-                          <img src={url} alt={`Minh họa ${idx + 1}`} className='w-full h-full object-cover' />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Actions (Cancel button) */}
-                {isPending && (
-                  <div className='flex justify-end pt-2'>
-                    <button
-                      type='button'
-                      onClick={() => setConfirmCancelId(req.returnRequestId)}
-                      className='flex items-center gap-1.5 rounded-lg border border-destructive bg-destructive/5 px-4 py-2 text-xs font-bold text-destructive hover:bg-destructive hover:text-white active:scale-95 transition-all duration-150'
-                    >
-                      <MaterialIcon name='cancel' className='text-sm' />
-                      Hủy yêu cầu đổi trả
-                    </button>
-                  </div>
-                )}
+                          <MaterialIcon name='cancel' className='text-sm' />
+                          Hủy yêu cầu đổi trả
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ) : null}
               </div>
             )}
           </div>

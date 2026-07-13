@@ -146,6 +146,7 @@
       "products": "Product Management",
       "staff": "Work Schedule Management",
       "returnRequests": "Return approvals",
+      "restock": "Restock returns",
       "disposalApprovals": "Disposal approvals",
       "promotions": "Promotions",
       "storeLocations": "Store Locations",
@@ -330,6 +331,7 @@
       "detail": {
         "assignedAt": "Assigned",
         "assignedStaffs": "Assigned staff",
+        "attendanceStatus": "Attendance status",
         "checkIn": "Check-in",
         "checkOut": "Check-out",
         "createdAt": "Created",
@@ -427,6 +429,12 @@
         "FULL_DAY": "Full day",
         "MORNING": "Morning"
       },
+      "attendanceStatuses": {
+        "ABSENT": "Absent",
+        "LEAVE": "On leave",
+        "LATE": "Late",
+        "ON_TIME": "On time"
+      },
       "stats": {
         "assigned": "Assigned staff on page",
         "page": "Current page",
@@ -444,10 +452,8 @@
         "SHIPPER": "Shipper"
       },
       "statuses": {
-        "ABSENT": "Absent",
         "CANCELLED": "Cancelled",
         "COMPLETED": "Completed",
-        "LEAVE": "On leave",
         "SCHEDULED": "Scheduled",
         "WORKING": "Working"
       },
@@ -459,6 +465,14 @@
         "staffs": "Staff",
         "time": "Time"
       }
+    }
+  },
+  "restock": {
+    "title": "Restock Returns",
+    "subtitle": "Confirm restocking of products returned by customers.",
+    "breadcrumb": {
+      "ops": "Warehouse",
+      "current": "Restock Returns"
     }
   },
   "table": {

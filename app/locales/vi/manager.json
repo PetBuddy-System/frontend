@@ -145,6 +145,7 @@
       "products": "Quản lý sản phẩm",
       "staff": "Quản lý lịch làm việc",
       "returnRequests": "Duyệt đổi trả",
+      "restock": "Nhập hàng trả về",
       "disposalApprovals": "Duyệt hủy hàng",
       "promotions": "Chương trình khuyến mãi",
       "storeLocations": "Địa chỉ chi nhánh",
@@ -330,6 +331,7 @@
       "detail": {
         "assignedAt": "Phân công",
         "assignedStaffs": "Staff trong lịch",
+        "attendanceStatus": "Trạng thái chấm công",
         "checkIn": "Check-in",
         "checkOut": "Check-out",
         "createdAt": "Ngày tạo",
@@ -427,6 +429,12 @@
         "FULL_DAY": "Cả ngày",
         "MORNING": "Ca sáng"
       },
+      "attendanceStatuses": {
+        "ABSENT": "Vắng mặt",
+        "LEAVE": "Nghỉ phép",
+        "LATE": "Trễ giờ",
+        "ON_TIME": "Đúng giờ"
+      },
       "stats": {
         "assigned": "Staff đã phân công trên trang",
         "page": "Trang hiện tại",
@@ -444,10 +452,8 @@
         "SHIPPER": "Shipper"
       },
       "statuses": {
-        "ABSENT": "Vắng mặt",
         "CANCELLED": "Đã hủy",
         "COMPLETED": "Hoàn thành",
-        "LEAVE": "Nghỉ phép",
         "SCHEDULED": "Đã lên lịch",
         "WORKING": "Đang làm"
       },
@@ -459,6 +465,14 @@
         "staffs": "Staff",
         "time": "Thời gian"
       }
+    }
+  },
+  "restock": {
+    "title": "Nhập hàng trả về",
+    "subtitle": "Xác nhận nhập kho các sản phẩm đã được khách hàng hoàn trả.",
+    "breadcrumb": {
+      "ops": "Kho vận",
+      "current": "Nhập hàng trả về"
     }
   },
   "table": {

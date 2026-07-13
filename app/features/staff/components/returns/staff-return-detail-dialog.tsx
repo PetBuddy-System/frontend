@@ -21,21 +21,22 @@ export function StaffReturnDetailDialog({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const isPending = returnRequest.status === 'PENDING'
-  const isApproved = returnRequest.status === 'APPROVED'
-
   function getStatusBadgeClassName(status: string) {
     switch (status) {
       case 'PENDING':
         return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
       case 'APPROVED':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+      case 'PICKED_UP':
+        return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
       case 'REJECTED':
         return 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400'
       case 'CANCELLED':
         return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-400'
       case 'COMPLETED':
         return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
+      case 'DELIVERY_FAILED':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
       default:
         return 'bg-muted text-muted-foreground'
     }
@@ -47,12 +48,16 @@ export function StaffReturnDetailDialog({
         return t('returns.stats.pending')
       case 'APPROVED':
         return t('returns.stats.approved')
+      case 'PICKED_UP':
+        return t('returns.stats.pickedUp')
       case 'REJECTED':
         return t('returns.stats.rejected')
       case 'CANCELLED':
         return t('returns.stats.cancelled')
       case 'COMPLETED':
         return t('returns.stats.completed')
+      case 'DELIVERY_FAILED':
+        return t('returns.stats.deliveryFailed')
       default:
         return status
     }
@@ -130,9 +135,16 @@ export function StaffReturnDetailDialog({
     return `${hh}:${min} ${dd}/${mm}/${yyyy}`
   }
 
-  async function handleUpdateStatus(nextStatus: 'APPROVED' | 'REJECTED' | 'COMPLETED') {
+  async function handleUpdateStatus(
+    nextStatus: 'APPROVED' | 'REJECTED' | 'PICKED_UP' | 'COMPLETED' | 'DELIVERY_FAILED'
+  ) {
     if (nextStatus === 'REJECTED' && !staffNote.trim()) {
       setErrorMessage(t('returns.detail.requiredNote'))
+      return
+    }
+
+    if (nextStatus === 'DELIVERY_FAILED' && !staffNote.trim()) {
+      setErrorMessage('Vui lòng nhập lý do giao hàng thất bại')
       return
     }
 
@@ -152,6 +164,30 @@ export function StaffReturnDetailDialog({
       setIsSubmitting(false)
     }
   }
+
+  // Xác định các nút cần hiển thị dựa trên status
+  function getAvailableActions() {
+    switch (returnRequest.status) {
+      case 'PENDING':
+        return [
+          { value: 'APPROVED', label: t('returns.detail.btnApprove'), variant: 'primary' },
+          { value: 'REJECTED', label: t('returns.detail.btnReject'), variant: 'danger' }
+        ]
+      case 'APPROVED':
+        return [
+          { value: 'PICKED_UP', label: t('returns.stats.pickedUp'), variant: 'primary' }
+        ]
+      case 'PICKED_UP':
+        return [
+          { value: 'COMPLETED', label: t('returns.stats.completed'), variant: 'success' },
+          { value: 'DELIVERY_FAILED', label: t('returns.stats.deliveryFailed'), variant: 'danger' }
+        ]
+      default:
+        return []
+    }
+  }
+
+  const availableActions = getAvailableActions()
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in duration-200'>
@@ -271,10 +307,12 @@ export function StaffReturnDetailDialog({
                           <span className='text-muted-foreground'>SL:</span>{' '}
                           <strong className='text-foreground'>{item.quantity}</strong>
                         </div>
-                        <div>
-                          <span className='text-muted-foreground'>Hoàn lại:</span>{' '}
-                          <strong className='text-primary font-bold'>{formatPrice(item.refundAmount)}</strong>
-                        </div>
+                        {returnRequest.type === 'RETURN' && (
+                          <div>
+                            <span className='text-muted-foreground'>Hoàn lại:</span>{' '}
+                            <strong className='text-primary font-bold'>{formatPrice(item.refundAmount)}</strong>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -359,6 +397,25 @@ export function StaffReturnDetailDialog({
                 </div>
               )}
 
+              {/* Thông tin bổ sung */}
+              <div className='rounded-xl border border-border bg-card p-4 space-y-3'>
+                <h4 className='text-xs font-bold uppercase text-muted-foreground tracking-wider border-b border-border pb-2'>
+                  Thông tin bổ sung
+                </h4>
+                <div className='space-y-2 text-sm'>
+                  <div className='flex justify-between'>
+                    <span className='text-muted-foreground'>Ngày tạo:</span>
+                    <span className='text-foreground'>{formatDate(returnRequest.createdAt)}</span>
+                  </div>
+                  {returnRequest.updatedAt && returnRequest.updatedAt !== returnRequest.createdAt && (
+                    <div className='flex justify-between'>
+                      <span className='text-muted-foreground'>Cập nhật:</span>
+                      <span className='text-foreground'>{formatDate(returnRequest.updatedAt)}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Processing Info (if resolved) */}
               {returnRequest.processedBy && (
                 <div className='rounded-xl border border-border bg-muted/10 p-4 space-y-2 text-xs'>
@@ -381,28 +438,30 @@ export function StaffReturnDetailDialog({
                       <span className='text-foreground'>{formatDate(returnRequest.completedAt)}</span>
                     </div>
                   )}
+
                   {returnRequest.staffNote && (
                     <div className='mt-2 border-t border-border/60 pt-2'>
-                      <span className='text-muted-foreground block mb-1'>{t('returns.detail.staffNote')}:</span>
-                      <p className='bg-card p-2 rounded border border-border text-foreground font-medium whitespace-pre-line italic'>
+                      <span className='text-muted-foreground block mb-1'>Lý do / Ghi chú:</span>
+                      <p className='bg-card p-2 rounded border border-border text-foreground font-medium whitespace-pre-line'>
                         {returnRequest.staffNote}
                       </p>
                     </div>
                   )}
                 </div>
               )}
-
               {/* Action Buttons (For Staff to resolve) */}
-              {(isPending || isApproved) && (
+              {availableActions.length > 0 && (
                 <div className='rounded-xl border border-border bg-card p-4 space-y-4'>
                   <h4 className='text-xs font-bold uppercase text-muted-foreground tracking-wider border-b border-border pb-2'>
                     {t('returns.detail.actionTitle')}
                   </h4>
-                  
+
                   <div className='space-y-2'>
                     <label htmlFor='staff-note' className='text-xs font-semibold text-muted-foreground block'>
                       {t('returns.detail.staffNote')}{' '}
-                      {isPending && <span className='text-rose-500'>* (khi từ chối)</span>}
+                      {(returnRequest.status === 'PENDING' || returnRequest.status === 'PICKED_UP') && (
+                        <span className='text-rose-500'>* (bắt buộc khi từ chối hoặc giao thất bại)</span>
+                      )}
                     </label>
                     <textarea
                       id='staff-note'
@@ -415,40 +474,36 @@ export function StaffReturnDetailDialog({
                   </div>
 
                   <div className='flex flex-col gap-2'>
-                    {isPending && (
-                      <>
-                        <button
-                          type='button'
-                          onClick={() => handleUpdateStatus('APPROVED')}
-                          disabled={isSubmitting}
-                          className='inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90 active:scale-98 disabled:opacity-50 transition-all'
-                        >
-                          <MaterialIcon name='check' className='text-lg' />
-                          {t('returns.detail.btnApprove')}
-                        </button>
-                        <button
-                          type='button'
-                          onClick={() => handleUpdateStatus('REJECTED')}
-                          disabled={isSubmitting}
-                          className='inline-flex w-full items-center justify-center gap-2 rounded-xl bg-rose-50 border border-rose-200 px-4 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-100 active:scale-98 disabled:opacity-50 transition-all dark:bg-rose-950/20 dark:border-rose-900/50 dark:text-rose-400 dark:hover:bg-rose-950/40'
-                        >
-                          <MaterialIcon name='close' className='text-lg' />
-                          {t('returns.detail.btnReject')}
-                        </button>
-                      </>
-                    )}
+                    {availableActions.map((action) => {
+                      let className = 'inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm hover:opacity-90 active:scale-98 disabled:opacity-50 transition-all'
 
-                    {isApproved && (
-                      <button
-                        type='button'
-                        onClick={() => handleUpdateStatus('COMPLETED')}
-                        disabled={isSubmitting}
-                        className='inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:opacity-90 active:scale-98 disabled:opacity-50 transition-all dark:bg-emerald-700'
-                      >
-                        <MaterialIcon name='done_all' className='text-lg' />
-                        {t('returns.detail.btnComplete')}
-                      </button>
-                    )}
+                      if (action.variant === 'primary') {
+                        className += ' bg-primary text-white'
+                      } else if (action.variant === 'danger') {
+                        className += ' bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/20 dark:border-rose-900/50 dark:text-rose-400 dark:hover:bg-rose-950/40'
+                      } else if (action.variant === 'success') {
+                        className += ' bg-emerald-600 text-white dark:bg-emerald-700'
+                      } else {
+                        className += ' bg-primary text-white'
+                      }
+
+                      return (
+                        <button
+                          key={action.value}
+                          type='button'
+                          onClick={() => handleUpdateStatus(action.value as any)}
+                          disabled={isSubmitting}
+                          className={className}
+                        >
+                          {action.value === 'APPROVED' && <MaterialIcon name='check' className='text-lg' />}
+                          {action.value === 'REJECTED' && <MaterialIcon name='close' className='text-lg' />}
+                          {action.value === 'PICKED_UP' && <MaterialIcon name='local_shipping' className='text-lg' />}
+                          {action.value === 'COMPLETED' && <MaterialIcon name='done_all' className='text-lg' />}
+                          {action.value === 'DELIVERY_FAILED' && <MaterialIcon name='error' className='text-lg' />}
+                          {action.label}
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
               )}

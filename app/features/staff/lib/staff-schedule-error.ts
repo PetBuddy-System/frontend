@@ -67,7 +67,7 @@ function resolveFallbackKey(info: ErrorInfo, context: StaffScheduleErrorContext)
   if (info.status === 403) return 'staffSchedule.errors.forbidden'
   if (info.status && info.status >= 500) return 'staffSchedule.errors.server'
   if (info.status === 400 && context === 'checkIn') return 'staffSchedule.errors.checkInNotAllowed'
-  if (info.status === 400 && context === 'checkOut') return 'staffSchedule.errors.checkOutNotAllowed'
+  if (info.status === 400 && context === 'checkOut') return 'staffSchedule.errors.checkOutRequiresCheckIn'
   if (info.status === 400) return 'staffSchedule.errors.badRequest'
   if (!info.status && !info.message) return 'staffSchedule.errors.network'
 

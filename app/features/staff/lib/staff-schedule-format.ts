@@ -1,4 +1,5 @@
 const VIETNAM_TIME_ZONE = 'Asia/Ho_Chi_Minh'
+const VIETNAM_UTC_OFFSET_HOURS = 7
 const DATE_ONLY_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
 const JAVA_LOCAL_DATE_TIME_PATTERN =
   /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?$/
@@ -41,7 +42,7 @@ function buildLocalDate(year: string, month: string, day: string) {
   return new Date(Number(year), Number(month) - 1, Number(day))
 }
 
-function buildUtcDateTime(
+function buildVietnamDateTime(
   year: string,
   month: string,
   day: string,
@@ -50,7 +51,14 @@ function buildUtcDateTime(
   second = '0'
 ) {
   return new Date(
-    Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second))
+    Date.UTC(
+      Number(year),
+      Number(month) - 1,
+      Number(day),
+      Number(hour) - VIETNAM_UTC_OFFSET_HOURS,
+      Number(minute),
+      Number(second)
+    )
   )
 }
 
@@ -140,7 +148,7 @@ export function formatStaffScheduleDateTime(value?: string) {
 
   if (localDateTimeMatch) {
     const [, year, month, day, hour, minute, second] = localDateTimeMatch
-    return formatDateTimeParts(buildUtcDateTime(year, month, day, hour, minute, second))
+    return formatDateTimeParts(buildVietnamDateTime(year, month, day, hour, minute, second))
   }
 
   const date = parseBrowserDate(value)

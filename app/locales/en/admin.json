@@ -228,7 +228,16 @@
     "actions": {
       "create": "Create new booking",
       "edit": "Edit booking",
+      "openActions": "Open booking actions",
+      "refresh": "Refresh",
       "view": "View booking"
+    },
+    "actionsByStatus": {
+      "ACCEPTED": "Accept booking",
+      "IN_PROGRESS": "Start service",
+      "READY_FOR_PICKUP": "Mark ready for pickup",
+      "COMPLETED": "Complete booking",
+      "CANCELLED": "Cancel booking"
     },
     "pagination": {
       "label": "Booking pagination",
@@ -250,7 +259,15 @@
       "cancelled": "Cancelled",
       "completed": "Done",
       "confirmed": "Confirmed",
-      "pending": "Pending"
+      "pending": "Pending",
+      "PENDING_PAYMENT": "Pending payment",
+      "FAILED": "Failed",
+      "PENDING_ACCEPTANCE": "Pending",
+      "ACCEPTED": "Accepted",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
     },
     "subtitle": "Track and coordinate pet care appointments.",
     "table": {
@@ -261,8 +278,10 @@
         "dateTime": "Date & time",
         "pet": "Pet",
         "service": "Service",
-        "status": "Status"
+        "status": "Status",
+        "deposit": "Deposit"
       },
+      "emptyValue": "—",
       "rows": {
         "cj9915": {
           "customer": "Hoang Kim Yen",
@@ -280,9 +299,46 @@
           "customer": "Nguyen Van An",
           "pet": "Bo (Poodle)"
         }
-      }
+      },
+      "remaining": "Remaining {{value}}"
     },
     "title": "Service Booking Management",
+    "tabs": {
+      "ALL": "All",
+      "PENDING_PAYMENT": "Pending payment",
+      "FAILED": "Failed",
+      "PENDING_ACCEPTANCE": "Pending acceptance",
+      "ACCEPTED": "Accepted",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "filters": {
+      "status": "Booking status",
+      "fromDate": "From date",
+      "toDate": "To date",
+      "clear": "Clear"
+    },
+    "feedback": {
+      "loadFailed": "Could not load bookings.",
+      "detailFailed": "Could not load booking details.",
+      "updateFailed": "Could not update booking status.",
+      "updateSuccess": "Booking status updated.",
+      "emptyTitle": "No bookings found",
+      "emptyText": "Try another status tab or adjust the date range."
+    },
+    "cancelModal": {
+      "close": "Close cancellation dialog",
+      "title": "Cancel booking",
+      "subtitle": "Enter the cancellation reason for booking {{code}}.",
+      "reasonLabel": "Cancellation reason",
+      "reasonPlaceholder": "Explain why this booking is cancelled...",
+      "reasonRequired": "Please enter a cancellation reason.",
+      "keep": "Keep booking",
+      "confirm": "Cancel booking",
+      "submitting": "Cancelling..."
+    },
     "toolbar": {
       "customerLabel": "Search customer",
       "dateLabel": "Date range",
@@ -296,6 +352,32 @@
         "earCare": "Ear cleaning",
         "grooming": "Grooming"
       }
+    },
+    "bookingTypes": {
+      "IN_STORE": "In store",
+      "AT_HOME": "At home"
+    },
+    "detail": {
+      "close": "Close booking detail",
+      "title": "Booking details",
+      "cancel": "Close",
+      "save": "Update status",
+      "paymentTitle": "Payment summary",
+      "unassigned": "Unassigned",
+      "fields": {
+        "service": "Service",
+        "pet": "Pet",
+        "schedule": "Schedule",
+        "bookingType": "Booking type",
+        "totalAmount": "Total amount",
+        "depositAmount": "Deposit",
+        "remainingAmount": "Remaining",
+        "status": "Status",
+        "note": "Note",
+        "staff": "Staff",
+        "address": "Address",
+        "cancelReason": "Cancel reason"
+      }
     }
   },
   "serviceManagement": {
@@ -303,7 +385,10 @@
       "add": "Add new service",
       "delete": "Delete service",
       "edit": "Edit service",
-      "view": "View service"
+      "view": "View service",
+      "schedule": "View weekly schedule",
+      "activate": "Activate service",
+      "deactivate": "Deactivate service"
     },
     "create": {
       "accent": {
@@ -322,7 +407,13 @@
         "category": "Category",
         "description": "Service description",
         "name": "Service name",
-        "status": "Active status"
+        "status": "Active status",
+        "catalogType": "Catalog type",
+        "petSpecies": "Pet species",
+        "price": "Price",
+        "weightRange": "Weight range",
+        "durationMinute": "Duration minute",
+        "bufferTime": "Buffer time"
       },
       "media": {
         "hint": "PNG, JPG up to 10MB",
@@ -352,7 +443,12 @@
         "text": "High-quality imagery and detailed descriptions help customers decide faster and improve service booking conversion.",
         "title": "Quick tip"
       },
-      "title": "Add new service"
+      "title": "Add new service",
+      "dto": {
+        "label": "Catalog DTO",
+        "title": "Ready for create/update payload",
+        "text": "This form follows catalogName, description, catalogType, petSpecies, price, weightRange, durationMinute, bufferTime, and status."
+      }
     },
     "categories": {
       "grooming": "Grooming & Spa",
@@ -363,9 +459,10 @@
       "advanced": "Advanced filter",
       "categories": {
         "all": "All",
-        "grooming": "Grooming & Spa",
+        "grooming": "Grooming",
         "hotel": "Hotel",
-        "vet": "Vet"
+        "vet": "Vet",
+        "spa": "Spa"
       },
       "status": {
         "active": "Active",
@@ -373,12 +470,22 @@
         "inactive": "Inactive"
       }
     },
+    "feedback": {
+      "empty": "No services found.",
+      "loadFailed": "Failed to load services.",
+      "loadSlotsFailed": "Failed to load time slots.",
+      "loading": "Loading services...",
+      "saveFailed": "Unable to save changes.",
+      "saving": "Saving..."
+    },
     "pagination": {
-      "showing": "Showing 1 - 10 of 24 services"
+      "showing": "Showing {{shown}} of {{total}} services",
+      "previous": "Previous page",
+      "next": "Next page"
     },
     "stats": {
       "active": "Active",
-      "promotions": "Promotions",
+      "promotions": "Inactive",
       "total": "Total services"
     },
     "status": {
@@ -393,7 +500,8 @@
         "name": "Service name",
         "price": "Base price",
         "status": "Status",
-        "updatedAt": "Updated"
+        "updatedAt": "Updated",
+        "duration": "Duration"
       },
       "rows": {
         "bathTrimCombo": {
@@ -408,7 +516,8 @@
           "description": "Air-conditioned single room",
           "name": "VIP Pet Hotel"
         }
-      }
+      },
+      "durationValue": "{{duration}} min"
     },
     "title": "Service Management",
     "pricing": {
@@ -440,6 +549,73 @@
           "title": "Trimming & styling"
         }
       }
+    },
+    "weightRanges": {
+      "EXTRA_SMALL": "Under 5kg",
+      "SMALL": "5kg to 8kg",
+      "MEDIUM": "8kg to 12kg",
+      "LARGE": "12kg to 18kg",
+      "EXTRA_LARGE": "18kg to 25kg",
+      "EXTRA_EXTRA_LARGE": "Over 25kg"
+    },
+    "searchPlaceholder": "Search service name or catalog ID...",
+    "catalogTypes": {
+      "AT_STORE": "At store",
+      "AT_HOME": "At home"
+    },
+    "catalogStatus": {
+      "AVAILABLE": "Available",
+      "UNAVAILABLE": "Unavailable",
+      "DISCONTINUED": "Discontinued"
+    },
+    "detail": {
+      "close": "Close service detail",
+      "viewTitle": "Service details",
+      "editTitle": "Edit service",
+      "cancel": "Close",
+      "save": "Save changes",
+      "fields": {
+        "catalogName": "Service name",
+        "catalogType": "Catalog type",
+        "petSpecies": "Pet species",
+        "weightRange": "Weight range",
+        "price": "Price",
+        "durationMinute": "Duration minute",
+        "bufferTime": "Buffer time",
+        "status": "Status",
+        "description": "Description"
+      }
+    },
+    "schedule": {
+      "close": "Close weekly schedule",
+      "title": "Weekly time slots",
+      "subtitle": "{{duration}} minutes per service, {{buffer}} minutes buffer between sessions.",
+      "closeButton": "Close",
+      "createSlot": "Create time slot",
+      "active": "Active time slot",
+      "inactive": "Inactive time slot",
+      "empty": "No slots"
+    },
+    "timeSlot": {
+      "close": "Close time-slot form",
+      "title": "Create time slot",
+      "cancel": "Cancel",
+      "save": "Save time slot",
+      "fields": {
+        "catalog": "Catalog",
+        "dayOfWeek": "Day of week",
+        "startTime": "Start time",
+        "isActive": "Open this slot"
+      }
+    },
+    "weekDays": {
+      "MONDAY": "Monday",
+      "TUESDAY": "Tuesday",
+      "WEDNESDAY": "Wednesday",
+      "THURSDAY": "Thursday",
+      "FRIDAY": "Friday",
+      "SATURDAY": "Saturday",
+      "SUNDAY": "Sunday"
     }
   },
   "topNav": {
@@ -850,5 +1026,11 @@
     "unexpectedError": "An error occurred. Please try again.",
     "emptyPlaceholder": "Leave blank = unlimited",
     "emptyOrderPlaceholder": "Leave blank = no requirement"
+  },
+  "footer": {
+    "label": "Admin footer",
+    "version": "PETBUDDY ADMIN v2.4.0",
+    "privacy": "Privacy policy",
+    "terms": "Terms of service"
   }
 }

@@ -13,10 +13,83 @@ import {
   formatStaffScheduleDateTime
 } from '../lib/staff-schedule-format'
 import {
+  getStaffAttendanceStatusClassName,
   getStaffScheduleShiftClassName,
   getStaffScheduleStatusClassName
 } from '../lib/staff-schedule-style'
 import { staffScheduleApi, type StaffScheduleResponse } from '../services'
+
+const CHECK_IN_OPEN_MINUTES_BEFORE = 15
+const CHECK_IN_ON_TIME_GRACE_MINUTES = 5
+const CHECK_IN_CLOSE_MINUTES_AFTER = 30
+const VIETNAM_UTC_OFFSET_HOURS = 7
+
+function parseScheduleDateTime(workDate: string, time: string) {
+  const [hours = '', minutes = '0', seconds = '0'] = time.split(':')
+  const [year = '', month = '', day = ''] = workDate.split('-')
+  const yearValue = Number(year)
+  const monthValue = Number(month)
+  const dayValue = Number(day)
+  const hourValue = Number(hours)
+  const minuteValue = Number(minutes)
+  const secondValue = Number(seconds)
+
+  if (
+    Number.isNaN(yearValue) ||
+    Number.isNaN(monthValue) ||
+    Number.isNaN(dayValue) ||
+    Number.isNaN(hourValue) ||
+    Number.isNaN(minuteValue) ||
+    Number.isNaN(secondValue)
+  ) {
+    return null
+  }
+
+  return new Date(
+    Date.UTC(
+      yearValue,
+      monthValue - 1,
+      dayValue,
+      hourValue - VIETNAM_UTC_OFFSET_HOURS,
+      minuteValue,
+      secondValue
+    )
+  )
+}
+
+function addMinutes(date: Date, minutes: number) {
+  return new Date(date.getTime() + minutes * 60_000)
+}
+
+function getCheckInClientErrorKey(schedule: StaffScheduleResponse) {
+  if (schedule.checkInAt) return 'staffSchedule.errors.checkInAlreadyDone'
+  if (schedule.attendanceStatus === 'ABSENT') return 'staffSchedule.errors.checkInClosed'
+  if (schedule.attendanceStatus === 'LEAVE') return 'staffSchedule.errors.checkInNotAllowed'
+  if (schedule.scheduleStatus !== 'SCHEDULED') return 'staffSchedule.errors.checkInNotAllowed'
+
+  const shiftStart = parseScheduleDateTime(schedule.workDate, schedule.startTime)
+  if (!shiftStart) return null
+
+  const now = new Date()
+  const checkInOpenAt = addMinutes(shiftStart, -CHECK_IN_OPEN_MINUTES_BEFORE)
+  const checkInClosedAt = addMinutes(shiftStart, CHECK_IN_CLOSE_MINUTES_AFTER)
+
+  if (now < checkInOpenAt) return 'staffSchedule.errors.checkInTooEarly'
+  if (now > checkInClosedAt) return 'staffSchedule.errors.checkInClosed'
+
+  return null
+}
+
+function getCheckOutClientErrorKey(schedule: StaffScheduleResponse) {
+  if (schedule.checkOutAt) return 'staffSchedule.errors.checkOutAlreadyDone'
+  if (!schedule.checkInAt) return 'staffSchedule.errors.checkOutRequiresCheckIn'
+  if (schedule.scheduleStatus !== 'WORKING') return 'staffSchedule.errors.checkOutNotAllowed'
+
+  const shiftEnd = parseScheduleDateTime(schedule.workDate, schedule.endTime)
+  if (!shiftEnd) return null
+
+  return new Date() < shiftEnd ? 'staffSchedule.errors.checkOutTooEarly' : null
+}
 
 export function StaffScheduleDetailPage() {
   const { t } = useTranslation('staff')
@@ -54,6 +127,12 @@ export function StaffScheduleDetailPage() {
   async function handleCheckIn() {
     if (!schedule) return
 
+    const clientErrorKey = getCheckInClientErrorKey(schedule)
+    if (clientErrorKey) {
+      setMessage({ type: 'error', text: t(clientErrorKey) })
+      return
+    }
+
     setIsSubmitting(true)
     setMessage(null)
 
@@ -73,6 +152,12 @@ export function StaffScheduleDetailPage() {
 
   async function handleCheckOut() {
     if (!schedule) return
+
+    const clientErrorKey = getCheckOutClientErrorKey(schedule)
+    if (clientErrorKey) {
+      setMessage({ type: 'error', text: t(clientErrorKey) })
+      return
+    }
 
     setIsSubmitting(true)
     setMessage(null)
@@ -155,14 +240,26 @@ export function StaffScheduleDetailPage() {
                           </span>
                         </div>
                       </div>
-                      <span
-                        className={cn(
-                          'w-fit rounded-full border px-3 py-1 text-xs font-bold',
-                          getStaffScheduleStatusClassName(schedule.scheduleStatus)
-                        )}
-                      >
-                        {t(`staffSchedule.statuses.${schedule.scheduleStatus}`)}
-                      </span>
+                      <div className='flex flex-wrap gap-2 sm:justify-end'>
+                        <span
+                          className={cn(
+                            'w-fit rounded-full border px-3 py-1 text-xs font-bold',
+                            getStaffScheduleStatusClassName(schedule.scheduleStatus)
+                          )}
+                        >
+                          {t(`staffSchedule.statuses.${schedule.scheduleStatus}`)}
+                        </span>
+                        {schedule.attendanceStatus ? (
+                          <span
+                            className={cn(
+                              'w-fit rounded-full border px-3 py-1 text-xs font-bold',
+                              getStaffAttendanceStatusClassName(schedule.attendanceStatus)
+                            )}
+                          >
+                            {t(`staffSchedule.attendanceStatuses.${schedule.attendanceStatus}`)}
+                          </span>
+                        ) : null}
+                      </div>
                     </div>
                   </div>
 
@@ -181,6 +278,15 @@ export function StaffScheduleDetailPage() {
                       icon='logout'
                       label={t('staffSchedule.detail.endTime')}
                       value={schedule.endTime}
+                    />
+                    <DetailItem
+                      icon='fact_check'
+                      label={t('staffSchedule.detail.attendanceStatus')}
+                      value={
+                        schedule.attendanceStatus
+                          ? t(`staffSchedule.attendanceStatuses.${schedule.attendanceStatus}`)
+                          : '-'
+                      }
                     />
                     <DetailItem
                       icon='login'
@@ -237,6 +343,13 @@ export function StaffScheduleDetailPage() {
                       {t('staffSchedule.actions.checkOut')}
                     </Button>
                   </div>
+                  <p className='mt-4 text-xs leading-5 text-muted-foreground'>
+                    {t('staffSchedule.detail.checkInWindow', {
+                      before: CHECK_IN_OPEN_MINUTES_BEFORE,
+                      onTime: CHECK_IN_ON_TIME_GRACE_MINUTES,
+                      close: CHECK_IN_CLOSE_MINUTES_AFTER
+                    })}
+                  </p>
                 </aside>
               </div>
             ) : (

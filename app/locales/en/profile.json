@@ -256,6 +256,89 @@
       }
     }
   },
+  "myBookings": {
+    "headerTitle": "My bookings",
+    "headerSubtitle": "Track spa appointments, payments, and care status for your pets.",
+    "eyebrow": "Booking history",
+    "title": "Your pet care appointments",
+    "subtitle": "Every booking is grouped by status so you can quickly continue payment, follow staff progress, or review completed visits.",
+    "stats": {
+      "all": "All bookings",
+      "pendingPayment": "Need payment",
+      "inProgress": "Active care",
+      "completed": "Completed"
+    },
+    "tabs": {
+      "ALL": "All",
+      "PENDING_PAYMENT": "Pending payment",
+      "FAILED": "Failed",
+      "PENDING_ACCEPTANCE": "Pending acceptance",
+      "ACCEPTED": "Accepted",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "status": {
+      "PENDING_PAYMENT": "Pending payment",
+      "FAILED": "Payment failed",
+      "PENDING_ACCEPTANCE": "Pending acceptance",
+      "ACCEPTED": "Accepted",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "bookingTypes": {
+      "AT_HOME": "At home",
+      "AT_STORE": "At store",
+      "IN_STORE": "At store"
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "viewDetail": "View details",
+      "payNow": "Pay now",
+      "retryPayment": "Retry payment"
+    },
+    "card": {
+      "services": "Services",
+      "pets": "Pets",
+      "total": "Total",
+      "deposit": "Deposit",
+      "remaining": "Remaining",
+      "noService": "Pet spa service"
+    },
+    "detail": {
+      "title": "Booking details",
+      "customer": "Customer",
+      "phone": "Phone",
+      "staff": "Staff",
+      "unassigned": "Not assigned yet",
+      "address": "Address",
+      "cancelReason": "Cancel reason",
+      "paymentTitle": "Payment summary"
+    },
+    "payment": {
+      "title": "Complete deposit payment",
+      "subtitle": "Pay booking {{code}} securely by card.",
+      "cardholder": "Cardholder name",
+      "cardInfo": "Card information",
+      "pay": "Pay {{amount}}",
+      "processing": "Processing payment...",
+      "success": "Payment successful. Your booking is now waiting for staff confirmation.",
+      "failed": "Payment failed. Please check your card and try again.",
+      "stripeMissing": "Stripe publishable key is missing. Please configure VITE_STRIPE_PK.",
+      "cardElementMissing": "Could not load the card input. Please refresh and try again.",
+      "cardholderMissing": "Please enter the cardholder name."
+    },
+    "feedback": {
+      "loadFailed": "Could not load your bookings. Please try again.",
+      "detailFailed": "Could not load booking details.",
+      "retryFailed": "Could not create a new payment. Please try again.",
+      "emptyTitle": "No bookings yet",
+      "emptyText": "Your spa and grooming appointments will appear here after you book a service."
+    }
+  },
   "orderHistory": {
     "headerTitle": "My Orders",
     "headerSubtitle": "Track and manage your purchase history.",

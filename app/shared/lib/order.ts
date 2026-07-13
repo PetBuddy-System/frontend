@@ -1,5 +1,5 @@
-import type {PaymentResponse} from './payment'
-import type {VoucherResponse} from './voucher'
+import type { PaymentResponse } from './payment'
+import type { VoucherResponse } from './voucher'
 
 export type OrderStatus =
   | 'PENDING'

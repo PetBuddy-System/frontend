@@ -19,6 +19,7 @@ import {
 } from '../lib/staff-schedule-format'
 import { getStaffScheduleErrorMessage } from '../lib/staff-schedule-error'
 import {
+  getStaffAttendanceStatusClassName,
   getStaffScheduleShiftClassName,
   getStaffScheduleStatusClassName
 } from '../lib/staff-schedule-style'
@@ -33,8 +34,6 @@ const STATUS_OPTIONS: Array<StaffScheduleStatus | 'ALL'> = [
   'SCHEDULED',
   'WORKING',
   'COMPLETED',
-  'ABSENT',
-  'LEAVE',
   'CANCELLED'
 ]
 
@@ -118,6 +117,19 @@ export function StaffWeeklySchedulePage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Schedule list is synchronized after filter changes.
     void loadSchedules()
   }, [loadSchedules])
+
+  function handleMoveRange(days: number) {
+    const currentStart = parseDateInputValue(fromDate) ?? todayWeekStart
+    const currentEnd = parseDateInputValue(toDate) ?? addDays(currentStart, 6)
+
+    setFromDate(toDateInputValue(addDays(currentStart, days)))
+    setToDate(toDateInputValue(addDays(currentEnd, days)))
+  }
+
+  function handleShowCurrentWeek() {
+    setFromDate(toDateInputValue(todayWeekStart))
+    setToDate(toDateInputValue(addDays(todayWeekStart, 6)))
+  }
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -208,7 +220,7 @@ export function StaffWeeklySchedulePage() {
             </section>
 
             <section className='overflow-hidden rounded-xl border border-border bg-card shadow-sm'>
-              <div className='flex flex-col gap-2 border-b border-border bg-muted/40 px-4 py-4 sm:flex-row sm:items-end sm:justify-between'>
+              <div className='flex flex-col gap-4 border-b border-border bg-muted/40 px-4 py-4 xl:flex-row xl:items-end xl:justify-between'>
                 <div>
                   <p className='text-xs font-bold uppercase text-muted-foreground'>
                     {t('staffSchedule.scheduleBoard.monthYear')}
@@ -217,9 +229,25 @@ export function StaffWeeklySchedulePage() {
                     {getRangeTitle(rangeStart, rangeEnd)}
                   </h2>
                 </div>
-                <p className='text-sm font-medium text-muted-foreground'>
-                  {t('staffSchedule.scheduleBoard.rangeCount', { count: rangeDays.length })}
-                </p>
+                <div className='flex flex-col gap-3 sm:flex-row sm:items-center'>
+                  <p className='text-sm font-medium text-muted-foreground'>
+                    {t('staffSchedule.scheduleBoard.rangeCount', { count: rangeDays.length })}
+                  </p>
+                  <div className='grid gap-2 sm:grid-cols-3'>
+                    <Button type='button' variant='outline' size='sm' onClick={() => handleMoveRange(-7)}>
+                      <MaterialIcon name='chevron_left' className='text-lg' />
+                      {t('staffSchedule.actions.previousWeek')}
+                    </Button>
+                    <Button type='button' variant='outline' size='sm' onClick={handleShowCurrentWeek}>
+                      <MaterialIcon name='today' className='text-lg' />
+                      {t('staffSchedule.actions.thisWeek')}
+                    </Button>
+                    <Button type='button' variant='outline' size='sm' onClick={() => handleMoveRange(7)}>
+                      {t('staffSchedule.actions.nextWeek')}
+                      <MaterialIcon name='chevron_right' className='text-lg' />
+                    </Button>
+                  </div>
+                </div>
               </div>
 
               {isLoading ? (
@@ -279,14 +307,26 @@ export function StaffWeeklySchedulePage() {
                                       <span>{schedule.endTime}</span>
                                     </span>
                                   </div>
-                                  <span
-                                    className={cn(
-                                      'mt-3 inline-flex rounded-full border px-2 py-1 text-[11px] font-bold',
-                                      getStaffScheduleStatusClassName(schedule.scheduleStatus)
-                                    )}
-                                  >
-                                    {t(`staffSchedule.statuses.${schedule.scheduleStatus}`)}
-                                  </span>
+                                  <div className='mt-3 flex flex-wrap gap-1.5'>
+                                    <span
+                                      className={cn(
+                                        'inline-flex rounded-full border px-2 py-1 text-[11px] font-bold',
+                                        getStaffScheduleStatusClassName(schedule.scheduleStatus)
+                                      )}
+                                    >
+                                      {t(`staffSchedule.statuses.${schedule.scheduleStatus}`)}
+                                    </span>
+                                    {schedule.attendanceStatus ? (
+                                      <span
+                                        className={cn(
+                                          'inline-flex rounded-full border px-2 py-1 text-[11px] font-bold',
+                                          getStaffAttendanceStatusClassName(schedule.attendanceStatus)
+                                        )}
+                                      >
+                                        {t(`staffSchedule.attendanceStatuses.${schedule.attendanceStatus}`)}
+                                      </span>
+                                    ) : null}
+                                  </div>
                                 </button>
                               ))
                             ) : (
