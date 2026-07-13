@@ -162,6 +162,7 @@ export function useCheckoutState() {
           key: item.cartItemId,
           image: item.imageUrl,
           price: item.price,
+          salePrice: item.salePrice ?? item.price,
           quantity: item.quantity,
           title: item.productName,
         }))
@@ -204,6 +205,7 @@ export function useCheckoutState() {
           key: String(d.orderDetailId),
           image: d.productImage ?? '',
           price: d.unitPrice,
+          salePrice: d.salePrice ?? d.unitPrice,
           quantity: d.quantity,
           title: d.productName,
           productId: d.productId,

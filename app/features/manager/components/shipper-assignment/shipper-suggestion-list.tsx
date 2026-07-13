@@ -25,7 +25,8 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
       try {
         const res = await getShipperSuggestionsApi(orderId)
         if (res.success && Array.isArray(res.data)) {
-          setSuggestions(res.data)
+          const shipperOnly = res.data.filter((s) => s.staffTask === 'SHIPPER')
+          setSuggestions(shipperOnly)
         } else {
           setError(res.message || t('shipperAssignment.errors.loadSuggestionsFailed'))
         }
@@ -101,18 +102,15 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
               className='flex flex-col justify-between border border-border/70 rounded-2xl p-4 bg-background shadow-sm hover:shadow-md transition-shadow'
             >
               <div className='space-y-3'>
-                {/* Header: Name & ID */}
                 <div className='flex items-start justify-between'>
                   <div>
                     <h4 className='font-bold text-foreground line-clamp-1'>{shipper.staffName}</h4>
-                    <p className='text-xs text-muted-foreground'>ID: {shipper.staffId}</p>
+                    <p className='text-xs text-muted-foreground'>Email: {shipper.staffEmail}</p>
                   </div>
                   <div className='h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center'>
                     <MaterialIcon name='person' className='text-[18px]' />
                   </div>
                 </div>
-
-                {/* Cluster Distance */}
                 <div className='flex items-center gap-2 text-sm text-muted-foreground font-medium'>
                   <MaterialIcon name='explore' className='text-[18px] text-teal-500' />
                   <span>
@@ -122,7 +120,6 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
                   </span>
                 </div>
 
-                {/* Load capacity info */}
                 <div className='space-y-1'>
                   <div className='flex items-center justify-between text-xs font-semibold'>
                     <span className='text-muted-foreground'>{t('shipperAssignment.currentLoadLabel', 'Tải trọng:')}</span>
@@ -130,7 +127,6 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
                       {shipper.currentLoad} / {shipper.maxCapacity} đơn
                     </span>
                   </div>
-                  {/* Progress bar */}
                   <div className='h-1.5 w-full bg-muted rounded-full overflow-hidden'>
                     <div
                       className={`h-full rounded-full transition-all duration-300 ${

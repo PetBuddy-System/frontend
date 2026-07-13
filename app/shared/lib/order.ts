@@ -1,5 +1,6 @@
 import type { PaymentResponse } from './payment'
 import type { VoucherResponse } from './voucher'
+import type {UserResponse} from './auth'
 
 export type OrderStatus =
   | 'PENDING'
@@ -16,7 +17,9 @@ export type OrderStatus =
 
 export interface ShipperSuggestionResponse {
   staffId: string
+  staffEmail: string
   staffName: string
+  staffTask: string 
   currentLoad: number
   maxCapacity: number
   distanceToClusterKm: number | null

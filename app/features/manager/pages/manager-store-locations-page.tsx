@@ -1,4 +1,3 @@
-// app/features/manager/pages/manager-store-locations-page.tsx
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
@@ -402,31 +401,6 @@ export function ManagerStoreLocationsPage() {
                       rows={3}
                       className='w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
                     />
-                  </div>
-
-                  <div className='grid grid-cols-2 gap-4'>
-                    <div>
-                      <label className='block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5'>
-                        {t('storeLocations.latitude')}
-                      </label>
-                      <input
-                        type='number'
-                        value={coords.lat}
-                        readOnly
-                        className='w-full rounded-xl border border-border bg-muted/30 px-4 py-2.5 text-sm text-muted-foreground focus:outline-none'
-                      />
-                    </div>
-                    <div>
-                      <label className='block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5'>
-                        {t('storeLocations.longitude')}
-                      </label>
-                      <input
-                        type='number'
-                        value={coords.lng}
-                        readOnly
-                        className='w-full rounded-xl border border-border bg-muted/30 px-4 py-2.5 text-sm text-muted-foreground focus:outline-none'
-                      />
-                    </div>
                   </div>
 
                   {errorMsg && (
