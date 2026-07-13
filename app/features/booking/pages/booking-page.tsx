@@ -639,20 +639,28 @@ function CustomerInfoStep({
       <p className='mt-1 text-sm text-muted-foreground'>{t('bookingFlow.customer.subtitle')}</p>
 
       <div className='mt-5 grid grid-cols-2 gap-2 rounded-md bg-muted p-1'>
-        {BOOKING_TYPES.map((type) => (
-          <button
-            key={type}
-            type='button'
-            onClick={() => onBookingTypeChange(type)}
-            className={cn(
-              'flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-semibold transition-colors',
-              bookingType === type ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            <MaterialIcon name={type === 'AT_STORE' ? 'storefront' : 'home_pin'} className='text-[18px]' />
-            {t(`bookingFlow.bookingTypes.${type}`)}
-          </button>
-        ))}
+        {BOOKING_TYPES.map((type) => {
+          const isAtHome = type === 'AT_HOME'
+          return (
+            <button
+              key={type}
+              type='button'
+              disabled={isAtHome}
+              onClick={() => onBookingTypeChange(type)}
+              className={cn(
+                'flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-semibold transition-colors',
+                bookingType === type ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground',
+                isAtHome && 'opacity-60 cursor-not-allowed'
+              )}
+            >
+              <MaterialIcon name={type === 'AT_STORE' ? 'storefront' : 'home_pin'} className='text-[18px]' />
+              <span>
+                {t(`bookingFlow.bookingTypes.${type}`)}
+                {isAtHome && ` (${t('bookingFlow.bookingTypes.developing', 'Đang phát triển')})`}
+              </span>
+            </button>
+          )
+        })}
       </div>
 
       <div className='mt-5 grid gap-4 md:grid-cols-2'>

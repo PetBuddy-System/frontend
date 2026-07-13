@@ -330,6 +330,7 @@
       "detail": {
         "assignedAt": "Assigned",
         "assignedStaffs": "Assigned staff",
+        "attendanceStatus": "Attendance status",
         "checkIn": "Check-in",
         "checkOut": "Check-out",
         "createdAt": "Created",
@@ -427,6 +428,12 @@
         "FULL_DAY": "Full day",
         "MORNING": "Morning"
       },
+      "attendanceStatuses": {
+        "ABSENT": "Absent",
+        "LEAVE": "On leave",
+        "LATE": "Late",
+        "ON_TIME": "On time"
+      },
       "stats": {
         "assigned": "Assigned staff on page",
         "page": "Current page",
@@ -444,10 +451,8 @@
         "SHIPPER": "Shipper"
       },
       "statuses": {
-        "ABSENT": "Absent",
         "CANCELLED": "Cancelled",
         "COMPLETED": "Completed",
-        "LEAVE": "On leave",
         "SCHEDULED": "Scheduled",
         "WORKING": "Working"
       },

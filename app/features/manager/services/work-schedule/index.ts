@@ -2,6 +2,7 @@ export { workScheduleApi } from './work-schedule-api'
 export type {
   GetWorkSchedulesParams,
   PageWorkScheduleResponse,
+  StaffAttendanceStatus,
   StaffAssignedResponse,
   StaffReassignRequest,
   StaffScheduleResponse,

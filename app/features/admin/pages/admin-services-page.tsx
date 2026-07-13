@@ -16,7 +16,8 @@ import {
   fetchTimeSlotsByCatalogApi,
   updateCatalogApi,
   updateCatalogStatusApi,
-  toggleTimeSlotActiveApi
+  toggleTimeSlotActiveApi,
+  updateTimeSlotApi
 } from '../services/catalog'
 import {
   mapAdminCatalogToCatalogRequest,
@@ -26,7 +27,8 @@ import {
   type AdminTimeSlot,
   type CatalogStatus,
   type CatalogRequest,
-  type TimeSlotRequest
+  type TimeSlotRequest,
+  type TimeSlotUpdateRequest
 } from '../lib/catalog-management'
 
 export function AdminServicesPage() {
@@ -162,6 +164,25 @@ export function AdminServicesPage() {
     }
   }
 
+  async function handleUpdateTimeSlot(timeSlotId: number, payload: TimeSlotUpdateRequest) {
+    setIsSaving(true)
+    try {
+      const response = await updateTimeSlotApi(timeSlotId, payload)
+      const updatedSlot = mapTimeSlotResponseToAdminTimeSlot(response.data)
+      setTimeSlotsByCatalogId((currentSlots) => ({
+        ...currentSlots,
+        [updatedSlot.catalogId]: (currentSlots[updatedSlot.catalogId] ?? []).map((currentSlot) =>
+          currentSlot.timeSlotId === updatedSlot.timeSlotId ? updatedSlot : currentSlot
+        )
+      }))
+      setErrorMessage(null)
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t('serviceManagement.feedback.saveFailed'))
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   async function handleToggleTimeSlot(slot: AdminTimeSlot) {
     setIsSaving(true)
     try {
@@ -222,6 +243,7 @@ export function AdminServicesPage() {
               onToggleCatalogStatus={handleToggleCatalogStatus}
               onLoadTimeSlots={handleLoadTimeSlots}
               onCreateTimeSlot={handleCreateTimeSlot}
+              onUpdateTimeSlot={handleUpdateTimeSlot}
               onToggleTimeSlot={handleToggleTimeSlot}
             />
             <AdminFooter />

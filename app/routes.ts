@@ -48,7 +48,6 @@ export default [
     route('staff/dashboard', 'routes/staff-dashboard.tsx'),
     route('staff/attendance', 'routes/staff-attendance.tsx'),
     route('staff/disposal-request', 'routes/staff-disposal-request.tsx'),
-    route('staff/shift-request', 'routes/staff-shift-request.tsx'),
     route('staff/weekly-schedule', 'routes/staff-weekly-schedule.tsx'),
     route('staff/weekly-schedule/:staffScheduleId', 'routes/staff-schedule-detail.tsx'),
     route('staff/add-product', 'routes/staff-add-product.tsx'),

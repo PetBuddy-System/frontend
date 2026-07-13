@@ -9,6 +9,7 @@ import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
 import {
   workScheduleApi,
+  type StaffAttendanceStatus,
   type StaffAssignedResponse,
   type WorkScheduleResponse
 } from '../services'
@@ -162,6 +163,14 @@ export function ManagerStaffScheduleStaffPage() {
   )
 }
 
+function getAttendanceStatusClassName(status: StaffAttendanceStatus) {
+  if (status === 'ON_TIME') return 'bg-success/10 text-success'
+  if (status === 'LATE') return 'bg-warning/10 text-warning'
+  if (status === 'LEAVE') return 'bg-info/10 text-info'
+
+  return 'bg-destructive/10 text-destructive'
+}
+
 interface AssignedStaffCardProps {
   staff: StaffAssignedResponse
   disabled: boolean
@@ -180,21 +189,41 @@ function AssignedStaffCard({ staff, disabled, onRemove }: AssignedStaffCardProps
             <p className='truncate text-xs text-muted-foreground'>{staff.staffEmail}</p>
           )}
         </div>
-        <span
-          className={cn(
-            'shrink-0 rounded-full px-2 py-1 text-xs font-bold',
-            staff.scheduleStatus === 'CANCELLED'
-              ? 'bg-destructive/10 text-destructive'
-              : 'bg-success/10 text-success'
-          )}
-        >
-          {t(`staffSchedule.workSchedules.statuses.${staff.scheduleStatus}`)}
-        </span>
+        <div className='flex shrink-0 flex-wrap justify-end gap-1.5'>
+          <span
+            className={cn(
+              'rounded-full px-2 py-1 text-xs font-bold',
+              staff.scheduleStatus === 'CANCELLED'
+                ? 'bg-destructive/10 text-destructive'
+                : 'bg-success/10 text-success'
+            )}
+          >
+            {t(`staffSchedule.workSchedules.statuses.${staff.scheduleStatus}`)}
+          </span>
+          {staff.attendanceStatus ? (
+            <span
+              className={cn(
+                'rounded-full px-2 py-1 text-xs font-bold',
+                getAttendanceStatusClassName(staff.attendanceStatus)
+              )}
+            >
+              {t(`staffSchedule.workSchedules.attendanceStatuses.${staff.attendanceStatus}`)}
+            </span>
+          ) : null}
+        </div>
       </div>
       <div className='mt-4 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3'>
         <span>{t('staffSchedule.workSchedules.detail.assignedAt')}: {formatWorkScheduleDateTime(staff.assignedAt)}</span>
         <span>{t('staffSchedule.workSchedules.detail.checkIn')}: {formatWorkScheduleDateTime(staff.checkInAt)}</span>
         <span>{t('staffSchedule.workSchedules.detail.checkOut')}: {formatWorkScheduleDateTime(staff.checkOutAt)}</span>
+      </div>
+      <div className='mt-2 text-xs text-muted-foreground'>
+        {t('staffSchedule.workSchedules.detail.attendanceStatus')}: {' '}
+        <span className='font-semibold text-foreground'>
+          {staff.attendanceStatus
+            ? t(`staffSchedule.workSchedules.attendanceStatuses.${staff.attendanceStatus}`)
+            : '-'}
+        </span>
       </div>
       <Button
         type='button'

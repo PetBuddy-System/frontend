@@ -4,7 +4,9 @@ import { axiosInstance } from '~/api/mutator/custom-fetch'
 
 export type StaffScheduleShiftType = 'MORNING' | 'AFTERNOON' | 'EVENING' | 'FULL_DAY' | 'CUSTOM'
 
-export type StaffScheduleStatus = 'SCHEDULED' | 'WORKING' | 'COMPLETED' | 'ABSENT' | 'LEAVE' | 'CANCELLED'
+export type StaffScheduleStatus = 'SCHEDULED' | 'WORKING' | 'COMPLETED' | 'CANCELLED'
+
+export type StaffAttendanceStatus = 'ON_TIME' | 'LATE' | 'ABSENT' | 'LEAVE'
 
 export interface StaffScheduleResponse {
   staffScheduleId: string
@@ -16,6 +18,7 @@ export interface StaffScheduleResponse {
   endTime: string
   shiftType: StaffScheduleShiftType
   scheduleStatus: StaffScheduleStatus
+  attendanceStatus?: StaffAttendanceStatus
   assignedAt?: string
   checkInAt?: string
   checkOutAt?: string

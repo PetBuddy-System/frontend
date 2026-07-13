@@ -7,9 +7,9 @@ export type StaffScheduleStatus =
   | 'SCHEDULED'
   | 'WORKING'
   | 'COMPLETED'
-  | 'ABSENT'
-  | 'LEAVE'
   | 'CANCELLED'
+
+export type StaffAttendanceStatus = 'ON_TIME' | 'LATE' | 'ABSENT' | 'LEAVE'
 
 export interface StaffAssignedResponse {
   staffScheduleId: string
@@ -17,6 +17,7 @@ export interface StaffAssignedResponse {
   staffEmail?: string
   staffName: string
   scheduleStatus: StaffScheduleStatus
+  attendanceStatus?: StaffAttendanceStatus
   checkInAt?: string
   checkOutAt?: string
   assignedAt?: string
@@ -45,6 +46,7 @@ export interface StaffScheduleResponse {
   endTime: string
   shiftType: WorkScheduleShiftType
   scheduleStatus: StaffScheduleStatus
+  attendanceStatus?: StaffAttendanceStatus
   assignedAt?: string
   checkInAt?: string
   checkOutAt?: string
