@@ -33,6 +33,15 @@
       }
     }
   },
+  "catalog": {
+    "startingPrice": "Từ {{price}}",
+    "empty": "Chưa có dịch vụ khả dụng để hiển thị.",
+    "error": "Không thể tải dịch vụ: {{message}}",
+    "minutes": "phút",
+    "petSpecies": "loài thú cưng",
+    "previous": "Dịch vụ trước",
+    "next": "Dịch vụ tiếp theo"
+  },
   "combo": {
     "title": "Combo Vé Tiết Kiệm",
     "subtitle": "Tắm thả ga - Không lo về giá",
@@ -401,12 +410,14 @@
     },
     "service": {
       "title": "Chọn dịch vụ",
-      "subtitle": "Danh sách catalog được tải trực tiếp từ backend.",
-      "duration": "{{minutes}} phút"
+      "subtitle": "Danh sách các gói dịch vụ chăm sóc và làm đẹp hiện có.",
+      "duration": "{{minutes}} phút",
+      "basePrice": "Giá cơ bản {{price}}",
+      "selectedPetsTotal": "Tổng chi phí dịch vụ: {{price}}"
     },
     "pet": {
       "title": "Chọn thú cưng",
-      "subtitle": "Danh sách thú cưng được tải từ tài khoản của bạn.",
+      "subtitle": "Chọn những thú cưng bạn muốn đăng ký dịch vụ.",
       "profile": "{{breed}}, {{weight}}kg",
       "empty": "Chưa tìm thấy hồ sơ thú cưng cho tài khoản này."
     },
@@ -419,7 +430,7 @@
     },
     "review": {
       "title": "Tổng hợp và thanh toán",
-      "subtitle": "Kiểm tra thông tin như trang checkout, sau đó thanh toán cọc an toàn bằng thẻ.",
+      "subtitle": "Vui lòng soát lại thông tin chi tiết trước khi tiến hành đặt cọc.",
       "customerSection": "Khách hàng",
       "serviceSection": "Lịch dịch vụ",
       "created": "Lịch đặt {{code}} đã sẵn sàng thanh toán.",
@@ -434,8 +445,18 @@
       "subtotal": "Tạm tính",
       "deposit": "Cọc 20%",
       "remaining": "Còn lại",
+      "priceByPet": "Giá theo cân nặng từng thú cưng",
+      "priceWithSurcharge": "{{total}} (gồm phụ thu {{surcharge}})",
       "empty": "Chưa chọn",
-      "depositNote": "Lịch đặt dùng một time slot chung cho tất cả thú cưng đã chọn. Lịch tại nhà sẽ gửi kèm địa chỉ sử dụng dịch vụ."
+      "depositNote": "Lịch hẹn áp dụng chung cho tất cả thú cưng được chọn. Dịch vụ tại nhà sẽ được phục vụ theo địa chỉ bạn cung cấp."
+    },
+    "weightRanges": {
+      "EXTRA_SMALL": "Dưới 5kg",
+      "SMALL": "Từ 5kg đến 8kg",
+      "MEDIUM": "Từ 8kg đến 12kg",
+      "LARGE": "Từ 12kg đến 18kg",
+      "EXTRA_LARGE": "Từ 18kg đến 25kg",
+      "EXTRA_EXTRA_LARGE": "Trên 25kg"
     },
     "actions": {
       "back": "Quay lại",
@@ -448,8 +469,8 @@
       "loadError": "Không thể tải dữ liệu đặt lịch.",
       "timeSlotLoadError": "Không thể tải khung giờ khả dụng.",
       "submitError": "Không thể tạo đặt lịch.",
-      "success": "Tạo đặt lịch thành công.",
-      "paymentSuccess": "Thanh toán cọc thành công.",
+      "success": "Đã ghi nhận thông tin đặt lịch. Vui lòng thanh toán cọc để hoàn tất.",
+      "paymentSuccess": "Đặt lịch và thanh toán cọc thành công!",
       "selectService": "Vui lòng chọn dịch vụ trước.",
       "selectPet": "Vui lòng chọn ít nhất một thú cưng.",
       "selectTime": "Vui lòng chọn ngày hẹn và khung giờ.",

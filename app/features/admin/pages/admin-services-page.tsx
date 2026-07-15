@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button, MaterialIcon } from '~/shared/ui'
@@ -31,7 +31,12 @@ import {
   type TimeSlotUpdateRequest
 } from '../lib/catalog-management'
 
-export function AdminServicesPage() {
+export interface AdminServicesPageProps {
+  sidebar?: ReactNode
+  topNav?: ReactNode
+}
+
+export function AdminServicesPage({ sidebar, topNav }: AdminServicesPageProps = {}) {
   const { t } = useTranslation('admin')
   const [isCreateServiceOpen, setIsCreateServiceOpen] = useState(false)
   const [catalogs, setCatalogs] = useState<AdminCatalog[]>([])
@@ -204,9 +209,9 @@ export function AdminServicesPage() {
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
-      <AdminSidebar activeItem='services' />
+      {sidebar ?? <AdminSidebar />}
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <AdminTopNav titleKey='serviceManagement.title' subtitleKey='serviceManagement.subtitle' />
+        {topNav ?? <AdminTopNav titleKey='serviceManagement.title' subtitleKey='serviceManagement.subtitle' />}
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             <section className='flex flex-col justify-between gap-4 md:flex-row md:items-end'>

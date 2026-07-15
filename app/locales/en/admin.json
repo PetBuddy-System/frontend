@@ -410,7 +410,7 @@
         "status": "Active status",
         "catalogType": "Catalog type",
         "petSpecies": "Pet species",
-        "price": "Price",
+        "price": "Base price",
         "weightRange": "Weight range",
         "durationMinute": "Duration minute",
         "bufferTime": "Buffer time"
@@ -440,14 +440,14 @@
       "save": "Save service",
       "subtitle": "Create a new pet-care package, set weight-based pricing, and add visuals for faster rollout.",
       "tip": {
-        "text": "High-quality imagery and detailed descriptions help customers decide faster and improve service booking conversion.",
-        "title": "Quick tip"
+        "text": "💡 Description tip: List the step-by-step process of the service so pet owners feel safe and trustful.\n✨ Naming tip: Keep the service name clear and simple, including the target pet (e.g., Small dog bath, Cat grooming).",
+        "title": "Tips for attracting customers"
       },
       "title": "Add new service",
       "dto": {
-        "label": "Catalog DTO",
-        "title": "Ready for create/update payload",
-        "text": "This form follows catalogName, description, catalogType, petSpecies, price, weightRange, durationMinute, bufferTime, and status."
+        "label": "CONFIGURATION GUIDE",
+        "title": "Notes on setting up service",
+        "text": "1. Service Type: Choose 'At store' if customers bring pets in, choose 'At home' if a staff member goes to their place.\n2. Base price applies to EXTRA_SMALL, SMALL, and MEDIUM pets.\n3. Add surcharges only for LARGE, EXTRA_LARGE, and EXTRA_EXTRA_LARGE pets.\n4. Buffer time is the cleaning/prep slot between appointments."
       }
     },
     "categories": {
@@ -558,6 +558,15 @@
       "EXTRA_LARGE": "18kg to 25kg",
       "EXTRA_EXTRA_LARGE": "Over 25kg"
     },
+    "surcharge": {
+      "title": "Weight surcharges",
+      "help": "Leave a surcharge empty or 0 to omit it from surchargeConfig. Base price already covers EXTRA_SMALL, SMALL, and MEDIUM pets.",
+      "ranges": {
+        "LARGE": "LARGE (12kg - 18kg)",
+        "EXTRA_LARGE": "EXTRA_LARGE (18kg - 25kg)",
+        "EXTRA_EXTRA_LARGE": "EXTRA_EXTRA_LARGE (Above 25kg)"
+      }
+    },
     "searchPlaceholder": "Search service name or catalog ID...",
     "catalogTypes": {
       "AT_STORE": "At store",
@@ -579,7 +588,7 @@
         "catalogType": "Catalog type",
         "petSpecies": "Pet species",
         "weightRange": "Weight range",
-        "price": "Price",
+        "price": "Base price",
         "durationMinute": "Duration minute",
         "bufferTime": "Buffer time",
         "status": "Status",

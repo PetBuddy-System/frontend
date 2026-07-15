@@ -13,6 +13,7 @@ import { loadStripe } from '@stripe/stripe-js'
 import { SiteBottomNav, SiteFooter, SiteHeader } from '~/shared/components'
 import { env } from '~/shared/config/env'
 import { cn } from '~/shared/lib/cn'
+import { getCatalogPriceForWeight, type WeightRange } from '~/shared/lib/catalog-pricing'
 import { Button, MaterialIcon } from '~/shared/ui'
 
 import {
@@ -34,6 +35,13 @@ type BookingStep = 1 | 2 | 3 | 4
 type BookingType = 'AT_STORE' | 'AT_HOME'
 type CheckoutPhase = 'summary' | 'payment' | 'success' | 'failed'
 type ToastState = { type: 'success' | 'error'; message: string } | null
+type PetPricePreview = {
+  pet: PetProfileResponse
+  weightRange: WeightRange
+  basePrice: number
+  surcharge: number
+  totalPrice: number
+}
 
 const MAX_PETS_PER_SLOT = 5
 const DEPOSIT_RATE = 0.2
@@ -77,17 +85,19 @@ function getFirstPaymentWithClientSecret(booking: BookingResponse): PaymentRespo
   if (booking.payments && Array.isArray(booking.payments)) {
     return booking.payments.find((payment) => Boolean(payment.stripeClientSecret)) ?? null
   }
-  
-  if ((booking as any).stripeClientSecret) {
+
+  const bookingWithClientSecret = booking as BookingResponse & { stripeClientSecret?: string }
+
+  if (bookingWithClientSecret.stripeClientSecret) {
     return {
       paymentId: 0,
       amount: booking.depositAmount,
       paymentMethod: 'STRIPE',
       status: 'PENDING',
-      stripeClientSecret: (booking as any).stripeClientSecret
+      stripeClientSecret: bookingWithClientSecret.stripeClientSecret
     }
   }
-  
+
   return null
 }
 
@@ -135,7 +145,17 @@ export function BookingPage() {
     () => availableTimeSlots.find((slot) => slot.timeSlotId === selectedTimeSlotId) ?? null,
     [availableTimeSlots, selectedTimeSlotId]
   )
-  const subtotal = Number(selectedCatalog?.price ?? 0) * selectedPetIds.length
+  const petPricePreviews = useMemo<PetPricePreview[]>(() => {
+    if (!selectedCatalog) {
+      return []
+    }
+
+    return selectedPets.map((pet) => ({
+      pet,
+      ...getCatalogPriceForWeight(selectedCatalog, Number(pet.weight ?? 0))
+    }))
+  }, [selectedCatalog, selectedPets])
+  const subtotal = petPricePreviews.reduce((total, preview) => total + preview.totalPrice, 0)
   const deposit = subtotal * DEPOSIT_RATE
   const remaining = subtotal - deposit
   const slotFillPercent = Math.min((selectedPetIds.length / MAX_PETS_PER_SLOT) * 100, 100)
@@ -496,6 +516,7 @@ export function BookingPage() {
                     <ServiceStep
                       catalogs={catalogs}
                       selectedCatalogId={selectedCatalogId}
+                      selectedPets={selectedPets}
                       onCatalogChange={handleCatalogChange}
                       formatCurrency={formatCurrency}
                     />
@@ -528,6 +549,7 @@ export function BookingPage() {
                       selectedPets={selectedPets}
                       scheduledAt={scheduledAt}
                       selectedTimeSlot={selectedTimeSlot}
+                      petPricePreviews={petPricePreviews}
                       subtotal={subtotal}
                       deposit={deposit}
                       remaining={remaining}
@@ -568,6 +590,7 @@ export function BookingPage() {
               selectedPets={selectedPets}
               selectedTimeSlot={selectedTimeSlot}
               scheduledAt={scheduledAt}
+              petPricePreviews={petPricePreviews}
               subtotal={subtotal}
               deposit={deposit}
               remaining={remaining}
@@ -698,11 +721,12 @@ function CustomerInfoStep({
 interface ServiceStepProps {
   catalogs: CatalogResponse[]
   selectedCatalogId: number | null
+  selectedPets: PetProfileResponse[]
   onCatalogChange: (catalogId: number) => void
   formatCurrency: (value: number) => string
 }
 
-function ServiceStep({ catalogs, selectedCatalogId, onCatalogChange, formatCurrency }: ServiceStepProps) {
+function ServiceStep({ catalogs, selectedCatalogId, selectedPets, onCatalogChange, formatCurrency }: ServiceStepProps) {
   const { t } = useTranslation('services')
 
   return (
@@ -711,37 +735,78 @@ function ServiceStep({ catalogs, selectedCatalogId, onCatalogChange, formatCurre
       <p className='mt-1 text-sm text-muted-foreground'>{t('bookingFlow.service.subtitle')}</p>
       <div className='mt-5 grid gap-4 md:grid-cols-2'>
         {catalogs.map((catalog) => (
-          <button
+          <ServiceCatalogCard
             key={catalog.catalogId}
-            type='button'
-            onClick={() => onCatalogChange(catalog.catalogId)}
-            className={cn(
-              'rounded-md border p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
-              selectedCatalogId === catalog.catalogId
-                ? 'border-primary bg-accent text-accent-foreground'
-                : 'border-border bg-background hover:bg-muted'
-            )}
-          >
-            <div className='flex items-start justify-between gap-3'>
-              <div>
-                <h3 className='font-semibold'>{catalog.catalogName}</h3>
-                <p className='mt-2 line-clamp-3 text-sm text-muted-foreground'>{catalog.description}</p>
-              </div>
-              <MaterialIcon
-                name={selectedCatalogId === catalog.catalogId ? 'check_circle' : 'spa'}
-                className='text-[24px] text-primary'
-              />
-            </div>
-            <div className='mt-4 flex flex-wrap items-center gap-2 text-sm'>
-              <span className='rounded-sm bg-muted px-2 py-1 text-muted-foreground'>
-                {t('bookingFlow.service.duration', { minutes: catalog.durationMinute ?? 0 })}
-              </span>
-              <span className='font-semibold text-primary'>{formatCurrency(Number(catalog.price ?? 0))}</span>
-            </div>
-          </button>
+            catalog={catalog}
+            isSelected={selectedCatalogId === catalog.catalogId}
+            selectedPets={selectedPets}
+            formatCurrency={formatCurrency}
+            onSelect={() => onCatalogChange(catalog.catalogId)}
+          />
         ))}
       </div>
     </div>
+  )
+}
+
+interface ServiceCatalogCardProps {
+  catalog: CatalogResponse
+  isSelected: boolean
+  selectedPets: PetProfileResponse[]
+  formatCurrency: (value: number) => string
+  onSelect: () => void
+}
+
+function ServiceCatalogCard({ catalog, isSelected, selectedPets, formatCurrency, onSelect }: ServiceCatalogCardProps) {
+  const { t } = useTranslation('services')
+  const pricePreviews = selectedPets.map((pet) => ({
+    pet,
+    ...getCatalogPriceForWeight(catalog, Number(pet.weight ?? 0))
+  }))
+  const selectedPetsTotal = pricePreviews.reduce((total, preview) => total + preview.totalPrice, 0)
+
+  return (
+    <button
+      type='button'
+      onClick={onSelect}
+      className={cn(
+        'rounded-md border p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
+        isSelected ? 'border-primary bg-accent text-accent-foreground' : 'border-border bg-background hover:bg-muted'
+      )}
+    >
+      <div className='flex items-start justify-between gap-3'>
+        <div>
+          <h3 className='font-semibold'>{catalog.catalogName}</h3>
+          <p className='mt-2 line-clamp-3 text-sm text-muted-foreground'>{catalog.description}</p>
+        </div>
+        <MaterialIcon name={isSelected ? 'check_circle' : 'spa'} className='text-[24px] text-primary' />
+      </div>
+      <div className='mt-4 flex flex-wrap items-center gap-2 text-sm'>
+        <span className='rounded-sm bg-muted px-2 py-1 text-muted-foreground'>
+          {t('bookingFlow.service.duration', { minutes: catalog.durationMinute ?? 0 })}
+        </span>
+        <span className='font-semibold text-primary'>
+          {t('bookingFlow.service.basePrice', { price: formatCurrency(Number(catalog.price ?? 0)) })}
+        </span>
+      </div>
+      {pricePreviews.length > 0 ? (
+        <div className='mt-4 rounded-md bg-background/70 p-3 text-sm'>
+          <p className='font-semibold text-foreground'>
+            {t('bookingFlow.service.selectedPetsTotal', { price: formatCurrency(selectedPetsTotal) })}
+          </p>
+          <div className='mt-2 space-y-1.5 text-muted-foreground'>
+            {pricePreviews.map((preview) => (
+              <p key={preview.pet.petId} className='flex justify-between gap-3'>
+                <span>
+                  {preview.pet.petName} - {t(`bookingFlow.weightRanges.${preview.weightRange}`)}
+                </span>
+                <span className='font-semibold text-foreground'>{formatCurrency(preview.totalPrice)}</span>
+              </p>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </button>
   )
 }
 
@@ -908,6 +973,7 @@ interface ReviewPaymentStepProps {
   selectedPets: PetProfileResponse[]
   scheduledAt: string
   selectedTimeSlot: TimeSlotResponse | null
+  petPricePreviews: PetPricePreview[]
   subtotal: number
   deposit: number
   remaining: number
@@ -934,6 +1000,7 @@ function ReviewPaymentStep({
   selectedPets,
   scheduledAt,
   selectedTimeSlot,
+  petPricePreviews,
   subtotal,
   deposit,
   remaining,
@@ -1023,6 +1090,25 @@ function ReviewPaymentStep({
       </div>
 
       <div className='mt-5 rounded-md border border-border bg-background p-4'>
+        {petPricePreviews.length > 0 ? (
+          <div className='mb-4 space-y-2 border-b border-border pb-4'>
+            <p className='text-sm font-semibold text-foreground'>{t('bookingFlow.summary.priceByPet')}</p>
+            {petPricePreviews.map((preview) => (
+              <SummaryRow
+                key={preview.pet.petId}
+                label={`${preview.pet.petName} - ${t(`bookingFlow.weightRanges.${preview.weightRange}`)}`}
+                value={
+                  preview.surcharge > 0
+                    ? t('bookingFlow.summary.priceWithSurcharge', {
+                        total: formatCurrency(preview.totalPrice),
+                        surcharge: formatCurrency(preview.surcharge)
+                      })
+                    : formatCurrency(preview.totalPrice)
+                }
+              />
+            ))}
+          </div>
+        ) : null}
         <SummaryRow label={t('bookingFlow.summary.subtotal')} value={formatCurrency(subtotal)} />
         <SummaryRow label={t('bookingFlow.summary.deposit')} value={formatCurrency(deposit)} strong />
         <SummaryRow label={t('bookingFlow.summary.remaining')} value={formatCurrency(remaining)} />
@@ -1239,6 +1325,7 @@ interface BookingSidebarProps {
   selectedPets: PetProfileResponse[]
   selectedTimeSlot: TimeSlotResponse | null
   scheduledAt: string
+  petPricePreviews: PetPricePreview[]
   subtotal: number
   deposit: number
   remaining: number
@@ -1250,6 +1337,7 @@ function BookingSidebar({
   selectedPets,
   selectedTimeSlot,
   scheduledAt,
+  petPricePreviews,
   subtotal,
   deposit,
   remaining,
@@ -1280,6 +1368,13 @@ function BookingSidebar({
               : t('bookingFlow.summary.empty')
           }
         />
+        {petPricePreviews.map((preview) => (
+          <SummaryRow
+            key={preview.pet.petId}
+            label={`${preview.pet.petName} - ${t(`bookingFlow.weightRanges.${preview.weightRange}`)}`}
+            value={formatCurrency(preview.totalPrice)}
+          />
+        ))}
         <SummaryRow label={t('bookingFlow.summary.subtotal')} value={formatCurrency(subtotal)} strong />
         <SummaryRow label={t('bookingFlow.summary.deposit')} value={formatCurrency(deposit)} strong />
         <SummaryRow label={t('bookingFlow.summary.remaining')} value={formatCurrency(remaining)} />

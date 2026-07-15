@@ -93,10 +93,11 @@ export interface CatalogResponse {
   catalogType: string
   petSpecies: string
   price: number
-  weightRange: string
+  weightRange?: string
   durationMinute: number
   bufferTime: number
   status: string
+  surchargeConfig?: string | null
 }
 
 export interface PetProfileResponse {

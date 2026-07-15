@@ -2,6 +2,7 @@ import { useMemo, useState, type FormEvent, type InputHTMLAttributes, type Selec
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/shared/lib/cn'
+import { SURCHARGE_WEIGHT_RANGES, parseSurchargeConfig, serializeSurchargeConfig } from '~/shared/lib/catalog-pricing'
 import { Button, MaterialIcon } from '~/shared/ui'
 
 import {
@@ -9,13 +10,13 @@ import {
   CATALOG_TYPES,
   PET_SPECIES,
   WEEK_DAYS,
-  WEIGHT_RANGES,
   type AdminCatalog,
   type AdminTimeSlot,
   type CatalogRequest,
   type CatalogStatus,
   type CatalogType,
-  type TimeSlotRequest
+  type TimeSlotRequest,
+  type TimeSlotUpdateRequest
 } from '../../lib/catalog-management'
 
 export interface AdminServicesTableProps {
@@ -27,11 +28,11 @@ export interface AdminServicesTableProps {
   onToggleCatalogStatus: (service: AdminCatalog) => void | Promise<void>
   onLoadTimeSlots: (catalogId: number) => void | Promise<void>
   onCreateTimeSlot: (payload: TimeSlotRequest) => void | Promise<void>
-  onUpdateTimeSlot: (timeSlotId: number, payload: any) => void | Promise<void>
+  onUpdateTimeSlot: (timeSlotId: number, payload: TimeSlotUpdateRequest) => void | Promise<void>
   onToggleTimeSlot: (slot: AdminTimeSlot) => void | Promise<void>
 }
 
-const STATUS_CLASS_BY_STATUS: Record<CatalogStatus, string> = {
+const STATUS_CLASS_BY_STATUS: Record<CatalogStatus | 'DISCONTINUED', string> = {
   AVAILABLE: 'bg-success text-success-foreground',
   UNAVAILABLE: 'bg-warning text-warning-foreground',
   DISCONTINUED: 'bg-destructive text-destructive-foreground'
@@ -151,7 +152,11 @@ export function AdminServicesTable({
                           <div>
                             <p className='font-bold text-card-foreground'>{service.catalogName}</p>
                             <p className='text-xs text-muted-foreground'>
-                              #{service.catalogId} - {t(`serviceManagement.weightRanges.${service.weightRange}`)}
+                              #{service.catalogId} — {
+                                service.petSpecies === 'DOG' ? 'Dành cho Chó' : 
+                                service.petSpecies === 'CAT' ? 'Dành cho Mèo' : 
+                                'Dành cho cả Chó & Mèo'
+                              }
                             </p>
                           </div>
                         </div>
@@ -324,6 +329,22 @@ function ServiceDetailModal({
 
   const isReadOnly = mode === 'view'
 
+  const catalogTypeLabels: Record<string, string> = {
+    AT_STORE: t('serviceManagement.catalogTypes.AT_STORE'),
+    AT_HOME: t('serviceManagement.catalogTypes.AT_HOME')
+  }
+
+  const petSpeciesLabels: Record<string, string> = {
+    DOG: 'Chó',
+    CAT: 'Mèo',
+    ALL: 'Tất cả loài'
+  }
+
+  const statusLabels: Record<string, string> = {
+    AVAILABLE: t('serviceManagement.catalogStatus.AVAILABLE'),
+    UNAVAILABLE: t('serviceManagement.catalogStatus.UNAVAILABLE')
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!service) {
@@ -336,14 +357,20 @@ function ServiceDetailModal({
       catalogName: String(formData.get('catalogName') ?? '').trim(),
       catalogType: String(formData.get('catalogType') ?? service.catalogType) as CatalogRequest['catalogType'],
       petSpecies: String(formData.get('petSpecies') ?? service.petSpecies) as CatalogRequest['petSpecies'],
-      weightRange: String(formData.get('weightRange') ?? service.weightRange) as CatalogRequest['weightRange'],
       price: Number(formData.get('price') ?? service.price),
       durationMinute: Number(formData.get('durationMinute') ?? service.durationMinute),
       bufferTime: Number(formData.get('bufferTime') ?? service.bufferTime),
       status: String(formData.get('status') ?? service.status) as CatalogRequest['status'],
-      description: String(formData.get('description') ?? '').trim()
+      description: String(formData.get('description') ?? '').trim(),
+      surchargeConfig: serializeSurchargeConfig({
+        LARGE: Number(formData.get('surcharge_LARGE') ?? 0),
+        EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_LARGE') ?? 0),
+        EXTRA_EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_EXTRA_LARGE') ?? 0)
+      })
     })
   }
+
+  const surchargeValues = parseSurchargeConfig(service.surchargeConfig)
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
@@ -380,6 +407,7 @@ function ServiceDetailModal({
         </header>
 
         <form
+          key={service.catalogId}
           id='service-detail-form'
           className='grid max-h-[calc(100vh-12rem)] gap-4 overflow-y-auto p-5 md:grid-cols-2'
           onSubmit={handleSubmit}
@@ -397,6 +425,7 @@ function ServiceDetailModal({
             defaultValue={service.catalogType}
             disabled={isReadOnly}
             options={[...CATALOG_TYPES]}
+            optionLabels={catalogTypeLabels}
           />
           <SelectField
             name='petSpecies'
@@ -404,43 +433,48 @@ function ServiceDetailModal({
             defaultValue={service.petSpecies}
             disabled={isReadOnly}
             options={[...PET_SPECIES]}
+            optionLabels={petSpeciesLabels}
           />
-          <SelectField
-            name='weightRange'
-            label={t('serviceManagement.detail.fields.weightRange')}
-            defaultValue={service.weightRange}
-            disabled={isReadOnly}
-            options={[...WEIGHT_RANGES]}
-            optionLabels={Object.fromEntries(
-              WEIGHT_RANGES.map((wr) => [wr, t(`serviceManagement.weightRanges.${wr}`)])
-            )}
-          />
-          <Field
+          <CurrencyField
             name='price'
             label={t('serviceManagement.detail.fields.price')}
-            defaultValue={String(service.price)}
+            defaultValue={service.price}
             readOnly={isReadOnly}
-            type='number'
-            min={0}
             required
           />
-          <Field
+          <fieldset className='space-y-3 rounded-lg border border-border bg-muted/40 p-4 md:col-span-2'>
+            <legend className='px-1 text-sm font-semibold text-card-foreground'>
+              {t('serviceManagement.surcharge.title')}
+            </legend>
+            <p className='text-xs leading-relaxed text-muted-foreground'>{t('serviceManagement.surcharge.help')}</p>
+            <div className='grid grid-cols-3 gap-3'>
+              {SURCHARGE_WEIGHT_RANGES.map((range) => (
+                <CurrencyField
+                  key={range}
+                  name={`surcharge_${range}`}
+                  label={t(`serviceManagement.surcharge.ranges.${range}`)}
+                  defaultValue={surchargeValues[range] ?? 0}
+                  readOnly={isReadOnly}
+                  required={false}
+                />
+              ))}
+            </div>
+          </fieldset>
+          <NumberField
             name='durationMinute'
             label={t('serviceManagement.detail.fields.durationMinute')}
-            defaultValue={String(service.durationMinute)}
+            defaultValue={service.durationMinute}
             readOnly={isReadOnly}
-            type='number'
-            min={0}
             required
+            unit='phút'
           />
-          <Field
+          <NumberField
             name='bufferTime'
             label={t('serviceManagement.detail.fields.bufferTime')}
-            defaultValue={String(service.bufferTime)}
+            defaultValue={service.bufferTime}
             readOnly={isReadOnly}
-            type='number'
-            min={0}
             required
+            unit='phút'
           />
           <SelectField
             name='status'
@@ -448,6 +482,7 @@ function ServiceDetailModal({
             defaultValue={service.status}
             disabled={isReadOnly}
             options={[...CATALOG_STATUSES]}
+            optionLabels={statusLabels}
           />
           <label className='space-y-2 md:col-span-2'>
             <span className='text-sm font-semibold text-card-foreground'>
@@ -456,7 +491,7 @@ function ServiceDetailModal({
             <textarea
               name='description'
               rows={4}
-              defaultValue={service.description}
+              defaultValue={service.description ?? ''}
               readOnly={isReadOnly}
               className='w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring read-only:bg-muted'
             />
@@ -688,7 +723,7 @@ function EditTimeSlotModal({
   slot: AdminTimeSlot | null
   isSaving: boolean
   onClose: () => void
-  onSubmit: (timeSlotId: number, payload: { dayOfWeek: string; startTime: string; isActive: boolean }) => void
+  onSubmit: (timeSlotId: number, payload: TimeSlotUpdateRequest) => void
 }) {
   const { t } = useTranslation('admin')
 
@@ -707,7 +742,7 @@ function EditTimeSlotModal({
     const startTimeFormatted = timeVal.length === 5 ? `${timeVal}:00` : timeVal
 
     onSubmit(slot.timeSlotId, {
-      dayOfWeek: String(formData.get('dayOfWeek') ?? slot.dayOfWeek),
+      dayOfWeek: String(formData.get('dayOfWeek') ?? slot.dayOfWeek) as TimeSlotUpdateRequest['dayOfWeek'],
       startTime: startTimeFormatted,
       isActive: formData.get('isActive') === 'on'
     })
@@ -725,10 +760,10 @@ function EditTimeSlotModal({
       />
       <section className='relative w-full max-w-xl overflow-hidden rounded-xl border border-border bg-card shadow-xl'>
         <header className='border-b border-border p-5'>
-          <p className='text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>TimeSlot ID: #{slot.timeSlotId}</p>
-          <h2 className='font-display text-2xl font-bold text-card-foreground'>
-            Chỉnh sửa khung giờ
-          </h2>
+          <p className='text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>
+            Mã khung giờ: #{slot.timeSlotId}
+          </p>
+          <h2 className='font-display text-2xl font-bold text-card-foreground'>Chỉnh sửa khung giờ</h2>
         </header>
         <form className='space-y-4 p-5' onSubmit={handleSubmit}>
           <SelectField
@@ -813,3 +848,97 @@ function SelectField({
     </label>
   )
 }
+
+function NumberField({
+  label,
+  name,
+  defaultValue,
+  required = true,
+  readOnly = false,
+  unit
+}: {
+  label: string
+  name: string
+  defaultValue: number
+  required?: boolean
+  readOnly?: boolean
+  unit?: string
+}) {
+  return (
+    <div className='flex flex-col gap-2'>
+      <span className='text-sm font-semibold text-card-foreground'>{label}</span>
+      <div className='flex h-11 overflow-hidden rounded-lg border border-input bg-background transition focus-within:border-primary focus-within:ring-2 focus-within:ring-ring read-only:bg-muted'>
+        <input
+          name={name}
+          type='number'
+          min={0}
+          defaultValue={defaultValue}
+          required={required}
+          readOnly={readOnly}
+          className='min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-foreground outline-none read-only:bg-muted'
+        />
+        {unit && (
+          <span className='flex shrink-0 items-center border-l border-input bg-muted px-3 text-xs font-semibold text-muted-foreground'>
+            {unit}
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function CurrencyField({
+  label,
+  name,
+  defaultValue,
+  required = true,
+  readOnly = false
+}: {
+  label: string
+  name: string
+  defaultValue: number
+  required?: boolean
+  readOnly?: boolean
+}) {
+  function format(n: number) {
+    return n.toLocaleString('vi-VN')
+  }
+
+  const [displayValue, setDisplayValue] = useState(() => format(defaultValue))
+  const [rawValue, setRawValue] = useState(defaultValue)
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (readOnly) return
+    const stripped = e.target.value.replace(/\D/g, '')
+    const numeric = stripped === '' ? 0 : parseInt(stripped, 10)
+    setRawValue(numeric)
+    setDisplayValue(stripped === '' ? '' : format(numeric))
+  }
+
+  function handleBlur() {
+    setDisplayValue(format(rawValue))
+  }
+
+  return (
+    <div className='flex flex-col gap-2'>
+      <span className='text-sm font-semibold text-card-foreground'>{label}</span>
+      <div className='flex h-11 overflow-hidden rounded-lg border border-input bg-background transition focus-within:border-primary focus-within:ring-2 focus-within:ring-ring read-only:bg-muted'>
+        <input
+          type='text'
+          inputMode='numeric'
+          value={displayValue}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          required={required}
+          readOnly={readOnly}
+          className='min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-foreground outline-none read-only:bg-muted'
+        />
+        <input type='hidden' name={name} value={rawValue} />
+        <span className='flex shrink-0 items-center border-l border-input bg-muted px-3 text-xs font-semibold text-muted-foreground'>
+          VNĐ
+        </span>
+      </div>
+    </div>
+  )
+}
+

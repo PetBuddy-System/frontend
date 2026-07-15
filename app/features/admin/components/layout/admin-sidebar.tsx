@@ -9,8 +9,6 @@ import { MaterialIcon } from '~/shared/ui'
 const ADMIN_NAV_ITEMS = [
   { icon: 'assessment', key: 'reports', href: '/admin/dashboard' },
   { icon: 'badge', key: 'employees', href: '/admin/employees' },
-  { icon: 'medical_services', key: 'services', href: '/admin/services' },
-  { icon: 'event_note', key: 'serviceBookings', href: '/admin/bookings' },
   { icon: 'group', key: 'users', href: '/admin/users' },
   { icon: 'confirmation_number', key: 'vouchers', href: '/admin/vouchers' },
   { icon: 'article', key: 'blog', href: '/admin/blog' },

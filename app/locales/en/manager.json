@@ -144,6 +144,8 @@
     "nav": {
       "dashboard": "Operations overview",
       "products": "Product Management",
+      "services": "Service Management",
+      "serviceBookings": "Service Bookings",
       "staff": "Work Schedule Management",
       "returnRequests": "Return approvals",
       "disposalApprovals": "Disposal approvals",
@@ -152,6 +154,14 @@
       "reviews": "Review Management"
     },
     "toggle": "Toggle sidebar"
+  },
+  "serviceManagement": {
+    "title": "Service Management",
+    "subtitle": "Configure and update pet care service packages."
+  },
+  "serviceBookings": {
+    "title": "Booking Management",
+    "subtitle": "Review paid bookings, assign operational flow, and update service status."
   },
   "stats": {
     "discrepancies": {

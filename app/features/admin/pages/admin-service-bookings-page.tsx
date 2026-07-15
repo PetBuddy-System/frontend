@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/shared/lib/cn'
@@ -87,7 +87,12 @@ function getBookingTime(booking: BookingResponse): string {
   return booking.bookingDetails.find((detail) => detail.timeSlot)?.timeSlot ?? ''
 }
 
-export function AdminServiceBookingsPage() {
+export interface AdminServiceBookingsPageProps {
+  sidebar?: ReactNode
+  topNav?: ReactNode
+}
+
+export function AdminServiceBookingsPage({ sidebar, topNav }: AdminServiceBookingsPageProps = {}) {
   const { t } = useTranslation('admin')
   const [activeStatus, setActiveStatus] = useState<BookingStatusTab>('ALL')
   const [fromDate, setFromDate] = useState('')
@@ -214,9 +219,9 @@ export function AdminServiceBookingsPage() {
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
-      <AdminSidebar activeItem='serviceBookings' />
+      {sidebar ?? <AdminSidebar />}
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <AdminTopNav titleKey='serviceBookings.title' subtitleKey='serviceBookings.subtitle' />
+        {topNav ?? <AdminTopNav titleKey='serviceBookings.title' subtitleKey='serviceBookings.subtitle' />}
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             <section className='flex flex-col justify-between gap-4 md:flex-row md:items-center'>

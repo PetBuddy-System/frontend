@@ -75,6 +75,8 @@ export default [
   layout('routes/manager-layout.tsx', [
     route('manager/dashboard', 'routes/manager-dashboard.tsx'),
     route('manager/products', 'routes/manager-products.tsx'),
+    route('manager/services', 'routes/manager-services.tsx'),
+    route('manager/bookings', 'routes/manager-bookings.tsx'),
     route('manager/inventory-transactions', 'routes/manager-inventory-transactions.tsx'),
     route('manager/disposal-approvals', 'routes/manager-disposal-approvals.tsx'),
     route('manager/return-requests', 'routes/manager-return-requests.tsx'),

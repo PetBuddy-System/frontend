@@ -33,6 +33,15 @@
       }
     }
   },
+  "catalog": {
+    "startingPrice": "From {{price}}",
+    "empty": "No available services are ready to display yet.",
+    "error": "Unable to load services: {{message}}",
+    "minutes": "minutes",
+    "petSpecies": "pet species",
+    "previous": "Previous service",
+    "next": "Next service"
+  },
   "combo": {
     "title": "Ticket Combo Savings",
     "subtitle": "Unlimited baths - No price worries",
@@ -402,7 +411,9 @@
     "service": {
       "title": "Select service",
       "subtitle": "Catalog data is loaded from the backend service catalog.",
-      "duration": "{{minutes}} minutes"
+      "duration": "{{minutes}} minutes",
+      "basePrice": "Base {{price}}",
+      "selectedPetsTotal": "Selected pets total: {{price}}"
     },
     "pet": {
       "title": "Select pets",
@@ -434,8 +445,18 @@
       "subtotal": "Subtotal",
       "deposit": "20% deposit",
       "remaining": "Remaining",
+      "priceByPet": "Price by pet weight",
+      "priceWithSurcharge": "{{total}} (includes {{surcharge}} surcharge)",
       "empty": "Not selected",
       "depositNote": "The booking uses one shared time slot for all selected pets. At-home bookings include the service address."
+    },
+    "weightRanges": {
+      "EXTRA_SMALL": "Under 5kg",
+      "SMALL": "5kg to 8kg",
+      "MEDIUM": "8kg to 12kg",
+      "LARGE": "12kg to 18kg",
+      "EXTRA_LARGE": "18kg to 25kg",
+      "EXTRA_EXTRA_LARGE": "Over 25kg"
     },
     "myBookings": {
       "title": "Recent bookings",
@@ -452,8 +473,8 @@
       "loadError": "Could not load booking data.",
       "timeSlotLoadError": "Could not load available time slots.",
       "submitError": "Could not create booking.",
-      "success": "Booking created successfully.",
-      "paymentSuccess": "Deposit paid successfully.",
+      "success": "Booking details saved. Please pay the deposit to complete.",
+      "paymentSuccess": "Booking and deposit payment completed successfully!",
       "selectService": "Please select a service first.",
       "selectPet": "Please select at least one pet.",
       "selectTime": "Please select an appointment date and time slot.",

@@ -408,12 +408,12 @@
         "description": "Mô tả dịch vụ",
         "name": "Tên dịch vụ",
         "status": "Trạng thái hoạt động",
-        "catalogType": "Loại catalog",
-        "petSpecies": "Loại áp dụng",
-        "price": "Giá tiền",
+        "catalogType": "Hình thức cung ứng",
+        "petSpecies": "Loài thú cưng áp dụng",
+        "price": "Giá cơ bản (VNĐ)",
         "weightRange": "Khoảng cân nặng",
-        "durationMinute": "Thời lượng phút",
-        "bufferTime": "Thời gian đệm"
+        "durationMinute": "Thời lượng thực hiện",
+        "bufferTime": "Thời gian dọn dẹp giữa các ca"
       },
       "media": {
         "hint": "PNG, JPG tối đa 10MB",
@@ -440,14 +440,14 @@
       "save": "Lưu dịch vụ",
       "subtitle": "Tạo gói dịch vụ mới, thiết lập giá theo trọng lượng và bổ sung hình ảnh để triển khai nhanh chóng.",
       "tip": {
-        "text": "Hình ảnh chất lượng cao và mô tả chi tiết giúp khách hàng ra quyết định nhanh hơn và tăng tỷ lệ đặt lịch dịch vụ.",
-        "title": "Mẹo nhỏ"
+        "text": "💡 Mẹo viết mô tả: Liệt kê rõ quy trình từng bước phục vụ để khách hàng cảm thấy an tâm và tin tưởng.\n✨ Mẹo đặt tên: Đặt tên dịch vụ ngắn gọn, rõ ràng kèm loài áp dụng (Ví dụ: Tắm sấy cún nhỏ, Cắt tỉa lông mèo).",
+        "title": "Gợi ý thu hút khách hàng"
       },
       "title": "Thêm dịch vụ mới",
       "dto": {
-        "label": "Catalog DTO",
-        "title": "Sẵn sàng cho payload tạo/cập nhật",
-        "text": "Form này bám các trường catalogName, description, catalogType, petSpecies, price, weightRange, durationMinute, bufferTime và status."
+        "label": "HƯỚNG DẪN CẤU HÌNH",
+        "title": "Lưu ý khi thiết lập dịch vụ",
+        "text": "1. Hình thức dịch vụ: Chọn 'Tại tiệm' nếu khách mang thú cưng đến cửa hàng, chọn 'Tại nhà' nếu cử nhân viên đến tận nơi.\n2. Giá gốc áp dụng cho thú cưng dưới 12kg (nhỏ & vừa).\n3. Phụ thu theo cân nặng chỉ điền khi dịch vụ áp dụng cho thú cưng trên 12kg.\n4. Thời gian đệm là khoảng dọn dẹp, chuẩn bị dụng cụ giữa các ca."
       }
     },
     "categories": {
@@ -558,6 +558,15 @@
       "EXTRA_LARGE": "Từ 18kg đến 25kg",
       "EXTRA_EXTRA_LARGE": "Trên 25kg"
     },
+    "surcharge": {
+      "title": "Phụ thu theo cân nặng",
+      "help": "Để trống hoặc nhập 0 nếu không áp dụng phụ thu. Giá gốc đã bao gồm cho thú cưng dưới 12kg.",
+      "ranges": {
+        "LARGE": "Cỡ lớn (12kg – 18kg)",
+        "EXTRA_LARGE": "Cỡ rất lớn (18kg – 25kg)",
+        "EXTRA_EXTRA_LARGE": "Cỡ siêu lớn (trên 25kg)"
+      }
+    },
     "searchPlaceholder": "Tìm tên dịch vụ hoặc mã catalog...",
     "catalogTypes": {
       "AT_STORE": "Tại tiệm",
@@ -579,7 +588,7 @@
         "catalogType": "Loại catalog",
         "petSpecies": "Loại áp dụng",
         "weightRange": "Khoảng cân nặng",
-        "price": "Giá tiền",
+        "price": "Giá gốc",
         "durationMinute": "Thời lượng phút",
         "bufferTime": "Thời gian đệm",
         "status": "Trạng thái",
@@ -588,21 +597,21 @@
     },
     "schedule": {
       "close": "Đóng lịch tuần",
-      "title": "Lịch time slot theo tuần",
-      "subtitle": "{{duration}} phút mỗi ca, nghỉ đệm {{buffer}} phút giữa các ca.",
+      "title": "Cấu hình ca làm việc theo tuần",
+      "subtitle": "{{duration}} phút mỗi ca, nghỉ dọn dẹp {{buffer}} phút giữa các ca.",
       "closeButton": "Đóng",
-      "createSlot": "Tạo time slot",
+      "createSlot": "Thêm khung giờ",
       "active": "Khung giờ đang mở",
       "inactive": "Khung giờ đang khóa",
-      "empty": "Chưa có slot"
+      "empty": "Chưa có khung giờ"
     },
     "timeSlot": {
-      "close": "Đóng form time slot",
-      "title": "Tạo time slot",
+      "close": "Đóng form khung giờ",
+      "title": "Thêm khung giờ làm việc",
       "cancel": "Hủy",
-      "save": "Lưu time slot",
+      "save": "Lưu khung giờ",
       "fields": {
-        "catalog": "Catalog",
+        "catalog": "Dịch vụ",
         "dayOfWeek": "Thứ trong tuần",
         "startTime": "Giờ bắt đầu",
         "isActive": "Mở khung giờ này"

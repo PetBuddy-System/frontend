@@ -8,11 +8,11 @@ export { ManagerStaffScheduleEditPage } from './pages/manager-staff-schedule-edi
 export { ManagerStaffScheduleStaffPage } from './pages/manager-staff-schedule-staff-page'
 export { ManagerProductsPage } from './pages/manager-products-page'
 export { ManagerProductDetailPage } from './pages/manager-product-detail'
-export { ManagerPromotionsPage } from "./pages/manager-promotions-page";
+export { ManagerPromotionsPage } from './pages/manager-promotions-page'
 export { ManagerPromotionCreatePage } from './pages/manager-promotion-create-page'
 export { ManagerPromotionEditPage } from './pages/manager-promotion-edit-page'
 export { ManagerInventoryTransactionsPage } from './pages/manager-inventory-transactions-page'
 export { ManagerStoreLocationsPage } from './pages/manager-store-locations-page'
 export { ManagerReviewsPage } from './pages/manager-reviews-page'
-
-
+export { ManagerSidebar } from './components/layout/manager-sidebar'
+export { ManagerTopNav } from './components/layout/manager-top-nav'

@@ -143,6 +143,8 @@
     "nav": {
       "dashboard": "Tổng quan vận hành",
       "products": "Quản lý sản phẩm",
+      "services": "Quản lý dịch vụ",
+      "serviceBookings": "Lịch đặt dịch vụ",
       "staff": "Quản lý lịch làm việc",
       "returnRequests": "Duyệt đổi trả",
       "disposalApprovals": "Duyệt hủy hàng",
@@ -151,6 +153,14 @@
       "reviews": "Quản lý đánh giá"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
+  },
+  "serviceManagement": {
+    "title": "Quản lý dịch vụ",
+    "subtitle": "Cấu hình và cập nhật các gói dịch vụ chăm sóc thú cưng."
+  },
+  "serviceBookings": {
+    "title": "Quản lý lịch đặt",
+    "subtitle": "Theo dõi lịch đã thanh toán, điều phối vận hành và cập nhật trạng thái dịch vụ."
   },
   "stats": {
     "discrepancies": {
