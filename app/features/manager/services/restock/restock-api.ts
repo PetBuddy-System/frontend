@@ -12,6 +12,9 @@ export interface RestockBatch {
     deductedQuantity: number
     availableToRestock: number
     restockQuantity: number
+    // ✅ Thêm 2 field mới
+    restockedAt?: string | null
+    restockedBy?: string | null
 }
 
 export interface RestockInfoItem {
@@ -120,13 +123,12 @@ export const restockApi = {
             method: 'POST',
             data
         }).then(res => {
-            // ✅ Nếu response rỗng hoặc không có success, coi như thành công
             if (!res || Object.keys(res).length === 0) {
                 return {
                     success: true,
                     code: 1000,
                     message: 'Nhập kho thành công',
-                    data: undefined,  // ✅ Sửa null thành undefined
+                    data: undefined,
                     timestamp: new Date().toISOString()
                 }
             }
@@ -139,9 +141,9 @@ export const restockApi = {
      * Lấy danh sách các yêu cầu RETURN đã COMPLETED để nhập hàng
      */
     getRestockReturns: (
-        params: { page?: number; size?: number; status?: string } = {}
+        params: { page?: number; size?: number; status?: string; keyword?: string } = {}
     ): Promise<ApiResponse<RestockReturnsResponse>> => {
-        const { page = 0, size = 10, status = 'COMPLETED' } = params
+        const { page = 0, size = 10, status = 'COMPLETED', keyword } = params
         return customFetch<ApiResponse<RestockReturnsResponse>>({
             url: `${env.API_URL}/api/management/returns`,
             method: 'GET',
@@ -150,7 +152,8 @@ export const restockApi = {
                 size,
                 status,
                 type: 'RETURN',
-                sort: 'createdAt,desc'
+                sort: 'createdAt,desc',
+                ...(keyword && { keyword })
             }
         })
     }

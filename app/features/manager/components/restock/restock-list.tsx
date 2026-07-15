@@ -7,6 +7,7 @@ import { restockApi, type RestockReturnResponse } from '../../services/restock/r
 
 interface RestockListProps {
     onSelectReturn: (returnId: number) => void
+    onViewDetail?: (returnId: number) => void
 }
 
 function formatDate(dateString: string) {
@@ -63,13 +64,14 @@ function getStatusLabel(status: string) {
     }
 }
 
-export function RestockList({ onSelectReturn }: RestockListProps) {
+export function RestockList({ onSelectReturn, onViewDetail }: RestockListProps) {
     const { t } = useTranslation('manager')
     const [returns, setReturns] = useState<RestockReturnResponse[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [totalPages, setTotalPages] = useState(0)
     const [currentPage, setCurrentPage] = useState(0)
     const [keyword, setKeyword] = useState('')
+    const [searchKeyword, setSearchKeyword] = useState('')
 
     async function loadReturns() {
         setIsLoading(true)
@@ -77,7 +79,8 @@ export function RestockList({ onSelectReturn }: RestockListProps) {
             const res = await restockApi.getRestockReturns({
                 page: currentPage,
                 size: 10,
-                status: 'COMPLETED'
+                status: 'COMPLETED',
+                keyword: searchKeyword || undefined
             })
 
             if (res.success && res.data) {
@@ -93,12 +96,20 @@ export function RestockList({ onSelectReturn }: RestockListProps) {
 
     useEffect(() => {
         void loadReturns()
-    }, [currentPage])
+    }, [currentPage, searchKeyword])
 
     function handleSearchSubmit(e: React.FormEvent) {
         e.preventDefault()
+        setSearchKeyword(keyword)
         setCurrentPage(0)
-        void loadReturns()
+    }
+
+    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            setSearchKeyword(keyword)
+            setCurrentPage(0)
+        }
     }
 
     if (isLoading) {
@@ -122,6 +133,7 @@ export function RestockList({ onSelectReturn }: RestockListProps) {
                             type='text'
                             value={keyword}
                             onChange={(e) => setKeyword(e.target.value)}
+                            onKeyDown={handleKeyDown}
                             placeholder='Tìm theo mã yêu cầu, mã đơn hàng...'
                             className='w-full rounded-xl border border-border bg-card py-2 pl-10 pr-4 text-sm text-foreground focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all'
                         />
@@ -157,7 +169,6 @@ export function RestockList({ onSelectReturn }: RestockListProps) {
                         </thead>
                         <tbody className='divide-y divide-border'>
                             {returns.map((req) => {
-                                // ✅ Kiểm tra đã nhập kho chưa
                                 const isRestocked = req.restockedAt !== null && req.restockedAt !== undefined
 
                                 return (
@@ -188,12 +199,17 @@ export function RestockList({ onSelectReturn }: RestockListProps) {
                                         </td>
                                         <td className='px-6 py-4 text-right'>
                                             {isRestocked ? (
-                                                // ✅ Đã nhập kho → hiển thị badge
-                                                <span className='inline-flex items-center gap-1.5 rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 px-3.5 py-1.5 text-xs font-bold'>
-                                                    <MaterialIcon name='check_circle' className='text-sm shrink-0' />
-                                                    Đã nhập kho
-                                                </span>
+                                                // ✅ Đã nhập kho → hiển thị nút Xem
+                                                <button
+                                                    type='button'
+                                                    onClick={() => onViewDetail?.(req.returnRequestId)}
+                                                    className='inline-flex items-center gap-1.5 rounded-xl bg-blue-500 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm hover:opacity-90 active:scale-95 transition-all'
+                                                >
+                                                    <MaterialIcon name='visibility' className='text-sm shrink-0' />
+                                                    Xem
+                                                </button>
                                             ) : (
+                                                // ✅ Chưa nhập kho → hiển thị nút Nhập kho
                                                 <button
                                                     type='button'
                                                     onClick={() => onSelectReturn(req.returnRequestId)}
