@@ -279,6 +279,32 @@
     },
     "voucherNoLongerValid": "This voucher is no longer available. Please choose another one."
   },
+  "voucherPicker": {
+    "back": "Back",
+    "title": "Select Voucher",
+    "eligibleCount": "{{count}} eligible vouchers",
+    "loadError": "Could not load vouchers. Please try again.",
+    "discountBadgePercent": "Save {{percent}}%",
+    "discountBadgeFixed": "Save {{value}}",
+    "minOrder": "Min order {{min}}",
+    "maxDiscount": "Max discount {{max}}",
+    "expiredAt": "Expires: {{date}}",
+    "savings": "Savings: {{savings}}",
+    "ineligibleSection": "Ineligible",
+    "hasNoVouchers": "No vouchers available",
+    "selectedLabel": "Selected:",
+    "noSelectedLabel": "No voucher selected",
+    "unselect": "Unselect",
+    "confirm": "Confirm",
+    "noMoreVouchers": "No more vouchers available",
+    "reasons": {
+      "hasPromotion": "Cart contains promotional products",
+      "inactive": "Voucher is inactive",
+      "limitExceeded": "Voucher limit exceeded",
+      "minOrderMissing": "{{missing}} short of min order",
+      "ineligible": "Not eligible"
+    }
+  },
   "orderSuccess": {
     "banner": {
       "title": "Thank you for your order!",

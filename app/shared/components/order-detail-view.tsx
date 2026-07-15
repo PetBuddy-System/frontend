@@ -65,6 +65,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
   const [isRouteOpen, setIsRouteOpen] = useState(false)
   const { user } = useAuth()
   const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
+  const isCoordinator = user?.role === 'STAFF' && user?.staffTask === 'COORDINATOR'
   const navigate = useNavigate()
 
   const isCountdownExpired =
@@ -254,21 +255,21 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
               {order && <span className="text-muted-foreground">ORDER CODE. {order.orderCode}</span>}
               <span className="text-border">|</span>
               {order && (
-              <span
+                <span
                   className={cn(
                     'font-bold uppercase tracking-wider',
                     order.status === 'COMPLETED' ? 'text-success' :
-                    order.status === 'CANCELLED' ? 'text-destructive' :
-                    order.status === 'EXPIRED' || isExpired ? 'text-destructive' :
-                    isRefundPending ? 'text-amber-600 dark:text-amber-400' :
-                    'text-primary'
+                      order.status === 'CANCELLED' ? 'text-destructive' :
+                        order.status === 'EXPIRED' || isExpired ? 'text-destructive' :
+                          isRefundPending ? 'text-amber-600 dark:text-amber-400' :
+                            'text-primary'
                   )}
                 >
                   {isExpired && order.status === 'PENDING'
                     ? t('orderDetail.status.expired', 'Hết hạn')
                     : isRefundPending
-                    ? 'Chờ hoàn tiền'
-                    : getStatusLabel(order.status)}
+                      ? 'Chờ hoàn tiền'
+                      : getStatusLabel(order.status)}
                 </span>
               )}
             </div>
@@ -323,6 +324,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                 order={order}
                 isStaff={isStaff}
                 isShipper={isShipper}
+                isCoordinator={isCoordinator}
                 showCancelButton={showCancelButton}
                 isCancelDisabled={isCancelDisabled}
                 isExpired={isExpired}

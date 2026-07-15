@@ -52,7 +52,8 @@
       "weeklySchedule": "Ca làm việc trong tuần",
       "disposalRequest": "Tạo yêu cầu hủy hàng",
       "inventory": "Quản lý kho hàng",
-      "returns": "Quản lý đổi trả"
+      "returns": "Quản lý đổi trả",
+      "shipperAssignment": "Giao việc cho shipper"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Nhân viên cửa hàng",

@@ -7,12 +7,13 @@ import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
 const STAFF_NAV_ITEMS = [
-  { icon: 'shopping_cart', key: 'orders', href: '/staff/orders' },
-  { icon: 'delete_sweep', key: 'disposalRequest', href: '/staff/disposal-request' },
-  { icon: 'assignment_return', key: 'returns', href: '/staff/returns' },
-  { icon: 'inventory_2', key: 'inventory', href: '/staff/add-product' },
-  { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule' },
-  { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance' }
+  { icon: 'shopping_cart', key: 'orders', href: '/staff/orders', coordinatorOnly: false },
+  { icon: 'delete_sweep', key: 'disposalRequest', href: '/staff/disposal-request', coordinatorOnly: true },
+  { icon: 'assignment_return', key: 'returns', href: '/staff/returns', coordinatorOnly: true },
+  { icon: 'inventory_2', key: 'inventory', href: '/staff/add-product', coordinatorOnly: true },
+  { icon: 'local_shipping', key: 'shipperAssignment', href: '/staff/shipper-assignment', coordinatorOnly: true },
+  { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule', coordinatorOnly: false },
+  { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance', coordinatorOnly: false }
 ] as const
 
 export type StaffNavKey = (typeof STAFF_NAV_ITEMS)[number]['key']
@@ -24,8 +25,9 @@ export interface StaffSidebarProps {
 export function StaffSidebar({ activeItem }: StaffSidebarProps) {
   const { t } = useTranslation('staff')
   const { isCollapsed, toggleSidebar } = useSidebar()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const navigate = useNavigate()
+  const isCoordinator = user?.role === 'STAFF' && user?.staffTask === 'COORDINATOR'
 
   return (
     <aside
@@ -58,7 +60,7 @@ export function StaffSidebar({ activeItem }: StaffSidebarProps) {
       </div>
 
       <nav className='min-h-0 flex-1 space-y-1 overflow-y-auto p-3'>
-        {STAFF_NAV_ITEMS.map((item) => {
+        {STAFF_NAV_ITEMS.filter((item) => !item.coordinatorOnly || isCoordinator).map((item) => {
           const isActive = activeItem === item.key
 
           return (

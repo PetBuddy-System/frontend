@@ -1,13 +1,13 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ManagerSidebar } from '../components/layout/manager-sidebar'
-import { ManagerTopNav } from '../components/layout/manager-top-nav'
-import { AreaOrderGroup } from '../components/shipper-assignment/area-order-group'
-import { fetchAllOrdersApi } from '../services/shipper-assignment/shipper-assignment-api'
+import { StaffSidebar } from '../components/layout/staff-sidebar'
+import { StaffTopNav } from '../components/layout/staff-top-nav'
+import { AreaOrderGroup } from '../../manager/components/shipper-assignment/area-order-group'
+import { fetchAllOrdersApi } from '../../manager/services/shipper-assignment/shipper-assignment-api'
 import { MaterialIcon } from '~/shared/ui'
 import type { OrderResponse } from '~/shared/lib/order'
 
-export function ManagerShipperAssignmentPage() {
+export function StaffShipperAssignmentPage() {
   const { t } = useTranslation('manager')
   const [orders, setOrders] = useState<OrderResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -77,9 +77,9 @@ export function ManagerShipperAssignmentPage() {
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
-      <ManagerSidebar activeItem='shipperAssignment' />
+      <StaffSidebar activeItem='shipperAssignment' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <ManagerTopNav titleKey='shipperAssignment.title' subtitleKey='shipperAssignment.subtitle' />
+        <StaffTopNav titleKey='shipperAssignment.title' subtitleKey='shipperAssignment.subtitle' />
 
         <main className='flex-1 overflow-y-auto p-4 md:p-6 pb-20'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>

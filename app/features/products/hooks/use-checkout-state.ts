@@ -133,6 +133,7 @@ export function useCheckoutState() {
     sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
     sessionStorage.removeItem('petbuddy_checkout_subtotal')
     sessionStorage.removeItem(SESSION_KEY_PENDING_ORDER_ID)
+    sessionStorage.removeItem('petbuddy_checkout_has_promotion_product')
   }, [])
 
   // --- Effects ---
@@ -259,6 +260,15 @@ export function useCheckoutState() {
   const subtotal = useMemo(
     () => pendingOrder ? pendingOrder.subtotal : rawCartItems.reduce((total, item) => total + item.subtotal, 0), [rawCartItems, pendingOrder]
   )
+
+  const hasPromotionProduct = useMemo(
+    () => cartItems.some((item) => item.price != null && item.price > item.salePrice),
+    [cartItems]
+  )
+
+  useEffect(() => {
+    sessionStorage.setItem('petbuddy_checkout_has_promotion_product', String(hasPromotionProduct))
+  }, [hasPromotionProduct])
 
   useEffect(() => {
     if (subtotal > 0) {

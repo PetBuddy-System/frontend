@@ -52,7 +52,8 @@
       "weeklySchedule": "Weekly shifts",
       "disposalRequest": "Disposal request",
       "inventory": "Inventory management",
-      "returns": "Manage Returns"
+      "returns": "Manage Returns",
+      "shipperAssignment": "Shipper Assignment"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Store Staff",
