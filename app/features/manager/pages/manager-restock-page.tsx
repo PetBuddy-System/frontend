@@ -11,25 +11,32 @@ export function ManagerRestockPage() {
     const { t } = useTranslation('manager')
     const [selectedReturnId, setSelectedReturnId] = useState<number | null>(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [isViewOnly, setIsViewOnly] = useState(false) // ✅ Thêm state
     const [refreshKey, setRefreshKey] = useState(0)
 
     function handleSelectReturn(returnId: number) {
-        console.log('🔍 handleSelectReturn called with:', returnId) // ✅ Log
         setSelectedReturnId(returnId)
+        setIsViewOnly(false) // ✅ Mở dialog để nhập kho
         setIsDialogOpen(true)
-        console.log('🔍 isDialogOpen set to true') // ✅ Log
+    }
+
+    // ✅ Thêm hàm xem chi tiết (sau khi đã nhập kho)
+    function handleViewDetail(returnId: number) {
+        setSelectedReturnId(returnId)
+        setIsViewOnly(true) // ✅ Mở dialog ở chế độ view-only
+        setIsDialogOpen(true)
     }
 
     function handleCloseDialog() {
-        console.log('🔍 handleCloseDialog called') // ✅ Log
         setIsDialogOpen(false)
         setSelectedReturnId(null)
+        setIsViewOnly(false)
     }
 
     function handleSuccess() {
-        console.log('🔍 handleSuccess called') // ✅ Log
         setIsDialogOpen(false)
         setSelectedReturnId(null)
+        setIsViewOnly(false)
         setRefreshKey(prev => prev + 1)
     }
 
@@ -53,7 +60,11 @@ export function ManagerRestockPage() {
                         </section>
 
                         <section className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm'>
-                            <RestockList key={refreshKey} onSelectReturn={handleSelectReturn} />
+                            <RestockList
+                                key={refreshKey}
+                                onSelectReturn={handleSelectReturn}
+                                onViewDetail={handleViewDetail}
+                            />
                         </section>
                     </div>
                 </main>
@@ -64,6 +75,7 @@ export function ManagerRestockPage() {
                     returnRequestId={selectedReturnId}
                     onClose={handleCloseDialog}
                     onSuccess={handleSuccess}
+                    isViewOnly={isViewOnly}
                 />
             )}
         </div>

@@ -460,7 +460,7 @@
       "completed": "Hoàn thành",
       "cancelled": "Đã hủy",
       "pickedUp": "Đã lấy hàng",
-      "deliveryFailed": "Giao thất bại"
+      "deliveryFailed": "Liên lạc thất bại"
     },
     "filters": {
       "status": "Trạng thái",

@@ -12,7 +12,8 @@ import {
   fetchMyOrdersApi,
   calculateRefundApi,
   createReturnRequestApi,
-  uploadReturnMediaApi
+  uploadReturnMediaApi,
+  fetchPaymentByOrderIdApi
 } from '~/features/profile/services'
 import type {
   ReturnType,
@@ -75,6 +76,10 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
 
+  // State lưu payment method
+  const [selectedOrderPaymentMethod, setSelectedOrderPaymentMethod] = useState<string>('')
+  const [isLoadingPayment, setIsLoadingPayment] = useState(false)
+
   // Fetch client orders on mount
   useEffect(() => {
     async function loadOrders() {
@@ -93,10 +98,42 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
     void loadOrders()
   }, [])
 
+  // Khi chọn order, gọi API lấy payment method
+  const handleOrderChange = async (e: ChangeEvent<HTMLSelectElement>) => {
+    const orderId = e.target.value
+    setSelectedOrderId(orderId)
+    setSelectedProducts({})
+    setSelectedQuantities({})
+    setCalculatedRefund(null)
+    setError(null)
+    setSelectedOrderPaymentMethod('')
+
+    if (!orderId) return
+
+    setIsLoadingPayment(true)
+    try {
+      const res = await fetchPaymentByOrderIdApi(Number(orderId))
+      if (res.success && res.data) {
+        const paymentMethod = res.data.paymentMethod || ''
+        setSelectedOrderPaymentMethod(paymentMethod)
+
+        // Nếu thanh toán bằng CASH, chỉ cho phép BANK_TRANSFER
+        if (paymentMethod === 'CASH') {
+          setRefundMethod('BANK_TRANSFER')
+        } else {
+          setRefundMethod('STRIPE_PAYMENT')
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load payment info', err)
+    } finally {
+      setIsLoadingPayment(false)
+    }
+  }
+
   // Calculate refund when selected items, quantity, or reason changes
   useEffect(() => {
     if (!selectedOrderId) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCalculatedRefund(null)
       return
     }
@@ -170,15 +207,6 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
       })
     }
   })
-
-  const handleOrderChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const orderId = e.target.value
-    setSelectedOrderId(orderId)
-    setSelectedProducts({})
-    setSelectedQuantities({})
-    setCalculatedRefund(null)
-    setError(null)
-  }
 
   const handleProductToggle = (productId: string) => {
     setSelectedProducts((prev) => {
@@ -284,6 +312,7 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
     setCalculatedRefund(null)
     setError(null)
     setIsSubmitted(false)
+    setSelectedOrderPaymentMethod('')
 
     if (onSuccess) {
       onSuccess()
@@ -311,7 +340,6 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         </div>
       )}
 
-      {/* Step 1: Chọn đơn hàng & sản phẩm */}
       <ReturnWarrantyStepOrder
         selectedOrderId={selectedOrderId}
         selectedProducts={selectedProducts}
@@ -322,7 +350,6 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         onQuantityChange={handleQuantityChange}
       />
 
-      {/* Step 2: Hình thức yêu cầu */}
       <ReturnWarrantyStepType
         requestType={requestType}
         onChange={(val) => {
@@ -337,7 +364,6 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         }}
       />
 
-      {/* Step 3: Lý do, Mô tả & Phương thức hoàn tiền */}
       <ReturnWarrantyStepReason
         requestType={requestType}
         reason={reason}
@@ -346,6 +372,8 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         bankName={bankName}
         bankAccountNumber={bankAccountNumber}
         bankAccountHolder={bankAccountHolder}
+        orderPaymentMethod={selectedOrderPaymentMethod}
+        isLoadingPayment={isLoadingPayment}
         onReasonChange={(val) => {
           setReason(val)
           setError(null)
@@ -363,10 +391,8 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         onBankAccountHolderChange={setBankAccountHolder}
       />
 
-      {/* Step 4: Hình ảnh minh họa */}
       <ReturnWarrantyStepPhotos files={files} onFilesChange={setFiles} />
 
-      {/* TÍNH TIỀN HOÀN - Chỉ hiển thị khi Trả hàng hoàn tiền */}
       {requestType === 'RETURN' && isCalculating && (
         <div className='rounded-xl border border-border bg-card p-4 text-center text-sm text-muted-foreground animate-pulse'>
           Đang tính toán tiền hoàn...
@@ -383,7 +409,6 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
             <span className='text-xs text-muted-foreground'>({calculatedRefund.items.length} sản phẩm)</span>
           </div>
 
-          {/* ✅ Bỏ max-h-48 và overflow-y-auto ở đây */}
           <div className='space-y-2.5'>
             {calculatedRefund.items.map((item) => (
               <div key={item.orderDetailId} className='flex justify-between gap-4 text-xs text-muted-foreground'>
