@@ -6,12 +6,18 @@ export enum AuditEntityType {
     PRODUCT = 'PRODUCT',
     PROMOTION = 'PROMOTION',
     BATCH = 'BATCH',
+    PAYMENT = 'PAYMENT',
+    VOUCHER = 'VOUCHER',
+    VOUCHER_USAGE = 'VOUCHER_USAGE',
 }
 
 export enum AuditAction {
     CREATE = 'CREATE',
     UPDATE = 'UPDATE',
-    DELETE = 'DELETE'
+    DELETE = 'DELETE',
+    PAY = 'PAY',
+    REFUND = 'REFUND',
+    USE = 'USE',
 }
 
 export interface AuditChange {

@@ -50,7 +50,6 @@ export function ManagerStaffScheduleStaffPage() {
   }, [t, workScheduleId])
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Data is loaded from route params.
     void loadSchedule()
   }, [loadSchedule])
 

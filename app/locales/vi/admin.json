@@ -182,10 +182,9 @@
     }
   },
   "filters": {
-    "custom": "Tùy chỉnh",
-    "month": "Tháng này",
     "today": "Hôm nay",
-    "week": "Tuần này"
+    "week": "Tuần này",
+    "year": "Năm này"
   },
   "metrics": {
     "averageOrder": {
@@ -194,6 +193,7 @@
     },
     "orders": {
       "change": "+5.2% so với kỳ trước",
+      "change_dynamic": "{{percent}}% so với kỳ trước",
       "label": "Đơn hàng"
     },
     "revenue": {

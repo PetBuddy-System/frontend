@@ -150,7 +150,8 @@
       "promotions": "Chương trình khuyến mãi",
       "storeLocations": "Địa chỉ chi nhánh",
       "reviews": "Quản lý đánh giá",
-      "shipperAssignment": "Phân công Shipper"
+      "shipperAssignment": "Phân công Shipper",
+      "auditLogs": "Lịch sử hệ thống"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
@@ -446,7 +447,6 @@
         "selected": "Đã chọn {{count}} staff"
       },
       "staffTasks": {
-        "CASHIER": "Thu ngân",
         "COORDINATOR": "Điều phối viên",
         "GROOMER": "Thợ chăm sóc",
         "SHIPPER": "Shipper"
@@ -790,30 +790,30 @@
     }
   },
   "storeLocations": {
-    "title": "Quản lý địa chỉ chi nhánh",
-    "subtitle": "Cấu hình vị trí địa lý và địa chỉ chính thức của cửa hàng PetBuddy.",
-    "currentLocation": "Chi nhánh hiện tại",
-    "history": "Lịch sử chi nhánh",
+    "title": "Quản lý địa chỉ cửa hàng",
+    "subtitle": "Cấu hình địa chỉ chính thức của cửa hàng PetBuddy.",
+    "currentLocation": "Vị trí cửa hàng hiện tại",
+    "history": "Lịch sử vị trí cửa hàng",
     "address": "Địa chỉ",
     "latitude": "Vĩ độ",
     "longitude": "Kinh độ",
-    "save": "Lưu địa chỉ chi nhánh",
+    "save": "Lưu địa chỉ cửa hàng",
     "saving": "Đang lưu...",
     "status": "Trạng thái",
     "active": "Đang hoạt động",
     "inactive": "Ngừng hoạt động",
     "createdAt": "Ngày tạo",
-    "success": "Cập nhật địa chỉ chi nhánh thành công",
-    "error": "Lỗi cập nhật địa chỉ chi nhánh",
+    "success": "Cập nhật địa chỉ cửa hàng thành công",
+    "error": "Lỗi cập nhật địa chỉ cửa hàng",
     "searchPlaceholder": "Tìm kiếm vị trí...",
     "searchButton": "Tìm",
     "myLocation": "Vị trí của tôi",
     "mapLoading": "Đang tải bản đồ...",
     "mapHint": "Click trên bản đồ hoặc kéo marker để chọn vị trí.",
     "errors": {
-      "outsideHcmc": "Vị trí chi nhánh phải nằm trong Thành phố Hồ Chí Minh.",
+      "outsideHcmc": "Vị trí cửa hàng phải nằm trong Thành phố Hồ Chí Minh.",
       "invalidLocation": "Không thể định vị tọa độ này.",
-      "emptyAddress": "Vui lòng nhập địa chỉ chi nhánh.",
+      "emptyAddress": "Vui lòng nhập địa chỉ cửa hàng.",
       "boundaryLoading": "Đang tải ranh giới thành phố..."
     }
   },
@@ -821,32 +821,85 @@
     "title": "Quản lý đánh giá",
     "subtitle": "Xem, kiểm duyệt và quản lý các đánh giá sản phẩm từ người dùng."
   },
-  "shipperAssignment": {
-    "title": "Phân công Shipper",
-    "subtitle": "Gom nhóm các đơn hàng ở khu vực lân cận và chỉ định nhân viên giao hàng.",
-    "searchPlaceholder": "Tìm kiếm đơn hàng, khách hàng, địa chỉ...",
-    "noOrdersTitle": "Không có đơn hàng cần phân công",
-    "noOrdersDesc": "Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị (PICKED) để phân công shipper.",
-    "loadingOrders": "Đang tải danh sách đơn hàng...",
-    "otherArea": "Khu vực khác",
-    "statusPicked": "Chờ giao",
-    "orderDate": "Ngày đặt",
-    "totalAmount": "Tổng tiền",
-    "suggestionsHeader": "Đề xuất Shipper phù hợp",
-    "loadingSuggestions": "Đang tải gợi ý shipper...",
-    "noSuggestions": "Không tìm thấy shipper nào hoạt động trong hôm nay.",
-    "unknownDistance": "Khoảng cách: N/A",
-    "currentLoadLabel": "Tải trọng:",
-    "assignBtn": "Phân công",
-    "stats": {
-      "pendingPickup": "Đơn hàng chờ giao",
-      "areas": "Khu vực hoạt động"
+  "auditLogs": {
+    "title": "Lịch sử hệ thống",
+    "subtitle": "Theo dõi lịch sử thay đổi thông tin thanh toán, voucher và lượt dùng voucher.",
+    "retry": "Thử lại",
+    "filter": {
+      "all": "Tất cả",
+      "entityType": "Loại đối tượng",
+      "action": "Hành động",
+      "entityCode": "Mã đối tượng",
+      "entityCodePlaceholder": "VD: ORD-0001...",
+      "performedBy": "Người thực hiện",
+      "performedByPlaceholder": "Email...",
+      "reset": "Đặt lại"
     },
-    "errors": {
-      "loadOrdersFailed": "Không thể tải danh sách đơn hàng.",
-      "loadSuggestionsFailed": "Không thể tải gợi ý shipper.",
-      "assignFailed": "Không thể phân công shipper cho đơn hàng này.",
-      "unknownError": "Có lỗi xảy ra."
+    "table": {
+      "time": "Thời gian",
+      "user": "Người thực hiện",
+      "action": "Hành động",
+      "entityType": "Loại",
+      "entityCode": "Mã đối tượng",
+      "reason": "Lý do",
+      "viewDetail": "Chi tiết",
+      "empty": "Không tìm thấy dữ liệu audit log nào"
+    },
+    "pagination": {
+      "showing": "Hiển thị",
+      "of": "trong"
+    },
+    "actions": {
+      "CREATE": "Tạo mới",
+      "UPDATE": "Cập nhật",
+      "DELETE": "Xóa",
+      "PAY": "Thanh toán",
+      "REFUND": "Hoàn tiền",
+      "USE": "Sử dụng"
+    },
+    "entityTypes": {
+      "PAYMENT": "Thanh toán",
+      "VOUCHER": "Khuyến mãi (Voucher)",
+      "VOUCHER_USAGE": "Lượt dùng Voucher"
+    },
+    "reasonMap": {
+      "PAYMENT_SUCCEEDED": "Thanh toán đơn hàng thành công",
+      "FULL_REFUND": "Hoàn tiền toàn phần",
+      "PARTIAL_REFUND": "Hoàn tiền một phần",
+      "CREATE_VOUCHER": "Tạo voucher mới",
+      "VOUCHER_APPLIED": "Khách hàng áp dụng mã voucher"
+    },
+    "detail": {
+      "title": "Chi tiết Audit Log",
+      "back": "Quay lại danh sách",
+      "reason": "Lý do",
+      "note": "Ghi chú",
+      "changes": "Các thay đổi chi tiết",
+      "notFound": "Không tìm thấy thông tin audit log này"
+    },
+    "error": {
+      "loadFailed": "Tải dữ liệu audit logs thất bại."
+    },
+    "fields": {
+      "status": "Trạng thái",
+      "orderCode": "Mã đơn hàng",
+      "amount": "Số tiền",
+      "paymentMethod": "Phương thức thanh toán",
+      "refundAmount": "Số tiền hoàn lại",
+      "totalRefundedAmount": "Tổng tiền đã hoàn",
+      "voucherCode": "Mã voucher",
+      "voucherName": "Tên voucher",
+      "discountType": "Loại chiết khấu",
+      "discountValue": "Giá trị giảm",
+      "maxDiscount": "Giảm tối đa",
+      "minOrderValue": "Đơn tối thiểu",
+      "applyScope": "Phạm vi áp dụng",
+      "usageLimit": "Giới hạn sử dụng",
+      "perUserLimit": "Giới hạn mỗi user",
+      "startAt": "Ngày bắt đầu",
+      "expiredAt": "Ngày hết hạn",
+      "userEmail": "Email khách hàng",
+      "usedAt": "Thời gian dùng"
     }
   }
 }

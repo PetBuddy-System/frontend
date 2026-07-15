@@ -4,6 +4,7 @@ import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import type { ManagementReturnResponse } from '~/shared/lib/returns'
 import { updateReturnStatusApi } from '../../services/returns/returns-api'
+import { useAuth } from '~/providers/auth-provider'
 
 export interface StaffReturnDetailDialogProps {
   returnRequest: ManagementReturnResponse
@@ -17,6 +18,9 @@ export function StaffReturnDetailDialog({
   onSuccess
 }: StaffReturnDetailDialogProps) {
   const { t } = useTranslation('staff')
+  const { user } = useAuth()
+  const staffTask = user?.staffTask
+
   const [staffNote, setStaffNote] = useState(returnRequest.staffNote || '')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -165,26 +169,62 @@ export function StaffReturnDetailDialog({
     }
   }
 
-  // Xác định các nút cần hiển thị dựa trên status
   function getAvailableActions() {
-    switch (returnRequest.status) {
-      case 'PENDING':
-        return [
+    if (!staffTask) {
+      return []
+    }
+
+    const { type, status } = returnRequest
+    const actions: Array<{
+      value: 'APPROVED' | 'REJECTED' | 'PICKED_UP' | 'COMPLETED' | 'DELIVERY_FAILED'
+      label: string
+      variant: string
+    }> = []
+
+    // COORDINATOR
+    if (staffTask === 'COORDINATOR') {
+      if (status === 'PENDING') {
+        actions.push(
           { value: 'APPROVED', label: t('returns.detail.btnApprove'), variant: 'primary' },
           { value: 'REJECTED', label: t('returns.detail.btnReject'), variant: 'danger' }
-        ]
-      case 'APPROVED':
-        return [
-          { value: 'PICKED_UP', label: t('returns.stats.pickedUp'), variant: 'primary' }
-        ]
-      case 'PICKED_UP':
-        return [
-          { value: 'COMPLETED', label: t('returns.stats.completed'), variant: 'success' },
-          { value: 'DELIVERY_FAILED', label: t('returns.stats.deliveryFailed'), variant: 'danger' }
-        ]
-      default:
-        return []
+        )
+      }
+
+      // RETURN: PICKED_UP → COMPLETED (COORDINATOR)
+      if (type === 'RETURN' && status === 'PICKED_UP') {
+        actions.push(
+          { value: 'COMPLETED', label: t('returns.stats.completed'), variant: 'success' }
+        )
+      }
+
+      return actions
     }
+
+    // SHIPPER
+    if (staffTask === 'SHIPPER') {
+      if (type === 'RETURN') {
+        // RETURN: APPROVED → PICKED_UP
+        if (status === 'APPROVED') {
+          actions.push(
+            { value: 'PICKED_UP', label: t('returns.stats.pickedUp'), variant: 'primary' },
+            { value: 'DELIVERY_FAILED', label: t('returns.stats.deliveryFailed'), variant: 'danger' }
+          )
+        }
+      }
+
+      if (type === 'EXCHANGE') {
+        // EXCHANGE: APPROVED → COMPLETED (SHIPPER bấm luôn, không qua PICKED_UP)
+        if (status === 'APPROVED') {
+          actions.push(
+            { value: 'COMPLETED', label: t('returns.stats.completed'), variant: 'success' },
+            { value: 'DELIVERY_FAILED', label: t('returns.stats.deliveryFailed'), variant: 'danger' }
+          )
+        }
+      }
+      return actions
+    }
+
+    return []
   }
 
   const availableActions = getAvailableActions()
@@ -449,6 +489,7 @@ export function StaffReturnDetailDialog({
                   )}
                 </div>
               )}
+
               {/* Action Buttons (For Staff to resolve) */}
               {availableActions.length > 0 && (
                 <div className='rounded-xl border border-border bg-card p-4 space-y-4'>
@@ -491,7 +532,7 @@ export function StaffReturnDetailDialog({
                         <button
                           key={action.value}
                           type='button'
-                          onClick={() => handleUpdateStatus(action.value as any)}
+                          onClick={() => handleUpdateStatus(action.value)}
                           disabled={isSubmitting}
                           className={className}
                         >

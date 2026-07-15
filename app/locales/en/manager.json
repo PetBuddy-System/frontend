@@ -151,7 +151,8 @@
       "promotions": "Promotions",
       "storeLocations": "Store Locations",
       "reviews": "Review Management",
-      "shipperAssignment": "Shipper Assignment"
+      "shipperAssignment": "Shipper Assignment",
+      "auditLogs": "System Logs"
     },
     "toggle": "Toggle sidebar"
   },
@@ -446,7 +447,6 @@
         "selected": "{{count}} staff selected"
       },
       "staffTasks": {
-        "CASHIER": "Cashier",
         "COORDINATOR": "Coordinator",
         "GROOMER": "Groomer",
         "SHIPPER": "Shipper"
@@ -793,30 +793,30 @@
     }
   },
   "storeLocations": {
-    "title": "Branch Locations",
-    "subtitle": "Configure geographical coordinates and address of PetBuddy branches.",
-    "currentLocation": "Current Branch",
+    "title": "Store Locations",
+    "subtitle": "Configure the address of PetBuddy branches.",
+    "currentLocation": "Current Store",
     "history": "Location History",
     "address": "Address",
     "latitude": "Latitude",
     "longitude": "Longitude",
-    "save": "Save Branch Location",
+    "save": "Save Store Location",
     "saving": "Saving...",
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",
     "createdAt": "Created At",
-    "success": "Branch location saved successfully",
-    "error": "Failed to save branch location",
+    "success": "Store location saved successfully",
+    "error": "Failed to save store location",
     "searchPlaceholder": "Search location...",
     "searchButton": "Search",
     "myLocation": "My Location",
     "mapLoading": "Loading map...",
     "mapHint": "Click on map or drag marker to choose location.",
     "errors": {
-      "outsideHcmc": "Branch location must be inside Ho Chi Minh City.",
+      "outsideHcmc": "Store location must be inside Ho Chi Minh City.",
       "invalidLocation": "Cannot locate coordinates.",
-      "emptyAddress": "Please enter branch address.",
+      "emptyAddress": "Please enter store address.",
       "boundaryLoading": "Loading city boundary..."
     }
   },
@@ -824,32 +824,86 @@
     "title": "Review Management",
     "subtitle": "View, moderate and manage customer product reviews."
   },
-  "shipperAssignment": {
-    "title": "Shipper Assignment",
-    "subtitle": "Group orders in nearby areas and assign a delivery staff.",
-    "searchPlaceholder": "Search orders, customers, address...",
-    "noOrdersTitle": "No orders need assignment",
-    "noOrdersDesc": "There are currently no orders in PICKED status to assign shippers.",
-    "loadingOrders": "Loading order list...",
-    "otherArea": "Other Area",
-    "statusPicked": "To Deliver",
-    "orderDate": "Order Date",
-    "totalAmount": "Total Amount",
-    "suggestionsHeader": "Suggested Shippers",
-    "loadingSuggestions": "Loading shipper suggestions...",
-    "noSuggestions": "No active shippers found for today.",
-    "unknownDistance": "Distance: N/A",
-    "currentLoadLabel": "Current Load:",
-    "assignBtn": "Assign",
-    "stats": {
-      "pendingPickup": "Orders to Deliver",
-      "areas": "Active Areas"
+
+  "auditLogs": {
+    "title": "System Logs",
+    "subtitle": "Track change logs for payments, vouchers, and voucher usages.",
+    "retry": "Retry",
+    "filter": {
+      "all": "All",
+      "entityType": "Entity Type",
+      "action": "Action",
+      "entityCode": "Entity Code",
+      "entityCodePlaceholder": "e.g. ORD-0001...",
+      "performedBy": "Performed By",
+      "performedByPlaceholder": "Email...",
+      "reset": "Reset"
     },
-    "errors": {
-      "loadOrdersFailed": "Failed to load order list.",
-      "loadSuggestionsFailed": "Failed to load shipper suggestions.",
-      "assignFailed": "Failed to assign shipper to this order.",
-      "unknownError": "An error occurred."
+    "table": {
+      "time": "Time",
+      "user": "Performed By",
+      "action": "Action",
+      "entityType": "Type",
+      "entityCode": "Entity Code",
+      "reason": "Reason",
+      "viewDetail": "Detail",
+      "empty": "No audit logs found"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of"
+    },
+    "actions": {
+      "CREATE": "Create",
+      "UPDATE": "Update",
+      "DELETE": "Delete",
+      "PAY": "Pay",
+      "REFUND": "Refund",
+      "USE": "Use"
+    },
+    "entityTypes": {
+      "PAYMENT": "Payment",
+      "VOUCHER": "Voucher",
+      "VOUCHER_USAGE": "Voucher Usage"
+    },
+    "reasonMap": {
+      "PAYMENT_SUCCEEDED": "Payment succeeded",
+      "FULL_REFUND": "Full refund",
+      "PARTIAL_REFUND": "Partial refund",
+      "CREATE_VOUCHER": "Created voucher",
+      "VOUCHER_APPLIED": "Voucher applied by customer"
+    },
+    "detail": {
+      "title": "Audit Log Detail",
+      "back": "Back to List",
+      "reason": "Reason",
+      "note": "Note",
+      "changes": "Detailed Changes",
+      "notFound": "Audit log not found"
+    },
+    "error": {
+      "loadFailed": "Failed to load audit logs data."
+    },
+    "fields": {
+      "status": "Status",
+      "orderCode": "Order Code",
+      "amount": "Amount",
+      "paymentMethod": "Payment Method",
+      "refundAmount": "Refund Amount",
+      "totalRefundedAmount": "Total Refunded Amount",
+      "voucherCode": "Voucher Code",
+      "voucherName": "Voucher Name",
+      "discountType": "Discount Type",
+      "discountValue": "Discount Value",
+      "maxDiscount": "Max Discount",
+      "minOrderValue": "Min Order Value",
+      "applyScope": "Apply Scope",
+      "usageLimit": "Usage Limit",
+      "perUserLimit": "Limit per User",
+      "startAt": "Start Time",
+      "expiredAt": "Expiration Time",
+      "userEmail": "Customer Email",
+      "usedAt": "Used Time"
     }
   }
 }

@@ -79,7 +79,7 @@ export function PaymentFailedPage() {
     <div className='flex min-h-screen flex-col bg-[#f8f9fa] dark:bg-[#0b1220] text-foreground transition-colors duration-300'>
       <SiteHeader />
       <main className='mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center p-6 text-center md:py-16'>
-        
+
         <div className='mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10 text-destructive animate-bounce'>
           <MaterialIcon name='cancel' className='text-[48px]' />
         </div>
@@ -96,7 +96,7 @@ export function PaymentFailedPage() {
               <span className='font-mono font-bold text-foreground'>#{orderId}</span>
             </div>
           )}
-          
+
           <div className='space-y-1'>
             <span className='text-xs font-bold text-muted-foreground uppercase tracking-wide'>Chi tiết lỗi</span>
             <p className='text-sm text-foreground leading-relaxed font-medium'>{reasonDescription}</p>
@@ -142,7 +142,7 @@ export function PaymentFailedPage() {
             <MaterialIcon name='receipt_long' className='text-[20px]' />
             Kiểm tra đơn hàng của tôi
           </button>
-          
+
           <button
             onClick={() => navigate('/products')}
             className='flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card py-3.5 font-display font-semibold text-foreground hover:bg-muted transition active:scale-[0.98]'

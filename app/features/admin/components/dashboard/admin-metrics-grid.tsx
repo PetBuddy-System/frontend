@@ -10,13 +10,50 @@ const METRICS = [
   { key: 'averageOrder', icon: 'receipt_long', value: '364K đ', trend: 'positive' }
 ] as const
 
-export function AdminMetricsGrid() {
+interface AdminMetricsGridProps {
+  ordersValue?: number
+  ordersChangePercent?: number | null
+  isLoading?: boolean
+}
+
+export function AdminMetricsGrid({ ordersValue, ordersChangePercent, isLoading }: AdminMetricsGridProps) {
   const { t } = useTranslation('admin')
 
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4'>
       {METRICS.map((metric) => {
-        const isPositive = metric.trend === 'positive'
+        const isOrders = metric.key === 'orders'
+        
+        if (isOrders && isLoading) {
+          return (
+            <article
+              key={metric.key}
+              className='animate-pulse rounded-xl border border-border bg-card p-5 shadow-sm'
+            >
+              <div className='mb-4 flex items-center gap-3'>
+                <div className='h-11 w-11 rounded-full bg-muted' />
+                <div className='h-4 w-20 rounded bg-muted' />
+              </div>
+              <div className='mb-2 h-8 w-24 rounded bg-muted' />
+              <div className='h-4 w-32 rounded bg-muted' />
+            </article>
+          )
+        }
+
+        let displayValue = metric.value
+        let isPositive = metric.trend === 'positive'
+        let changeText = t(`metrics.${metric.key}.change`)
+
+        if (isOrders && ordersValue !== undefined) {
+          displayValue = ordersValue.toString()
+          if (ordersChangePercent !== undefined && ordersChangePercent !== null) {
+            isPositive = ordersChangePercent >= 0
+            const formattedPercent = ordersChangePercent > 0 ? `+${ordersChangePercent}` : `${ordersChangePercent}`
+            changeText = t('metrics.orders.change_dynamic', { percent: formattedPercent })
+          } else {
+            changeText = ''
+          }
+        }
 
         return (
           <article
@@ -29,16 +66,18 @@ export function AdminMetricsGrid() {
               </div>
               <span className='font-semibold'>{t(`metrics.${metric.key}.label`)}</span>
             </div>
-            <p className='mb-2 font-display text-2xl font-bold text-card-foreground'>{metric.value}</p>
-            <div
-              className={cn(
-                'flex items-center gap-1 text-sm font-semibold',
-                isPositive ? 'text-success' : 'text-destructive'
-              )}
-            >
-              <MaterialIcon name={isPositive ? 'trending_up' : 'trending_down'} className='text-base' />
-              <span>{t(`metrics.${metric.key}.change`)}</span>
-            </div>
+            <p className='mb-2 font-display text-2xl font-bold text-card-foreground'>{displayValue}</p>
+            {changeText && (
+              <div
+                className={cn(
+                  'flex items-center gap-1 text-sm font-semibold',
+                  isPositive ? 'text-success' : 'text-destructive'
+                )}
+              >
+                <MaterialIcon name={isPositive ? 'trending_up' : 'trending_down'} className='text-base' />
+                <span>{changeText}</span>
+              </div>
+            )}
           </article>
         )
       })}

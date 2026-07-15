@@ -12,7 +12,7 @@ interface WorkScheduleStaffSelectProps {
   disabled?: boolean
 }
 
-const TASK_ORDER = ['COORDINATOR', 'SHIPPER', 'GROOMER', 'CASHIER'] as const
+const TASK_ORDER = ['COORDINATOR', 'SHIPPER', 'GROOMER'] as const
 type StaffTaskGroup = (typeof TASK_ORDER)[number]
 
 function getStaffTaskGroup(staff: UserResponse): StaffTaskGroup | null {

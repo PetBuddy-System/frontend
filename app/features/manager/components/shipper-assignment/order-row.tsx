@@ -33,13 +33,11 @@ export function OrderRow({ order, onAssignSuccess }: OrderRowProps) {
 
   return (
     <div className='border border-border/60 bg-card rounded-2xl overflow-hidden shadow-sm hover:border-primary/45 transition-colors'>
-      {/* Clickable Header Row */}
       <div
         onClick={() => setIsExpanded(!isExpanded)}
         className='flex flex-col md:flex-row md:items-center justify-between p-5 cursor-pointer gap-4 select-none hover:bg-muted/10'
       >
         <div className='flex items-center gap-4'>
-          {/* Collapse icon */}
           <div className={`text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`}>
             <MaterialIcon name='chevron_right' className='text-2xl' />
           </div>
@@ -73,7 +71,6 @@ export function OrderRow({ order, onAssignSuccess }: OrderRowProps) {
         </div>
       </div>
 
-      {/* Expanded collaspible suggestions section */}
       {isExpanded && (
         <div className='border-t border-border/50 bg-muted/10 p-5 md:px-8 pb-6 animate-fadeIn'>
           <div className='border-b border-border/40 pb-2 mb-4'>

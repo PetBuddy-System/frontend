@@ -78,7 +78,7 @@ export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: Check
             <span className='font-semibold'>Cảnh báo thanh toán quá hạn</span>
             <p className='text-muted-foreground text-xs leading-relaxed'>
               Tài khoản của bạn đã có {user.paymentFailStreak} lần thanh toán quá hạn.
-              Vui lòng hoàn thành giao dịch trước khi hết thời gian chờ (timeout) để tránh ảnh hưởng đến tài khoản hoặc bị hủy dịch vụ.
+              Vui lòng hoàn thành giao dịch trước khi hết thời gian chờ để tránh ảnh hưởng đến tài khoản hoặc bị hủy dịch vụ.
             </p>
           </div>
         </div>

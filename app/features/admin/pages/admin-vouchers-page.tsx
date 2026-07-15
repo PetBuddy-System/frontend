@@ -129,26 +129,6 @@ export function AdminVouchersPage() {
 
             {/* Voucher Table — full width */}
             <AdminVoucherTable key={tableKey} onOpenCreate={() => setIsCreateModalOpen(true)} />
-
-            {/* Promo banner */}
-            <div className='flex items-center overflow-hidden rounded-2xl bg-primary px-8 py-6'>
-              <div className='flex-1 text-primary-foreground'>
-                <h4 className='font-display text-lg font-bold'>
-                  Sắp tới: Chiến dịch Mùa Hè Rực Rỡ
-                </h4>
-                <p className='mt-1 text-sm opacity-80'>
-                  Gợi ý tạo các voucher ưu đãi 15% cho dịch vụ cắt tỉa lông trong tháng 6.
-                </p>
-              </div>
-              <button
-                type='button'
-                onClick={() => setIsCreateModalOpen(true)}
-                className='ml-6 shrink-0 rounded-xl bg-primary-foreground px-5 py-2 text-sm font-bold text-primary transition hover:bg-primary-foreground/90'
-              >
-                Tạo ngay
-              </button>
-            </div>
-
           </div>
         </main>
       </div>

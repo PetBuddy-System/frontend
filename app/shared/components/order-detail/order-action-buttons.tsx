@@ -8,6 +8,7 @@ interface OrderActionButtonsProps {
   order: OrderDetailFull
   isStaff: boolean
   isShipper: boolean
+  isCoordinator: boolean
   showCancelButton?: boolean
   isCancelDisabled?: boolean
   isExpired: boolean
@@ -23,6 +24,7 @@ export function OrderActionButtons({
   order,
   isStaff,
   isShipper,
+  isCoordinator,
   showCancelButton,
   isCancelDisabled,
   isExpired,
@@ -36,7 +38,7 @@ export function OrderActionButtons({
   const { t } = useTranslation('profile')
 
   const isRefundPending = order.status === 'CANCEL_REQUESTED'
-  if (isStaff && isRefundPending) {
+  if (isStaff && isCoordinator && isRefundPending) {
     return (
       <div className="flex flex-col items-end gap-3">
         <button
@@ -76,8 +78,7 @@ export function OrderActionButtons({
         </button>
       )}
 
-      {/* Shipper Actions */}
-      {isStaff && isShipper && order.status === 'CONFIRMED' && (
+      {isStaff && isCoordinator && order.status === 'CONFIRMED' && (
         <button
           type="button"
           onClick={async () => {
@@ -100,7 +101,7 @@ export function OrderActionButtons({
         </button>
       )}
 
-      {isStaff && isShipper && order.status === 'PICKING' && (
+      {isStaff && isCoordinator && order.status === 'PICKING' && (
         <button
           type="button"
           onClick={async () => {
@@ -134,7 +135,6 @@ export function OrderActionButtons({
         </button>
       )}
 
-      {/* Pay Again */}
       {!isStaff && order.status === 'PENDING' && order.payment?.paymentMethod === 'CARD' && (
         <button
           onClick={onRetryPayment}
@@ -176,7 +176,7 @@ export function OrderActionButtons({
         </button>
       )}
 
-      {isRefundPending && !isStaff && (
+      {isRefundPending && !(isStaff && isCoordinator) && (
         <div className="flex items-center gap-2 px-5 py-2.5 rounded-lg border-2 border-amber-400 bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 font-bold text-sm">
           <MaterialIcon name="hourglass_top" className="text-[18px] animate-pulse" />
           <span>Chờ nhân viên xác nhận hoàn tiền</span>

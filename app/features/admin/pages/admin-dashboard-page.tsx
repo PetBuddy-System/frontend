@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from '@tanstack/react-query'
 
 import { AdminMetricsGrid } from '../components/dashboard/admin-metrics-grid'
 import { AdminRevenueBreakdownCard } from '../components/dashboard/admin-revenue-breakdown-card'
@@ -6,11 +8,28 @@ import { AdminRevenueChartCard } from '../components/dashboard/admin-revenue-cha
 import { AdminTopSalesTable } from '../components/dashboard/admin-top-sales-table'
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
+import { fetchRevenueDashboardApi } from '../services/dashboard'
 
-const FILTER_KEYS = ['today', 'week', 'month', 'custom'] as const
+type FilterKey = 'today' | 'week' | 'year'
+
+const FILTER_KEYS: FilterKey[] = ['today', 'week', 'year']
+
+const periodTypeMap = {
+  today: 'DAY',
+  week: 'WEEK',
+  year: 'YEAR'
+} as const
 
 export function AdminDashboardPage() {
   const { t } = useTranslation('admin')
+  const [filter, setFilter] = useState<FilterKey>('today')
+
+  const periodType = periodTypeMap[filter]
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['adminRevenueDashboard', periodType],
+    queryFn: () => fetchRevenueDashboardApi(periodType),
+  })
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -28,12 +47,13 @@ export function AdminDashboardPage() {
               </div>
               <div className='flex flex-wrap items-center gap-2 rounded-xl border border-border bg-card p-1 shadow-sm'>
                 {FILTER_KEYS.map((key) => {
-                  const isActive = key === 'today'
+                  const isActive = key === filter
 
                   return (
                     <button
                       key={key}
                       type='button'
+                      onClick={() => setFilter(key)}
                       className={
                         isActive
                           ? 'rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground'
@@ -47,9 +67,16 @@ export function AdminDashboardPage() {
               </div>
             </section>
 
-            <AdminMetricsGrid />
+            <AdminMetricsGrid
+              ordersValue={data?.orderCount?.value}
+              ordersChangePercent={data?.orderCount?.changePercent}
+              isLoading={isLoading}
+            />
             <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
-              <AdminRevenueChartCard />
+              <AdminRevenueChartCard
+                trendPoints={data?.revenueTrend}
+                isLoading={isLoading}
+              />
               <AdminRevenueBreakdownCard />
             </div>
             <AdminTopSalesTable />

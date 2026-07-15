@@ -1,14 +1,14 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ManagerSidebar } from '../components/layout/manager-sidebar'
-import { ManagerTopNav } from '../components/layout/manager-top-nav'
-import { AreaOrderGroup } from '../components/shipper-assignment/area-order-group'
-import { fetchAllOrdersApi } from '../services/shipper-assignment/shipper-assignment-api'
+import { StaffSidebar } from '../components/layout/staff-sidebar'
+import { StaffTopNav } from '../components/layout/staff-top-nav'
+import { AreaOrderGroup } from '../../manager/components/shipper-assignment/area-order-group'
+import { fetchAllOrdersApi } from '../../manager/services/shipper-assignment/shipper-assignment-api'
 import { MaterialIcon } from '~/shared/ui'
 import type { OrderResponse } from '~/shared/lib/order'
 
-export function ManagerShipperAssignmentPage() {
-  const { t } = useTranslation('manager')
+export function StaffShipperAssignmentPage() {
+  const { t } = useTranslation('staff')
   const [orders, setOrders] = useState<OrderResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -33,10 +33,8 @@ export function ManagerShipperAssignmentPage() {
 
   useEffect(() => {
     void loadOrders()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Filter picked orders and matching search query
   const filteredPickedOrders = useMemo(() => {
     return orders.filter((o) => {
       if (o.status !== 'PICKED') return false
@@ -51,7 +49,6 @@ export function ManagerShipperAssignmentPage() {
     })
   }, [orders, searchQuery])
 
-  // Helper to extract district/area from Vietnamese address
   const extractDistrict = (address: string): string => {
     if (!address) return t('shipperAssignment.otherArea', 'Khu vực khác')
     const parts = address.split(',').map((p) => p.trim())
@@ -66,7 +63,6 @@ export function ManagerShipperAssignmentPage() {
     return t('shipperAssignment.otherArea', 'Khu vực khác')
   }
 
-  // Group picked orders by district
   const groupedOrders = useMemo(() => {
     const groups: { [key: string]: OrderResponse[] } = {}
     filteredPickedOrders.forEach((o) => {
@@ -81,13 +77,12 @@ export function ManagerShipperAssignmentPage() {
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
-      <ManagerSidebar activeItem='shipperAssignment' />
+      <StaffSidebar activeItem='shipperAssignment' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <ManagerTopNav titleKey='shipperAssignment.title' subtitleKey='shipperAssignment.subtitle' />
+        <StaffTopNav titleKey='shipperAssignment.title' subtitleKey='shipperAssignment.subtitle' />
 
         <main className='flex-1 overflow-y-auto p-4 md:p-6 pb-20'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
-            {/* Header statistics info */}
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3'>
               <div className='rounded-2xl border border-border bg-card p-5 shadow-sm flex items-center gap-4'>
                 <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary'>
@@ -114,7 +109,6 @@ export function ManagerShipperAssignmentPage() {
               </div>
             </div>
 
-            {/* Filter toolbar */}
             <div className='flex items-center gap-4'>
               <div className='relative w-full max-w-md'>
                 <MaterialIcon name='search' className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground' />
@@ -128,7 +122,6 @@ export function ManagerShipperAssignmentPage() {
               </div>
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className='flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
                 <MaterialIcon name='error' className='shrink-0' />
@@ -136,7 +129,6 @@ export function ManagerShipperAssignmentPage() {
               </div>
             )}
 
-            {/* Main view body */}
             {isLoading ? (
               <div className='flex flex-col justify-center items-center py-20 gap-3'>
                 <div className='h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent' />
@@ -147,7 +139,7 @@ export function ManagerShipperAssignmentPage() {
                 <MaterialIcon name='local_shipping' className='text-5xl mb-3 text-muted-foreground/30' />
                 <h3 className='font-bold text-lg text-foreground mb-1'>{t('shipperAssignment.noOrdersTitle', 'Không có đơn hàng cần phân công')}</h3>
                 <p className='text-sm text-muted-foreground max-w-md mx-auto px-4'>
-                  {t('shipperAssignment.noOrdersDesc', 'Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị (PICKED) để phân công shipper.')}
+                  {t('shipperAssignment.noOrdersDesc', 'Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị để phân công shipper.')}
                 </p>
               </div>
             ) : (

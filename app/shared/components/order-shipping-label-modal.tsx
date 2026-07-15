@@ -1,18 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { OrderDetailFull } from '~/shared/lib/order'
 import { MaterialIcon } from '~/shared/ui'
+import { getCurrentStoreLocationApi } from '../../features/manager/services/store-location/store-location-api'
 import { cn } from '~/shared/lib/cn'
 
 interface OrderShippingLabelModalProps {
   order: OrderDetailFull
   onClose: () => void
-}
-
-// TODO: thay bằng thông tin thật của shop (config, hoặc lấy từ API)
-const STORE_SHIPPING_INFO = {
-  name: 'PetBuddy Store',
-  phone: '1900 6750',
-  address: '123 Nguyễn Văn Cừ, Phường 4, Quận 5, TP. Hồ Chí Minh',
 }
 
 function formatCODAmount(value: number) {
@@ -21,6 +15,10 @@ function formatCODAmount(value: number) {
 }
 
 export function OrderShippingLabelModal({ order, onClose }: OrderShippingLabelModalProps) {
+  const [storeAddress, setStoreAddress] = useState<string | null>(null)
+  const [isLoadingStore, setIsLoadingStore] = useState(true)
+  const [storeError, setStoreError] = useState('')
+
   useEffect(() => {
     function handleEsc(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
@@ -28,6 +26,27 @@ export function OrderShippingLabelModal({ order, onClose }: OrderShippingLabelMo
     document.addEventListener('keydown', handleEsc)
     return () => document.removeEventListener('keydown', handleEsc)
   }, [onClose])
+
+  useEffect(() => {
+    async function loadStoreLocation() {
+      setIsLoadingStore(true)
+      setStoreError('')
+      try {
+        const res = await getCurrentStoreLocationApi()
+        if (res.success && res.data?.address) {
+          setStoreAddress(res.data.address)
+        } else {
+          setStoreError('Chưa cấu hình vị trí cửa hàng')
+        }
+      } catch (err) {
+        console.error('Failed to load current store location', err)
+        setStoreError('Không thể tải vị trí cửa hàng')
+      } finally {
+        setIsLoadingStore(false)
+      }
+    }
+    void loadStoreLocation()
+  }, [])
 
   const totalQuantity = order.orderDetails?.reduce((sum, item) => sum + item.quantity, 0) ?? 0
   const totalWeight = order.orderDetails?.reduce((sum, item) => sum + item.quantity * 600, 0) || 600
@@ -102,9 +121,6 @@ export function OrderShippingLabelModal({ order, onClose }: OrderShippingLabelMo
             <section className="grid grid-cols-2 border-b border-neutral-300">
               <div className="p-6 border-r border-neutral-300 flex flex-col justify-center">
                 <p className="font-bold text-lg text-black mb-2">PetBuddy</p>
-                <p className="text-[10px] font-bold text-black tracking-widest uppercase">
-                  PetBuddy Logistics
-                </p>
               </div>
               <div className="p-6 flex flex-col items-center justify-center">
                 <div className="barcode-strip w-full max-w-[200px] mb-2" />
@@ -122,10 +138,15 @@ export function OrderShippingLabelModal({ order, onClose }: OrderShippingLabelMo
                   Từ (Sender):
                 </p>
                 <p className="text-base font-bold leading-tight mb-1 text-black">
-                  {STORE_SHIPPING_INFO.name}
+                  PetBuddy Store
                 </p>
-                <p className="text-sm font-bold mb-2 text-black">{STORE_SHIPPING_INFO.phone}</p>
-                <p className="text-sm leading-snug text-black">{STORE_SHIPPING_INFO.address}</p>
+                <p className="text-sm leading-snug text-black">
+                  {isLoadingStore
+                    ? 'Đang tải địa chỉ...'
+                    : storeError
+                      ? storeError
+                      : storeAddress}
+                </p>
               </div>
               {/* Receiver */}
               <div className="p-4 border-r border-neutral-300">

@@ -18,3 +18,10 @@ export async function getUserByIdApi(userId: string): Promise<ApiResponse<UserRe
     method: 'GET'
   })
 }
+
+export async function getCurrentUserApi(): Promise<ApiResponse<UserResponse>> {
+  return customFetch<ApiResponse<UserResponse>>({
+    url: `${USERS_BASE_URL}/me`,
+    method: 'GET'
+  })
+}

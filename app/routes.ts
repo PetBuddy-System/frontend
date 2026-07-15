@@ -53,7 +53,8 @@ export default [
     route('staff/add-product', 'routes/staff-add-product.tsx'),
     route('staff/orders', 'routes/staff-orders.tsx'),
     route('staff/orders/:orderId', 'routes/staff-order-detail.tsx'),
-    route('staff/returns', 'routes/staff-returns.tsx')
+    route('staff/returns', 'routes/staff-returns.tsx'),
+    route('staff/shipper-assignment', 'routes/staff-shipper-assignment.tsx')
   ]),
 
   // ─── Admin Only Routes ────────────────────────────────────────────────────
@@ -90,6 +91,7 @@ export default [
     route('manager/promotions/:promotionId/edit', 'routes/manager-promotion-edit.tsx'),
     route('manager/store-locations', 'routes/manager-store-locations.tsx'),
     route('manager/reviews', 'routes/manager-reviews.tsx'),
-    route('manager/shipper-assignment', 'routes/manager-shipper-assignment.tsx')
+    route('manager/audit-logs', 'routes/manager-audit-logs.tsx'),
+    route('manager/audit-logs/:auditLogId', 'routes/manager-audit-detail.tsx')
   ])
 ] satisfies RouteConfig
