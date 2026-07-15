@@ -17,6 +17,7 @@ export interface FetchReturnsParams {
   fromDate?: string
   toDate?: string
   keyword?: string
+  [key: string]: string | number | boolean | null | undefined
 }
 
 export async function fetchReturnsApi(

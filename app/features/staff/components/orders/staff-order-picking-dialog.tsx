@@ -39,7 +39,7 @@ export function StaffOrderPickingDialog({ order, onClose, onSuccess }: StaffOrde
         if (!order) return
         setIsSubmitting(true)
         try {
-            const res = await updateOrderStatusApi(order.orderId, 'SHIPPING')
+            const res = await updateOrderStatusApi(order.orderId, 'PICKED')
             if (res.success) {
                 onSuccess()
                 onClose()

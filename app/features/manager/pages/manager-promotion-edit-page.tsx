@@ -45,7 +45,11 @@ export function ManagerPromotionEditPage() {
     reason: '',
     note: ''
   })
+
+  // ⭐ State cho filter
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | undefined>(undefined)
   const [nearExpiredDays, setNearExpiredDays] = useState<string>('all')
+
   const [products, setProducts] = useState<ProductManagementItem[]>([])
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([])
   const [productDiscountById, setProductDiscountById] = useState<Record<string, ProductDiscountState>>({})
@@ -149,20 +153,27 @@ export function ManagerPromotionEditPage() {
     return () => clearTimeout(timer)
   }, [keywordInput])
 
-  // Load products
+  // ⭐ Load products - Thêm category filter
   useEffect(() => {
     async function loadProducts() {
       setIsLoadingProducts(true)
       setError(null)
 
       try {
-        const response = await fetchProductsManagementApi({
+        const params: any = {
           keyword: keyword.trim() || undefined,
           page: currentPage,
           size: 10,
           sortBy: 'date_desc',
-          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays)
-        })
+          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays),
+        }
+
+        // ⭐ Chỉ thêm categoryId khi có giá trị hợp lệ
+        if (selectedCategoryId !== undefined && !isNaN(selectedCategoryId)) {
+          params.categoryId = selectedCategoryId
+        }
+
+        const response = await fetchProductsManagementApi(params)
 
         if (!response.success) {
           throw new Error(response.message || 'Không thể tải danh sách sản phẩm')
@@ -180,7 +191,7 @@ export function ManagerPromotionEditPage() {
     }
 
     void loadProducts()
-  }, [nearExpiredDays, currentPage, keyword])
+  }, [nearExpiredDays, selectedCategoryId, currentPage, keyword])
 
   const selectedProducts = useMemo(
     () => products.filter((product) => selectedProductIds.includes(product.productId)),
@@ -251,6 +262,23 @@ export function ManagerPromotionEditPage() {
     if (newPage >= 0 && newPage < totalPages) {
       setCurrentPage(newPage)
     }
+  }
+
+  // ⭐ Hàm xử lý thay đổi filter category
+  const handleCategoryChange = (categoryId: string) => {
+    if (categoryId === 'all' || categoryId === '') {
+      setSelectedCategoryId(undefined)
+    } else {
+      const numId = Number(categoryId)
+      setSelectedCategoryId(isNaN(numId) ? undefined : numId)
+    }
+    setCurrentPage(0)
+  }
+
+  // ⭐ Hàm xử lý thay đổi filter gần hết hạn
+  const handleNearExpiredChange = (value: string) => {
+    setNearExpiredDays(value)
+    setCurrentPage(0)
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -505,7 +533,7 @@ export function ManagerPromotionEditPage() {
                     <div className='relative'>
                       <select
                         value={nearExpiredDays}
-                        onChange={(e) => setNearExpiredDays(e.target.value)}
+                        onChange={(e) => handleNearExpiredChange(e.target.value)}
                         className='h-11 w-full appearance-none rounded-xl border border-input bg-background pl-4 pr-10 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring cursor-pointer'
                       >
                         {NEAR_EXPIRED_DAY_OPTIONS.map((option) => (
@@ -520,10 +548,33 @@ export function ManagerPromotionEditPage() {
                       />
                     </div>
                   </label>
+                  {/* ⭐ Thêm Category filter */}
+                  <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Danh mục sản phẩm</span>
+                    <div className='relative'>
+                      <select
+                        value={selectedCategoryId?.toString() || 'all'}
+                        onChange={(e) => handleCategoryChange(e.target.value)}
+                        className='h-11 w-full appearance-none rounded-xl border border-input bg-background pl-4 pr-10 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring cursor-pointer'
+                      >
+                        <option value='all'>Tất cả danh mục</option>
+                        <option value='1'>Thức ăn cho chó</option>
+                        <option value='2'>Thức ăn cho mèo</option>
+                        <option value='3'>Phụ kiện thú cưng</option>
+                        <option value='4'>Dinh dưỡng bổ sung</option>
+                        <option value='5'>Đồ chơi thú cưng</option>
+                        <option value='6'>Vệ sinh và chăm sóc</option>
+                      </select>
+                      <MaterialIcon
+                        name='expand_more'
+                        className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
+                      />
+                    </div>
+                  </label>
                 </div>
               </section>
 
-              {/* Section 2: Sản phẩm áp dụng */}
+              {/* Section 2: Sản phẩm áp dụng - Giữ nguyên */}
               <section className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
                 <div className='mb-5 flex items-center justify-between gap-4'>
                   <div className='flex items-center gap-3'>
@@ -557,7 +608,7 @@ export function ManagerPromotionEditPage() {
                   </div>
                 </div>
 
-                {/* ⭐ Thanh tìm kiếm */}
+                {/* Thanh tìm kiếm */}
                 <div className='mb-4 flex items-center gap-4'>
                   <div className='relative flex-1'>
                     <MaterialIcon
@@ -619,7 +670,7 @@ export function ManagerPromotionEditPage() {
                                 Không tìm thấy sản phẩm nào với từ khóa "<strong>{keyword}</strong>"
                               </>
                             ) : (
-                              'Không có sản phẩm phù hợp với bộ lọc gần hết hạn.'
+                              'Không có sản phẩm phù hợp với bộ lọc.'
                             )}
                           </td>
                         </tr>
@@ -759,7 +810,7 @@ export function ManagerPromotionEditPage() {
                 )}
               </section>
 
-              {/* Action bar */}
+              {/* Action bar - Giữ nguyên */}
               <div className='flex items-center justify-end gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm'>
                 <button
                   type='button'

@@ -427,7 +427,9 @@
       "approved": "Đã duyệt",
       "rejected": "Đã từ chối",
       "completed": "Hoàn thành",
-      "cancelled": "Đã hủy"
+      "cancelled": "Đã hủy",
+      "pickedUp": "Đã lấy hàng",
+      "deliveryFailed": "Giao thất bại"
     },
     "filters": {
       "status": "Trạng thái",

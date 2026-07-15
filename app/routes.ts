@@ -84,12 +84,14 @@ export default [
     route('manager/staff-schedule/new', 'routes/manager-staff-schedule-new.tsx'),
     route('manager/staff-schedule/:workScheduleId/edit', 'routes/manager-staff-schedule-edit.tsx'),
     route('manager/staff-schedule/:workScheduleId/staff', 'routes/manager-staff-schedule-staff.tsx'),
+    route('manager/restock', 'routes/manager-restock.tsx'),
     route('manager/staff-schedule/:workScheduleId', 'routes/manager-staff-schedule-detail.tsx'),
     route('manager/products/:productId', 'routes/manager-product-detail.tsx'),
     route('manager/promotions', 'routes/manager-promotions.tsx'),
     route('manager/promotions/new', 'routes/manager-promotion-create.tsx'),
     route('manager/promotions/:promotionId/edit', 'routes/manager-promotion-edit.tsx'),
     route('manager/store-locations', 'routes/manager-store-locations.tsx'),
-    route('manager/reviews', 'routes/manager-reviews.tsx')
+    route('manager/reviews', 'routes/manager-reviews.tsx'),
+    route('manager/shipper-assignment', 'routes/manager-shipper-assignment.tsx')
   ])
 ] satisfies RouteConfig

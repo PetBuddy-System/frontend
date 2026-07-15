@@ -427,7 +427,9 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "completed": "Completed",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "pickedUp": "Picked Up",
+      "deliveryFailed": "Delivery Failed"
     },
     "filters": {
       "status": "Status",

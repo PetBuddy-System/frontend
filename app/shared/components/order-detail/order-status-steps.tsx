@@ -15,6 +15,7 @@ export function OrderStatusSteps({ order, formatDateTime }: OrderStatusStepsProp
     'PENDING': 0,
     'CONFIRMED': 1,
     'PICKING': 1,
+    'PICKED': 1,
     'SHIPPING': 2,
     'DELIVERED': 3,
     'COMPLETED': 4,

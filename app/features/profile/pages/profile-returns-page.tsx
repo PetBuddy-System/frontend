@@ -1,4 +1,5 @@
-import { useState } from 'react'
+// app/features/profile/pages/profile-returns.tsx
+import { useState, useEffect } from 'react'  // ✅ Thêm useEffect
 import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
@@ -15,10 +16,18 @@ export function ProfileReturnsPage() {
   const { t } = useTranslation('profile')
   const [activeTab, setActiveTab] = useState<'history' | 'create'>('history')
 
+  // ✅ Ẩn overflow của body khi vào trang
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [])
+
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
       <ProfileSidebar activeItem='returns' />
-      <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
+      <div className='flex min-w-0 flex-1 flex-col'>
         <ProfilePageHeader titleKey='returnWarranty.headerTitle' subtitleKey='returnWarranty.headerSubtitle' />
         <main className='flex-1 overflow-y-auto p-4 md:p-6 pb-8'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
@@ -85,4 +94,3 @@ export function ProfileReturnsPage() {
     </div>
   )
 }
-
