@@ -106,9 +106,14 @@ export function ManagerAuditDetailPage() {
       try {
         const res = await fetchManagerAuditLogByIdApi(auditLogId)
         if (res.success && res.data) {
-          const filteredChanges = res.data.changes?.filter(
-            (c) => c.field !== 'deletedAt' && c.field !== 'updatedAt' && c.field !== 'createdAt'
-          ) ?? []
+          const HIDDEN_FIELDS = new Set([
+            'deletedAt',
+            'updatedAt',
+            'createdAt',
+            'totalRefundedAmount',
+            'stripeRefundId'
+          ])
+          const filteredChanges = res.data.changes?.filter((c) => !HIDDEN_FIELDS.has(c.field)) ?? []
           setLog({ ...res.data, changes: filteredChanges })
         } else {
           setErrorMsg(t('auditLogs.detail.notFound', 'Không tìm thấy audit log'))

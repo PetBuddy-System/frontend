@@ -6,14 +6,33 @@ import { useAuth } from '~/providers/auth-provider'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
+type StaffTask = 'COORDINATOR' | 'SHIPPER'
+
+type AllowedTasks = readonly StaffTask[] | null
+
 const STAFF_NAV_ITEMS = [
-  { icon: 'shopping_cart', key: 'orders', href: '/staff/orders', coordinatorOnly: false },
-  { icon: 'delete_sweep', key: 'disposalRequest', href: '/staff/disposal-request', coordinatorOnly: true },
-  { icon: 'assignment_return', key: 'returns', href: '/staff/returns', coordinatorOnly: true },
-  { icon: 'inventory_2', key: 'inventory', href: '/staff/add-product', coordinatorOnly: true },
-  { icon: 'local_shipping', key: 'shipperAssignment', href: '/staff/shipper-assignment', coordinatorOnly: true },
-  { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule', coordinatorOnly: false },
-  { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance', coordinatorOnly: false }
+  { icon: 'shopping_cart', key: 'orders', href: '/staff/orders', allowedTasks: null as AllowedTasks },
+  {
+    icon: 'delete_sweep',
+    key: 'disposalRequest',
+    href: '/staff/disposal-request',
+    allowedTasks: ['COORDINATOR'] as AllowedTasks
+  },
+  {
+    icon: 'assignment_return',
+    key: 'returns',
+    href: '/staff/returns',
+    allowedTasks: ['COORDINATOR', 'SHIPPER'] as AllowedTasks
+  },
+  { icon: 'inventory_2', key: 'inventory', href: '/staff/add-product', allowedTasks: ['COORDINATOR'] as AllowedTasks },
+  {
+    icon: 'local_shipping',
+    key: 'shipperAssignment',
+    href: '/staff/shipper-assignment',
+    allowedTasks: ['COORDINATOR'] as AllowedTasks
+  },
+  { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule', allowedTasks: null as AllowedTasks },
+  { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance', allowedTasks: null as AllowedTasks }
 ] as const
 
 export type StaffNavKey = (typeof STAFF_NAV_ITEMS)[number]['key']
@@ -27,7 +46,12 @@ export function StaffSidebar({ activeItem }: StaffSidebarProps) {
   const { isCollapsed, toggleSidebar } = useSidebar()
   const { logout, user } = useAuth()
   const navigate = useNavigate()
-  const isCoordinator = user?.role === 'STAFF' && user?.staffTask === 'COORDINATOR'
+
+  const staffTask = user?.role === 'STAFF' ? (user?.staffTask as StaffTask | undefined) : undefined
+
+  const visibleNavItems = STAFF_NAV_ITEMS.filter(
+    (item) => item.allowedTasks === null || (staffTask !== undefined && item.allowedTasks.includes(staffTask))
+  )
 
   return (
     <aside
@@ -60,7 +84,7 @@ export function StaffSidebar({ activeItem }: StaffSidebarProps) {
       </div>
 
       <nav className='min-h-0 flex-1 space-y-1 overflow-y-auto p-3'>
-        {STAFF_NAV_ITEMS.filter((item) => !item.coordinatorOnly || isCoordinator).map((item) => {
+        {visibleNavItems.map((item) => {
           const isActive = activeItem === item.key
 
           return (
