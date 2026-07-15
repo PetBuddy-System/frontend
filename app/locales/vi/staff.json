@@ -59,6 +59,36 @@
     "roleTitle": "Nhân viên cửa hàng",
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
+
+  "shipperAssignment": {
+    "title": "Phân công Shipper",
+    "subtitle": "Gom nhóm các đơn hàng ở khu vực lân cận và chỉ định nhân viên giao hàng.",
+    "searchPlaceholder": "Tìm kiếm đơn hàng, khách hàng, địa chỉ...",
+    "noOrdersTitle": "Không có đơn hàng cần phân công",
+    "noOrdersDesc": "Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị để phân công shipper.",
+    "loadingOrders": "Đang tải danh sách đơn hàng...",
+    "otherArea": "Khu vực khác",
+    "statusPicked": "Chờ giao",
+    "orderDate": "Ngày đặt",
+    "totalAmount": "Tổng tiền",
+    "suggestionsHeader": "Đề xuất Shipper phù hợp",
+    "loadingSuggestions": "Đang tải gợi ý shipper...",
+    "noSuggestions": "Không tìm thấy shipper nào hoạt động trong hôm nay.",
+    "unknownDistance": "Khoảng cách: N/A",
+    "currentLoadLabel": "Tải trọng:",
+    "assignBtn": "Phân công",
+    "stats": {
+      "pendingPickup": "Đơn hàng chờ giao",
+      "areas": "Khu vực hoạt động"
+    },
+    "errors": {
+      "loadOrdersFailed": "Không thể tải danh sách đơn hàng.",
+      "loadSuggestionsFailed": "Không thể tải gợi ý shipper.",
+      "assignFailed": "Không thể phân công shipper cho đơn hàng này.",
+      "unknownError": "Có lỗi xảy ra."
+    }
+  },
+
   "staff": {
     "name": "Nguyễn Văn An"
   },

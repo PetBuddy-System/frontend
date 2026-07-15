@@ -14,6 +14,7 @@ import type { StoreLocationResponse } from '~/shared/lib/store-location'
 
 import { StoreLocationInfo } from '../components/store-locations/store-location-info'
 import { StoreLocationMap } from '../components/store-locations/store-location-map'
+import { StoreLocationEditForm } from '../components/store-locations/store-location-edit-form'
 import { StoreLocationHistory } from '../components/store-locations/store-location-history'
 
 const DEFAULT_LAT = 10.776889
@@ -32,9 +33,12 @@ async function reverseGeocode(lat: number, lng: number): Promise<string> {
   }
 }
 
+type LocationMode = 'view' | 'edit' | 'create'
+
 export function ManagerStoreLocationsPage() {
   const { t } = useTranslation('manager')
 
+  const [mode, setMode] = useState<LocationMode>('view')
   const [isSaving, setIsSaving] = useState(false)
   const [selectedAddress, setSelectedAddress] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
@@ -54,8 +58,6 @@ export function ManagerStoreLocationsPage() {
       const curRes = await getCurrentStoreLocationApi()
       if (curRes.success && curRes.data) {
         setCurrentLocation(curRes.data)
-        setCoords({ lat: curRes.data.latitude, lng: curRes.data.longitude })
-        setSelectedAddress(curRes.data.address)
       }
     } catch (err) {
       console.error('Failed to load current store location', err)
@@ -103,6 +105,30 @@ export function ManagerStoreLocationsPage() {
     return hcmBoundary.features.some((feature: any) => booleanPointInPolygon(p, feature))
   }
 
+  function handleStartUpdate() {
+    if (currentLocation) {
+      setCoords({ lat: currentLocation.latitude, lng: currentLocation.longitude })
+      setSelectedAddress(currentLocation.address)
+    }
+    setErrorMsg('')
+    setSuccessMsg('')
+    setMode('edit')
+  }
+
+  function handleStartCreate() {
+    setCoords({ lat: DEFAULT_LAT, lng: DEFAULT_LON })
+    setSelectedAddress('')
+    setErrorMsg('')
+    setSuccessMsg('')
+    setMode('create')
+  }
+
+  function handleCancel() {
+    setErrorMsg('')
+    setSuccessMsg('')
+    setMode('view')
+  }
+
   async function handleSave() {
     setErrorMsg('')
     setSuccessMsg('')
@@ -133,6 +159,7 @@ export function ManagerStoreLocationsPage() {
 
       if (res.success && res.data) {
         setSuccessMsg(t('storeLocations.success', 'Đã lưu cấu hình vị trí thành công.'))
+        setMode('view')
         void loadData()
       } else {
         setErrorMsg(res.message || t('storeLocations.error', 'Có lỗi xảy ra khi lưu.'))
@@ -151,8 +178,8 @@ export function ManagerStoreLocationsPage() {
         <ManagerTopNav titleKey='storeLocations.title' subtitleKey='storeLocations.subtitle' />
         <main className='flex-1 overflow-y-auto bg-background p-4 md:p-6 pb-24'>
           <div className='mx-auto flex max-w-6xl flex-col gap-8'>
-            
-            {/* Title Section (HTML styled) */}
+
+            {/* Title Section */}
             <div className='text-center'>
               <h1 className='font-display text-2xl font-bold text-foreground md:text-3xl mb-2'>
                 {t('storeLocations.title', 'Chọn vị trí trên bản đồ')}
@@ -162,23 +189,34 @@ export function ManagerStoreLocationsPage() {
               </p>
             </div>
 
-            {/* Map selection part */}
-            <StoreLocationMap
-              coords={coords}
-              updateLocation={updateLocation}
-            />
-
-            {/* Info selection and save form */}
+            {/* Current location card + action buttons (always visible) */}
             <StoreLocationInfo
               currentLocation={currentLocation}
-              selectedAddress={selectedAddress}
-              setSelectedAddress={setSelectedAddress}
-              coords={coords}
-              isSaving={isSaving}
-              errorMsg={errorMsg}
-              successMsg={successMsg}
-              onSave={handleSave}
+              mode={mode}
+              onStartUpdate={handleStartUpdate}
+              onStartCreate={handleStartCreate}
             />
+
+            {/* Map + edit form - only visible when updating/creating */}
+            {mode !== 'view' && (
+              <>
+                <StoreLocationMap
+                  coords={coords}
+                  updateLocation={updateLocation}
+                />
+                <StoreLocationEditForm
+                  mode={mode}
+                  selectedAddress={selectedAddress}
+                  setSelectedAddress={setSelectedAddress}
+                  coords={coords}
+                  isSaving={isSaving}
+                  errorMsg={errorMsg}
+                  successMsg={successMsg}
+                  onSave={handleSave}
+                  onCancel={handleCancel}
+                />
+              </>
+            )}
 
             {/* History locations */}
             <StoreLocationHistory

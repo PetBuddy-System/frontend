@@ -1,8 +1,3 @@
-/**
- * Store Location types — chỉ chứa types/interfaces, không có API functions.
- * API functions nằm trong features/manager/services/.
- */
-
 export interface StoreLocationRequest {
   latitude: number
   longitude: number

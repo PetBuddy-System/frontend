@@ -169,23 +169,23 @@ export function StaffOrdersTable({
     const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
     const isCoordinator = user?.role === 'STAFF' && user?.staffTask === 'COORDINATOR'
 
-    const filteredOrders = orders.filter((o) => {
-        if (statusFilter !== 'ALL') {
-            if (statusFilter === 'SHIPPING_DELIVERED') {
-                if (o.status !== 'SHIPPING' && o.status !== 'DELIVERED') return false
-            } else if (o.status !== statusFilter) {
-                return false
-            }
+   const filteredOrders = orders.filter((o) => {
+    if (statusFilter !== 'ALL') {
+        if (statusFilter === 'SHIPPING_DELIVERED') {
+            if (o.status !== 'SHIPPING' && o.status !== 'DELIVERED') return false
+        } else if (o.status !== statusFilter) {
+            return false
         }
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase()
-            const codeMatch = o.orderCode?.toLowerCase().includes(query)
-            const nameMatch = o.recipientName?.toLowerCase().includes(query)
-            const phoneMatch = o.phoneNumber?.includes(query)
-            return codeMatch || nameMatch || phoneMatch
-        }
-        return true
-    })
+    }
+    if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase()
+        const codeMatch = o.orderCode?.toLowerCase().includes(query)
+        const nameMatch = o.recipientName?.toLowerCase().includes(query)
+        const phoneMatch = o.phoneNumber?.includes(query)
+        return codeMatch || nameMatch || phoneMatch
+    }
+    return true
+})
 
     return (
         <div className='rounded-2xl border border-border bg-card shadow-sm'>

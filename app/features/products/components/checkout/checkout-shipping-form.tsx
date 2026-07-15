@@ -18,7 +18,7 @@ export function toPhoneSubmit(phone: string): string {
 }
 
 function isValidPhone(phone: string): boolean {
-  return /^0\d{10}$/.test(phone.trim())
+  return /^0\d{9}$/.test(phone.trim())
 }
 
 export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }: CheckoutShippingFormProps) {
@@ -55,15 +55,15 @@ export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }
     if (digits.length > 0 && !digits.startsWith('0')) {
       digits = '0' + digits
     }
-    if (digits.length > 11) {
-      digits = digits.slice(0, 11)
+    if (digits.length > 10) {
+      digits = digits.slice(0, 10)
     }
 
     sessionStorage.setItem('petbuddy_checkout_phone', digits)
     setSavedPhone(digits)
 
     if (digits.length > 0 && !isValidPhone(digits)) {
-      setPhoneError('Số điện thoại phải có đúng 11 chữ số và bắt đầu bằng số 0')
+      setPhoneError('Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0')
     } else {
       setPhoneError('')
     }
@@ -71,7 +71,7 @@ export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }
 
   function handlePhoneBlur() {
     if (savedPhone.length > 0 && !isValidPhone(savedPhone)) {
-      setPhoneError('Số điện thoại phải có đúng 11 chữ số và bắt đầu bằng số 0')
+      setPhoneError('Số điện thoại phải có đúng 10 chữ số và bắt đầu bằng số 0')
     }
   }
 

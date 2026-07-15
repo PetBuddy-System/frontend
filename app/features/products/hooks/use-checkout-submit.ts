@@ -124,8 +124,8 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
       }
 
       const phoneNumber = getFormString(formData, 'phoneNumber')
-      if (!phoneNumber || !/^0\d{10}$/.test(phoneNumber)) {
-        setErrorMessage(t('checkout.phoneRequired', 'Vui lòng nhập số điện thoại hợp lệ (11 chữ số, bắt đầu bằng số 0).'))
+      if (!phoneNumber || !/^0\d{9}$/.test(phoneNumber)) {
+        setErrorMessage(t('checkout.phoneRequired', 'Vui lòng nhập số điện thoại hợp lệ (10 chữ số, bắt đầu bằng số 0).'))
         return
       }
 

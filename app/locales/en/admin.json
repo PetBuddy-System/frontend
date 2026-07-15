@@ -182,10 +182,9 @@
     }
   },
   "filters": {
-    "custom": "Custom",
-    "month": "This month",
     "today": "Today",
-    "week": "This week"
+    "week": "This week",
+    "year": "This year"
   },
   "metrics": {
     "averageOrder": {
@@ -194,6 +193,7 @@
     },
     "orders": {
       "change": "+5.2% vs previous period",
+      "change_dynamic": "{{percent}}% vs previous period",
       "label": "Orders"
     },
     "revenue": {

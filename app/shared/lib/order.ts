@@ -1,6 +1,5 @@
 import type { PaymentResponse } from './payment'
 import type { VoucherResponse } from './voucher'
-import type {UserResponse} from './auth'
 
 export type OrderStatus =
   | 'PENDING'

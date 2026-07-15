@@ -8,7 +8,7 @@ import { MaterialIcon } from '~/shared/ui'
 import type { OrderResponse } from '~/shared/lib/order'
 
 export function StaffShipperAssignmentPage() {
-  const { t } = useTranslation('manager')
+  const { t } = useTranslation('staff')
   const [orders, setOrders] = useState<OrderResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -139,7 +139,7 @@ export function StaffShipperAssignmentPage() {
                 <MaterialIcon name='local_shipping' className='text-5xl mb-3 text-muted-foreground/30' />
                 <h3 className='font-bold text-lg text-foreground mb-1'>{t('shipperAssignment.noOrdersTitle', 'Không có đơn hàng cần phân công')}</h3>
                 <p className='text-sm text-muted-foreground max-w-md mx-auto px-4'>
-                  {t('shipperAssignment.noOrdersDesc', 'Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị (PICKED) để phân công shipper.')}
+                  {t('shipperAssignment.noOrdersDesc', 'Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị để phân công shipper.')}
                 </p>
               </div>
             ) : (
