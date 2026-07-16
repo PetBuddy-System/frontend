@@ -9,20 +9,19 @@ interface AdminRevenueChartCardProps {
 export function AdminRevenueChartCard({ trendPoints = [], isLoading }: AdminRevenueChartCardProps) {
   const { t } = useTranslation('admin')
 
-  // Calculate dynamic points
   const pointsCount = trendPoints.length
   const maxRevenue = trendPoints.reduce((max, p) => Math.max(max, p.revenue), 0)
 
   const mappedPoints = trendPoints.map((point, index) => {
-    const x = pointsCount > 1 ? 46 + index * (504 / (pointsCount - 1)) : 46
-    const y = maxRevenue > 0 ? 250 - (point.revenue / maxRevenue) * 237 : 250
-    return {
-      key: point.date + index,
-      label: point.label,
-      x,
-      y
-    }
-  })
+  const x = pointsCount > 1 ? 46 + index * (504 / (pointsCount - 1)) : 46
+  const y = maxRevenue > 0 ? 250 - (point.revenue / maxRevenue) * 250 : 250
+  return {
+    key: point.date + index,
+    label: point.label,
+    x,
+    y
+  }
+})
 
   // Generate paths
   const linePath = mappedPoints.map((p, idx) => (idx === 0 ? `M${p.x} ${p.y}` : `L${p.x} ${p.y}`)).join(' ')

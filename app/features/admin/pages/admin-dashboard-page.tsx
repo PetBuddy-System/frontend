@@ -5,9 +5,8 @@ import { useQuery } from '@tanstack/react-query'
 import { AdminBookingRevenueChartCard } from '../components/dashboard/admin-booking-revenue-chart-card'
 import { AdminBookingRevenueStructureCard } from '../components/dashboard/admin-booking-revenue-structure-card'
 import { AdminMetricsGrid } from '../components/dashboard/admin-metrics-grid'
-import { AdminRevenueBreakdownCard } from '../components/dashboard/admin-revenue-breakdown-card'
+import { AdminRevenueBreakdownCard, type RevenueBreakdownItem } from '../components/dashboard/admin-revenue-breakdown-card'
 import { AdminRevenueChartCard } from '../components/dashboard/admin-revenue-chart-card'
-import { AdminTopSalesTable } from '../components/dashboard/admin-top-sales-table'
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
 import { fetchRevenueDashboardApi } from '../services/dashboard'
@@ -56,16 +55,19 @@ function getDateRange(filter: FilterKey) {
 
 function formatDashboardMoney(value: number): string {
   const amount = Number(value ?? 0)
+  const sign = amount < 0 ? '-' : ''
+  const abs = Math.abs(amount)
 
-  if (Math.abs(amount) >= 1_000_000) {
-    return `${(amount / 1_000_000).toFixed(1).replace('.0', '')}M đ`
+  if (abs >= 1_000_000) {
+    const millions = Math.floor((abs / 1_000_000) * 10) / 10 
+    return `${sign}${millions}M đ`
   }
 
-  if (Math.abs(amount) >= 1_000) {
-    return `${Math.round(amount / 1_000)}K đ`
+  if (abs >= 1_000) {
+    return `${sign}${Math.floor(abs / 1_000)}K đ`
   }
 
-  return `${new Intl.NumberFormat('vi-VN').format(amount)} đ`
+  return `${sign}${new Intl.NumberFormat('vi-VN').format(abs)} đ`
 }
 
 export function AdminDashboardPage() {
@@ -89,6 +91,7 @@ export function AdminDashboardPage() {
     queryFn: () => fetchBookingStatsSummary(bookingStatsRange)
   })
 
+  const combinedTotalRevenue = (Number(data?.totalRevenue?.value) || 0) + (Number(bookingSummary?.totalRevenue) || 0)
   const {
     data: bookingTrend = [],
     isLoading: isBookingTrendLoading,
@@ -106,6 +109,26 @@ export function AdminDashboardPage() {
     queryKey: ['adminBookingStatsByService', bookingStatsRange.from, bookingStatsRange.to],
     queryFn: () => fetchBookingStatsByService(bookingStatsRange)
   })
+
+  const productRevenue = Number(data?.totalRevenue?.value) || 0
+  const serviceRevenue = bookingStructure.reduce((sum, s) => sum + (Number(s.revenue) || 0), 0)
+  const breakdownTotal = productRevenue + serviceRevenue
+
+  const revenueBreakdownItems: RevenueBreakdownItem[] =
+    breakdownTotal > 0
+      ? [
+          {
+            key: 'products',
+            label: t('charts.breakdown.items.products'),
+            percent: Math.round((productRevenue / breakdownTotal) * 1000) / 10
+          },
+          ...bookingStructure.map((service) => ({
+            key: service.serviceName,
+            label: service.serviceName,
+            percent: Math.round(((Number(service.revenue) || 0) / breakdownTotal) * 1000) / 10
+          }))
+        ]
+      : []
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -144,7 +167,7 @@ export function AdminDashboardPage() {
             </section>
 
             <AdminMetricsGrid
-              totalRevenueValue={data?.totalRevenue?.value}
+              totalRevenueValue={combinedTotalRevenue}
               totalRevenueChangePercent={data?.totalRevenue?.changePercent}
               profitValue={data?.profit?.value}
               profitChangePercent={data?.profit?.changePercent}
@@ -152,12 +175,15 @@ export function AdminDashboardPage() {
               bookingCount={bookingSummary?.totalBookings}
               averageOrderValue={bookingSummary?.averageOrderValue}
               hasBookingStatsError={Boolean(bookingSummaryError)}
-              isLoading={isLoading}
+              isLoading={isLoading || isBookingSummaryLoading}
               isBookingStatsLoading={isBookingSummaryLoading}
             />
             <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
               <AdminRevenueChartCard trendPoints={data?.revenueTrend} isLoading={isLoading} />
-              <AdminRevenueBreakdownCard />
+              <AdminRevenueBreakdownCard
+                items={revenueBreakdownItems}
+                isLoading={isLoading || isBookingStructureLoading}
+              />
               <AdminBookingRevenueChartCard
                 data={bookingTrend}
                 isLoading={isBookingTrendLoading}
@@ -171,7 +197,6 @@ export function AdminDashboardPage() {
                 formatMoney={formatDashboardMoney}
               />
             </div>
-            <AdminTopSalesTable />
           </div>
         </main>
       </div>
