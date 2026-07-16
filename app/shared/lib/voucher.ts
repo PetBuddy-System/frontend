@@ -50,21 +50,45 @@ export interface PageResponse<T> {
   last: boolean
   empty: boolean
 }
-export function isVoucherEligible(voucher: VoucherResponse, orderSubtotal: number): boolean {
+export function isVoucherEligible(
+  voucher: VoucherResponse,
+  orderSubtotal: number,
+  hasPromotionProduct?: boolean
+): boolean {
+  if (hasPromotionProduct) return false
   if (voucher.status !== 'ACTIVE') return false
   if (voucher.minOrderValue && orderSubtotal < voucher.minOrderValue) return false
   if (voucher.usageLimit && voucher.usedCount >= voucher.usageLimit) return false
   return true
 }
 
-export function getIneligibleReason(voucher: VoucherResponse, orderSubtotal: number): string {
-  if (voucher.status !== 'ACTIVE') return 'Voucher không còn hiệu lực'
-  if (voucher.usageLimit && voucher.usedCount >= voucher.usageLimit) return 'Voucher đã hết lượt sử dụng'
+export function getIneligibleReason(
+  voucher: VoucherResponse,
+  orderSubtotal: number,
+  hasPromotionProduct?: boolean,
+  t?: any
+): string {
+  const translate = t || ((key: string) => {
+    if (key === 'voucherPicker.reasons.hasPromotion') return 'Đang có sản phẩm trong chương trình giảm giá'
+    if (key === 'voucherPicker.reasons.inactive') return 'Voucher không còn hiệu lực'
+    if (key === 'voucherPicker.reasons.limitExceeded') return 'Voucher đã hết lượt sử dụng'
+    if (key === 'voucherPicker.reasons.ineligible') return 'Chưa đủ điều kiện'
+    return 'Chưa đủ điều kiện'
+  })
+
+  if (hasPromotionProduct) return translate('voucherPicker.reasons.hasPromotion')
+  if (voucher.status !== 'ACTIVE') return translate('voucherPicker.reasons.inactive')
+  if (voucher.usageLimit && voucher.usedCount >= voucher.usageLimit) return translate('voucherPicker.reasons.limitExceeded')
   if (voucher.minOrderValue && orderSubtotal < voucher.minOrderValue) {
     const missing = voucher.minOrderValue - orderSubtotal
+    if (t) {
+      return translate('voucherPicker.reasons.minOrderMissing', {
+        missing: new Intl.NumberFormat('vi-VN').format(missing)
+      })
+    }
     return `Thiếu ${new Intl.NumberFormat('vi-VN').format(missing)}đ nữa`
   }
-  return 'Chưa đủ điều kiện'
+  return translate('voucherPicker.reasons.ineligible')
 }
 
 export function calculateVoucherDiscount(voucher: VoucherResponse, subtotal: number): number {

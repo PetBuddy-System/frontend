@@ -11,6 +11,7 @@
   "sidebar": {
     "nav": {
       "profile": "Personal information",
+      "pets": "Pet profiles",
       "tracking": "Track order",
       "orders": "My orders",
       "services": "Booked services",
@@ -67,6 +68,12 @@
   "pets": {
     "title": "My pets",
     "add": "Add pet",
+    "empty": "No pet profiles yet.",
+    "age": {
+      "months": "{{count}} month(s) old",
+      "unknown": "Age not provided",
+      "years": "{{count}} year(s) old"
+    },
     "items": {
       "lu": {
         "name": "Lu",
@@ -78,6 +85,115 @@
         "description": "Poodle • 1.5 years old",
         "imageAlt": "White Poodle dog named Mimi"
       }
+    }
+  },
+  "petProfiles": {
+    "headerTitle": "Pet profiles",
+    "headerSubtitle": "Manage your pets' information, health notes, and photos.",
+    "title": "Pet profiles",
+    "description": "Track your pets, view details, and keep profiles updated for smoother service booking.",
+    "actions": {
+      "backToDetail": "Back to details",
+      "backToList": "Back to list",
+      "cancel": "Cancel",
+      "create": "Create pet profile",
+      "edit": "Edit",
+      "saveCreate": "Save profile",
+      "saveUpdate": "Save changes",
+      "viewDetails": "View details"
+    },
+    "create": {
+      "headerTitle": "Create pet profile",
+      "headerSubtitle": "Add basic information and photos for a new pet.",
+      "title": "Create pet profile",
+      "description": "Fill in the details so PetBuddy can keep a care profile for your pet."
+    },
+    "detail": {
+      "headerTitle": "Pet profile details",
+      "headerSubtitle": "View identity, health, and care notes.",
+      "title": "Pet profile details",
+      "description": "Detailed information helps staff care for your pet according to its needs."
+    },
+    "edit": {
+      "headerTitle": "Edit pet profile",
+      "headerSubtitle": "Update the latest information for your pet.",
+      "title": "Edit pet profile",
+      "description": "Update health, weight, photos, or any information that has changed."
+    },
+    "empty": {
+      "title": "You do not have any pet profiles yet.",
+      "description": "Create the first profile to book services faster and help PetBuddy care for your pet better."
+    },
+    "errors": {
+      "badRequest": "The pet profile information is invalid. Please check it again.",
+      "forbidden": "You do not have permission to update this pet profile.",
+      "network": "Cannot connect to the server. Please try again.",
+      "notFound": "Pet profile not found.",
+      "server": "The server is having trouble. Please try again later."
+    },
+    "fields": {
+      "allergyNote": "Allergies",
+      "behaviorNote": "Behavior",
+      "birthDate": "Birth date",
+      "breed": "Breed",
+      "color": "Color",
+      "createdAt": "Created",
+      "gender": "Gender",
+      "healthNote": "Health",
+      "species": "Species",
+      "vaccination": "Vaccination",
+      "weight": "Weight"
+    },
+    "form": {
+      "allergyNote": "Allergy notes",
+      "behaviorNote": "Behavior notes",
+      "breed": "Breed",
+      "color": "Color",
+      "dateOfBirth": "Birth date",
+      "gender": "Gender",
+      "healthNote": "Health notes",
+      "images": "Images",
+      "petAvatar": "Pet avatar",
+      "petName": "Pet name",
+      "petStatus": "Profile status",
+      "selectedAvatar": "{{name}} selected",
+      "selectedImages": "{{count}} image(s) selected",
+      "species": "Species",
+      "vaccinationStatus": "Vaccination status",
+      "weight": "Weight (kg)"
+    },
+    "messages": {
+      "createFailed": "Failed to create pet profile.",
+      "detailFailed": "Failed to load pet profile details.",
+      "listFailed": "Failed to load pet profiles.",
+      "updateFailed": "Failed to update pet profile."
+    },
+    "petStatus": {
+      "ACTIVE": "Active",
+      "DECEASED": "Deceased"
+    },
+    "gender": {
+      "FEMALE": "Female",
+      "MALE": "Male"
+    },
+    "species": {
+      "CAT": "Cat",
+      "DOG": "Dog"
+    },
+    "stats": {
+      "active": "Active",
+      "fullyVaccinated": "Fully vaccinated",
+      "total": "Total profiles"
+    },
+    "vaccinationStatus": {
+      "EXPIRED": "Expired",
+      "FULLY_VACCINATED": "Fully vaccinated",
+      "NOT_VACCINATED": "Not vaccinated",
+      "PARTIALLY_VACCINATED": "Partially vaccinated",
+      "UNKNOWN": "Unknown"
+    },
+    "values": {
+      "weightKg": "{{value}} kg"
     }
   },
   "support": {
@@ -138,6 +254,92 @@
         "pet": "Lu",
         "reason": "Reason: Customer changed schedule"
       }
+    }
+  },
+  "myBookings": {
+    "headerTitle": "My bookings",
+    "headerSubtitle": "Track spa appointments, payments, and care status for your pets.",
+    "eyebrow": "Booking history",
+    "title": "Your pet care appointments",
+    "subtitle": "Every booking is grouped by status so you can quickly continue payment, follow staff progress, or review completed visits.",
+    "stats": {
+      "all": "All bookings",
+      "pendingPayment": "Need payment",
+      "inProgress": "Active care",
+      "completed": "Completed"
+    },
+    "tabs": {
+      "ALL": "All",
+      "PENDING_PAYMENT": "Pending payment",
+      "FAILED": "Failed",
+      "PENDING_ACCEPTANCE": "Pending acceptance",
+      "ACCEPTED": "Accepted",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "status": {
+      "PENDING_PAYMENT": "Pending payment",
+      "FAILED": "Payment failed",
+      "PENDING_ACCEPTANCE": "Pending acceptance",
+      "ACCEPTED": "Accepted",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "bookingTypes": {
+      "AT_HOME": "At home",
+      "AT_STORE": "At store",
+      "IN_STORE": "At store"
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "viewDetail": "View details",
+      "payNow": "Pay now",
+      "retryPayment": "Retry payment"
+    },
+    "card": {
+      "services": "Services",
+      "pets": "Pets",
+      "total": "Total",
+      "deposit": "Deposit",
+      "remaining": "Remaining",
+      "noService": "Pet spa service"
+    },
+    "detail": {
+      "title": "Booking details",
+      "customer": "Customer",
+      "phone": "Phone",
+      "staff": "Staff",
+      "unassigned": "Not assigned yet",
+      "address": "Address",
+      "cancelReason": "Cancel reason",
+      "beforeMedia": "Before-service photos",
+      "afterMedia": "After-service photos",
+      "noMedia": "No photos have been uploaded by staff yet.",
+      "paymentTitle": "Payment summary"
+    },
+    "payment": {
+      "title": "Complete deposit payment",
+      "subtitle": "Pay booking {{code}} securely by card.",
+      "cardholder": "Cardholder name",
+      "cardInfo": "Card information",
+      "pay": "Pay {{amount}}",
+      "processing": "Processing payment...",
+      "success": "Payment successful. Your booking is now waiting for staff confirmation.",
+      "failed": "Payment failed. Please check your card and try again.",
+      "stripeMissing": "Stripe publishable key is missing. Please configure VITE_STRIPE_PK.",
+      "cardElementMissing": "Could not load the card input. Please refresh and try again.",
+      "cardholderMissing": "Please enter the cardholder name."
+    },
+    "feedback": {
+      "loadFailed": "Could not load your bookings. Please try again.",
+      "detailFailed": "Could not load booking details.",
+      "retryFailed": "Could not create a new payment. Please try again.",
+      "emptyTitle": "No bookings yet",
+      "emptyText": "Your spa and grooming appointments will appear here after you book a service."
     }
   },
   "orderHistory": {
@@ -320,6 +522,82 @@
       "description": "Our staff is always ready to support you from 8:00 to 22:00 daily.",
       "hotline": "1900 1234 (Free)",
       "zalo": "Chat Zalo Support"
+    }
+  },
+  "orderDetail": {
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "picking": "Picking",
+      "shipping": "Shipping",
+      "delivered": "Delivered (Awaiting pickup)",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "expired": "Expired"
+    },
+    "expiredBanner": "Order has expired due to payment timeout.",
+    "pendingBanner": "Please complete your payment before expiration: {{time}}",
+    "payNow": "Pay Now",
+    "payAgain": "Pay Again",
+    "cancelOrder": "Cancel Order",
+    "canceling": "Canceling...",
+    "cancelConfirm": "Are you sure you want to cancel this order?",
+    "cancelFailed": "Failed to cancel order",
+    "back": "Back",
+    "notFound": "Order not found",
+    "unexpectedError": "An error occurred.",
+    "cancelledMessage": "This order has been cancelled",
+    "shippingInfo": "Shipping information",
+    "recipient": "Recipient",
+    "phone": "Phone number",
+    "address": "Shipping address",
+    "note": "Note",
+    "notProvided": "Not provided",
+    "productsOrdered": "Products ordered",
+    "productCount": "{{count}} product(s)",
+    "discountBadge": "Sale",
+    "quantity": "Qty: x{{count}}",
+    "unitPrice": "Unit price",
+    "noProducts": "No products found.",
+    "paymentMethod": "Payment method",
+    "paymentOnline": "Online payment",
+    "paymentCOD": "Cash on delivery",
+    "paymentDetail": "Payment detail",
+    "cardPayment": "Card payment",
+    "cashPayment": "Cash",
+    "viaGateway": "Via payment gateway",
+    "payOnDelivery": "Pay on delivery",
+    "paymentStatus": "Payment status",
+    "paid": "Paid",
+    "paymentFailed": "Payment failed",
+    "pendingPayment": "Awaiting payment",
+    "subtotal": "Subtotal",
+    "shippingFee": "Shipping fee",
+    "voucherDiscount": "Voucher discount",
+    "totalOrder": "Order total",
+    "printOrder": "Print order",
+    "startShipping": "Ship Order",
+    "confirmDelivered": "Mark Delivered",
+    "deliveryProofTitle": "Confirm Delivery",
+    "deliveryProofDesc": "Please upload an image proof of successful delivery to complete this order.",
+    "uploadProof": "Upload Image",
+    "uploadProofNote": "PNG, JPG or JPEG",
+    "uploadProofError": "Please upload a proof of delivery image.",
+    "uploadProofTypeError": "Please select an image file.",
+    "confirm": "Confirm Delivered",
+    "cancel": "Cancel",
+    "suggestRouteBtn": "Suggest Route",
+    "routeModalTitle": "Suggested Delivery Route",
+    "routeStop": "Stop {{seq}}",
+    "distanceFromPrev": "Distance from previous: {{distance}} km",
+    "distanceFromStore": "Distance from store: {{distance}} km",
+    "noActiveDeliveryOrders": "No active shipping orders for route suggestion.",
+    "steps": {
+      "ordered": "Order placed",
+      "confirmed": "Order confirmed",
+      "shipping": "Shipped out",
+      "delivered": "Delivered",
+      "completed": "Completed"
     }
   }
 }

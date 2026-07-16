@@ -8,6 +8,7 @@ export const SESSION_KEY_VOUCHER_NAME = 'petbuddy_checkout_voucher_name'
 export const SESSION_KEY_VOUCHER_DISCOUNT = 'petbuddy_checkout_voucher_discount'
 export const SESSION_KEY_PAYMENT_METHOD = 'petbuddy_checkout_payment_method'
 export const SESSION_KEY_SUBTOTAL = 'petbuddy_checkout_subtotal'
+export const SESSION_KEY_PENDING_ORDER_ID = 'petbuddy_checkout_pending_order_id'
 
 export function clearCheckoutSessionData() {
   sessionStorage.removeItem(SESSION_KEY_ADDRESS)
@@ -19,4 +20,5 @@ export function clearCheckoutSessionData() {
   sessionStorage.removeItem(SESSION_KEY_VOUCHER_NAME)
   sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
   sessionStorage.removeItem(SESSION_KEY_SUBTOTAL)
+  sessionStorage.removeItem(SESSION_KEY_PENDING_ORDER_ID)
 }

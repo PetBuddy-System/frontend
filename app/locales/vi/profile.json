@@ -11,6 +11,7 @@
   "sidebar": {
     "nav": {
       "profile": "Thông tin cá nhân",
+      "pets": "Hồ sơ thú cưng",
       "tracking": "Theo dõi đơn hàng",
       "orders": "Đơn hàng của tôi",
       "services": "Dịch vụ đã đặt",
@@ -67,6 +68,12 @@
   "pets": {
     "title": "Thú cưng của tôi",
     "add": "Thêm thú cưng",
+    "empty": "Chưa có hồ sơ thú cưng nào.",
+    "age": {
+      "months": "{{count}} tháng tuổi",
+      "unknown": "Chưa có tuổi",
+      "years": "{{count}} tuổi"
+    },
     "items": {
       "lu": {
         "name": "Lu",
@@ -78,6 +85,115 @@
         "description": "Poodle • 1.5 tuổi",
         "imageAlt": "Chó Poodle trắng tên Mimi"
       }
+    }
+  },
+  "petProfiles": {
+    "headerTitle": "Hồ sơ thú cưng",
+    "headerSubtitle": "Quản lý thông tin, sức khỏe và hình ảnh thú cưng của bạn.",
+    "title": "Hồ sơ thú cưng",
+    "description": "Theo dõi danh sách thú cưng, xem chi tiết và cập nhật hồ sơ để đặt dịch vụ thuận tiện hơn.",
+    "actions": {
+      "backToDetail": "Quay lại chi tiết",
+      "backToList": "Quay lại danh sách",
+      "cancel": "Hủy",
+      "create": "Tạo hồ sơ thú cưng",
+      "edit": "Chỉnh sửa",
+      "saveCreate": "Lưu hồ sơ",
+      "saveUpdate": "Lưu thay đổi",
+      "viewDetails": "Xem chi tiết"
+    },
+    "create": {
+      "headerTitle": "Tạo hồ sơ thú cưng",
+      "headerSubtitle": "Thêm thông tin cơ bản và hình ảnh cho thú cưng mới.",
+      "title": "Tạo hồ sơ thú cưng",
+      "description": "Điền thông tin để PetBuddy lưu hồ sơ chăm sóc cho thú cưng của bạn."
+    },
+    "detail": {
+      "headerTitle": "Chi tiết hồ sơ thú cưng",
+      "headerSubtitle": "Xem thông tin nhận dạng, sức khỏe và ghi chú chăm sóc.",
+      "title": "Chi tiết hồ sơ thú cưng",
+      "description": "Thông tin chi tiết giúp nhân viên chăm sóc thú cưng đúng nhu cầu."
+    },
+    "edit": {
+      "headerTitle": "Chỉnh sửa hồ sơ thú cưng",
+      "headerSubtitle": "Cập nhật thông tin mới nhất cho thú cưng của bạn.",
+      "title": "Chỉnh sửa hồ sơ thú cưng",
+      "description": "Cập nhật các thông tin thay đổi về sức khỏe, cân nặng hoặc hình ảnh."
+    },
+    "empty": {
+      "title": "Bạn chưa có hồ sơ thú cưng nào.",
+      "description": "Tạo hồ sơ đầu tiên để đặt lịch dịch vụ nhanh hơn và giúp PetBuddy chăm sóc thú cưng tốt hơn."
+    },
+    "errors": {
+      "badRequest": "Thông tin hồ sơ thú cưng chưa hợp lệ. Vui lòng kiểm tra lại.",
+      "forbidden": "Bạn không có quyền thao tác trên hồ sơ thú cưng này.",
+      "network": "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
+      "notFound": "Không tìm thấy hồ sơ thú cưng.",
+      "server": "Máy chủ đang gặp sự cố. Vui lòng thử lại sau."
+    },
+    "fields": {
+      "allergyNote": "Dị ứng",
+      "behaviorNote": "Hành vi",
+      "birthDate": "Ngày sinh",
+      "breed": "Giống",
+      "color": "Màu lông",
+      "createdAt": "Ngày tạo",
+      "gender": "Giới tính",
+      "healthNote": "Sức khỏe",
+      "species": "Loài",
+      "vaccination": "Tiêm phòng",
+      "weight": "Cân nặng"
+    },
+    "form": {
+      "allergyNote": "Ghi chú dị ứng",
+      "behaviorNote": "Ghi chú hành vi",
+      "breed": "Giống",
+      "color": "Màu lông",
+      "dateOfBirth": "Ngày sinh",
+      "gender": "Giới tính",
+      "healthNote": "Ghi chú sức khỏe",
+      "images": "Hình ảnh",
+      "petAvatar": "Ảnh đại diện thú cưng",
+      "petName": "Tên thú cưng",
+      "petStatus": "Trạng thái hồ sơ",
+      "selectedAvatar": "Đã chọn {{name}}",
+      "selectedImages": "Đã chọn {{count}} ảnh",
+      "species": "Loài",
+      "vaccinationStatus": "Tình trạng tiêm phòng",
+      "weight": "Cân nặng (kg)"
+    },
+    "messages": {
+      "createFailed": "Tạo hồ sơ thú cưng thất bại.",
+      "detailFailed": "Không thể tải chi tiết hồ sơ thú cưng.",
+      "listFailed": "Không thể tải danh sách hồ sơ thú cưng.",
+      "updateFailed": "Cập nhật hồ sơ thú cưng thất bại."
+    },
+    "petStatus": {
+      "ACTIVE": "Đang nuôi",
+      "DECEASED": "Đã mất"
+    },
+    "gender": {
+      "FEMALE": "Cái",
+      "MALE": "Đực"
+    },
+    "species": {
+      "CAT": "Mèo",
+      "DOG": "Chó"
+    },
+    "stats": {
+      "active": "Đang nuôi",
+      "fullyVaccinated": "Đã tiêm đủ",
+      "total": "Tổng hồ sơ"
+    },
+    "vaccinationStatus": {
+      "EXPIRED": "Đã hết hạn",
+      "FULLY_VACCINATED": "Đã tiêm đủ",
+      "NOT_VACCINATED": "Chưa tiêm",
+      "PARTIALLY_VACCINATED": "Đã tiêm một phần",
+      "UNKNOWN": "Chưa rõ"
+    },
+    "values": {
+      "weightKg": "{{value}} kg"
     }
   },
   "support": {
@@ -138,6 +254,92 @@
         "pet": "Lu",
         "reason": "Lý do: Khách hàng thay đổi lịch trình"
       }
+    }
+  },
+  "myBookings": {
+    "headerTitle": "Lịch đặt của tôi",
+    "headerSubtitle": "Theo dõi lịch spa, thanh toán và trạng thái chăm sóc thú cưng.",
+    "eyebrow": "Lịch sử đặt dịch vụ",
+    "title": "Các lịch chăm sóc thú cưng",
+    "subtitle": "Mỗi lịch được phân theo trạng thái để bạn tiếp tục thanh toán, theo dõi tiến độ hoặc xem lại các buổi đã hoàn tất.",
+    "stats": {
+      "all": "Tất cả lịch",
+      "pendingPayment": "Cần thanh toán",
+      "inProgress": "Đang chăm sóc",
+      "completed": "Đã hoàn tất"
+    },
+    "tabs": {
+      "ALL": "Tất cả",
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "FAILED": "Thất bại",
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "ACCEPTED": "Đã nhận lịch",
+      "IN_PROGRESS": "Đang thực hiện",
+      "READY_FOR_PICKUP": "Sẵn sàng đón",
+      "COMPLETED": "Hoàn tất",
+      "CANCELLED": "Đã hủy"
+    },
+    "status": {
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "FAILED": "Thanh toán thất bại",
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "ACCEPTED": "Đã nhận lịch",
+      "IN_PROGRESS": "Đang thực hiện",
+      "READY_FOR_PICKUP": "Sẵn sàng đón",
+      "COMPLETED": "Hoàn tất",
+      "CANCELLED": "Đã hủy"
+    },
+    "bookingTypes": {
+      "AT_HOME": "Tại nhà",
+      "AT_STORE": "Tại tiệm",
+      "IN_STORE": "Tại tiệm"
+    },
+    "actions": {
+      "refresh": "Tải lại",
+      "viewDetail": "Xem chi tiết",
+      "payNow": "Thanh toán ngay",
+      "retryPayment": "Thanh toán lại"
+    },
+    "card": {
+      "services": "Dịch vụ",
+      "pets": "Thú cưng",
+      "total": "Tổng tiền",
+      "deposit": "Đặt cọc",
+      "remaining": "Còn lại",
+      "noService": "Dịch vụ spa thú cưng"
+    },
+    "detail": {
+      "title": "Chi tiết lịch đặt",
+      "customer": "Khách hàng",
+      "phone": "Số điện thoại",
+      "staff": "Nhân viên",
+      "unassigned": "Chưa phân công",
+      "address": "Địa chỉ",
+      "cancelReason": "Lý do hủy",
+      "beforeMedia": "Ảnh trước khi thực hiện",
+      "afterMedia": "Ảnh sau khi thực hiện",
+      "noMedia": "Chưa có ảnh được nhân viên tải lên.",
+      "paymentTitle": "Tóm tắt thanh toán"
+    },
+    "payment": {
+      "title": "Hoàn tất thanh toán đặt cọc",
+      "subtitle": "Thanh toán lịch {{code}} an toàn bằng thẻ.",
+      "cardholder": "Tên chủ thẻ",
+      "cardInfo": "Thông tin thẻ",
+      "pay": "Thanh toán {{amount}}",
+      "processing": "Đang xử lý thanh toán...",
+      "success": "Thanh toán thành công. Lịch của bạn đang chờ nhân viên xác nhận.",
+      "failed": "Thanh toán thất bại. Vui lòng kiểm tra thẻ và thử lại.",
+      "stripeMissing": "Thiếu Stripe publishable key. Vui lòng cấu hình VITE_STRIPE_PK.",
+      "cardElementMissing": "Không thể tải ô nhập thẻ. Vui lòng tải lại và thử lại.",
+      "cardholderMissing": "Vui lòng nhập tên chủ thẻ."
+    },
+    "feedback": {
+      "loadFailed": "Không thể tải lịch đặt của bạn. Vui lòng thử lại.",
+      "detailFailed": "Không thể tải chi tiết lịch đặt.",
+      "retryFailed": "Không thể tạo thanh toán mới. Vui lòng thử lại.",
+      "emptyTitle": "Chưa có lịch đặt",
+      "emptyText": "Các lịch spa và grooming sẽ hiển thị tại đây sau khi bạn đặt dịch vụ."
     }
   },
   "orderHistory": {
@@ -320,6 +522,82 @@
       "description": "Nhân viên của chúng tôi luôn sẵn sàng hỗ trợ bạn từ 8:00 - 22:00 hàng ngày.",
       "hotline": "1900 1234 (Miễn phí)",
       "zalo": "Chat Zalo hỗ trợ"
+    }
+  },
+  "orderDetail": {
+    "status": {
+      "pending": "Chờ xử lý",
+      "confirmed": "Đã xác nhận",
+      "picking": "Đang lấy hàng",
+      "shipping": "Đang giao hàng",
+      "delivered": "Đã giao (Chờ nhận)",
+      "completed": "Hoàn thành",
+      "cancelled": "Đã hủy",
+      "expired": "Hết hạn"
+    },
+    "expiredBanner": "Đơn hàng đã hết hạn do quá hạn thanh toán.",
+    "pendingBanner": "Vui lòng thanh toán đơn hàng trước khi hết hạn: {{time}}",
+    "payNow": "Thanh toán ngay",
+    "payAgain": "Thanh toán lại",
+    "cancelOrder": "Hủy đơn hàng",
+    "canceling": "Đang hủy...",
+    "cancelConfirm": "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+    "cancelFailed": "Hủy đơn hàng thất bại",
+    "back": "Quay lại",
+    "notFound": "Không tìm thấy thông tin đơn hàng",
+    "unexpectedError": "Có lỗi xảy ra.",
+    "cancelledMessage": "Đơn hàng đã bị hủy",
+    "shippingInfo": "Thông tin nhận hàng",
+    "recipient": "Người nhận",
+    "phone": "Số điện thoại",
+    "address": "Địa chỉ giao hàng",
+    "note": "Ghi chú",
+    "notProvided": "Chưa cung cấp",
+    "productsOrdered": "Sản phẩm đã đặt",
+    "productCount": "{{count}} sản phẩm",
+    "discountBadge": "Giảm giá",
+    "quantity": "Số lượng: x{{count}}",
+    "unitPrice": "Đơn giá",
+    "noProducts": "Không có sản phẩm nào.",
+    "paymentMethod": "Phương thức thanh toán",
+    "paymentOnline": "Thanh toán trực tuyến",
+    "paymentCOD": "Thanh toán khi nhận hàng",
+    "paymentDetail": "Chi tiết thanh toán",
+    "cardPayment": "Thanh toán thẻ",
+    "cashPayment": "Tiền mặt",
+    "viaGateway": "Qua cổng thanh toán",
+    "payOnDelivery": "Thanh toán khi nhận hàng",
+    "paymentStatus": "Trạng thái thanh toán",
+    "paid": "Đã thanh toán",
+    "paymentFailed": "Thanh toán thất bại",
+    "pendingPayment": "Chờ thanh toán",
+    "subtotal": "Tổng giá trị sản phẩm",
+    "shippingFee": "Phí giao hàng",
+    "voucherDiscount": "Mã giảm giá",
+    "totalOrder": "Tổng đơn hàng",
+    "printOrder": "In đơn hàng",
+    "startShipping": "Giao hàng",
+    "confirmDelivered": "Đã giao",
+    "deliveryProofTitle": "Xác nhận đã giao hàng",
+    "deliveryProofDesc": "Vui lòng chụp và tải lên hình ảnh xác nhận đã giao hàng thành công để hoàn tất đơn hàng.",
+    "uploadProof": "Tải ảnh lên",
+    "uploadProofNote": "PNG, JPG hoặc JPEG",
+    "uploadProofError": "Vui lòng chọn ảnh chụp bằng chứng giao hàng.",
+    "uploadProofTypeError": "Vui lòng chọn file hình ảnh.",
+    "confirm": "Xác nhận đã giao",
+    "cancel": "Hủy",
+    "suggestRouteBtn": "Gợi ý tuyến đường",
+    "routeModalTitle": "Đề xuất Tuyến đường Giao hàng",
+    "routeStop": "Chặng {{seq}}",
+    "distanceFromPrev": "Cách điểm trước: {{distance}} km",
+    "distanceFromStore": "Cách cửa hàng: {{distance}} km",
+    "noActiveDeliveryOrders": "Không có đơn hàng nào đang giao (SHIPPING) cần đề xuất tuyến đường.",
+    "steps": {
+      "ordered": "Đã đặt hàng",
+      "confirmed": "Xác nhận đơn hàng",
+      "shipping": "Giao xuất kho",
+      "delivered": "Đã giao hàng",
+      "completed": "Hoàn thành"
     }
   }
 }

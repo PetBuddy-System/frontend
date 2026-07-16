@@ -9,14 +9,11 @@ import { MaterialIcon } from '~/shared/ui'
 const ADMIN_NAV_ITEMS = [
   { icon: 'assessment', key: 'reports', href: '/admin/dashboard' },
   { icon: 'badge', key: 'employees', href: '/admin/employees' },
-  { icon: 'medical_services', key: 'services', href: '/admin/services' },
-  { icon: 'event_note', key: 'serviceBookings', href: '/admin/service-bookings' },
   { icon: 'group', key: 'users', href: '/admin/users' },
   { icon: 'confirmation_number', key: 'vouchers', href: '/admin/vouchers' },
   { icon: 'article', key: 'blog', href: '/admin/blog' },
   { icon: 'local_shipping', key: 'shipping', href: '/admin/shipping' },
   { icon: 'history', key: 'auditLogs', href: '/admin/audit-logs' }
-
 ] as const
 
 export type AdminNavKey = (typeof ADMIN_NAV_ITEMS)[number]['key']

@@ -107,6 +107,34 @@
           "badge": "Mới"
         }
       }
+    },
+    "reviews": {
+      "title": "Đánh giá của khách hàng",
+      "averageRating": "Đánh giá trung bình",
+      "stars": "sao",
+      "all": "Tất cả",
+      "write": "Viết đánh giá",
+      "submit": "Gửi đánh giá",
+      "cancel": "Hủy",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "anonymous": "Ẩn danh",
+      "anonymousUser": "Người dùng ẩn danh",
+      "contentPlaceholder": "Nhập nội dung đánh giá của bạn ở đây (tối thiểu 10 ký tự)...",
+      "anonymousHint": "Đăng ẩn danh (không hiện tên thật và ảnh đại diện)",
+      "ratingRequired": "Vui lòng chọn số sao đánh giá",
+      "contentRequired": "Vui lòng nhập nội dung đánh giá",
+      "empty": "Chưa có đánh giá nào cho sản phẩm này.",
+      "loginRequired": "Bạn cần đăng nhập để viết đánh giá.",
+      "yourReview": "Đánh giá của bạn",
+      "confirmDelete": "Bạn có chắc chắn muốn xóa đánh giá này?",
+      "editTitle": "Chỉnh sửa đánh giá của bạn",
+      "createTitle": "Viết đánh giá mới",
+      "sortBy": "Sắp xếp theo:",
+      "newest": "Mới nhất",
+      "highestRating": "Đánh giá cao nhất",
+      "lowestRating": "Đánh giá thấp nhất",
+      "verified": "Đã mua hàng"
     }
   },
   "cart": {
@@ -250,6 +278,32 @@
       "apply": "Áp dụng"
     },
     "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
+  },
+  "voucherPicker": {
+    "back": "Quay lại",
+    "title": "Chọn mã giảm giá",
+    "eligibleCount": "{{count}} mã có thể dùng",
+    "loadError": "Không thể tải danh sách mã giảm giá. Vui lòng thử lại.",
+    "discountBadgePercent": "Giảm {{percent}}%",
+    "discountBadgeFixed": "Giảm {{value}}",
+    "minOrder": "Đơn tối thiểu {{min}}",
+    "maxDiscount": "Giảm tối đa {{max}}",
+    "expiredAt": "Hết hạn: {{date}}",
+    "savings": "Tiết kiệm: {{savings}}",
+    "ineligibleSection": "Chưa đủ điều kiện",
+    "hasNoVouchers": "Hiện không có mã giảm giá nào",
+    "selectedLabel": "Đang chọn:",
+    "noSelectedLabel": "Chưa chọn mã giảm giá",
+    "unselect": "Bỏ chọn",
+    "confirm": "Xác nhận",
+    "noMoreVouchers": "Không còn mã giảm giá nào khác",
+    "reasons": {
+      "hasPromotion": "Đang có sản phẩm trong chương trình giảm giá",
+      "inactive": "Voucher không còn hiệu lực",
+      "limitExceeded": "Voucher đã hết lượt sử dụng",
+      "minOrderMissing": "Thiếu {{missing}}đ nữa",
+      "ineligible": "Chưa đủ điều kiện"
+    }
   },
   "orderSuccess": {
     "banner": {

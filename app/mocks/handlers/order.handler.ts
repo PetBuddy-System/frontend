@@ -158,7 +158,7 @@ const INITIAL_ORDERS: MockOrder[] = [
   {
     orderId: 2043,
     orderCode: 'PET-2043',
-    status: 'CANCELED',
+    status: 'CANCELLED',
     finalAmount: 50000,
     createdAt: '2024-10-24T09:00:00.000Z',
     userName: 'Đỗ Bảo Ngọc',
@@ -412,7 +412,7 @@ export const orderHandlers = [
     })
   }),
 
-  http.patch(`${BASE}/api/orders/:id/status`, ({ params, request }) => {
+  http.patch(`${BASE}/api/orders/:id/status`, async ({ params, request }) => {
     const orderId = Number(params.id)
     const url = new URL(request.url)
     const status = url.searchParams.get('status')
@@ -441,15 +441,41 @@ export const orderHandlers = [
     }
 
     const nextStatus = status.toUpperCase()
+
+    // Validate delivery proof image if status is DELIVERED
+    if (nextStatus === 'DELIVERED') {
+      let hasProofImage = false
+      try {
+        const contentType = request.headers.get('content-type') || ''
+        if (contentType.includes('multipart/form-data')) {
+          const formData = await request.formData()
+          const file = formData.get('proofImage')
+          if (file) {
+            hasProofImage = true
+          }
+        }
+      } catch (err) {
+        console.error('Failed to parse form data in MSW order status handler', err)
+      }
+
+      if (!hasProofImage) {
+        return HttpResponse.json({
+          code: 400,
+          message: 'Yêu cầu ảnh chụp bằng chứng khi giao hàng thành công.',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        }, { status: 400 })
+      }
+    }
+
     orders[orderIndex].status = nextStatus
 
-    // CASH: when staff confirms delivered (DELIVERED), payment status automatically updates to PAID
     if (orders[orderIndex].paymentMethod === 'CASH' && nextStatus === 'DELIVERED') {
       orders[orderIndex].paymentStatus = 'PAID'
     }
 
-    // If staff cancels the order (CANCELED), payment status becomes CANCELLED
-    if (nextStatus === 'CANCELED') {
+    if (nextStatus === 'CANCELLED') {
       orders[orderIndex].paymentStatus = 'CANCELLED'
     }
 
@@ -460,6 +486,53 @@ export const orderHandlers = [
       message: 'Cập nhật trạng thái thành công',
       success: true,
       data: null,
+      timestamp: new Date().toISOString()
+    })
+  }),
+
+  // POST /api/orders/:id/cancel - Hủy đơn hàng và hoàn tiền
+  http.post(`${BASE}/api/orders/:id/cancel`, async ({ params, request }) => {
+    const orderId = Number(params.id)
+    const body = (await request.json()) as { cancelReason?: string }
+    const cancelReason = body?.cancelReason || 'Không có lý do cụ thể'
+    const orders = getStoredOrders()
+    const orderIndex = orders.findIndex((o) => o.orderId === orderId)
+
+    if (orderIndex === -1) {
+      return HttpResponse.json({
+        code: 404,
+        message: 'Không tìm thấy đơn hàng',
+        success: false,
+        data: null,
+        timestamp: new Date().toISOString()
+      }, { status: 404 })
+    }
+
+    orders[orderIndex].status = 'CANCELLED'
+    if (orders[orderIndex].paymentMethod === 'CARD') {
+      orders[orderIndex].paymentStatus = 'REFUNDED'
+    } else {
+      orders[orderIndex].paymentStatus = 'CANCELLED'
+    }
+
+    saveOrders(orders)
+
+    return HttpResponse.json({
+      code: 200,
+      message: 'Refund successfully',
+      success: true,
+      data: {
+        paymentId: Math.floor(Math.random() * 10000),
+        orderId: orderId,
+        orderCode: orders[orderIndex].orderCode,
+        paymentMethod: orders[orderIndex].paymentMethod,
+        status: orders[orderIndex].paymentMethod === 'CARD' ? 'REFUNDED' : 'CANCELLED',
+        amount: orders[orderIndex].finalAmount,
+        cancelReason: cancelReason,
+        paidAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
       timestamp: new Date().toISOString()
     })
   }),

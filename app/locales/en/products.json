@@ -107,6 +107,34 @@
           "badge": "New"
         }
       }
+    },
+    "reviews": {
+      "title": "Customer Reviews",
+      "averageRating": "Average Rating",
+      "stars": "stars",
+      "all": "All",
+      "write": "Write a Review",
+      "submit": "Submit Review",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "anonymous": "Anonymous",
+      "anonymousUser": "Anonymous User",
+      "contentPlaceholder": "Write your review content here (minimum 10 characters)...",
+      "anonymousHint": "Post anonymously (hides your real name and avatar)",
+      "ratingRequired": "Please select a rating",
+      "contentRequired": "Please enter your review content",
+      "empty": "No reviews yet for this product.",
+      "loginRequired": "You need to log in to write a review.",
+      "yourReview": "Your Review",
+      "confirmDelete": "Are you sure you want to delete this review?",
+      "editTitle": "Edit your review",
+      "createTitle": "Write a new review",
+      "sortBy": "Sort by:",
+      "newest": "Newest",
+      "highestRating": "Highest Rating",
+      "lowestRating": "Lowest Rating",
+      "verified": "Verified Purchase"
     }
   },
   "cart": {
@@ -250,6 +278,32 @@
       "apply": "Apply"
     },
     "voucherNoLongerValid": "This voucher is no longer available. Please choose another one."
+  },
+  "voucherPicker": {
+    "back": "Back",
+    "title": "Select Voucher",
+    "eligibleCount": "{{count}} eligible vouchers",
+    "loadError": "Could not load vouchers. Please try again.",
+    "discountBadgePercent": "Save {{percent}}%",
+    "discountBadgeFixed": "Save {{value}}",
+    "minOrder": "Min order {{min}}",
+    "maxDiscount": "Max discount {{max}}",
+    "expiredAt": "Expires: {{date}}",
+    "savings": "Savings: {{savings}}",
+    "ineligibleSection": "Ineligible",
+    "hasNoVouchers": "No vouchers available",
+    "selectedLabel": "Selected:",
+    "noSelectedLabel": "No voucher selected",
+    "unselect": "Unselect",
+    "confirm": "Confirm",
+    "noMoreVouchers": "No more vouchers available",
+    "reasons": {
+      "hasPromotion": "Cart contains promotional products",
+      "inactive": "Voucher is inactive",
+      "limitExceeded": "Voucher limit exceeded",
+      "minOrderMissing": "{{missing}} short of min order",
+      "ineligible": "Not eligible"
+    }
   },
   "orderSuccess": {
     "banner": {

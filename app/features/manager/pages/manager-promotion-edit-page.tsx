@@ -41,9 +41,15 @@ export function ManagerPromotionEditPage() {
     description: '',
     startDate: '',
     endDate: '',
-    status: 'DRAFT' as 'DRAFT' | 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'DELETED'
+    status: 'DRAFT' as 'DRAFT' | 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'DELETED',
+    reason: '',
+    note: ''
   })
+
+  // ⭐ State cho filter
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | undefined>(undefined)
   const [nearExpiredDays, setNearExpiredDays] = useState<string>('all')
+
   const [products, setProducts] = useState<ProductManagementItem[]>([])
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([])
   const [productDiscountById, setProductDiscountById] = useState<Record<string, ProductDiscountState>>({})
@@ -79,28 +85,44 @@ export function ManagerPromotionEditPage() {
 
       try {
         const promo = await promotionApi.getPromotion(promotionId!)
-        const formatDate = (dtStr: string) => (dtStr ? dtStr.split('T')[0] : '')
+        const formatForDateTimeLocal = (dtStr: string) => {
+          if (!dtStr) return ''
+          try {
+            const d = new Date(dtStr)
+            if (isNaN(d.getTime())) return ''
+            const year = d.getFullYear()
+            const month = String(d.getMonth() + 1).padStart(2, '0')
+            const day = String(d.getDate()).padStart(2, '0')
+            const hours = String(d.getHours()).padStart(2, '0')
+            const minutes = String(d.getMinutes()).padStart(2, '0')
+            return `${year}-${month}-${day}T${hours}:${minutes}`
+          } catch {
+            return ''
+          }
+        }
 
         setForm({
           name: promo.name,
           description: promo.description,
-          startDate: formatDate(promo.startDate),
-          endDate: formatDate(promo.endDate),
-          status: promo.status
+          startDate: formatForDateTimeLocal(promo.startDate),
+          endDate: formatForDateTimeLocal(promo.endDate),
+          status: promo.status,
+          reason: promo.reason || '',
+          note: promo.note || ''
         })
 
-        const details = (promo as unknown as {
-          promotionDetails?: Array<{
-            productId: string
-            promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
-            discountValue: number
-          }>
-        }).promotionDetails
+        const details = (
+          promo as unknown as {
+            promotionDetails?: Array<{
+              productId: string
+              promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
+              discountValue: number
+            }>
+          }
+        ).promotionDetails
 
         if (details && details.length > 0) {
-          const validProductIds = details
-            .map(d => d.productId)
-            .filter(id => id)
+          const validProductIds = details.map((d) => d.productId).filter((id) => id)
           setSelectedProductIds(validProductIds)
           const discountMap: Record<string, ProductDiscountState> = {}
           for (const d of details) {
@@ -131,20 +153,27 @@ export function ManagerPromotionEditPage() {
     return () => clearTimeout(timer)
   }, [keywordInput])
 
-  // Load products
+  // ⭐ Load products - Thêm category filter
   useEffect(() => {
     async function loadProducts() {
       setIsLoadingProducts(true)
       setError(null)
 
       try {
-        const response = await fetchProductsManagementApi({
+        const params: any = {
           keyword: keyword.trim() || undefined,
           page: currentPage,
           size: 10,
           sortBy: 'date_desc',
           nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays)
-        })
+        }
+
+        // ⭐ Chỉ thêm categoryId khi có giá trị hợp lệ
+        if (selectedCategoryId !== undefined && !isNaN(selectedCategoryId)) {
+          params.categoryId = selectedCategoryId
+        }
+
+        const response = await fetchProductsManagementApi(params)
 
         if (!response.success) {
           throw new Error(response.message || 'Không thể tải danh sách sản phẩm')
@@ -162,7 +191,7 @@ export function ManagerPromotionEditPage() {
     }
 
     void loadProducts()
-  }, [nearExpiredDays, currentPage, keyword])
+  }, [nearExpiredDays, selectedCategoryId, currentPage, keyword])
 
   const selectedProducts = useMemo(
     () => products.filter((product) => selectedProductIds.includes(product.productId)),
@@ -173,9 +202,7 @@ export function ManagerPromotionEditPage() {
 
   function toggleProduct(productId: string) {
     setSelectedProductIds((current) =>
-      current.includes(productId)
-        ? current.filter((id) => id !== productId)
-        : [...current, productId]
+      current.includes(productId) ? current.filter((id) => id !== productId) : [...current, productId]
     )
     setProductDiscountById((currentDiscounts) => {
       if (selectedProductIds.includes(productId)) {
@@ -235,6 +262,23 @@ export function ManagerPromotionEditPage() {
     }
   }
 
+  // ⭐ Hàm xử lý thay đổi filter category
+  const handleCategoryChange = (categoryId: string) => {
+    if (categoryId === 'all' || categoryId === '') {
+      setSelectedCategoryId(undefined)
+    } else {
+      const numId = Number(categoryId)
+      setSelectedCategoryId(isNaN(numId) ? undefined : numId)
+    }
+    setCurrentPage(0)
+  }
+
+  // ⭐ Hàm xử lý thay đổi filter gần hết hạn
+  const handleNearExpiredChange = (value: string) => {
+    setNearExpiredDays(value)
+    setCurrentPage(0)
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -265,7 +309,7 @@ export function ManagerPromotionEditPage() {
 
     try {
       const promotionDetails = selectedProductIds
-        .filter(id => id)
+        .filter((id) => id)
         .map((productId) => {
           const discount = productDiscountById[productId]
           return {
@@ -275,13 +319,23 @@ export function ManagerPromotionEditPage() {
           }
         })
 
+      const formatToBackendISO = (localDateTimeStr: string) => {
+        if (!localDateTimeStr) return ''
+        if (localDateTimeStr.length === 16) {
+          return `${localDateTimeStr}:00`
+        }
+        return localDateTimeStr
+      }
+
       const payload: UpdatePromotionDTO = {
         name: form.name.trim(),
         description: form.description.trim(),
-        startDate: form.startDate ? `${form.startDate}T00:00:00` : '',
-        endDate: form.endDate ? `${form.endDate}T23:59:59` : '',
-        status: form.status as 'DRAFT' | 'ACTIVE',
-        promotionDetails: promotionDetails
+        startDate: formatToBackendISO(form.startDate),
+        endDate: formatToBackendISO(form.endDate),
+        status: form.status,
+        promotionDetails: promotionDetails,
+        reason: form.reason.trim() || undefined,
+        note: form.note.trim() || undefined
       }
 
       await promotionApi.updatePromotion(promotionId, payload)
@@ -394,7 +448,9 @@ export function ManagerPromotionEditPage() {
                 </div>
                 <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
                   <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Tên khuyến mãi</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Tên khuyến mãi
+                    </span>
                     <input
                       value={form.name}
                       onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
@@ -403,18 +459,22 @@ export function ManagerPromotionEditPage() {
                     />
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày bắt đầu</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Ngày bắt đầu
+                    </span>
                     <input
-                      type='date'
+                      type='datetime-local'
                       value={form.startDate}
                       onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
                       className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                     />
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày kết thúc</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Ngày kết thúc
+                    </span>
                     <input
-                      type='date'
+                      type='datetime-local'
                       value={form.endDate}
                       onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
                       className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
@@ -430,7 +490,27 @@ export function ManagerPromotionEditPage() {
                       placeholder='Mô tả ngắn gọn về chương trình...'
                     />
                   </label>
-                  <label className='flex flex-col gap-1.5'>
+                  <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Lý do thay đổi
+                    </span>
+                    <input
+                      value={form.reason}
+                      onChange={(e) => setForm((prev) => ({ ...prev, reason: e.target.value }))}
+                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
+                      placeholder='Ví dụ: Cập nhật thời gian chạy, bổ sung sản phẩm...'
+                    />
+                  </label>
+                  <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ghi chú</span>
+                    <input
+                      value={form.note}
+                      onChange={(e) => setForm((prev) => ({ ...prev, note: e.target.value }))}
+                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
+                      placeholder='Ghi chú thêm nếu có...'
+                    />
+                  </label>
+                  <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Trạng thái</span>
                     <div className='relative'>
                       <select
@@ -443,10 +523,10 @@ export function ManagerPromotionEditPage() {
                         }
                         className='h-11 w-full appearance-none rounded-xl border border-input bg-background pl-4 pr-10 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring cursor-pointer'
                       >
-                        <option value='ACTIVE'>Hoạt động (ACTIVE)</option>
-                        <option value='DRAFT'>Bản nháp (DRAFT)</option>
-                        <option value='EXPIRED'>Hết hạn (EXPIRED)</option>
-                        <option value='CANCELLED'>Đã hủy (CANCELLED)</option>
+                        <option value='ACTIVE'>Hoạt động</option>
+                        <option value='DRAFT'>Bản nháp</option>
+                        <option value='EXPIRED'>Hết hạn</option>
+                        <option value='CANCELLED'>Đã hủy</option>
                       </select>
                       <MaterialIcon
                         name='expand_more'
@@ -454,12 +534,14 @@ export function ManagerPromotionEditPage() {
                       />
                     </div>
                   </label>
-                  <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lọc sản phẩm gần hết hạn</span>
+                  <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Lọc sản phẩm gần hết hạn
+                    </span>
                     <div className='relative'>
                       <select
                         value={nearExpiredDays}
-                        onChange={(e) => setNearExpiredDays(e.target.value)}
+                        onChange={(e) => handleNearExpiredChange(e.target.value)}
                         className='h-11 w-full appearance-none rounded-xl border border-input bg-background pl-4 pr-10 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring cursor-pointer'
                       >
                         {NEAR_EXPIRED_DAY_OPTIONS.map((option) => (
@@ -474,10 +556,35 @@ export function ManagerPromotionEditPage() {
                       />
                     </div>
                   </label>
+                  {/* ⭐ Thêm Category filter */}
+                  <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Danh mục sản phẩm
+                    </span>
+                    <div className='relative'>
+                      <select
+                        value={selectedCategoryId?.toString() || 'all'}
+                        onChange={(e) => handleCategoryChange(e.target.value)}
+                        className='h-11 w-full appearance-none rounded-xl border border-input bg-background pl-4 pr-10 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring cursor-pointer'
+                      >
+                        <option value='all'>Tất cả danh mục</option>
+                        <option value='1'>Thức ăn cho chó</option>
+                        <option value='2'>Thức ăn cho mèo</option>
+                        <option value='3'>Phụ kiện thú cưng</option>
+                        <option value='4'>Dinh dưỡng bổ sung</option>
+                        <option value='5'>Đồ chơi thú cưng</option>
+                        <option value='6'>Vệ sinh và chăm sóc</option>
+                      </select>
+                      <MaterialIcon
+                        name='expand_more'
+                        className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
+                      />
+                    </div>
+                  </label>
                 </div>
               </section>
 
-              {/* Section 2: Sản phẩm áp dụng */}
+              {/* Section 2: Sản phẩm áp dụng - Giữ nguyên */}
               <section className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
                 <div className='mb-5 flex items-center justify-between gap-4'>
                   <div className='flex items-center gap-3'>
@@ -511,7 +618,7 @@ export function ManagerPromotionEditPage() {
                   </div>
                 </div>
 
-                {/* ⭐ Thanh tìm kiếm */}
+                {/* Thanh tìm kiếm */}
                 <div className='mb-4 flex items-center gap-4'>
                   <div className='relative flex-1'>
                     <MaterialIcon
@@ -573,7 +680,7 @@ export function ManagerPromotionEditPage() {
                                 Không tìm thấy sản phẩm nào với từ khóa "<strong>{keyword}</strong>"
                               </>
                             ) : (
-                              'Không có sản phẩm phù hợp với bộ lọc gần hết hạn.'
+                              'Không có sản phẩm phù hợp với bộ lọc.'
                             )}
                           </td>
                         </tr>
@@ -628,9 +735,7 @@ export function ManagerPromotionEditPage() {
                               <td className='px-4 py-3 text-sm font-semibold text-foreground'>
                                 {formatPrice(product.salePrice)} đ
                               </td>
-                              <td className='px-4 py-3 text-sm font-semibold text-foreground'>
-                                {product.totalStock}
-                              </td>
+                              <td className='px-4 py-3 text-sm font-semibold text-foreground'>{product.totalStock}</td>
                               <td className='px-4 py-3'>
                                 {checked && !hasActivePromotion ? (
                                   <select
@@ -656,13 +761,11 @@ export function ManagerPromotionEditPage() {
                                   <input
                                     type='number'
                                     min={0}
-                                    value={productDiscountById[product.productId]?.discountValue ?? DEFAULT_DISCOUNT_VALUE}
+                                    value={
+                                      productDiscountById[product.productId]?.discountValue ?? DEFAULT_DISCOUNT_VALUE
+                                    }
                                     onChange={(e) =>
-                                      updateProductDiscount(
-                                        product.productId,
-                                        'discountValue',
-                                        Number(e.target.value)
-                                      )
+                                      updateProductDiscount(product.productId, 'discountValue', Number(e.target.value))
                                     }
                                     className='h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                                   />
@@ -685,7 +788,9 @@ export function ManagerPromotionEditPage() {
                       {keyword ? (
                         <>Kết quả tìm kiếm: {totalElements} sản phẩm</>
                       ) : (
-                        <>Hiển thị {products.length} trên {totalElements} sản phẩm</>
+                        <>
+                          Hiển thị {products.length} trên {totalElements} sản phẩm
+                        </>
                       )}
                     </div>
                     <div className='flex items-center gap-2'>
@@ -713,7 +818,7 @@ export function ManagerPromotionEditPage() {
                 )}
               </section>
 
-              {/* Action bar */}
+              {/* Action bar - Giữ nguyên */}
               <div className='flex items-center justify-end gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm'>
                 <button
                   type='button'

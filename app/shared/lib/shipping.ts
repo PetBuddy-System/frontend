@@ -1,8 +1,3 @@
-/**
- * Shipping types — chỉ chứa types/interfaces, không có API functions.
- * API functions nằm trong features/services/.
- */
-
 export interface ShippingRule {
   id: number
   minDistance: number

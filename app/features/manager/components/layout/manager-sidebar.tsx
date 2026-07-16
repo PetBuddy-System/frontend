@@ -1,3 +1,4 @@
+// app/features/manager/components/layout/manager-sidebar.tsx
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
@@ -9,10 +10,16 @@ import { MaterialIcon } from '~/shared/ui'
 const MANAGER_NAV_ITEMS = [
   { icon: 'dashboard', key: 'dashboard', href: '/manager/dashboard' },
   { icon: 'shopping_bag', key: 'products', href: '/manager/products' },
+  { icon: 'medical_services', key: 'services', href: '/manager/services' },
+  { icon: 'event_note', key: 'serviceBookings', href: '/manager/bookings' },
   { icon: 'groups', key: 'staff', href: '/manager/staff-schedule' },
   { icon: 'assignment_turned_in', key: 'returnRequests', href: '/manager/return-requests' },
+  { icon: 'inventory_2', key: 'restock', href: '/manager/restock' },
   { icon: 'delete_sweep', key: 'disposalApprovals', href: '/manager/disposal-approvals' },
-  { icon: 'local_offer', key: 'promotions', href: '/manager/promotions' }
+  { icon: 'local_offer', key: 'promotions', href: '/manager/promotions' },
+  { icon: 'storefront', key: 'storeLocations', href: '/manager/store-locations' },
+  { icon: 'rate_review', key: 'reviews', href: '/manager/reviews' },
+  { icon: 'receipt_long', key: 'auditLogs', href: '/manager/audit-logs' }
 ] as const
 
 export type ManagerNavKey = (typeof MANAGER_NAV_ITEMS)[number]['key']

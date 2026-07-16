@@ -16,7 +16,7 @@ function matchesFilter(status: string, filter: OrderHistoryFilter) {
   if (filterLower === 'pending') return statusLower === 'pending'
   if (filterLower === 'shipping') return statusLower === 'shipping'
   if (filterLower === 'delivered') return statusLower === 'delivered'
-  if (filterLower === 'cancelled') return statusLower === 'canceled' || statusLower === 'cancelled'
+  if (filterLower === 'cancelled') return statusLower === 'cancelled'
 
   return statusLower === filterLower
 }
@@ -101,7 +101,7 @@ export function OrderHistoryList() {
           >
             <MaterialIcon name='chevron_left' className='text-[20px]' />
           </button>
-          
+
           <span className='text-sm font-semibold text-muted-foreground'>
             Trang <span className='text-foreground'>{currentPage + 1}</span> / {totalPages}
           </span>

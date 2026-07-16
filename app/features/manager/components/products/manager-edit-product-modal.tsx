@@ -151,6 +151,12 @@ export function ManagerEditProductModal({
   }, [previewUrls])
 
   const toggleKeepImage = (mediaFileId: number) => {
+    const isCurrentlyKept = keepImageIds.includes(mediaFileId)
+    if (!isCurrentlyKept && keepImageIds.length + selectedFiles.length >= 4) {
+      setError('Chỉ được chọn tối đa 4 hình ảnh (bao gồm cả ảnh giữ lại và ảnh mới)')
+      return
+    }
+    setError(null)
     setKeepImageIds(prev =>
       prev.includes(mediaFileId)
         ? prev.filter(id => id !== mediaFileId)
@@ -160,6 +166,12 @@ export function ManagerEditProductModal({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : []
+    if (keepImageIds.length + files.length > 4) {
+      setError('Chỉ được chọn tối đa 4 hình ảnh (bao gồm cả ảnh giữ lại và ảnh mới)')
+      e.target.value = ''
+      return
+    }
+    setError(null)
     setSelectedFiles(files)
     setPreviewUrls(files.map(f => URL.createObjectURL(f)))
     e.target.value = ''
@@ -186,6 +198,11 @@ export function ManagerEditProductModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!productId || isDeleted) return
+
+    if (keepImageIds.length + selectedFiles.length > 4) {
+      setError('Chỉ được chọn tối đa 4 hình ảnh (bao gồm cả ảnh giữ lại và ảnh mới)')
+      return
+    }
 
     setSaving(true)
     setError(null)
@@ -425,7 +442,7 @@ export function ManagerEditProductModal({
                 )}
 
                 <div className='mt-3'>
-                  <label className='text-xs font-medium text-muted-foreground'>Thêm ảnh mới:</label>
+                  <label className='text-xs font-medium text-muted-foreground'>Thêm ảnh mới (tối đa 4 ảnh tổng cộng):</label>
                   <div className='mt-1'>
                     <label className={cn(
                       'inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card cursor-pointer hover:bg-muted transition-colors',

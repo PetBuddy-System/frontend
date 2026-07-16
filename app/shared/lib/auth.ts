@@ -12,9 +12,11 @@ export interface UserResponse {
   gender: string
   dateOfBirth: string
   role: string
+  staffTask?: 'GROOMER' | 'SHIPPER' | 'COORDINATOR'
   status: UserStatus
   createdAt: string
   updatedAt: string
+  paymentFailStreak?: number
 }
 
 export interface AuthenticationRequest {

@@ -1,6 +1,7 @@
-// app/features/staff/components/orders/staff-orders-table.tsx
 import { MaterialIcon } from '~/shared/ui'
 import type { OrderResponse, OrderStatus } from '~/shared/lib/order'
+import { useAuth } from '~/providers/auth-provider'
+import { confirmRefundApi } from '../../services/order'
 
 function formatPrice(value: number) {
     if (value == null || isNaN(Number(value))) return '—'
@@ -43,6 +44,13 @@ function renderStatusBadge(status: string) {
                     Đang lấy hàng
                 </span>
             )
+        case 'PICKED':
+            return (
+                <span className='inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold uppercase text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400'>
+                    <span className='h-1.5 w-1.5 rounded-full bg-indigo-700 dark:bg-indigo-400' />
+                    Đã chuẩn bị xong
+                </span>
+            )
         case 'SHIPPING':
             return (
                 <span className='inline-flex items-center gap-1.5 rounded-full bg-teal-100 px-3 py-1 text-xs font-bold uppercase text-teal-700 dark:bg-teal-950/40 dark:text-teal-400'>
@@ -64,11 +72,18 @@ function renderStatusBadge(status: string) {
                     Hoàn thành
                 </span>
             )
-        case 'CANCELED':
+        case 'CANCELLED':
             return (
                 <span className='inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-xs font-bold uppercase text-red-700 dark:bg-red-950/40 dark:text-red-400'>
                     <span className='h-1.5 w-1.5 rounded-full bg-red-700 dark:bg-red-400' />
                     Đã hủy
+                </span>
+            )
+        case 'CANCEL_REQUESTED':
+            return (
+                <span className='inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 animate-pulse'>
+                    <span className='h-1.5 w-1.5 rounded-full bg-amber-700 dark:bg-amber-400' />
+                    Chờ hoàn tiền
                 </span>
             )
         default:
@@ -97,7 +112,6 @@ function renderPaymentStatusBadge(status?: string) {
                 </span>
             )
         case 'CANCELLED':
-        case 'CANCELED':
             return (
                 <span className='inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase text-gray-600 dark:bg-gray-800 dark:text-gray-400 border border-gray-200/30 w-fit'>
                     Đã hủy
@@ -107,6 +121,12 @@ function renderPaymentStatusBadge(status?: string) {
             return (
                 <span className='inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase text-blue-700 dark:bg-blue-950/35 dark:text-blue-400 border border-blue-200/30 w-fit animate-pulse'>
                     Đang xử lý
+                </span>
+            )
+        case 'REFUNDED':
+            return (
+                <span className='inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-bold uppercase text-green-700 dark:bg-green-950/35 dark:text-green-400 border border-green-200/30 w-fit'>
+                    Đã hoàn tiền
                 </span>
             )
         default:
@@ -129,6 +149,7 @@ interface StaffOrdersTableProps {
     onTransition: (orderId: number, nextStatus: OrderStatus) => void
     onOpenPicking: (order: OrderResponse) => void
     onTransitionToShipped: (orderId: number) => void
+    onRefresh: () => void
 }
 
 export function StaffOrdersTable({
@@ -141,26 +162,30 @@ export function StaffOrdersTable({
     onViewDetail,
     onTransition,
     onOpenPicking,
-    onTransitionToShipped
+    onTransitionToShipped,
+    onRefresh
 }: StaffOrdersTableProps) {
-    // Filter orders locally
-    const filteredOrders = orders.filter((o) => {
-        if (statusFilter !== 'ALL') {
-            if (statusFilter === 'SHIPPING_DELIVERED') {
-                if (o.status !== 'SHIPPING' && o.status !== 'DELIVERED') return false
-            } else if (o.status !== statusFilter) {
-                return false
-            }
+    const { user } = useAuth()
+    const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
+    const isCoordinator = user?.role === 'STAFF' && user?.staffTask === 'COORDINATOR'
+
+   const filteredOrders = orders.filter((o) => {
+    if (statusFilter !== 'ALL') {
+        if (statusFilter === 'SHIPPING_DELIVERED') {
+            if (o.status !== 'SHIPPING' && o.status !== 'DELIVERED') return false
+        } else if (o.status !== statusFilter) {
+            return false
         }
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase()
-            const codeMatch = o.orderCode?.toLowerCase().includes(query)
-            const nameMatch = o.recipientName?.toLowerCase().includes(query)
-            const phoneMatch = o.phoneNumber?.includes(query)
-            return codeMatch || nameMatch || phoneMatch
-        }
-        return true
-    })
+    }
+    if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase()
+        const codeMatch = o.orderCode?.toLowerCase().includes(query)
+        const nameMatch = o.recipientName?.toLowerCase().includes(query)
+        const phoneMatch = o.phoneNumber?.includes(query)
+        return codeMatch || nameMatch || phoneMatch
+    }
+    return true
+})
 
     return (
         <div className='rounded-2xl border border-border bg-card shadow-sm'>
@@ -260,7 +285,28 @@ export function StaffOrdersTable({
                                                 Xem
                                             </button>
 
-                                            {order.status === 'PENDING' && (
+                                            {order.status === 'CANCEL_REQUESTED' && isCoordinator && (
+                                                <button
+                                                    onClick={async () => {
+                                                        if (!window.confirm(`Xác nhận hoàn tiền cho đơn #${order.orderCode}?`)) return
+                                                        try {
+                                                            const res = await confirmRefundApi(order.orderId)
+                                                            if (res.success) {
+                                                                onRefresh()
+                                                            } else {
+                                                                alert(res.message || 'Không thể xác nhận hoàn tiền')
+                                                            }
+                                                        } catch (err: unknown) {
+                                                            alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+                                                        }
+                                                    }}
+                                                    className='rounded-xl bg-amber-500 hover:bg-amber-600 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
+                                                >
+                                                    Xác nhận hoàn tiền
+                                                </button>
+                                            )}
+
+                                            {order.status === 'PENDING' && isCoordinator && (
                                                 <>
                                                     {((order.payment?.paymentMethod === 'CARD' && order.payment?.status === 'PAID') || order.payment?.paymentMethod !== 'CARD') && (
                                                         <button
@@ -271,7 +317,7 @@ export function StaffOrdersTable({
                                                         </button>
                                                     )}
                                                     <button
-                                                        onClick={() => onTransition(order.orderId, 'CANCELED')}
+                                                        onClick={() => onTransition(order.orderId, 'CANCELLED')}
                                                         className='rounded-xl bg-red-600 hover:bg-red-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
                                                     >
                                                         Hủy
@@ -279,16 +325,16 @@ export function StaffOrdersTable({
                                                 </>
                                             )}
 
-                                            {order.status === 'CONFIRMED' && (
+                                            {order.status === 'CONFIRMED' && isCoordinator && (
                                                 <button
                                                     onClick={() => onTransition(order.orderId, 'PICKING')}
                                                     className='rounded-xl bg-cyan-600 hover:bg-cyan-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
                                                 >
-                                                    Lấy hàng
+                                                    Bắt đầu lấy hàng
                                                 </button>
                                             )}
 
-                                            {order.status === 'PICKING' && (
+                                            {order.status === 'PICKING' && isCoordinator && (
                                                 <button
                                                     onClick={() => onOpenPicking(order)}
                                                     className='rounded-xl bg-teal-600 hover:bg-teal-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
@@ -297,7 +343,7 @@ export function StaffOrdersTable({
                                                 </button>
                                             )}
 
-                                            {order.status === 'SHIPPING' && (
+                                            {order.status === 'SHIPPING' && isShipper && (
                                                 <button
                                                     onClick={() => onTransitionToShipped(order.orderId)}
                                                     className='rounded-xl bg-purple-600 hover:bg-purple-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'

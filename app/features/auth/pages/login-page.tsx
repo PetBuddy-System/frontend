@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -22,6 +22,16 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const err = params.get('error')
+      if (err) {
+        setErrorMessage(decodeURIComponent(err))
+      }
+    }
+  }, [])
 
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string

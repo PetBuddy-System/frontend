@@ -186,7 +186,7 @@ export function ManagerProductsTable({
                   </td>
                   {/* ⭐ Cột Mã sản phẩm */}
                   <td className='px-4 py-4'>
-                    <span className='font-mono text-xs font-semibold text-muted-foreground'>
+                    <span className='font-mono text-base font-bold text-foreground'>
                       {product.productCode || 'N/A'}
                     </span>
                   </td>
@@ -215,7 +215,7 @@ export function ManagerProductsTable({
                       )}
                     </div>
                   </td>
-                  <td className='px-4 py-4'>
+                  <td className='px-4 py-4 text-center'>
                     <span className={cn(
                       'inline-flex rounded-full px-2.5 py-1 text-xs font-bold',
                       status.className

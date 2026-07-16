@@ -1,15 +1,28 @@
-import type {PaymentResponse} from './payment'
-import type {VoucherResponse} from './voucher'
+import type { PaymentResponse } from './payment'
+import type { VoucherResponse } from './voucher'
 
 export type OrderStatus =
   | 'PENDING'
   | 'CONFIRMED'
   | 'PICKING'
+  | 'PICKED'
   | 'SHIPPING'
   | 'DELIVERED'
   | 'COMPLETED'
-  | 'CANCELED'
+  | 'CANCELLED'
+  | 'EXPIRED'
+  | 'CANCEL_REQUESTED'
   | (string & {})
+
+export interface ShipperSuggestionResponse {
+  staffId: string
+  staffEmail: string
+  staffName: string
+  staffTask: string 
+  currentLoad: number
+  maxCapacity: number
+  distanceToClusterKm: number | null
+}
 
 export interface PickingItemResponse {
   productId: string
@@ -57,13 +70,22 @@ export interface CreateOrderRequest {
   paymentMethod?: 'CASH' | 'CARD'
 }
 
+export interface UpdateOrderRequest {
+  recipientName?: string
+  phoneNumber?: string
+  address?: string
+  note?: string
+  voucherCode?: string
+  latitude?: number
+  longitude?: number
+}
+
 export interface OrderDetailResponse {
   orderDetailId: number
   productId: string
   productName: string
   productImage?: string
   unitPrice: number
-  price?: number
   salePrice?: number | null
   quantity: number
   totalPrice: number
@@ -83,6 +105,7 @@ export interface OrderDetailFull {
   clientSecret?: string
   createdAt: string
   updatedAt?: string
+  paymentExpiredAt?: string
   orderDetails: OrderDetailResponse[]
   payment?: PaymentResponse  
   voucherCode?: string
@@ -102,8 +125,19 @@ export interface OrderResponse {
   clientSecret?: string
   createdAt: string
   updatedAt?: string
+  paymentExpiredAt?: string
   orderDetails?: OrderDetailResponse[]
   payment?: PaymentResponse
   voucher?: VoucherResponse
   shippingFee?: number
+}
+
+export interface DeliveryStopResponse {
+  orderId: number
+  orderCode: string
+  address: string
+  recipientName: string
+  phoneNumber: string
+  sequence: number
+  distanceFromPreviousKm: number
 }

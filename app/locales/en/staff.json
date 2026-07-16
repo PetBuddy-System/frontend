@@ -3,6 +3,11 @@
     "subtitle": "Shift overview and daily store operations",
     "title": "Staff Dashboard"
   },
+  "petSpeciesLabels": {
+    "DOG": "Dog",
+    "CAT": "Cat",
+    "ALL": "Dogs & cats"
+  },
   "notifications": {
     "items": {
       "process": {
@@ -47,20 +52,306 @@
     "logoAlt": "PetBuddy logo",
     "logout": "Log out",
     "nav": {
+      "groomerBookings": "My grooming jobs",
+      "coordinatorBookings": "Booking assignment",
       "orders": "Manage Orders",
       "attendanceHistory": "Attendance history",
-      "shiftRequest": "Create shift request",
-      "violations": "View violations",
-      "weeklySchedule": "Weekly work schedule",
+      "weeklySchedule": "Weekly shifts",
       "disposalRequest": "Disposal request",
-      "inventory": "Inventory management"
+      "inventory": "Inventory management",
+      "returns": "Manage Returns",
+      "shipperAssignment": "Shipper Assignment"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Store Staff",
     "toggle": "Toggle sidebar"
   },
+
+  "shipperAssignment": {
+    "title": "Shipper Assignment",
+    "subtitle": "Group orders in nearby areas and assign a delivery staff.",
+    "searchPlaceholder": "Search orders, customers, address...",
+    "noOrdersTitle": "No orders need assignment",
+    "noOrdersDesc": "There are currently no orders in PICKED status to assign shippers.",
+    "loadingOrders": "Loading order list...",
+    "otherArea": "Other Area",
+    "statusPicked": "To Deliver",
+    "orderDate": "Order Date",
+    "totalAmount": "Total Amount",
+    "suggestionsHeader": "Suggested Shippers",
+    "loadingSuggestions": "Loading shipper suggestions...",
+    "noSuggestions": "No active shippers found for today.",
+    "unknownDistance": "Distance: N/A",
+    "currentLoadLabel": "Current Load:",
+    "assignBtn": "Assign",
+    "stats": {
+      "pendingPickup": "Orders to Deliver",
+      "areas": "Active Areas"
+    },
+    "errors": {
+      "loadOrdersFailed": "Failed to load order list.",
+      "loadSuggestionsFailed": "Failed to load shipper suggestions.",
+      "assignFailed": "Failed to assign shipper to this order.",
+      "unknownError": "An error occurred."
+    }
+  },
   "staff": {
     "name": "Nguyen Van An"
+  },
+  "groomerBookings": {
+    "title": "My grooming jobs",
+    "subtitle": "Track assigned at-store bookings and update grooming progress.",
+    "kicker": "Groomer workspace",
+    "heading": "My work queue",
+    "description": "Only bookings assigned by the coordinator are shown here. Groomers do not see pending acceptance bookings and cannot self-claim orders.",
+    "empty": "No assigned bookings in this status.",
+    "status": {
+      "ACCEPTED": "Pending start",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "bookingTypes": {
+      "AT_STORE": "At store",
+      "AT_HOME": "At home"
+    },
+    "timeline": {
+      "ACCEPTED": "Assigned",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed"
+    },
+    "card": {
+      "customer": "Customer",
+      "phone": "Phone",
+      "petCount": "Pets",
+      "serviceCount": "Services",
+      "duration": "Estimated duration",
+      "type": "Type",
+      "minutesValue": "{{value}} minutes"
+    },
+    "actions": {
+      "cancelBooking": "Cancel booking",
+      "chooseAfterImage": "Choose after-service image",
+      "chooseBeforeImage": "Choose before-service image",
+      "chooseImage": "Choose image",
+      "close": "Close",
+      "complete": "Confirm customer picked up pet",
+      "confirm": "Confirm",
+      "loading": "Loading...",
+      "readyForPickup": "Complete service and notify pickup",
+      "reload": "Reload",
+      "start": "Start service",
+      "upload": "Upload image",
+      "viewDetail": "View detail"
+    },
+    "detail": {
+      "bookingInfo": "Booking information",
+      "afterMedia": "After-service photos",
+      "beforeMedia": "Before-service photos",
+      "cancelReason": "Cancel reason",
+      "catalogName": "Service",
+      "customerInfo": "Customer information",
+      "customerName": "Name",
+      "customerPhone": "Phone",
+      "depositAmount": "Deposit",
+      "detailList": "Pets and services",
+      "duration": "Duration",
+      "healthNote": "Health note",
+      "media": "Uploaded photos",
+      "noHealthNote": "No health note.",
+      "noMedia": "No photos uploaded yet.",
+      "note": "Note",
+      "privateNote": "Detail note",
+      "remainingAmount": "Remaining",
+      "scheduledAt": "Scheduled at",
+      "title": "Booking detail",
+      "totalAmount": "Total amount",
+      "unitPrice": "Service price"
+    },
+    "confirm": {
+      "IN_PROGRESS": {
+        "title": "Start this service?",
+        "description": "The booking will move from pending start to in progress."
+      },
+      "READY_FOR_PICKUP": {
+        "title": "Mark service as ready for pickup?",
+        "description": "Uploads will be locked and the customer can come pick up the pet."
+      },
+      "COMPLETED": {
+        "title": "Confirm customer picked up the pet?",
+        "description": "The booking will be marked as completed."
+      },
+      "CANCELLED": {
+        "title": "Cancel this assigned booking?",
+        "description": "Cancellation is only allowed before the groomer starts the service. A reason is required."
+      }
+    },
+    "messages": {
+      "cancelReasonRequired": "Please enter a cancel reason.",
+      "afterRequired": "Upload at least one after-service image before marking this booking ready for pickup.",
+      "beforeRequired": "Upload at least one before-service image before starting this booking.",
+      "imageOnly": "Only image files can be uploaded.",
+      "loadDetailFailed": "Unable to load booking detail.",
+      "loadFailed": "Unable to load assigned bookings.",
+      "noPreview": "Please choose an image before uploading.",
+      "statusUpdated": "Booking status updated.",
+      "statusUpdateFailed": "Unable to update booking status.",
+      "uploaded": "Image uploaded to the booking detail.",
+      "uploadFailed": "Unable to upload image.",
+      "uploadLocked": "Images can only be uploaded while the booking is in progress."
+    }
+  },
+  "coordinatorBookings": {
+    "title": "Booking assignment",
+    "subtitle": "Assign paid service bookings to available groomers.",
+    "kicker": "Coordinator workspace",
+    "heading": "Bookings waiting for assignment",
+    "description": "Only pending acceptance bookings are shown here. Assigning a groomer moves the booking to accepted for that groomer.",
+    "empty": "No bookings are waiting for assignment.",
+    "pendingStatus": "Pending acceptance",
+    "card": {
+      "customer": "Customer",
+      "phone": "Phone",
+      "petCount": "Pets",
+      "duration": "Estimated duration",
+      "minutesValue": "{{value}} minutes"
+    },
+    "actions": {
+      "assign": "Assign groomer",
+      "loading": "Loading...",
+      "reload": "Reload",
+      "viewDetail": "View detail"
+    },
+    "assignment": {
+      "groomer": "Groomer",
+      "placeholder": "Select a groomer"
+    },
+    "detail": {
+      "address": "Address",
+      "bookingInfo": "Booking information",
+      "customerInfo": "Customer information",
+      "customerName": "Name",
+      "customerPhone": "Phone",
+      "depositAmount": "Deposit",
+      "detailList": "Pets and services",
+      "note": "Note",
+      "remainingAmount": "Remaining",
+      "title": "Booking detail",
+      "totalAmount": "Total amount"
+    },
+    "messages": {
+      "assigned": "Booking assigned to groomer.",
+      "assignFailed": "Unable to assign groomer.",
+      "chooseGroomer": "Please choose a groomer.",
+      "loadFailed": "Unable to load coordinator bookings."
+    }
+  },
+  "staffSchedule": {
+    "pageTitle": "Weekly shifts",
+    "pageSubtitle": "Track your work schedule and check in or check out for shifts.",
+    "heading": "Weekly shifts",
+    "description": "View your assigned shifts for the week, open a shift for details, and check in or check out when working.",
+    "actions": {
+      "backToSchedule": "Back to schedule",
+      "checkIn": "Check in",
+      "checkOut": "Check out",
+      "clearFilters": "Clear filters",
+      "nextWeek": "Next week",
+      "previousWeek": "Previous week",
+      "refresh": "Refresh",
+      "thisWeek": "This week"
+    },
+    "detail": {
+      "actionsTitle": "Check-in / Check-out",
+      "actionHint": "The system will validate the shift status before recording check-in or check-out.",
+      "attendanceStatus": "Attendance status",
+      "assignedAt": "Assigned at",
+      "checkInAt": "Check-in time",
+      "checkInWindow": "Check-in opens {{before}} minutes before the shift. The first {{onTime}} minutes after start count as on time; after that it is late and closes after {{close}} minutes.",
+      "checkOutAt": "Check-out time",
+      "date": "Work date",
+      "empty": "Select a shift in the weekly board to view details.",
+      "endTime": "Shift end time",
+      "noNote": "No note.",
+      "note": "Note",
+      "pageSubtitle": "View shift information and record check-in/check-out.",
+      "pageTitle": "Shift details",
+      "startTime": "Shift start",
+      "status": "Status",
+      "subtitle": "Shift details and attendance actions.",
+      "time": "Time",
+      "title": "Shift details",
+      "updatedAt": "Updated"
+    },
+    "errors": {
+      "badRequest": "This action could not be processed. Please check the shift again.",
+      "checkInAlreadyDone": "You have already checked in for this shift.",
+      "checkInClosed": "The check-in window has closed. This shift will be recorded as absent.",
+      "checkInNotAllowed": "You can only check in when the shift is scheduled.",
+      "checkInTooEarly": "It is not time to check in yet. Please come back during the allowed window.",
+      "checkOutAlreadyDone": "You have already checked out for this shift.",
+      "checkOutNotAllowed": "This shift cannot be checked out right now.",
+      "checkOutRequiresCheckIn": "You can only check out after you have checked in for this shift.",
+      "checkOutTooEarly": "It is not time to check out yet. You can only check out after the shift end time.",
+      "forbidden": "You do not have permission to update this shift.",
+      "invalidDateRange": "Invalid date range. The end date cannot be before the start date.",
+      "network": "Cannot connect to the server. Please try again.",
+      "notFound": "This shift does not exist or is no longer assigned to you.",
+      "server": "The server is having trouble. Please try again later."
+    },
+    "filters": {
+      "fromDate": "From date",
+      "status": "Status",
+      "toDate": "To date",
+      "week": "Viewing week"
+    },
+    "messages": {
+      "checkInFailed": "Check-in failed.",
+      "checkInSuccess": "Shift checked in successfully.",
+      "checkOutFailed": "Check-out failed.",
+      "checkOutSuccess": "Shift checked out successfully.",
+      "loadDetailFailed": "Failed to load shift details.",
+      "loadFailed": "Failed to load weekly shifts."
+    },
+    "shiftTypes": {
+      "AFTERNOON": "Afternoon",
+      "CUSTOM": "Custom",
+      "EVENING": "Evening",
+      "FULL_DAY": "Full day",
+      "MORNING": "Morning"
+    },
+    "attendanceStatuses": {
+      "ABSENT": "Absent",
+      "LEAVE": "On leave",
+      "LATE": "Late",
+      "ON_TIME": "On time"
+    },
+    "stats": {
+      "completed": "Completed",
+      "scheduled": "Scheduled",
+      "total": "Total shifts",
+      "working": "Working"
+    },
+    "statuses": {
+      "ALL": "All",
+      "CANCELLED": "Cancelled",
+      "COMPLETED": "Completed",
+      "SCHEDULED": "Scheduled",
+      "WORKING": "Working"
+    },
+    "scheduleBoard": {
+      "emptyRange": "Please choose a valid date range to view your schedule.",
+      "monthYear": "Month / year",
+      "noShift": "No shift",
+      "rangeCount": "{{count}} days"
+    },
+    "weekGrid": {
+      "noShift": "No shift",
+      "subtitle": "Shifts are grouped by day so you can scan the weekly distribution clearly.",
+      "title": "Weekly schedule board"
+    }
   },
   "stats": {
     "completed": {
@@ -108,43 +399,37 @@
     "description": "View detailed work hours and attendance status.",
     "previousMonth": "Previous month",
     "nextMonth": "Next month",
-    "months": {
-      "oct2024": "October 2024",
-      "sep2024": "September 2024",
-      "aug2024": "August 2024"
-    },
     "summary": {
       "totalDays": {
         "label": "Total work days",
-        "value": "22",
         "unit": "days"
       },
       "totalHours": {
         "label": "Work hours",
-        "value": "176",
         "unit": "hours"
       },
       "lateEarly": {
-        "label": "Late/Early leave",
-        "value": "2",
+        "label": "Late check-ins",
         "unit": "times"
       },
       "daysOff": {
-        "label": "Days off",
-        "value": "1",
-        "unit": "day"
+        "label": "Leave/Absent",
+        "unit": "days"
       }
     },
     "status": {
       "onTime": "On time",
       "late": "Late",
-      "earlyLeave": "Early leave",
-      "dayOff": "Day off"
+      "leave": "On leave",
+      "absent": "Absent",
+      "pending": "Pending"
     },
     "table": {
       "title": "Daily Details",
       "export": "Export report",
       "showing": "Showing {{from}}-{{to}} of {{total}} records",
+      "showingEmpty": "No attendance records.",
+      "empty": "No attendance records for this month.",
       "columns": {
         "date": "Date",
         "checkIn": "Check in",
@@ -154,73 +439,8 @@
         "note": "Note"
       }
     },
-    "records": {
-      "day1": {
-        "dayLabel": "Fri, Oct 25"
-      },
-      "day2": {
-        "dayLabel": "Thu, Oct 24",
-        "note": "Traffic jam at Cau Giay area"
-      },
-      "day3": {
-        "dayLabel": "Wed, Oct 23"
-      },
-      "day4": {
-        "dayLabel": "Tue, Oct 22",
-        "note": "Annual leave (Approved)"
-      },
-      "day5": {
-        "dayLabel": "Mon, Oct 21"
-      }
-    }
-  },
-  "shiftRequest": {
-    "pageTitle": "Create Shift Request",
-    "pageSubtitle": "Fill in the details below to request a shift swap",
-    "heading": "Create Shift Request",
-    "description": "Fill in the details below to request a shift swap or find a replacement.",
-    "form": {
-      "shiftLabel": "Shift to swap",
-      "shiftPlaceholder": "Select a shift...",
-      "shiftOptions": {
-        "morning": "Morning: 08:00 - 14:00 | Thu, 24/10/2023 | Grooming",
-        "afternoon": "Afternoon: 14:00 - 20:00 | Fri, 25/10/2023 | Sales"
-      },
-      "reasonLabel": "Reason for swap",
-      "reasonPlaceholder": "Enter your reason in detail...",
-      "solutionLabel": "Replacement option",
-      "solutionOptions": {
-        "specific": "Swap directly with a colleague",
-        "open": "Post on bulletin board (Find a replacement)"
-      },
-      "colleagueLabel": "Select colleague",
-      "colleaguePlaceholder": "Search by name...",
-      "compensationLabel": "Compensation shift (Optional)",
-      "cancel": "Cancel",
-      "submit": "Submit request"
-    },
-    "recent": {
-      "title": "Recent Requests",
-      "viewAll": "View all",
-      "status": {
-        "pending": "Pending",
-        "approved": "Approved",
-        "rejected": "Rejected"
-      },
-      "items": {
-        "req1": {
-          "title": "Swap with: Nguyen Van A",
-          "shift": "Shift: Morning Oct 22"
-        },
-        "req2": {
-          "title": "Posted on bulletin",
-          "shift": "Shift: Afternoon Oct 18"
-        },
-        "req3": {
-          "title": "Swap with: Tran Thi B",
-          "shift": "Shift: Morning Oct 10"
-        }
-      }
+    "messages": {
+      "loadFailed": "Failed to load attendance history."
     }
   },
   "disposalRequest": {
@@ -358,5 +578,89 @@
   },
   "inventory": {
     "title": "Inventory"
+  },
+  "returns": {
+    "title": "Returns Management",
+    "subtitle": "Review, approve, or reject customer return and warranty requests.",
+    "breadcrumb": {
+      "ops": "Operations",
+      "current": "Returns"
+    },
+    "stats": {
+      "all": "Total requests",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "pickedUp": "Picked Up",
+      "deliveryFailed": "Delivery Failed"
+    },
+    "filters": {
+      "status": "Status",
+      "type": "Request Type",
+      "refundMethod": "Refund Method",
+      "keyword": "Search",
+      "searchPlaceholder": "Search by Customer Name, Order/Return code...",
+      "fromDate": "From date",
+      "toDate": "To date",
+      "clear": "Clear filters",
+      "all": "All"
+    },
+    "table": {
+      "columns": {
+        "code": "Return Code",
+        "order": "Order Code",
+        "customer": "Customer",
+        "type": "Type",
+        "refund": "Refund Method",
+        "status": "Status",
+        "createdAt": "Date Created",
+        "actions": "Actions"
+      },
+      "actions": {
+        "view": "View Details",
+        "process": "Process"
+      },
+      "empty": "No return requests found."
+    },
+    "detail": {
+      "title": "Return Request Details",
+      "code": "Request Code",
+      "orderCode": "Order Code",
+      "type": "Request Type",
+      "createdAt": "Time Submitted",
+      "status": "Status",
+      "customerInfo": "Customer Information",
+      "customerName": "Full Name",
+      "customerEmail": "Email",
+      "reason": "Reason for Return",
+      "description": "Customer Description",
+      "refundInfo": "Refund Information",
+      "refundMethod": "Refund Method",
+      "refundStatus": "Refund Status",
+      "refundAmount": "Refund Amount",
+      "bankName": "Bank Name",
+      "bankAccountNumber": "Account Number",
+      "bankAccountHolder": "Account Holder",
+      "media": "Attached Photos/Videos",
+      "mediaEmpty": "No attachments",
+      "items": "Items to Return",
+      "processInfo": "Processing Information",
+      "processedBy": "Processed By",
+      "processedAt": "Processed Time",
+      "completedAt": "Completed Time",
+      "staffNote": "Staff Note",
+      "actionTitle": "Process Request",
+      "notePlaceholder": "Enter reason for approval/rejection or additional notes...",
+      "btnApprove": "Approve Request",
+      "btnReject": "Reject",
+      "btnComplete": "Complete",
+      "successApprove": "Request approved successfully",
+      "successReject": "Request rejected successfully",
+      "successComplete": "Return request completed successfully",
+      "errorUpdate": "Failed to update status",
+      "requiredNote": "Please enter a staff note when rejecting the request."
+    }
   }
 }

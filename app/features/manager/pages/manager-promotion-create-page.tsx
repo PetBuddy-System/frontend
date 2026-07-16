@@ -40,6 +40,9 @@ export function ManagerPromotionCreatePage() {
     endDate: '',
     status: 'ACTIVE' as 'DRAFT' | 'ACTIVE'
   })
+
+  // ⭐ State cho filter
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | undefined>(undefined)
   const [nearExpiredDays, setNearExpiredDays] = useState<string>('all')
 
   const [keyword, setKeyword] = useState('')
@@ -88,13 +91,20 @@ export function ManagerPromotionCreatePage() {
       setError(null)
 
       try {
-        const response = await fetchProductsManagementApi({
+        const params: any = {
           keyword: keyword.trim() || undefined,
           page: currentPage,
           size: PAGE_SIZE,
           sortBy: 'date_desc',
-          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays)
-        })
+          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays),
+        }
+
+        // ⭐ Chỉ thêm categoryId khi có giá trị hợp lệ
+        if (selectedCategoryId !== undefined && !isNaN(selectedCategoryId)) {
+          params.categoryId = selectedCategoryId
+        }
+
+        const response = await fetchProductsManagementApi(params)
 
         if (!response.success) {
           throw new Error(response.message || 'Không thể tải danh sách sản phẩm')
@@ -112,7 +122,7 @@ export function ManagerPromotionCreatePage() {
     }
 
     void loadProducts()
-  }, [nearExpiredDays, currentPage, keyword])
+  }, [nearExpiredDays, selectedCategoryId, currentPage, keyword])
 
   function toggleProduct(productId: string) {
     setSelectedProductMap((prev) => {
@@ -221,10 +231,20 @@ export function ManagerPromotionCreatePage() {
         discountValue: discount.discountValue
       }))
 
+      const formatToBackendISO = (localDateTimeStr: string) => {
+        if (!localDateTimeStr) return ''
+        if (localDateTimeStr.length === 16) {
+          return `${localDateTimeStr}:00`
+        }
+        return localDateTimeStr
+      }
+
       const payload: CreatePromotionDTO = {
-        ...form,
-        startDate: form.startDate ? `${form.startDate}T00:00:00` : '',
-        endDate: form.endDate ? `${form.endDate}T23:59:59` : '',
+        name: form.name.trim(),
+        description: form.description.trim(),
+        startDate: formatToBackendISO(form.startDate),
+        endDate: formatToBackendISO(form.endDate),
+        status: form.status,
         promotionDetails: allSelectedProducts
       }
 
@@ -244,6 +264,25 @@ export function ManagerPromotionCreatePage() {
     if (newPage >= 0 && newPage < totalPages) {
       setCurrentPage(newPage)
     }
+  }
+
+
+  const handleNearExpiredChange = (value: string) => {
+    setNearExpiredDays(value)
+    setCurrentPage(0) // Reset về trang đầu khi đổi filter
+  }
+
+
+  // ⭐ Reset page khi đổi filter
+  const handleCategoryChange = (categoryId: string) => {
+    // ⭐ Kiểm tra nếu là 'all' hoặc rỗng thì set undefined
+    if (categoryId === 'all' || categoryId === '') {
+      setSelectedCategoryId(undefined)
+    } else {
+      const numId = Number(categoryId)
+      setSelectedCategoryId(isNaN(numId) ? undefined : numId)
+    }
+    setCurrentPage(0)
   }
 
   return (
@@ -310,7 +349,7 @@ export function ManagerPromotionCreatePage() {
                   <label className='flex flex-col gap-1.5'>
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày bắt đầu</span>
                     <input
-                      type='date'
+                      type='datetime-local'
                       value={form.startDate}
                       onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
                       className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
@@ -319,7 +358,7 @@ export function ManagerPromotionCreatePage() {
                   <label className='flex flex-col gap-1.5'>
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày kết thúc</span>
                     <input
-                      type='date'
+                      type='datetime-local'
                       value={form.endDate}
                       onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
                       className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
@@ -350,7 +389,7 @@ export function ManagerPromotionCreatePage() {
                     <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lọc gần hết hạn</span>
                     <select
                       value={nearExpiredDays}
-                      onChange={(e) => setNearExpiredDays(e.target.value)}
+                      onChange={(e) => handleNearExpiredChange(e.target.value)}
                       className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                     >
                       {NEAR_EXPIRED_DAY_OPTIONS.map((option) => (
@@ -358,6 +397,23 @@ export function ManagerPromotionCreatePage() {
                           {option.label}
                         </option>
                       ))}
+                    </select>
+                  </label>
+                  {/* ⭐ Category filter */}
+                  <label className='flex flex-col gap-1.5'>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Danh mục</span>
+                    <select
+                      value={selectedCategoryId?.toString() || 'all'}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
+                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
+                    >
+                      <option value='all'>Tất cả danh mục</option>
+                      <option value='1'>Thức ăn cho chó</option>
+                      <option value='2'>Thức ăn cho mèo</option>
+                      <option value='3'>Phụ kiện thú cưng</option>
+                      <option value='4'>Dinh dưỡng bổ sung</option>
+                      <option value='5'>Đồ chơi thú cưng</option>
+                      <option value='6'>Vệ sinh và chăm sóc</option>
                     </select>
                   </label>
                 </div>
@@ -459,7 +515,7 @@ export function ManagerPromotionCreatePage() {
                                 Không tìm thấy sản phẩm nào với từ khóa "<strong>{keyword}</strong>"
                               </>
                             ) : (
-                              'Không có sản phẩm phù hợp với bộ lọc gần hết hạn.'
+                              'Không có sản phẩm phù hợp với bộ lọc.'
                             )}
                           </td>
                         </tr>
@@ -496,6 +552,7 @@ export function ManagerPromotionCreatePage() {
                                   )}
                                 </div>
                               </td>
+                              {/* ⭐ Cột Mã sản phẩm - giống manager products table */}
                               <td className='px-4 py-3 font-mono text-sm font-semibold text-primary'>
                                 {product.productCode}
                               </td>
@@ -510,12 +567,33 @@ export function ManagerPromotionCreatePage() {
                                   )}
                                 </div>
                               </td>
-                              <td className='px-4 py-3 text-sm text-muted-foreground'>{product.brandName}</td>
-                              <td className='px-4 py-3 text-sm font-semibold text-foreground'>
-                                {formatPrice(product.salePrice ?? 0)} đ
+                              {/* ⭐ Cột Thương hiệu - giống manager products table */}
+                              <td className='px-4 py-3'>
+                                <span className='inline-flex rounded-full bg-secondary px-3 py-1 text-xs font-bold text-secondary-foreground'>
+                                  {product.brandName || 'N/A'}
+                                </span>
                               </td>
-                              <td className='px-4 py-3 text-sm font-semibold text-foreground'>
-                                {product.totalStock}
+                              {/* ⭐ Cột Giá - giống manager products table */}
+                              <td className='px-4 py-3 font-bold text-primary'>
+                                {formatPrice(product.salePrice || 0)} đ
+                              </td>
+                              {/* ⭐ Cột Tồn kho - giống manager products table */}
+                              <td className='px-4 py-3'>
+                                <div className='flex flex-col items-center'>
+                                  <span className={product.totalStock === 0 ? 'font-bold text-destructive' : 'font-semibold text-foreground'}>
+                                    {product.totalStock}
+                                  </span>
+                                  {product.totalStock === 0 && (
+                                    <span className='text-[10px] font-bold uppercase tracking-wide text-destructive'>
+                                      Hết hàng
+                                    </span>
+                                  )}
+                                  {product.totalStock > 0 && product.totalStock <= 5 && (
+                                    <span className='text-[10px] font-bold uppercase tracking-wide text-warning'>
+                                      Sắp hết
+                                    </span>
+                                  )}
+                                </div>
                               </td>
                               <td className='px-4 py-3'>
                                 {checked && !hasActivePromotion ? (

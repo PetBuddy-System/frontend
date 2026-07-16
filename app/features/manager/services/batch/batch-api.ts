@@ -52,7 +52,7 @@ export async function createBatchesApi(
   return customFetch<CreateBatchResponse>({
     url: `${PRODUCTS_BASE_URL}/${productId}/batches`,
     method: 'POST',
-    data: payload
+    data: { batches: payload }
   })
 }
 

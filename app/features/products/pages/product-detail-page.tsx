@@ -7,6 +7,7 @@ import { ProductDetailGallery } from '../components/detail/product-detail-galler
 import { ProductDetailInfo } from '../components/detail/product-detail-info'
 import { ProductsBottomNav } from '../components/listing/products-bottom-nav'
 import { RelatedProducts } from '../components/detail/related-products'
+import { ProductReviews } from '../components/detail/product-reviews'
 import { MaterialIcon } from '~/shared/ui'
 import { SiteFooter } from '~/shared/components'
 import { SiteHeader } from '~/shared/components'
@@ -198,6 +199,11 @@ export function ProductDetailPage() {
           ingredients={product.ingredients}
           usageInstructions={product.usageInstructions}
         />
+
+        {/* Phần 4: Đánh giá sản phẩm */}
+        <div className='mb-10'>
+          <ProductReviews productId={product.productId} />
+        </div>
 
         <RelatedProducts />
       </main>

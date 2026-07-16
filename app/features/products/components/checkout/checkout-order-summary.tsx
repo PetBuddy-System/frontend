@@ -12,9 +12,11 @@ const TRUST_BADGES = [
 export interface CheckoutOrderItem {
   key: string
   image: string
-  price: number
+  salePrice: number
+  price?: number
   quantity: number
   title?: string
+  productId?: string
 }
 
 export interface CheckoutOrderSummaryProps {
@@ -28,6 +30,7 @@ export interface CheckoutOrderSummaryProps {
   isSubmitting?: boolean
   mode?: 'checkout' | 'retry-payment'
   onRetryPayment?: () => void
+  paymentMethod?: 'CASH' | 'CARD'
 }
 
 export function CheckoutOrderSummary({
@@ -41,6 +44,7 @@ export function CheckoutOrderSummary({
   isSubmitting = false,
   mode = 'checkout',
   onRetryPayment,
+  paymentMethod = 'CASH',
 }: CheckoutOrderSummaryProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
@@ -56,28 +60,41 @@ export function CheckoutOrderSummary({
         </h2>
 
         <div className='mb-6 flex max-h-[300px] flex-col gap-4 overflow-y-auto pr-2'>
-          {items.map((item) => (
-            <article key={item.key} className='flex gap-4'>
-              <div className='h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-muted'>
-                <img
-                  src={item.image}
-                  alt={item.title || t(`checkout.summary.items.${item.key}.imageAlt`)}
-                  className='h-full w-full object-cover'
-                />
-              </div>
-              <div className='flex flex-1 flex-col'>
-                <h3 className='line-clamp-1 text-sm font-semibold text-foreground'>
-                  {item.title || t(`checkout.summary.items.${item.key}.title`)}
-                </h3>
-                <span className='text-sm text-muted-foreground'>
-                  {t('checkout.summary.quantity', { count: item.quantity })}
-                </span>
-                <span className='mt-auto font-display text-sm font-bold text-primary'>
-                  {formatPrice(item.price * item.quantity)}
-                </span>
-              </div>
-            </article>
-          ))}
+          {items.map((item) => {
+            const hasPromotion =
+              item.price != null && item.price > item.salePrice
+
+            return (
+              <article key={item.key} className='flex gap-4'>
+                <div className='h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-muted'>
+                  <img
+                    src={item.image}
+                    alt={item.title || t(`checkout.summary.items.${item.key}.imageAlt`)}
+                    className='h-full w-full object-cover'
+                  />
+                </div>
+                <div className='flex flex-1 flex-col'>
+                  <h3 className='line-clamp-1 text-sm font-semibold text-foreground'>
+                    {item.title || t(`checkout.summary.items.${item.key}.title`)}
+                  </h3>
+                  <span className='text-sm text-muted-foreground'>
+                    {t('checkout.summary.quantity', { count: item.quantity })}
+                  </span>
+
+                  <div className='mt-auto flex flex-col'>
+                    {hasPromotion && (
+                      <span className='text-xs text-muted-foreground line-through'>
+                        {formatPrice(item.price! * item.quantity)}
+                      </span>
+                    )}
+                    <span className='font-display text-sm font-bold text-primary'>
+                      {formatPrice(item.salePrice * item.quantity)}
+                    </span>
+                  </div>
+                </div>
+              </article>
+            )
+          })}
         </div>
 
         <div className='mb-6 flex flex-col gap-3 border-t border-border pt-4'>
@@ -114,11 +131,11 @@ export function CheckoutOrderSummary({
           className='flex w-full items-center justify-center gap-3 rounded-full bg-secondary px-6 py-4 font-display font-semibold text-secondary-foreground shadow-md transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
         >
          <MaterialIcon
-            name={isSubmitting ? 'progress_activity' : 'lock'}
+            name={isSubmitting ? 'progress_activity' : (paymentMethod === 'CARD' ? 'credit_card' : 'lock')}
             filled={!isSubmitting}
             className={isSubmitting ? 'animate-spin text-[20px]' : 'text-[20px]'}
           />
-          {!isSubmitting && (isRetryMode ? 'Tiếp tục thanh toán' : t('checkout.summary.placeOrder'))}
+          {!isSubmitting && (paymentMethod === 'CARD' ? 'Thanh toán ngay' : t('checkout.summary.placeOrder', 'Đặt hàng ngay'))}
         </button>
 
         <div className='mt-6 flex flex-col gap-3 border-t border-border pt-4'>
@@ -156,7 +173,6 @@ export function CheckoutOrderSummary({
             </button>
           </div>
         ) : (
-          /* Apply voucher button */
           <button
             type='button'
             onClick={() => navigate('/order/voucher')}
