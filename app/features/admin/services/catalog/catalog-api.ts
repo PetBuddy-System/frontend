@@ -21,6 +21,13 @@ export async function fetchCatalogsApi(): Promise<ApiResponse<CatalogResponse[]>
   })
 }
 
+export async function fetchCatalogByIdApi(catalogId: number): Promise<ApiResponse<CatalogResponse>> {
+  return customFetch<ApiResponse<CatalogResponse>>({
+    url: `${CATALOGS_BASE_URL}/${catalogId}`,
+    method: 'GET'
+  })
+}
+
 export async function createCatalogApi(data: CatalogRequest): Promise<ApiResponse<CatalogResponse>> {
   return customFetch<ApiResponse<CatalogResponse>>({
     url: `${CATALOGS_BASE_URL}/create`,

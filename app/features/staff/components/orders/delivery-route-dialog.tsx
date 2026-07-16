@@ -11,11 +11,7 @@ interface DeliveryRouteDialogProps {
   onClose: () => void
 }
 
-export function DeliveryRouteDialog({
-  staffId,
-  isOpen,
-  onClose
-}: DeliveryRouteDialogProps) {
+export function DeliveryRouteDialog({ staffId, isOpen, onClose }: DeliveryRouteDialogProps) {
   const { t } = useTranslation('profile')
   const [stops, setStops] = useState<DeliveryStopResponse[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -56,8 +52,12 @@ export function DeliveryRouteDialog({
               <MaterialIcon name='alt_route' className='text-[22px]' />
             </div>
             <div>
-              <h3 className='font-bold text-foreground'>{t('orderDetail.routeModalTitle', 'Đề xuất Tuyến đường Giao hàng')}</h3>
-              <p className='text-xs text-muted-foreground'>{t('orderDetail.routeModalSubtitle', 'Thứ tự tối ưu dựa trên thuật toán Nearest Neighbor')}</p>
+              <h3 className='font-bold text-foreground'>
+                {t('orderDetail.routeModalTitle', 'Đề xuất Tuyến đường Giao hàng')}
+              </h3>
+              <p className='text-xs text-muted-foreground'>
+                {t('orderDetail.routeModalSubtitle', 'Thứ tự tối ưu dựa trên thuật toán Nearest Neighbor')}
+              </p>
             </div>
           </div>
           <button
@@ -94,7 +94,9 @@ export function DeliveryRouteDialog({
           ) : stops.length === 0 ? (
             <div className='text-center py-12 text-muted-foreground space-y-2'>
               <MaterialIcon name='emoji_transportation' className='text-4xl text-muted-foreground/50 animate-pulse' />
-              <p className='text-sm font-semibold'>{t('orderDetail.noActiveDeliveryOrders', 'Không có đơn hàng nào đang giao (SHIPPING) cần đề xuất tuyến đường.')}</p>
+              <p className='text-sm font-semibold'>
+                {t('orderDetail.noActiveDeliveryOrders', 'Không có đơn hàng nào đang giao cần đề xuất tuyến đường.')}
+              </p>
             </div>
           ) : (
             <div className='relative pl-8 border-l border-border/80 ml-4 space-y-6 py-2'>

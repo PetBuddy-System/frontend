@@ -11,6 +11,8 @@ type StaffTask = 'COORDINATOR' | 'SHIPPER'
 type AllowedTasks = readonly StaffTask[] | null
 
 const STAFF_NAV_ITEMS = [
+  { icon: 'content_cut', key: 'groomerBookings', href: '/staff/groomer-bookings', roles: ['GROOMER'] },
+  { icon: 'assignment_ind', key: 'coordinatorBookings', href: '/staff/coordinator-bookings', roles: ['COORDINATOR'] },
   { icon: 'shopping_cart', key: 'orders', href: '/staff/orders', allowedTasks: null as AllowedTasks },
   {
     icon: 'delete_sweep',
@@ -46,12 +48,18 @@ export function StaffSidebar({ activeItem }: StaffSidebarProps) {
   const { isCollapsed, toggleSidebar } = useSidebar()
   const { logout, user } = useAuth()
   const navigate = useNavigate()
+  const staffTask = user?.staffTask
+  const visibleNavItems = STAFF_NAV_ITEMS.filter((item) => {
+    if ('roles' in item && item.roles && !(item.roles as readonly string[]).includes(staffTask ?? '')) {
+      return false
+    }
 
-  const staffTask = user?.role === 'STAFF' ? (user?.staffTask as StaffTask | undefined) : undefined
+    if (staffTask === 'GROOMER' && ['orders', 'disposalRequest', 'returns', 'inventory'].includes(item.key)) {
+      return false
+    }
 
-  const visibleNavItems = STAFF_NAV_ITEMS.filter(
-    (item) => item.allowedTasks === null || (staffTask !== undefined && item.allowedTasks.includes(staffTask))
-  )
+    return true
+  })
 
   return (
     <aside

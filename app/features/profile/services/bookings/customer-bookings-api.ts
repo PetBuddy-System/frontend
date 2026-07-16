@@ -19,6 +19,8 @@ export interface MediaFileResponse {
   mediaFileId: number
   fileUrl: string
   fileType: string
+  fileKey?: string
+  bookingMediaType?: 'BEFORE_SERVICE' | 'AFTER_SERVICE'
   createdAt: string
 }
 

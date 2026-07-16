@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/shared/lib/cn'
@@ -87,7 +87,17 @@ function getBookingTime(booking: BookingResponse): string {
   return booking.bookingDetails.find((detail) => detail.timeSlot)?.timeSlot ?? ''
 }
 
-export function AdminServiceBookingsPage() {
+export interface AdminServiceBookingsPageProps {
+  sidebar?: ReactNode
+  topNav?: ReactNode
+  canManageStatus?: boolean
+}
+
+export function AdminServiceBookingsPage({
+  sidebar,
+  topNav,
+  canManageStatus = true
+}: AdminServiceBookingsPageProps = {}) {
   const { t } = useTranslation('admin')
   const [activeStatus, setActiveStatus] = useState<BookingStatusTab>('ALL')
   const [fromDate, setFromDate] = useState('')
@@ -214,9 +224,9 @@ export function AdminServiceBookingsPage() {
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
-      <AdminSidebar activeItem='serviceBookings' />
+      {sidebar ?? <AdminSidebar />}
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <AdminTopNav titleKey='serviceBookings.title' subtitleKey='serviceBookings.subtitle' />
+        {topNav ?? <AdminTopNav titleKey='serviceBookings.title' subtitleKey='serviceBookings.subtitle' />}
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             <section className='flex flex-col justify-between gap-4 md:flex-row md:items-center'>
@@ -260,6 +270,7 @@ export function AdminServiceBookingsPage() {
               onOpenActions={setOpenActionBookingId}
               onViewDetail={(bookingId) => void handleViewDetail(bookingId)}
               onStatusChange={(booking, nextStatus) => void handleStatusChange(booking, nextStatus)}
+              canManageStatus={canManageStatus}
             />
 
             <AdminFooter />
@@ -410,6 +421,7 @@ interface BookingManagementTableProps {
   onOpenActions: (bookingId: number | null) => void
   onViewDetail: (bookingId: number) => void
   onStatusChange: (booking: BookingResponse, nextStatus: BookingStatus) => void
+  canManageStatus: boolean
 }
 
 function BookingManagementTable({
@@ -418,7 +430,8 @@ function BookingManagementTable({
   openActionBookingId,
   onOpenActions,
   onViewDetail,
-  onStatusChange
+  onStatusChange,
+  canManageStatus
 }: BookingManagementTableProps) {
   const { t } = useTranslation('admin')
 
@@ -451,7 +464,7 @@ function BookingManagementTable({
             {!isLoading &&
               bookings.map((booking) => {
                 const status = getBookingStatus(booking)
-                const actions = STATUS_ACTIONS[status] ?? []
+                const actions = canManageStatus ? (STATUS_ACTIONS[status] ?? []) : []
 
                 return (
                   <tr key={booking.bookingId} className='transition-colors hover:bg-muted/70'>
@@ -489,6 +502,13 @@ function BookingManagementTable({
                           {getBookingTime(booking) || t('serviceBookings.table.emptyValue')} ·{' '}
                           {t(`serviceBookings.bookingTypes.${booking.bookingType}`)}
                         </span>
+                        {booking.estimatedEndAt ? (
+                          <span className='text-xs font-semibold text-muted-foreground'>
+                            {t('serviceBookings.table.estimatedEndAt', {
+                              value: formatDateTime(booking.estimatedEndAt)
+                            })}
+                          </span>
+                        ) : null}
                       </div>
                     </td>
                     <td className='px-4 py-3'>
@@ -520,18 +540,20 @@ function BookingManagementTable({
                         >
                           <MaterialIcon name='visibility' className='text-primary' />
                         </Button>
-                        <Button
-                          type='button'
-                          size='icon'
-                          variant='outline'
-                          aria-label={t('serviceBookings.actions.openActions')}
-                          onClick={() =>
-                            onOpenActions(openActionBookingId === booking.bookingId ? null : booking.bookingId)
-                          }
-                          disabled={actions.length === 0}
-                        >
-                          <MaterialIcon name='more_vert' />
-                        </Button>
+                        {canManageStatus ? (
+                          <Button
+                            type='button'
+                            size='icon'
+                            variant='outline'
+                            aria-label={t('serviceBookings.actions.openActions')}
+                            onClick={() =>
+                              onOpenActions(openActionBookingId === booking.bookingId ? null : booking.bookingId)
+                            }
+                            disabled={actions.length === 0}
+                          >
+                            <MaterialIcon name='more_vert' />
+                          </Button>
+                        ) : null}
                         {openActionBookingId === booking.bookingId && (
                           <div className='absolute right-0 top-11 z-20 w-52 overflow-hidden rounded-md border border-border bg-card p-1 text-left shadow-lg'>
                             {actions.map((nextStatus) => (
@@ -635,6 +657,12 @@ function BookingDetailModal({ booking, isLoading, onClose }: BookingDetailModalP
                   label={t('serviceBookings.detail.fields.schedule')}
                   value={`${formatDateTime(booking.scheduledAt)} · ${getBookingTime(booking) || '-'}`}
                 />
+                {booking.estimatedEndAt ? (
+                  <InfoCard
+                    label={t('serviceBookings.detail.fields.estimatedEndAt')}
+                    value={formatDateTime(booking.estimatedEndAt)}
+                  />
+                ) : null}
                 <InfoCard
                   label={t('serviceBookings.detail.fields.bookingType')}
                   value={t(`serviceBookings.bookingTypes.${booking.bookingType}`)}

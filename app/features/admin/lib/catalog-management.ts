@@ -1,19 +1,18 @@
+import { DURATION_CONFIG_WEIGHT_RANGES, SURCHARGE_WEIGHT_RANGES, type WeightRange } from '~/shared/lib/catalog-pricing'
+
 export const CATALOG_TYPES = ['AT_STORE', 'AT_HOME'] as const
 export const PET_SPECIES = ['DOG', 'CAT', 'ALL'] as const
+
 export const WEIGHT_RANGES = [
   'EXTRA_SMALL',
   'SMALL',
-  'MEDIUM',
-  'LARGE',
-  'EXTRA_LARGE',
-  'EXTRA_EXTRA_LARGE'
-] as const
+  ...SURCHARGE_WEIGHT_RANGES
+] as const satisfies readonly WeightRange[]
 export const CATALOG_STATUSES = ['AVAILABLE', 'UNAVAILABLE'] as const
 export const WEEK_DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as const
 
 export type CatalogType = (typeof CATALOG_TYPES)[number]
 export type PetSpecies = (typeof PET_SPECIES)[number]
-export type WeightRange = (typeof WEIGHT_RANGES)[number]
 export type CatalogStatus = (typeof CATALOG_STATUSES)[number]
 export type WeekDay = (typeof WEEK_DAYS)[number]
 
@@ -32,10 +31,12 @@ export interface CatalogResponse {
   catalogType: CatalogType | string
   petSpecies: PetSpecies | string
   price: number
-  weightRange: WeightRange | string
+  weightRange?: WeightRange | string | null
   durationMinute: number
   bufferTime: number
   status: CatalogStatus | string
+  surchargeConfig?: string | null
+  durationConfig?: string | null
   createdAt?: string | null
   updatedAt?: string | null
 }
@@ -46,10 +47,11 @@ export type CatalogRequest = {
   catalogType: CatalogType
   petSpecies: PetSpecies
   price: number
-  weightRange: WeightRange
   durationMinute: number
   bufferTime: number
   status: CatalogStatus
+  surchargeConfig?: string
+  durationConfig?: string
 }
 
 export interface TimeSlotResponse {
@@ -60,6 +62,7 @@ export interface TimeSlotResponse {
   dayOfWeek: WeekDay | string
   startTime: string
   isActive: boolean
+  maxPets?: number | null
 }
 
 export type TimeSlotRequest = {
@@ -67,6 +70,7 @@ export type TimeSlotRequest = {
   dayOfWeek: WeekDay
   startTime: string
   isActive: boolean
+  maxPets: number
 }
 
 export type TimeSlotUpdateRequest = Omit<TimeSlotRequest, 'catalogId'>
@@ -83,6 +87,7 @@ export interface AdminTimeSlot {
   dayOfWeek: WeekDay
   startTime: string
   isActive: boolean
+  maxPets: number
 }
 
 const ICON_BY_CATALOG_TYPE: Record<CatalogType, string> = {
@@ -96,10 +101,6 @@ function coerceCatalogType(value: string): CatalogType {
 
 function coercePetSpecies(value: string): PetSpecies {
   return PET_SPECIES.includes(value as PetSpecies) ? (value as PetSpecies) : 'ALL'
-}
-
-function coerceWeightRange(value: string): WeightRange {
-  return WEIGHT_RANGES.includes(value as WeightRange) ? (value as WeightRange) : 'SMALL'
 }
 
 function coerceCatalogStatus(value: string): CatalogStatus {
@@ -133,10 +134,11 @@ export function mapCatalogResponseToAdminCatalog(catalog: CatalogResponse): Admi
     catalogType,
     petSpecies: coercePetSpecies(catalog.petSpecies),
     price: Number(catalog.price ?? 0),
-    weightRange: coerceWeightRange(catalog.weightRange),
     durationMinute: Number(catalog.durationMinute ?? 0),
     bufferTime: Number(catalog.bufferTime ?? 0),
     status: coerceCatalogStatus(catalog.status),
+    surchargeConfig: catalog.surchargeConfig ?? undefined,
+    durationConfig: catalog.durationConfig ?? undefined,
     updatedAt: formatUpdatedAt(catalog.updatedAt ?? catalog.createdAt),
     icon: ICON_BY_CATALOG_TYPE[catalogType]
   }
@@ -148,7 +150,8 @@ export function mapTimeSlotResponseToAdminTimeSlot(slot: TimeSlotResponse): Admi
     catalogId: slot.catalogId,
     dayOfWeek: coerceWeekDay(slot.dayOfWeek),
     startTime: slot.startTime,
-    isActive: Boolean(slot.isActive)
+    isActive: Boolean(slot.isActive),
+    maxPets: Number(slot.maxPets ?? 5)
   }
 }
 
@@ -159,9 +162,12 @@ export function mapAdminCatalogToCatalogRequest(catalog: AdminCatalog): CatalogR
     catalogType: catalog.catalogType,
     petSpecies: catalog.petSpecies,
     price: catalog.price,
-    weightRange: catalog.weightRange,
     durationMinute: catalog.durationMinute,
     bufferTime: catalog.bufferTime,
-    status: catalog.status
+    status: catalog.status,
+    surchargeConfig: catalog.surchargeConfig,
+    durationConfig: catalog.durationConfig
   }
 }
+
+export { DURATION_CONFIG_WEIGHT_RANGES, SURCHARGE_WEIGHT_RANGES }

@@ -3,6 +3,11 @@
     "subtitle": "Shift overview and daily store operations",
     "title": "Staff Dashboard"
   },
+  "petSpeciesLabels": {
+    "DOG": "Dog",
+    "CAT": "Cat",
+    "ALL": "Dogs & cats"
+  },
   "notifications": {
     "items": {
       "process": {
@@ -47,6 +52,8 @@
     "logoAlt": "PetBuddy logo",
     "logout": "Log out",
     "nav": {
+      "groomerBookings": "My grooming jobs",
+      "coordinatorBookings": "Booking assignment",
       "orders": "Manage Orders",
       "attendanceHistory": "Attendance history",
       "weeklySchedule": "Weekly shifts",
@@ -90,6 +97,156 @@
   },
   "staff": {
     "name": "Nguyen Van An"
+  },
+  "groomerBookings": {
+    "title": "My grooming jobs",
+    "subtitle": "Track assigned at-store bookings and update grooming progress.",
+    "kicker": "Groomer workspace",
+    "heading": "My work queue",
+    "description": "Only bookings assigned by the coordinator are shown here. Groomers do not see pending acceptance bookings and cannot self-claim orders.",
+    "empty": "No assigned bookings in this status.",
+    "status": {
+      "ACCEPTED": "Pending start",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "bookingTypes": {
+      "AT_STORE": "At store",
+      "AT_HOME": "At home"
+    },
+    "timeline": {
+      "ACCEPTED": "Assigned",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed"
+    },
+    "card": {
+      "customer": "Customer",
+      "phone": "Phone",
+      "petCount": "Pets",
+      "serviceCount": "Services",
+      "duration": "Estimated duration",
+      "type": "Type",
+      "minutesValue": "{{value}} minutes"
+    },
+    "actions": {
+      "cancelBooking": "Cancel booking",
+      "chooseAfterImage": "Choose after-service image",
+      "chooseBeforeImage": "Choose before-service image",
+      "chooseImage": "Choose image",
+      "close": "Close",
+      "complete": "Confirm customer picked up pet",
+      "confirm": "Confirm",
+      "loading": "Loading...",
+      "readyForPickup": "Complete service and notify pickup",
+      "reload": "Reload",
+      "start": "Start service",
+      "upload": "Upload image",
+      "viewDetail": "View detail"
+    },
+    "detail": {
+      "bookingInfo": "Booking information",
+      "afterMedia": "After-service photos",
+      "beforeMedia": "Before-service photos",
+      "cancelReason": "Cancel reason",
+      "catalogName": "Service",
+      "customerInfo": "Customer information",
+      "customerName": "Name",
+      "customerPhone": "Phone",
+      "depositAmount": "Deposit",
+      "detailList": "Pets and services",
+      "duration": "Duration",
+      "healthNote": "Health note",
+      "media": "Uploaded photos",
+      "noHealthNote": "No health note.",
+      "noMedia": "No photos uploaded yet.",
+      "note": "Note",
+      "privateNote": "Detail note",
+      "remainingAmount": "Remaining",
+      "scheduledAt": "Scheduled at",
+      "title": "Booking detail",
+      "totalAmount": "Total amount",
+      "unitPrice": "Service price"
+    },
+    "confirm": {
+      "IN_PROGRESS": {
+        "title": "Start this service?",
+        "description": "The booking will move from pending start to in progress."
+      },
+      "READY_FOR_PICKUP": {
+        "title": "Mark service as ready for pickup?",
+        "description": "Uploads will be locked and the customer can come pick up the pet."
+      },
+      "COMPLETED": {
+        "title": "Confirm customer picked up the pet?",
+        "description": "The booking will be marked as completed."
+      },
+      "CANCELLED": {
+        "title": "Cancel this assigned booking?",
+        "description": "Cancellation is only allowed before the groomer starts the service. A reason is required."
+      }
+    },
+    "messages": {
+      "cancelReasonRequired": "Please enter a cancel reason.",
+      "afterRequired": "Upload at least one after-service image before marking this booking ready for pickup.",
+      "beforeRequired": "Upload at least one before-service image before starting this booking.",
+      "imageOnly": "Only image files can be uploaded.",
+      "loadDetailFailed": "Unable to load booking detail.",
+      "loadFailed": "Unable to load assigned bookings.",
+      "noPreview": "Please choose an image before uploading.",
+      "statusUpdated": "Booking status updated.",
+      "statusUpdateFailed": "Unable to update booking status.",
+      "uploaded": "Image uploaded to the booking detail.",
+      "uploadFailed": "Unable to upload image.",
+      "uploadLocked": "Images can only be uploaded while the booking is in progress."
+    }
+  },
+  "coordinatorBookings": {
+    "title": "Booking assignment",
+    "subtitle": "Assign paid service bookings to available groomers.",
+    "kicker": "Coordinator workspace",
+    "heading": "Bookings waiting for assignment",
+    "description": "Only pending acceptance bookings are shown here. Assigning a groomer moves the booking to accepted for that groomer.",
+    "empty": "No bookings are waiting for assignment.",
+    "pendingStatus": "Pending acceptance",
+    "card": {
+      "customer": "Customer",
+      "phone": "Phone",
+      "petCount": "Pets",
+      "duration": "Estimated duration",
+      "minutesValue": "{{value}} minutes"
+    },
+    "actions": {
+      "assign": "Assign groomer",
+      "loading": "Loading...",
+      "reload": "Reload",
+      "viewDetail": "View detail"
+    },
+    "assignment": {
+      "groomer": "Groomer",
+      "placeholder": "Select a groomer"
+    },
+    "detail": {
+      "address": "Address",
+      "bookingInfo": "Booking information",
+      "customerInfo": "Customer information",
+      "customerName": "Name",
+      "customerPhone": "Phone",
+      "depositAmount": "Deposit",
+      "detailList": "Pets and services",
+      "note": "Note",
+      "remainingAmount": "Remaining",
+      "title": "Booking detail",
+      "totalAmount": "Total amount"
+    },
+    "messages": {
+      "assigned": "Booking assigned to groomer.",
+      "assignFailed": "Unable to assign groomer.",
+      "chooseGroomer": "Please choose a groomer.",
+      "loadFailed": "Unable to load coordinator bookings."
+    }
   },
   "staffSchedule": {
     "pageTitle": "Weekly shifts",

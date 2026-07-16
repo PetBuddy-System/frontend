@@ -8,10 +8,7 @@ interface ManagerCreatePromotionModalProps {
   onSuccess: () => void
 }
 
-export function ManagerCreatePromotionModal({
-  onClose,
-  onSuccess
-}: ManagerCreatePromotionModalProps) {
+export function ManagerCreatePromotionModal({ onClose, onSuccess }: ManagerCreatePromotionModalProps) {
   const { t } = useTranslation('manager')
 
   const [form, setForm] = useState<CreatePromotionDTO>({
@@ -132,7 +129,10 @@ export function ManagerCreatePromotionModal({
             {/* Dates */}
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
               <div className='flex flex-col gap-1.5'>
-                <label htmlFor='promo-start-date' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                <label
+                  htmlFor='promo-start-date'
+                  className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+                >
                   {t('promotions.editModal.startDate', 'Ngày bắt đầu')} <span className='text-destructive'>*</span>
                 </label>
                 <input
@@ -146,7 +146,10 @@ export function ManagerCreatePromotionModal({
               </div>
 
               <div className='flex flex-col gap-1.5'>
-                <label htmlFor='promo-end-date' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                <label
+                  htmlFor='promo-end-date'
+                  className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+                >
                   {t('promotions.editModal.endDate', 'Ngày kết thúc')} <span className='text-destructive'>*</span>
                 </label>
                 <input
@@ -162,7 +165,10 @@ export function ManagerCreatePromotionModal({
 
             {/* Status */}
             <div className='flex flex-col gap-1.5'>
-              <label htmlFor='promo-status' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+              <label
+                htmlFor='promo-status'
+                className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+              >
                 {t('promotions.editModal.status', 'Trạng thái')} <span className='text-destructive'>*</span>
               </label>
               <div className='relative'>
@@ -172,8 +178,8 @@ export function ManagerCreatePromotionModal({
                   onChange={(e) => setForm((prev) => ({ ...prev, status: e.target.value as 'DRAFT' | 'ACTIVE' }))}
                   className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
                 >
-                  <option value='DRAFT'>Bản nháp (DRAFT)</option>
-                  <option value='ACTIVE'>Hoạt động (ACTIVE)</option>
+                  <option value='DRAFT'>Bản nháp</option>
+                  <option value='ACTIVE'>Hoạt động</option>
                 </select>
                 <MaterialIcon
                   name='expand_more'
@@ -184,7 +190,10 @@ export function ManagerCreatePromotionModal({
 
             {/* Description */}
             <div className='flex flex-col gap-1.5'>
-              <label htmlFor='promo-description' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+              <label
+                htmlFor='promo-description'
+                className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+              >
                 {t('promotions.editModal.description', 'Mô tả')} <span className='text-destructive'>*</span>
               </label>
               <textarea
@@ -214,7 +223,9 @@ export function ManagerCreatePromotionModal({
               disabled={isSubmitting}
               className='h-11 inline-flex items-center justify-center gap-2 rounded-xl bg-secondary px-6 text-sm font-bold text-secondary-foreground shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50'
             >
-              {isSubmitting && <div className='h-4 w-4 animate-spin rounded-full border-2 border-secondary-foreground border-t-transparent' />}
+              {isSubmitting && (
+                <div className='h-4 w-4 animate-spin rounded-full border-2 border-secondary-foreground border-t-transparent' />
+              )}
               <span>{t('promotions.editModal.save', 'Lưu thay đổi')}</span>
             </button>
           </footer>

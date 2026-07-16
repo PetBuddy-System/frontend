@@ -1,28 +1,41 @@
 import { useTranslation } from 'react-i18next'
 
+import { parseSurchargeConfig } from '~/shared/lib/catalog-pricing'
 import { MaterialIcon } from '~/shared/ui'
 
-const MOCK_PRICING_ROWS = [
-  {
-    key: 'bath',
-    accent: 'bg-primary/10 text-primary',
-    prices: { under5: '150,000', fiveTo10: '250,000', tenTo20: '350,000', over20: '450,000' }
-  },
-  {
-    key: 'grooming',
-    accent: 'bg-accent text-accent-foreground',
-    prices: { under5: '200,000', fiveTo10: '320,000', tenTo20: '450,000', over20: '550,000' }
-  },
-  {
-    key: 'hygiene',
-    accent: 'bg-success/10 text-success',
-    prices: { under5: '80,000', fiveTo10: '120,000', tenTo20: '180,000', over20: '230,000' }
-  }
+import type { CatalogResponse } from '../../services'
+
+const ROW_ACCENTS = [
+  'bg-primary/10 text-primary',
+  'bg-accent text-accent-foreground',
+  'bg-success/10 text-success'
 ] as const
 
-// TODO: replace this mock array with API data once the pricing endpoint is ready.
+const ROW_ICONS = ['spa', 'content_cut', 'cleaning_services'] as const
 
-export function ServicesPriceBoard() {
+export interface ServicesPriceBoardProps {
+  catalogs: CatalogResponse[]
+  errorMessage?: string | null
+  isLoading?: boolean
+}
+
+function formatPrice(value: number): string {
+  return new Intl.NumberFormat('vi-VN').format(Number(value ?? 0))
+}
+
+function getPriceColumns(catalog: CatalogResponse) {
+  const basePrice = Number(catalog.price ?? 0)
+  const surcharges = parseSurchargeConfig(catalog.surchargeConfig)
+
+  return {
+    under5: basePrice,
+    fiveTo10: basePrice,
+    tenTo20: basePrice + (surcharges.LARGE ?? 0),
+    over20: basePrice + (surcharges.EXTRA_EXTRA_LARGE ?? surcharges.EXTRA_LARGE ?? surcharges.LARGE ?? 0)
+  }
+}
+
+export function ServicesPriceBoard({ catalogs, errorMessage, isLoading = false }: ServicesPriceBoardProps) {
   const { t } = useTranslation('services')
 
   return (
@@ -59,35 +72,88 @@ export function ServicesPriceBoard() {
                 </tr>
               </thead>
               <tbody>
-                {MOCK_PRICING_ROWS.map((row) => (
-                  <tr key={row.key} className='border-t border-border/60 align-top'>
-                    <td className='px-4 py-4 md:px-5'>
-                      <div className='flex items-start gap-3'>
-                        <span
-                          className={`mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-xl ${row.accent}`}
-                        >
-                          <MaterialIcon
-                            name={
-                              row.key === 'bath' ? 'spa' : row.key === 'grooming' ? 'content_cut' : 'cleaning_services'
-                            }
-                            className='text-[18px]'
-                          />
-                        </span>
-                        <div>
-                          <p className='font-semibold text-foreground'>{t(`individual.items.${row.key}.title`)}</p>
-                          <p className='mt-1 text-xs text-muted-foreground'>{t(`individual.items.${row.key}.price`)}</p>
+                {isLoading &&
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <tr key={index} className='border-t border-border/60 align-top'>
+                      <td className='px-4 py-4 md:px-5'>
+                        <div className='flex animate-pulse items-start gap-3'>
+                          <span className='mt-0.5 inline-flex h-10 w-10 rounded-xl bg-muted' />
+                          <div className='flex-1 space-y-2'>
+                            <div className='h-4 w-32 rounded bg-muted' />
+                            <div className='h-3 w-20 rounded bg-muted' />
+                          </div>
                         </div>
-                      </div>
+                      </td>
+                      <td className='px-4 py-4 md:px-5'>
+                        <div className='h-10 animate-pulse rounded bg-muted' />
+                      </td>
+                      <td className='px-4 py-4 md:px-5'>
+                        <div className='h-4 w-16 animate-pulse rounded bg-muted' />
+                      </td>
+                      <td className='px-4 py-4 md:px-5'>
+                        <div className='h-4 w-16 animate-pulse rounded bg-muted' />
+                      </td>
+                      <td className='px-4 py-4 md:px-5'>
+                        <div className='h-4 w-16 animate-pulse rounded bg-muted' />
+                      </td>
+                      <td className='px-4 py-4 md:px-5'>
+                        <div className='h-4 w-16 animate-pulse rounded bg-muted' />
+                      </td>
+                    </tr>
+                  ))}
+
+                {!isLoading && errorMessage && (
+                  <tr className='border-t border-border/60'>
+                    <td className='px-4 py-6 text-sm text-destructive md:px-5' colSpan={6}>
+                      {t('catalog.error', { message: errorMessage })}
                     </td>
-                    <td className='px-4 py-4 text-muted-foreground md:px-5'>
-                      {t(`individual.items.${row.key}.description`)}
-                    </td>
-                    <td className='px-4 py-4 font-semibold text-foreground md:px-5'>{row.prices.under5}</td>
-                    <td className='px-4 py-4 font-semibold text-foreground md:px-5'>{row.prices.fiveTo10}</td>
-                    <td className='px-4 py-4 font-semibold text-foreground md:px-5'>{row.prices.tenTo20}</td>
-                    <td className='px-4 py-4 font-semibold text-primary md:px-5'>{row.prices.over20}</td>
                   </tr>
-                ))}
+                )}
+
+                {!isLoading && !errorMessage && catalogs.length === 0 && (
+                  <tr className='border-t border-border/60'>
+                    <td className='px-4 py-6 text-center text-sm text-muted-foreground md:px-5' colSpan={6}>
+                      {t('catalog.empty')}
+                    </td>
+                  </tr>
+                )}
+
+                {!isLoading &&
+                  !errorMessage &&
+                  catalogs.map((catalog, index) => {
+                    const prices = getPriceColumns(catalog)
+
+                    return (
+                      <tr key={catalog.catalogId} className='border-t border-border/60 align-top'>
+                        <td className='px-4 py-4 md:px-5'>
+                          <div className='flex items-start gap-3'>
+                            <span
+                              className={`mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-xl ${ROW_ACCENTS[index % ROW_ACCENTS.length]}`}
+                            >
+                              <MaterialIcon name={ROW_ICONS[index % ROW_ICONS.length]} className='text-[18px]' />
+                            </span>
+                            <div>
+                              <p className='font-semibold text-foreground'>{catalog.catalogName}</p>
+                              <p className='mt-1 text-xs text-muted-foreground'>
+                                {t('catalog.startingPrice', { price: formatPrice(catalog.price) })}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className='px-4 py-4 text-muted-foreground md:px-5'>{catalog.description}</td>
+                        <td className='px-4 py-4 font-semibold text-foreground md:px-5'>
+                          {formatPrice(prices.under5)}
+                        </td>
+                        <td className='px-4 py-4 font-semibold text-foreground md:px-5'>
+                          {formatPrice(prices.fiveTo10)}
+                        </td>
+                        <td className='px-4 py-4 font-semibold text-foreground md:px-5'>
+                          {formatPrice(prices.tenTo20)}
+                        </td>
+                        <td className='px-4 py-4 font-semibold text-primary md:px-5'>{formatPrice(prices.over20)}</td>
+                      </tr>
+                    )
+                  })}
               </tbody>
             </table>
           </div>

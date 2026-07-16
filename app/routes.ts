@@ -46,6 +46,8 @@ export default [
   // ─── Staff Only Routes ────────────────────────────────────────────────────
   layout('routes/staff-layout.tsx', [
     route('staff/dashboard', 'routes/staff-dashboard.tsx'),
+    route('staff/groomer-bookings', 'routes/staff-groomer-bookings.tsx'),
+    route('staff/coordinator-bookings', 'routes/staff-coordinator-bookings.tsx'),
     route('staff/attendance', 'routes/staff-attendance.tsx'),
     route('staff/disposal-request', 'routes/staff-disposal-request.tsx'),
     route('staff/weekly-schedule', 'routes/staff-weekly-schedule.tsx'),
@@ -76,6 +78,8 @@ export default [
   layout('routes/manager-layout.tsx', [
     route('manager/dashboard', 'routes/manager-dashboard.tsx'),
     route('manager/products', 'routes/manager-products.tsx'),
+    route('manager/services', 'routes/manager-services.tsx'),
+    route('manager/bookings', 'routes/manager-bookings.tsx'),
     route('manager/inventory-transactions', 'routes/manager-inventory-transactions.tsx'),
     route('manager/disposal-approvals', 'routes/manager-disposal-approvals.tsx'),
     route('manager/return-requests', 'routes/manager-return-requests.tsx'),

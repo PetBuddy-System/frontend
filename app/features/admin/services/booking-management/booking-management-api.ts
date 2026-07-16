@@ -32,8 +32,9 @@ export interface BookingResponse {
   bookingType: string
   customerName: string
   customerPhone: string
-  address: string
+  address?: string
   scheduledAt: string
+  estimatedEndAt?: string
   totalAmount: number
   depositAmount: number
   remainingAmount: number
@@ -50,13 +51,19 @@ export interface BookingDetailResponse {
   bookingDetailId: number
   petId: string
   petName: string
+  petSpecies?: string
+  petWeight?: number
+  petHealthNote?: string
   catalogId: number
   catalogName: string
+  catalogType?: string
   timeSlotId: number
   timeSlot: string
   unitPrice: number
+  quantity?: number
   durationMinute: number
   totalPrice: number
+  note?: string
   mediaFiles: MediaFileResponse[]
 }
 
@@ -71,8 +78,13 @@ export interface PaymentResponse {
 export interface MediaFileResponse {
   mediaFileId: number
   fileUrl: string
+  fileKey?: string
+  fileSize?: number
   fileType: string
-  createdAt: string
+  mediaPurpose?: string
+  mediaStatus?: string
+  bookingMediaType?: 'BEFORE_SERVICE' | 'AFTER_SERVICE'
+  createdAt?: string
 }
 
 interface ApiResponse<T> {

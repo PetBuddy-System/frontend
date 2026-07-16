@@ -54,11 +54,19 @@ export function StaffShipperAssignmentPage() {
     const parts = address.split(',').map((p) => p.trim())
     if (parts.length >= 2) {
       const potentialDistrict = parts[parts.length - 2]
-      if (potentialDistrict && (potentialDistrict.toLowerCase().includes('quận') || potentialDistrict.toLowerCase().includes('huyện') || potentialDistrict.toLowerCase().includes('tp') || potentialDistrict.toLowerCase().includes('thị xã'))) {
+      if (
+        potentialDistrict &&
+        (potentialDistrict.toLowerCase().includes('quận') ||
+          potentialDistrict.toLowerCase().includes('huyện') ||
+          potentialDistrict.toLowerCase().includes('tp') ||
+          potentialDistrict.toLowerCase().includes('thị xã'))
+      ) {
         return potentialDistrict
       }
     }
-    const match = address.match(/(Quận\s+\d+|Quận\s+[A-Za-zÀ-ỹ\d\s]+|Huyện\s+[A-Za-zÀ-ỹ\d\s]+|Tp\.\s+[A-Za-zÀ-ỹ\d\s]+|Thành phố\s+[A-Za-zÀ-ỹ\d\s]+)/i)
+    const match = address.match(
+      /(Quận\s+\d+|Quận\s+[A-Za-zÀ-ỹ\d\s]+|Huyện\s+[A-Za-zÀ-ỹ\d\s]+|Tp\.\s+[A-Za-zÀ-ỹ\d\s]+|Thành phố\s+[A-Za-zÀ-ỹ\d\s]+)/i
+    )
     if (match) return match[1]
     return t('shipperAssignment.otherArea', 'Khu vực khác')
   }
@@ -111,7 +119,10 @@ export function StaffShipperAssignmentPage() {
 
             <div className='flex items-center gap-4'>
               <div className='relative w-full max-w-md'>
-                <MaterialIcon name='search' className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground' />
+                <MaterialIcon
+                  name='search'
+                  className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'
+                />
                 <input
                   type='text'
                   value={searchQuery}
@@ -132,12 +143,16 @@ export function StaffShipperAssignmentPage() {
             {isLoading ? (
               <div className='flex flex-col justify-center items-center py-20 gap-3'>
                 <div className='h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent' />
-                <p className='text-sm text-muted-foreground animate-pulse'>{t('shipperAssignment.loadingOrders', 'Đang tải danh sách đơn hàng...')}</p>
+                <p className='text-sm text-muted-foreground animate-pulse'>
+                  {t('shipperAssignment.loadingOrders', 'Đang tải danh sách đơn hàng...')}
+                </p>
               </div>
             ) : filteredPickedOrders.length === 0 ? (
               <div className='rounded-2xl border border-dashed border-border/80 bg-card/50 py-16 text-center text-muted-foreground shadow-sm'>
                 <MaterialIcon name='local_shipping' className='text-5xl mb-3 text-muted-foreground/30' />
-                <h3 className='font-bold text-lg text-foreground mb-1'>{t('shipperAssignment.noOrdersTitle', 'Không có đơn hàng cần phân công')}</h3>
+                <h3 className='font-bold text-lg text-foreground mb-1'>
+                  {t('shipperAssignment.noOrdersTitle', 'Không có đơn hàng cần phân công')}
+                </h3>
                 <p className='text-sm text-muted-foreground max-w-md mx-auto px-4'>
                   {t('shipperAssignment.noOrdersDesc', 'Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị để phân công shipper.')}
                 </p>
@@ -145,12 +160,7 @@ export function StaffShipperAssignmentPage() {
             ) : (
               <div className='space-y-6'>
                 {Object.entries(groupedOrders).map(([areaName, areaOrders]) => (
-                  <AreaOrderGroup
-                    key={areaName}
-                    areaName={areaName}
-                    orders={areaOrders}
-                    onAssignSuccess={loadOrders}
-                  />
+                  <AreaOrderGroup key={areaName} areaName={areaName} orders={areaOrders} onAssignSuccess={loadOrders} />
                 ))}
               </div>
             )}
