@@ -111,18 +111,18 @@ export function ManagerPromotionEditPage() {
           note: promo.note || ''
         })
 
-        const details = (promo as unknown as {
-          promotionDetails?: Array<{
-            productId: string
-            promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
-            discountValue: number
-          }>
-        }).promotionDetails
+        const details = (
+          promo as unknown as {
+            promotionDetails?: Array<{
+              productId: string
+              promotionType: 'PERCENTAGE' | 'FIXED_AMOUNT'
+              discountValue: number
+            }>
+          }
+        ).promotionDetails
 
         if (details && details.length > 0) {
-          const validProductIds = details
-            .map(d => d.productId)
-            .filter(id => id)
+          const validProductIds = details.map((d) => d.productId).filter((id) => id)
           setSelectedProductIds(validProductIds)
           const discountMap: Record<string, ProductDiscountState> = {}
           for (const d of details) {
@@ -165,7 +165,7 @@ export function ManagerPromotionEditPage() {
           page: currentPage,
           size: 10,
           sortBy: 'date_desc',
-          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays),
+          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays)
         }
 
         // ⭐ Chỉ thêm categoryId khi có giá trị hợp lệ
@@ -202,9 +202,7 @@ export function ManagerPromotionEditPage() {
 
   function toggleProduct(productId: string) {
     setSelectedProductIds((current) =>
-      current.includes(productId)
-        ? current.filter((id) => id !== productId)
-        : [...current, productId]
+      current.includes(productId) ? current.filter((id) => id !== productId) : [...current, productId]
     )
     setProductDiscountById((currentDiscounts) => {
       if (selectedProductIds.includes(productId)) {
@@ -311,7 +309,7 @@ export function ManagerPromotionEditPage() {
 
     try {
       const promotionDetails = selectedProductIds
-        .filter(id => id)
+        .filter((id) => id)
         .map((productId) => {
           const discount = productDiscountById[productId]
           return {
@@ -450,7 +448,9 @@ export function ManagerPromotionEditPage() {
                 </div>
                 <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
                   <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Tên khuyến mãi</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Tên khuyến mãi
+                    </span>
                     <input
                       value={form.name}
                       onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
@@ -459,7 +459,9 @@ export function ManagerPromotionEditPage() {
                     />
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày bắt đầu</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Ngày bắt đầu
+                    </span>
                     <input
                       type='datetime-local'
                       value={form.startDate}
@@ -468,7 +470,9 @@ export function ManagerPromotionEditPage() {
                     />
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày kết thúc</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Ngày kết thúc
+                    </span>
                     <input
                       type='datetime-local'
                       value={form.endDate}
@@ -487,7 +491,9 @@ export function ManagerPromotionEditPage() {
                     />
                   </label>
                   <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lý do thay đổi</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Lý do thay đổi
+                    </span>
                     <input
                       value={form.reason}
                       onChange={(e) => setForm((prev) => ({ ...prev, reason: e.target.value }))}
@@ -517,10 +523,10 @@ export function ManagerPromotionEditPage() {
                         }
                         className='h-11 w-full appearance-none rounded-xl border border-input bg-background pl-4 pr-10 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring cursor-pointer'
                       >
-                        <option value='ACTIVE'>Hoạt động (ACTIVE)</option>
-                        <option value='DRAFT'>Bản nháp (DRAFT)</option>
-                        <option value='EXPIRED'>Hết hạn (EXPIRED)</option>
-                        <option value='CANCELLED'>Đã hủy (CANCELLED)</option>
+                        <option value='ACTIVE'>Hoạt động</option>
+                        <option value='DRAFT'>Bản nháp</option>
+                        <option value='EXPIRED'>Hết hạn</option>
+                        <option value='CANCELLED'>Đã hủy</option>
                       </select>
                       <MaterialIcon
                         name='expand_more'
@@ -529,7 +535,9 @@ export function ManagerPromotionEditPage() {
                     </div>
                   </label>
                   <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lọc sản phẩm gần hết hạn</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Lọc sản phẩm gần hết hạn
+                    </span>
                     <div className='relative'>
                       <select
                         value={nearExpiredDays}
@@ -550,7 +558,9 @@ export function ManagerPromotionEditPage() {
                   </label>
                   {/* ⭐ Thêm Category filter */}
                   <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Danh mục sản phẩm</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Danh mục sản phẩm
+                    </span>
                     <div className='relative'>
                       <select
                         value={selectedCategoryId?.toString() || 'all'}
@@ -725,9 +735,7 @@ export function ManagerPromotionEditPage() {
                               <td className='px-4 py-3 text-sm font-semibold text-foreground'>
                                 {formatPrice(product.salePrice)} đ
                               </td>
-                              <td className='px-4 py-3 text-sm font-semibold text-foreground'>
-                                {product.totalStock}
-                              </td>
+                              <td className='px-4 py-3 text-sm font-semibold text-foreground'>{product.totalStock}</td>
                               <td className='px-4 py-3'>
                                 {checked && !hasActivePromotion ? (
                                   <select
@@ -753,13 +761,11 @@ export function ManagerPromotionEditPage() {
                                   <input
                                     type='number'
                                     min={0}
-                                    value={productDiscountById[product.productId]?.discountValue ?? DEFAULT_DISCOUNT_VALUE}
+                                    value={
+                                      productDiscountById[product.productId]?.discountValue ?? DEFAULT_DISCOUNT_VALUE
+                                    }
                                     onChange={(e) =>
-                                      updateProductDiscount(
-                                        product.productId,
-                                        'discountValue',
-                                        Number(e.target.value)
-                                      )
+                                      updateProductDiscount(product.productId, 'discountValue', Number(e.target.value))
                                     }
                                     className='h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                                   />
@@ -782,7 +788,9 @@ export function ManagerPromotionEditPage() {
                       {keyword ? (
                         <>Kết quả tìm kiếm: {totalElements} sản phẩm</>
                       ) : (
-                        <>Hiển thị {products.length} trên {totalElements} sản phẩm</>
+                        <>
+                          Hiển thị {products.length} trên {totalElements} sản phẩm
+                        </>
                       )}
                     </div>
                     <div className='flex items-center gap-2'>

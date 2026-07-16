@@ -105,6 +105,7 @@
     "title": "Quản lý Blog"
   },
   "charts": {
+    "bookingStatsError": "Không thể tải thống kê booking.",
     "breakdown": {
       "items": {
         "grooming": "Spa & Grooming",
@@ -126,6 +127,28 @@
       },
       "title": "Xu hướng doanh thu",
       "unit": "Triệu VNĐ"
+    },
+    "bookingRevenueTrend": {
+      "days": {
+        "fri": "T6",
+        "mon": "T2",
+        "sat": "T7",
+        "sun": "CN",
+        "thu": "T5",
+        "tue": "T3",
+        "wed": "T4"
+      },
+      "empty": "Chưa có doanh thu booking trong khoảng thời gian này.",
+      "error": "Không thể tải biểu đồ doanh thu booking. Vui lòng thử lại sau.",
+      "subtitle": "Doanh thu dịch vụ spa/grooming theo ngày trong khoảng lọc hiện tại.",
+      "title": "Xu hướng doanh thu booking"
+    },
+    "bookingStructure": {
+      "centerLabel": "Tổng",
+      "empty": "Chưa có dữ liệu cơ cấu doanh thu booking.",
+      "error": "Không thể tải cơ cấu doanh thu booking. Vui lòng thử lại sau.",
+      "subtitle": "Tỷ trọng doanh thu theo từng dịch vụ booking.",
+      "title": "Cơ cấu doanh thu booking"
     }
   },
   "dashboard": {
@@ -307,17 +330,18 @@
       "change": "+8.4% so với kỳ trước",
       "label": "TB cỡ đơn"
     },
-    "orders": {
-      "change": "+5.2% so với kỳ trước",
+    "profit": {
       "change_dynamic": "{{percent}}% so với kỳ trước",
-      "label": "Đơn hàng"
+      "label": "Lợi nhuận"
     },
     "revenue": {
       "change": "+12.5% so với kỳ trước",
+      "change_dynamic": "{{percent}}% so với kỳ trước",
       "label": "Tổng doanh thu"
     },
     "services": {
-      "change": "-2.1% so với kỳ trước",
+      "change": "{{count}} booking trong kỳ",
+      "error": "Chưa tải được dữ liệu",
       "label": "Dịch vụ"
     }
   },
@@ -416,7 +440,8 @@
           "pet": "Bơ (Poodle)"
         }
       },
-      "remaining": "Còn lại {{value}}"
+      "remaining": "Còn lại {{value}}",
+      "estimatedEndAt": "Kết thúc dự kiến {{value}}"
     },
     "title": "Quản lý lịch đặt dịch vụ",
     "tabs": {
@@ -471,6 +496,7 @@
     },
     "bookingTypes": {
       "IN_STORE": "Tại cửa hàng",
+      "AT_STORE": "Tại tiệm",
       "AT_HOME": "Tại nhà"
     },
     "detail": {
@@ -484,6 +510,7 @@
         "service": "Dịch vụ",
         "pet": "Thú cưng",
         "schedule": "Lịch hẹn",
+        "estimatedEndAt": "Kết thúc dự kiến",
         "bookingType": "Hình thức booking",
         "totalAmount": "Tổng tiền",
         "depositAmount": "Tiền cọc",
@@ -524,12 +551,12 @@
         "description": "Mô tả dịch vụ",
         "name": "Tên dịch vụ",
         "status": "Trạng thái hoạt động",
-        "catalogType": "Loại catalog",
-        "petSpecies": "Loại áp dụng",
-        "price": "Giá tiền",
+        "catalogType": "Hình thức cung ứng",
+        "petSpecies": "Loài thú cưng áp dụng",
+        "price": "Giá cơ bản (VNĐ)",
         "weightRange": "Khoảng cân nặng",
-        "durationMinute": "Thời lượng phút",
-        "bufferTime": "Thời gian đệm"
+        "durationMinute": "Thời lượng thực hiện",
+        "bufferTime": "Thời gian dọn dẹp giữa các ca"
       },
       "media": {
         "hint": "PNG, JPG tối đa 10MB",
@@ -556,14 +583,14 @@
       "save": "Lưu dịch vụ",
       "subtitle": "Tạo gói dịch vụ mới, thiết lập giá theo trọng lượng và bổ sung hình ảnh để triển khai nhanh chóng.",
       "tip": {
-        "text": "Hình ảnh chất lượng cao và mô tả chi tiết giúp khách hàng ra quyết định nhanh hơn và tăng tỷ lệ đặt lịch dịch vụ.",
-        "title": "Mẹo nhỏ"
+        "text": "💡 Mẹo viết mô tả: Liệt kê rõ quy trình từng bước phục vụ để khách hàng cảm thấy an tâm và tin tưởng.\n✨ Mẹo đặt tên: Đặt tên dịch vụ ngắn gọn, rõ ràng kèm loài áp dụng (Ví dụ: Tắm sấy cún nhỏ, Cắt tỉa lông mèo).",
+        "title": "Gợi ý thu hút khách hàng"
       },
       "title": "Thêm dịch vụ mới",
       "dto": {
-        "label": "Catalog DTO",
-        "title": "Sẵn sàng cho payload tạo/cập nhật",
-        "text": "Form này bám các trường catalogName, description, catalogType, petSpecies, price, weightRange, durationMinute, bufferTime và status."
+        "label": "HƯỚNG DẪN CẤU HÌNH",
+        "title": "Lưu ý khi thiết lập dịch vụ",
+        "text": "1. Hình thức dịch vụ: Chọn 'Tại tiệm' nếu khách mang thú cưng đến cửa hàng, chọn 'Tại nhà' nếu cử nhân viên đến tận nơi.\n2. Giá gốc áp dụng cho thú cưng dưới 12kg (nhỏ & vừa).\n3. Phụ thu theo cân nặng chỉ điền khi dịch vụ áp dụng cho thú cưng trên 12kg.\n4. Thời gian đệm là khoảng dọn dẹp, chuẩn bị dụng cụ giữa các ca."
       }
     },
     "categories": {
@@ -674,6 +701,27 @@
       "EXTRA_LARGE": "Từ 18kg đến 25kg",
       "EXTRA_EXTRA_LARGE": "Trên 25kg"
     },
+    "surcharge": {
+      "title": "Phụ thu theo cân nặng",
+      "help": "Để trống hoặc nhập 0 nếu không áp dụng phụ thu. Giá gốc áp dụng cho EXTRA_SMALL và SMALL.",
+      "ranges": {
+        "MEDIUM": "Cỡ vừa (8kg - 12kg)",
+        "LARGE": "Cỡ lớn (12kg – 18kg)",
+        "EXTRA_LARGE": "Cỡ rất lớn (18kg – 25kg)",
+        "EXTRA_EXTRA_LARGE": "Cỡ siêu lớn (trên 25kg)"
+      }
+    },
+    "durationConfig": {
+      "title": "Thời lượng theo cân nặng",
+      "help": "Nhập số phút cộng thêm so với thời lượng gốc. Hệ thống sẽ gửi durationConfig là tổng thời lượng cuối cùng theo từng hạng cân.",
+      "unit": "phút thêm",
+      "ranges": {
+        "MEDIUM": "Cỡ vừa",
+        "LARGE": "Cỡ lớn",
+        "EXTRA_LARGE": "Cỡ rất lớn",
+        "EXTRA_EXTRA_LARGE": "Cỡ siêu lớn"
+      }
+    },
     "searchPlaceholder": "Tìm tên dịch vụ hoặc mã catalog...",
     "catalogTypes": {
       "AT_STORE": "Tại tiệm",
@@ -695,7 +743,7 @@
         "catalogType": "Loại catalog",
         "petSpecies": "Loại áp dụng",
         "weightRange": "Khoảng cân nặng",
-        "price": "Giá tiền",
+        "price": "Giá gốc",
         "durationMinute": "Thời lượng phút",
         "bufferTime": "Thời gian đệm",
         "status": "Trạng thái",
@@ -704,25 +752,29 @@
     },
     "schedule": {
       "close": "Đóng lịch tuần",
-      "title": "Lịch time slot theo tuần",
-      "subtitle": "{{duration}} phút mỗi ca, nghỉ đệm {{buffer}} phút giữa các ca.",
+      "title": "Cấu hình ca làm việc theo tuần",
+      "subtitle": "{{duration}} phút mỗi ca, nghỉ dọn dẹp {{buffer}} phút giữa các ca.",
       "closeButton": "Đóng",
-      "createSlot": "Tạo time slot",
+      "createSlot": "Thêm khung giờ",
       "active": "Khung giờ đang mở",
       "inactive": "Khung giờ đang khóa",
-      "empty": "Chưa có slot"
+      "empty": "Chưa có khung giờ"
     },
     "timeSlot": {
-      "close": "Đóng form time slot",
-      "title": "Tạo time slot",
+      "close": "Đóng form khung giờ",
+      "title": "Thêm khung giờ làm việc",
       "cancel": "Hủy",
-      "save": "Lưu time slot",
+      "save": "Lưu khung giờ",
       "fields": {
-        "catalog": "Catalog",
+        "catalog": "Dịch vụ",
         "dayOfWeek": "Thứ trong tuần",
         "startTime": "Giờ bắt đầu",
+        "maxPets": "Sức chứa thú cưng",
         "isActive": "Mở khung giờ này"
-      }
+      },
+      "maxPetsValue": "{{count}} thú cưng",
+      "maxPetsCompact": "{{count}} chỗ",
+      "edit": ""
     },
     "weekDays": {
       "MONDAY": "Thứ 2",

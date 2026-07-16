@@ -316,6 +316,9 @@
       "unassigned": "Not assigned yet",
       "address": "Address",
       "cancelReason": "Cancel reason",
+      "beforeMedia": "Before-service photos",
+      "afterMedia": "After-service photos",
+      "noMedia": "No photos have been uploaded by staff yet.",
       "paymentTitle": "Payment summary"
     },
     "payment": {
@@ -585,7 +588,6 @@
     "cancel": "Cancel",
     "suggestRouteBtn": "Suggest Route",
     "routeModalTitle": "Suggested Delivery Route",
-    "routeModalSubtitle": "Optimal sequence based on Nearest Neighbor routing.",
     "routeStop": "Stop {{seq}}",
     "distanceFromPrev": "Distance from previous: {{distance}} km",
     "distanceFromStore": "Distance from store: {{distance}} km",

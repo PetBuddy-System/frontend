@@ -1,35 +1,65 @@
 import { useTranslation } from 'react-i18next'
 
-import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
+import { MaterialIcon } from '~/shared/ui'
 
 const METRICS = [
-  { key: 'revenue', icon: 'payments', value: '124.5M đ', trend: 'positive' },
-  { key: 'orders', icon: 'shopping_cart', value: '342', trend: 'positive' },
-  { key: 'services', icon: 'medical_services', value: '45.2M đ', trend: 'negative' },
-  { key: 'averageOrder', icon: 'receipt_long', value: '364K đ', trend: 'positive' }
+  { key: 'revenue', icon: 'payments', value: '0 đ', trend: 'positive' },
+  { key: 'profit', icon: 'account_balance_wallet', value: '0 đ', trend: 'positive' },
+  { key: 'services', icon: 'medical_services', value: '0 đ', trend: 'positive' },
+  { key: 'averageOrder', icon: 'receipt_long', value: '0 đ', trend: 'positive' }
 ] as const
 
 interface AdminMetricsGridProps {
-  ordersValue?: number
-  ordersChangePercent?: number | null
+  totalRevenueValue?: number
+  totalRevenueChangePercent?: number | null
+  profitValue?: number
+  profitChangePercent?: number | null
+  bookingRevenueValue?: number
+  bookingCount?: number
+  averageOrderValue?: number
+  hasBookingStatsError?: boolean
   isLoading?: boolean
+  isBookingStatsLoading?: boolean
 }
 
-export function AdminMetricsGrid({ ordersValue, ordersChangePercent, isLoading }: AdminMetricsGridProps) {
+function formatMoney(value: number): string {
+  const amount = Number(value ?? 0)
+
+  if (Math.abs(amount) >= 1_000_000) {
+    return `${(amount / 1_000_000).toFixed(1).replace('.0', '')}M đ`
+  }
+
+  if (Math.abs(amount) >= 1_000) {
+    return `${Math.round(amount / 1_000)}K đ`
+  }
+
+  return `${new Intl.NumberFormat('vi-VN').format(amount)} đ`
+}
+
+export function AdminMetricsGrid({
+  totalRevenueValue,
+  totalRevenueChangePercent,
+  profitValue,
+  profitChangePercent,
+  bookingRevenueValue,
+  bookingCount,
+  averageOrderValue,
+  hasBookingStatsError,
+  isLoading,
+  isBookingStatsLoading
+}: AdminMetricsGridProps) {
   const { t } = useTranslation('admin')
 
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4'>
       {METRICS.map((metric) => {
-        const isOrders = metric.key === 'orders'
-        
-        if (isOrders && isLoading) {
+        const isStoreDynamic = metric.key === 'revenue' || metric.key === 'profit'
+        const isBookingDynamic = metric.key === 'services' || metric.key === 'averageOrder'
+
+        if ((isStoreDynamic && isLoading) || (isBookingDynamic && isBookingStatsLoading)) {
           return (
-            <article
-              key={metric.key}
-              className='animate-pulse rounded-xl border border-border bg-card p-5 shadow-sm'
-            >
+            <article key={metric.key} className='animate-pulse rounded-xl border border-border bg-card p-5 shadow-sm'>
               <div className='mb-4 flex items-center gap-3'>
                 <div className='h-11 w-11 rounded-full bg-muted' />
                 <div className='h-4 w-20 rounded bg-muted' />
@@ -40,19 +70,47 @@ export function AdminMetricsGrid({ ordersValue, ordersChangePercent, isLoading }
           )
         }
 
-        let displayValue = metric.value
+        let displayValue: string = metric.value
         let isPositive = metric.trend === 'positive'
         let changeText = t(`metrics.${metric.key}.change`)
 
-        if (isOrders && ordersValue !== undefined) {
-          displayValue = ordersValue.toString()
-          if (ordersChangePercent !== undefined && ordersChangePercent !== null) {
-            isPositive = ordersChangePercent >= 0
-            const formattedPercent = ordersChangePercent > 0 ? `+${ordersChangePercent}` : `${ordersChangePercent}`
-            changeText = t('metrics.orders.change_dynamic', { percent: formattedPercent })
+        if (metric.key === 'revenue' && totalRevenueValue !== undefined) {
+          displayValue = formatMoney(totalRevenueValue)
+          if (totalRevenueChangePercent !== undefined && totalRevenueChangePercent !== null) {
+            isPositive = totalRevenueChangePercent >= 0
+            const formattedPercent =
+              totalRevenueChangePercent > 0 ? `+${totalRevenueChangePercent}` : `${totalRevenueChangePercent}`
+            changeText = t('metrics.revenue.change_dynamic', { percent: formattedPercent })
           } else {
             changeText = ''
           }
+        }
+
+        if (metric.key === 'profit' && profitValue !== undefined) {
+          displayValue = formatMoney(profitValue)
+          if (profitChangePercent !== undefined && profitChangePercent !== null) {
+            isPositive = profitChangePercent >= 0
+            const formattedPercent = profitChangePercent > 0 ? `+${profitChangePercent}` : `${profitChangePercent}`
+            changeText = t('metrics.profit.change_dynamic', { percent: formattedPercent })
+          } else {
+            changeText = ''
+          }
+        }
+
+        if (metric.key === 'services') {
+          if (hasBookingStatsError) {
+            displayValue = '--'
+            changeText = t('metrics.services.error')
+            isPositive = false
+          } else if (bookingRevenueValue !== undefined) {
+            displayValue = formatMoney(bookingRevenueValue)
+            changeText = t('metrics.services.change', { count: bookingCount ?? 0 })
+          }
+        }
+
+        if (metric.key === 'averageOrder' && averageOrderValue !== undefined) {
+          displayValue = formatMoney(averageOrderValue)
+          changeText = t('metrics.averageOrder.change')
         }
 
         return (

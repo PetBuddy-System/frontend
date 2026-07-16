@@ -18,7 +18,9 @@ import {
   getCustomerBookingDetail,
   getMyCustomerBookings,
   retryCustomerBookingPayment,
+  type BookingDetailResponse,
   type BookingResponse,
+  type MediaFileResponse,
   type PaymentResponse
 } from '../services'
 
@@ -440,6 +442,13 @@ function StatusBadge({ status }: StatusBadgeProps) {
   )
 }
 
+function getDetailMediaByType(
+  detail: BookingDetailResponse,
+  bookingMediaType: 'BEFORE_SERVICE' | 'AFTER_SERVICE'
+): MediaFileResponse[] {
+  return detail.mediaFiles?.filter((media) => media.bookingMediaType === bookingMediaType) ?? []
+}
+
 interface BookingDetailModalProps {
   booking: BookingResponse
   isLoading: boolean
@@ -487,16 +496,22 @@ function BookingDetailModal({ booking, isLoading, formatCurrency, onClose }: Boo
               </div>
               <div className='divide-y divide-border'>
                 {booking.bookingDetails.map((detail) => (
-                  <div key={detail.bookingDetailId} className='grid gap-3 p-4 sm:grid-cols-[1fr_auto]'>
-                    <div>
-                      <p className='font-semibold text-foreground'>{detail.catalogName}</p>
-                      <p className='mt-1 text-sm text-muted-foreground'>
-                        {detail.petName} • {formatTime(detail.timeSlot)} • {detail.durationMinute} min
+                  <div key={detail.bookingDetailId} className='grid gap-4 p-4'>
+                    <div className='grid gap-3 sm:grid-cols-[1fr_auto]'>
+                      <div>
+                        <p className='font-semibold text-foreground'>{detail.catalogName}</p>
+                        <p className='mt-1 text-sm text-muted-foreground'>
+                          {detail.petName} • {formatTime(detail.timeSlot)} • {detail.durationMinute} min
+                        </p>
+                      </div>
+                      <p className='font-bold text-primary'>
+                        {formatCurrency(detail.totalPrice ?? detail.unitPrice ?? 0)}
                       </p>
                     </div>
-                    <p className='font-bold text-primary'>
-                      {formatCurrency(detail.totalPrice ?? detail.unitPrice ?? 0)}
-                    </p>
+                    <BookingDetailMediaGrid
+                      beforeMedia={getDetailMediaByType(detail, 'BEFORE_SERVICE')}
+                      afterMedia={getDetailMediaByType(detail, 'AFTER_SERVICE')}
+                    />
                   </div>
                 ))}
               </div>
@@ -517,6 +532,69 @@ function BookingDetailModal({ booking, isLoading, formatCurrency, onClose }: Boo
         )}
       </div>
     </ModalShell>
+  )
+}
+
+interface BookingDetailMediaGridProps {
+  beforeMedia: MediaFileResponse[]
+  afterMedia: MediaFileResponse[]
+}
+
+function BookingDetailMediaGrid({ beforeMedia, afterMedia }: BookingDetailMediaGridProps) {
+  const { t } = useTranslation('profile')
+
+  return (
+    <div className='grid gap-3 md:grid-cols-2'>
+      <BookingMediaStrip
+        title={t('myBookings.detail.beforeMedia')}
+        emptyText={t('myBookings.detail.noMedia')}
+        mediaFiles={beforeMedia}
+      />
+      <BookingMediaStrip
+        title={t('myBookings.detail.afterMedia')}
+        emptyText={t('myBookings.detail.noMedia')}
+        mediaFiles={afterMedia}
+      />
+    </div>
+  )
+}
+
+interface BookingMediaStripProps {
+  title: string
+  emptyText: string
+  mediaFiles: MediaFileResponse[]
+}
+
+function BookingMediaStrip({ title, emptyText, mediaFiles }: BookingMediaStripProps) {
+  const imageFiles = mediaFiles.filter((media) => !media.fileType || media.fileType.toUpperCase() === 'IMAGE')
+
+  return (
+    <section className='rounded-2xl border border-border bg-muted/30 p-3'>
+      <p className='text-sm font-bold text-foreground'>{title}</p>
+      {imageFiles.length > 0 ? (
+        <div className='mt-3 grid grid-cols-3 gap-2'>
+          {imageFiles.map((media) => (
+            <a
+              key={media.mediaFileId}
+              href={media.fileUrl}
+              target='_blank'
+              rel='noreferrer'
+              className='group block overflow-hidden rounded-xl border border-border bg-background'
+            >
+              <img
+                src={media.fileUrl}
+                alt={media.fileKey || title}
+                className='aspect-square w-full object-cover transition-transform group-hover:scale-105'
+              />
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p className='mt-3 rounded-xl border border-dashed border-border bg-background p-3 text-sm text-muted-foreground'>
+          {emptyText}
+        </p>
+      )}
+    </section>
   )
 }
 

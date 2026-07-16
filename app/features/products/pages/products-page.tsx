@@ -117,7 +117,7 @@ export function ProductsPage() {
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
-      <SiteHeader />
+      <SiteHeader activeItem='products' />
       <main className='flex-1'>
         <ProductsHero />
 

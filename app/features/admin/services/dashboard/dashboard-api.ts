@@ -20,7 +20,7 @@ export interface CompositionItem {
 
 export interface DashboardResponse {
   totalRevenue: StatCard
-  orderCount: StatCard
+  profit: StatCard
   avgOrderValue: StatCard
   revenueTrend: TrendPoint[]
   revenueComposition: CompositionItem[]

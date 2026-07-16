@@ -38,9 +38,9 @@ export function ManagerPromotionDeleteDialog({
           </div>
           <h2 className='text-lg font-bold text-foreground font-display'>Xóa chương trình khuyến mãi?</h2>
           <p className='text-sm text-muted-foreground'>
-            Chương trình <span className='font-semibold text-foreground'>{promotionName}</span> sẽ bị
-            chuyển sang trạng thái <span className='font-semibold text-destructive'>DELETED</span>.
-            Bạn có thể khôi phục bằng cách chỉnh sửa trạng thái sau.
+            Chương trình <span className='font-semibold text-foreground'>{promotionName}</span> sẽ bị chuyển sang trạng
+            thái <span className='font-semibold text-destructive'>Đã xóa</span>. Bạn có thể khôi phục bằng cách chỉnh
+            sửa trạng thái sau.
           </p>
         </div>
 

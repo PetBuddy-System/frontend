@@ -48,9 +48,9 @@ export const dashboardHandlers = [
         value: 124500000,
         changePercent: 12.5
       },
-      orderCount: {
-        value: orderCountValue,
-        changePercent: orderCountPercent
+      profit: {
+        value: 38200000,
+        changePercent: periodType === 'WEEK' ? 6.4 : periodType === 'MONTH' ? -3.5 : 9.1
       },
       avgOrderValue: {
         value: 364000,

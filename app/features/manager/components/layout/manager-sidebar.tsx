@@ -10,6 +10,8 @@ import { MaterialIcon } from '~/shared/ui'
 const MANAGER_NAV_ITEMS = [
   { icon: 'dashboard', key: 'dashboard', href: '/manager/dashboard' },
   { icon: 'shopping_bag', key: 'products', href: '/manager/products' },
+  { icon: 'medical_services', key: 'services', href: '/manager/services' },
+  { icon: 'event_note', key: 'serviceBookings', href: '/manager/bookings' },
   { icon: 'groups', key: 'staff', href: '/manager/staff-schedule' },
   { icon: 'assignment_turned_in', key: 'returnRequests', href: '/manager/return-requests' },
   { icon: 'inventory_2', key: 'restock', href: '/manager/restock' },

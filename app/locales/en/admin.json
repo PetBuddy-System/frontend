@@ -105,6 +105,7 @@
     "title": "Blog Management"
   },
   "charts": {
+    "bookingStatsError": "Unable to load booking statistics.",
     "breakdown": {
       "items": {
         "grooming": "Spa & Grooming",
@@ -126,6 +127,28 @@
       },
       "title": "Revenue Trend",
       "unit": "Million VND"
+    },
+    "bookingRevenueTrend": {
+      "days": {
+        "fri": "Fri",
+        "mon": "Mon",
+        "sat": "Sat",
+        "sun": "Sun",
+        "thu": "Thu",
+        "tue": "Tue",
+        "wed": "Wed"
+      },
+      "empty": "No booking revenue was found for this date range.",
+      "error": "Unable to load the booking revenue chart. Please try again later.",
+      "subtitle": "Spa and grooming service revenue by day in the selected range.",
+      "title": "Booking Revenue Trend"
+    },
+    "bookingStructure": {
+      "centerLabel": "Total",
+      "empty": "No booking revenue structure data is available.",
+      "error": "Unable to load booking revenue structure. Please try again later.",
+      "subtitle": "Revenue share by booking service.",
+      "title": "Booking Revenue Structure"
     }
   },
   "dashboard": {
@@ -307,17 +330,18 @@
       "change": "+8.4% vs previous period",
       "label": "Average Order"
     },
-    "orders": {
-      "change": "+5.2% vs previous period",
+    "profit": {
       "change_dynamic": "{{percent}}% vs previous period",
-      "label": "Orders"
+      "label": "Profit"
     },
     "revenue": {
       "change": "+12.5% vs previous period",
+      "change_dynamic": "{{percent}}% vs previous period",
       "label": "Total Revenue"
     },
     "services": {
-      "change": "-2.1% vs previous period",
+      "change": "{{count}} bookings in range",
+      "error": "Data unavailable",
       "label": "Services"
     }
   },
@@ -416,7 +440,8 @@
           "pet": "Bo (Poodle)"
         }
       },
-      "remaining": "Remaining {{value}}"
+      "remaining": "Remaining {{value}}",
+      "estimatedEndAt": "Ends around {{value}}"
     },
     "title": "Service Booking Management",
     "tabs": {
@@ -471,6 +496,7 @@
     },
     "bookingTypes": {
       "IN_STORE": "In store",
+      "AT_STORE": "At store",
       "AT_HOME": "At home"
     },
     "detail": {
@@ -484,6 +510,7 @@
         "service": "Service",
         "pet": "Pet",
         "schedule": "Schedule",
+        "estimatedEndAt": "Estimated end",
         "bookingType": "Booking type",
         "totalAmount": "Total amount",
         "depositAmount": "Deposit",
@@ -526,7 +553,7 @@
         "status": "Active status",
         "catalogType": "Catalog type",
         "petSpecies": "Pet species",
-        "price": "Price",
+        "price": "Base price",
         "weightRange": "Weight range",
         "durationMinute": "Duration minute",
         "bufferTime": "Buffer time"
@@ -556,14 +583,14 @@
       "save": "Save service",
       "subtitle": "Create a new pet-care package, set weight-based pricing, and add visuals for faster rollout.",
       "tip": {
-        "text": "High-quality imagery and detailed descriptions help customers decide faster and improve service booking conversion.",
-        "title": "Quick tip"
+        "text": "💡 Description tip: List the step-by-step process of the service so pet owners feel safe and trustful.\n✨ Naming tip: Keep the service name clear and simple, including the target pet (e.g., Small dog bath, Cat grooming).",
+        "title": "Tips for attracting customers"
       },
       "title": "Add new service",
       "dto": {
-        "label": "Catalog DTO",
-        "title": "Ready for create/update payload",
-        "text": "This form follows catalogName, description, catalogType, petSpecies, price, weightRange, durationMinute, bufferTime, and status."
+        "label": "CONFIGURATION GUIDE",
+        "title": "Notes on setting up service",
+        "text": "1. Service Type: Choose 'At store' if customers bring pets in, choose 'At home' if a staff member goes to their place.\n2. Base price applies to EXTRA_SMALL, SMALL, and MEDIUM pets.\n3. Add surcharges only for LARGE, EXTRA_LARGE, and EXTRA_EXTRA_LARGE pets.\n4. Buffer time is the cleaning/prep slot between appointments."
       }
     },
     "categories": {
@@ -674,6 +701,27 @@
       "EXTRA_LARGE": "18kg to 25kg",
       "EXTRA_EXTRA_LARGE": "Over 25kg"
     },
+    "surcharge": {
+      "title": "Weight surcharges",
+      "help": "Leave a surcharge empty or 0 to omit it from surchargeConfig. Base price applies to EXTRA_SMALL and SMALL pets.",
+      "ranges": {
+        "MEDIUM": "MEDIUM (8kg - 12kg)",
+        "LARGE": "LARGE (12kg - 18kg)",
+        "EXTRA_LARGE": "EXTRA_LARGE (18kg - 25kg)",
+        "EXTRA_EXTRA_LARGE": "EXTRA_EXTRA_LARGE (Above 25kg)"
+      }
+    },
+    "durationConfig": {
+      "title": "Duration by weight",
+      "help": "Enter extra minutes on top of the base duration. The system sends durationConfig as the final duration minutes for each weight range.",
+      "unit": "extra min",
+      "ranges": {
+        "MEDIUM": "Medium",
+        "LARGE": "Large",
+        "EXTRA_LARGE": "Extra large",
+        "EXTRA_EXTRA_LARGE": "Extra extra large"
+      }
+    },
     "searchPlaceholder": "Search service name or catalog ID...",
     "catalogTypes": {
       "AT_STORE": "At store",
@@ -695,7 +743,7 @@
         "catalogType": "Catalog type",
         "petSpecies": "Pet species",
         "weightRange": "Weight range",
-        "price": "Price",
+        "price": "Base price",
         "durationMinute": "Duration minute",
         "bufferTime": "Buffer time",
         "status": "Status",
@@ -721,8 +769,12 @@
         "catalog": "Catalog",
         "dayOfWeek": "Day of week",
         "startTime": "Start time",
+        "maxPets": "Pet capacity",
         "isActive": "Open this slot"
-      }
+      },
+      "maxPetsValue": "{{count}} pets",
+      "maxPetsCompact": "{{count}} slot",
+      "edit": "Edit"
     },
     "weekDays": {
       "MONDAY": "Monday",

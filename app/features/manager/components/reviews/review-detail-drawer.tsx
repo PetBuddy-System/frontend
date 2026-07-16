@@ -1,3 +1,5 @@
+// app/features/manager/components/reviews/review-detail-drawer.tsx
+
 import { useState, useEffect } from 'react'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
@@ -45,13 +47,14 @@ interface DrawerContentProps {
 }
 
 function DrawerContent({ detail }: DrawerContentProps) {
+  const isOrderReview = !detail.productId
+
   return (
     <div className='space-y-6 p-6'>
       {/* Customer Card */}
       <div className='rounded-xl border border-border/60 bg-background p-4'>
         <SectionLabel>Thông tin khách hàng</SectionLabel>
         <div className='flex items-start gap-4'>
-          {/* Avatar */}
           <div className='relative shrink-0'>
             {detail.userAvatar ? (
               <img
@@ -65,16 +68,12 @@ function DrawerContent({ detail }: DrawerContentProps) {
               </div>
             )}
             {detail.anonymous && (
-              <span
-                className='absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[9px] font-black text-accent-foreground ring-2 ring-card'
-                title='Người dùng đăng ở chế độ ẩn danh'
-              >
+              <span className='absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[9px] font-black text-accent-foreground ring-2 ring-card'>
                 ?
               </span>
             )}
           </div>
 
-          {/* User Info */}
           <div className='min-w-0'>
             <div className='flex flex-wrap items-center gap-2'>
               <span className='font-bold text-foreground'>{detail.userFullName}</span>
@@ -92,16 +91,43 @@ function DrawerContent({ detail }: DrawerContentProps) {
         </div>
       </div>
 
-      {/* Product Card */}
+      {/* Product / Order Card - SỬA: Hiển thị Order nếu là Order Review */}
       <div className='rounded-xl border border-border/60 bg-background p-4'>
-        <SectionLabel>Sản phẩm được đánh giá</SectionLabel>
-        <p className='font-bold text-foreground'>{detail.productName}</p>
-        <div className='mt-1.5 flex items-center gap-2'>
-          <span className='rounded bg-muted px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground'>
-            {detail.productCode}
-          </span>
-          <span className='font-mono text-[11px] text-muted-foreground/60'>{detail.productId}</span>
-        </div>
+        <SectionLabel>
+          {isOrderReview ? 'Đơn hàng được đánh giá' : 'Sản phẩm được đánh giá'}
+        </SectionLabel>
+
+        {isOrderReview ? (
+          // Order Review
+          <div>
+            <p className='font-bold text-foreground'>Đánh giá đơn hàng</p>
+            {detail.orderCode && (
+              <div className='mt-1.5 flex items-center gap-2'>
+                <span className='rounded bg-primary/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-primary'>
+                  #{detail.orderCode}
+                </span>
+                {detail.orderId && (
+                  <span className='font-mono text-[11px] text-muted-foreground/60'>
+                    ID: {detail.orderId}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        ) : (
+          // Product Review
+          <div>
+            <p className='font-bold text-foreground'>{detail.productName}</p>
+            <div className='mt-1.5 flex items-center gap-2'>
+              <span className='rounded bg-muted px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground'>
+                {detail.productCode}
+              </span>
+              <span className='font-mono text-[11px] text-muted-foreground/60'>
+                {detail.productId}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Review Content Card */}
@@ -190,11 +216,11 @@ export function ReviewDetailDrawer({
   }, [reviewId])
 
   const isOpen = !!reviewId
+  const isOrderReview = !detail?.productId
 
   const handleToggle = async () => {
     if (!detail) return
     await onToggleStatus(detail)
-    // Refresh detail after toggle
     const res = await fetchManagementReviewByIdApi(detail.reviewId)
     if (res.success) setDetail(res.data)
   }
@@ -251,27 +277,36 @@ export function ReviewDetailDrawer({
           )}
         </div>
 
-        {/* Footer Actions */}
+        {/* Footer Actions - CHỈ HIỂN THỊ NÚT ẨN CHO PRODUCT REVIEW */}
         {detail && !isLoading && (
           <div className='flex items-center gap-3 border-t border-border bg-muted/20 px-6 py-4'>
-            <button
-              onClick={handleToggle}
-              className={cn(
-                'flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all active:scale-95',
-                detail.status === 'HIDDEN'
-                  ? 'bg-success/15 text-success hover:bg-success/25'
-                  : 'bg-muted text-muted-foreground hover:bg-muted-foreground/10 hover:text-foreground'
-              )}
-            >
-              <MaterialIcon
-                name={detail.status === 'HIDDEN' ? 'visibility' : 'visibility_off'}
-                className='text-base'
-              />
-              {detail.status === 'HIDDEN' ? 'Hiện review' : 'Ẩn review'}
-            </button>
+            {/* Nút Ẩn/Hiện - CHỈ CHO PRODUCT REVIEW */}
+            {!isOrderReview && (
+              <button
+                onClick={handleToggle}
+                className={cn(
+                  'flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all active:scale-95',
+                  detail.status === 'HIDDEN'
+                    ? 'bg-success/15 text-success hover:bg-success/25'
+                    : 'bg-muted text-muted-foreground hover:bg-muted-foreground/10 hover:text-foreground'
+                )}
+              >
+                <MaterialIcon
+                  name={detail.status === 'HIDDEN' ? 'visibility' : 'visibility_off'}
+                  className='text-base'
+                />
+                {detail.status === 'HIDDEN' ? 'Hiện review' : 'Ẩn review'}
+              </button>
+            )}
+
+            {/* Nút Xóa - luôn hiển thị */}
             <button
               onClick={handleDelete}
-              className='flex items-center gap-2 rounded-xl bg-destructive/10 px-4 py-2.5 text-sm font-bold text-destructive transition-all hover:bg-destructive/20 active:scale-95'
+              className={cn(
+                'flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all active:scale-95',
+                !isOrderReview ? 'flex-1' : 'w-full justify-center',
+                'bg-destructive/10 text-destructive hover:bg-destructive/20'
+              )}
             >
               <MaterialIcon name='delete' className='text-base' />
               Xóa vĩnh viễn

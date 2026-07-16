@@ -18,5 +18,6 @@ export const STORAGE_KEYS = {
   sidebarCollapsed: 'petbuddy-sidebar-collapsed',
   accessToken: 'petbuddy-access-token',
   refreshToken: 'petbuddy-refresh-token',
-  user: 'petbuddy-user'
+  user: 'petbuddy-user',
+  bookingDraft: 'petbuddy-booking-draft'
 } as const

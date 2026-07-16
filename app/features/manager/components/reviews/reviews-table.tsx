@@ -1,3 +1,5 @@
+// app/features/manager/components/reviews/reviews-table.tsx
+
 import { MaterialIcon, Button } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { StarRating } from './star-rating'
@@ -51,9 +53,9 @@ interface ReviewRowProps {
   onToggleStatus: (review: ManagerReviewItem) => void
   onDelete: (id: string) => void
 }
-
 function ReviewRow({ review, onViewDetail, onToggleStatus, onDelete }: ReviewRowProps) {
   const isHidden = review.status === 'HIDDEN'
+  const isOrderReview = !review.productId
 
   return (
     <tr
@@ -62,20 +64,35 @@ function ReviewRow({ review, onViewDetail, onToggleStatus, onDelete }: ReviewRow
         isHidden && 'bg-muted/30 opacity-60 grayscale-[10%]'
       )}
     >
-      {/* Product */}
+      {/* Sản phẩm / Đơn hàng */}
       <td className='px-6 py-4 max-w-[200px]'>
-        <p
-          className='font-bold text-foreground font-display leading-tight truncate'
-          title={review.productName}
-        >
-          {review.productName}
-        </p>
-        <span className='mt-1 inline-block rounded bg-muted px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider'>
-          {review.productCode}
-        </span>
+        {isOrderReview ? (
+          <div>
+            <p className='font-bold text-foreground font-display leading-tight'>
+              <span className='text-primary'>Đánh giá đơn hàng</span>
+            </p>
+            {review.orderCode && (
+              <span className='mt-1 inline-block rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary uppercase tracking-wider'>
+                #{review.orderCode}
+              </span>
+            )}
+          </div>
+        ) : (
+          <div>
+            <p
+              className='font-bold text-foreground font-display leading-tight truncate'
+              title={review.productName || ''}
+            >
+              {review.productName}
+            </p>
+            <span className='mt-1 inline-block rounded bg-muted px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider'>
+              {review.productCode}
+            </span>
+          </div>
+        )}
       </td>
 
-      {/* Customer */}
+      {/* Khách hàng */}
       <td className='px-6 py-4'>
         <div className='flex items-center gap-3'>
           <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted font-bold text-primary font-display border border-border/30'>
@@ -99,7 +116,7 @@ function ReviewRow({ review, onViewDetail, onToggleStatus, onDelete }: ReviewRow
         </div>
       </td>
 
-      {/* Rating & Content */}
+      {/* Đánh giá */}
       <td className='px-6 py-4 max-w-[320px]'>
         <div className='flex items-center gap-2'>
           <StarRating rating={review.rating} size='sm' />
@@ -112,7 +129,7 @@ function ReviewRow({ review, onViewDetail, onToggleStatus, onDelete }: ReviewRow
         </p>
       </td>
 
-      {/* Status Badge */}
+      {/* Trạng thái */}
       <td className='px-6 py-4'>
         <span
           className={cn(
@@ -130,9 +147,10 @@ function ReviewRow({ review, onViewDetail, onToggleStatus, onDelete }: ReviewRow
         </span>
       </td>
 
-      {/* Actions */}
+      {/* Thao tác */}
       <td className='px-6 py-4 text-right'>
         <div className='flex items-center justify-end gap-2'>
+          {/* Xem chi tiết - luôn hiển thị */}
           <button
             onClick={() => onViewDetail(review.reviewId)}
             className='flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all hover:bg-primary/20 active:scale-95'
@@ -141,20 +159,24 @@ function ReviewRow({ review, onViewDetail, onToggleStatus, onDelete }: ReviewRow
             <MaterialIcon name='open_in_new' className='text-base' />
           </button>
 
-          <button
-            onClick={() => onToggleStatus(review)}
-            className={cn(
-              'flex h-8 items-center gap-1.5 rounded-lg px-3 text-xs font-bold transition-all active:scale-95',
-              isHidden
-                ? 'bg-success/10 text-success hover:bg-success/20'
-                : 'bg-muted text-muted-foreground hover:bg-muted-foreground/10 hover:text-foreground'
-            )}
-            title={isHidden ? 'Hiển thị đánh giá' : 'Ẩn đánh giá'}
-          >
-            <MaterialIcon name={isHidden ? 'visibility' : 'visibility_off'} className='text-sm' />
-            {isHidden ? 'Hiện' : 'Ẩn'}
-          </button>
+          {/* Ẩn/Hiện - CHỈ CHO PRODUCT REVIEW */}
+          {!isOrderReview && (
+            <button
+              onClick={() => onToggleStatus(review)}
+              className={cn(
+                'flex h-8 items-center gap-1.5 rounded-lg px-3 text-xs font-bold transition-all active:scale-95',
+                isHidden
+                  ? 'bg-success/10 text-success hover:bg-success/20'
+                  : 'bg-muted text-muted-foreground hover:bg-muted-foreground/10 hover:text-foreground'
+              )}
+              title={isHidden ? 'Hiển thị đánh giá' : 'Ẩn đánh giá'}
+            >
+              <MaterialIcon name={isHidden ? 'visibility' : 'visibility_off'} className='text-sm' />
+              {isHidden ? 'Hiện' : 'Ẩn'}
+            </button>
+          )}
 
+          {/* Xóa - luôn hiển thị */}
           <button
             onClick={() => onDelete(review.reviewId)}
             className='flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10 text-destructive transition-all hover:bg-destructive/20 active:scale-95'
@@ -191,7 +213,7 @@ export function ReviewsTable({
             <table className='w-full border-collapse text-left text-sm'>
               <thead>
                 <tr className='border-b border-border bg-muted/40 font-semibold text-muted-foreground'>
-                  <th className='px-6 py-4'>Sản phẩm</th>
+                  <th className='px-6 py-4'>Sản phẩm / Đơn hàng</th>
                   <th className='px-6 py-4'>Khách hàng</th>
                   <th className='px-6 py-4'>Đánh giá</th>
                   <th className='px-6 py-4'>Trạng thái</th>

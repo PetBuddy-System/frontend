@@ -7,6 +7,7 @@ import { STORAGE_KEYS } from '~/shared/config/site'
 import { getUserByIdApi } from '~/features/profile/services/user'
 import { getUserIdFromAccessToken } from '~/shared/lib/jwt'
 import { removeStorage, writeStorage } from '~/shared/lib/storage'
+import { getDashboardPathByRole } from '~/features/auth/services/auth'
 
 /**
  * OAuthCallbackPage — xử lý redirect từ Google OAuth.
@@ -73,7 +74,8 @@ export function OAuthCallbackPage() {
         }
         writeStorage(STORAGE_KEYS.user, JSON.stringify(userProfile))
         setSession({ accessToken, user: userProfile })
-        void navigate('/', { replace: true })
+        const redirectPath = getDashboardPathByRole(userProfile.role)
+        void navigate(redirectPath, { replace: true })
       })
       .catch(() => {
         // Fetch user fail (network, 401, ...) → clear state, vô hiệu token cũ

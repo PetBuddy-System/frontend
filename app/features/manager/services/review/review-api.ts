@@ -1,3 +1,5 @@
+// app/features/manager/services/review/review-api.ts
+
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type {
@@ -9,6 +11,7 @@ export async function fetchManagementReviewsApi(params: {
   keyword?: string
   rating?: number
   status?: string
+  reviewType?: 'PRODUCT' | 'ORDER'  // ← THÊM
   page?: number
   size?: number
   sortBy?: string
@@ -21,6 +24,7 @@ export async function fetchManagementReviewsApi(params: {
       keyword: params.keyword || undefined,
       rating: params.rating !== undefined ? params.rating : undefined,
       status: params.status || undefined,
+      reviewType: params.reviewType || undefined,  // ← THÊM
       page: params.page ?? 0,
       size: params.size ?? 10,
       sortBy: params.sortBy ?? 'createdAt',
