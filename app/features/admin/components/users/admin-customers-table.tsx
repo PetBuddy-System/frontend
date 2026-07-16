@@ -9,7 +9,7 @@ import {
   getAdminUserAvatarUrl,
   getUserInitials
 } from '../../lib/admin-users-format'
-import type { AdminUserResponse, PageUserResponse } from '../../services/users'
+import type { AdminUserResponse } from '../../services/users'
 
 const STATUS_CLASS_BY_STATUS: Record<string, string> = {
   ACTIVE: 'bg-success/10 text-success border-success/30',
@@ -19,52 +19,52 @@ const STATUS_CLASS_BY_STATUS: Record<string, string> = {
   DELETED: 'bg-destructive text-destructive-foreground border-destructive'
 }
 
-export interface AdminUsersTableProps {
+export interface AdminCustomersTableProps {
+  currentPage: number
   isLoading: boolean
-  pageData: PageUserResponse | null
-  users: AdminUserResponse[]
   onEdit: (user: AdminUserResponse) => void
   onPageChange: (page: number) => void
   onStatusChange: (user: AdminUserResponse) => void
   onView: (user: AdminUserResponse) => void
+  pageSize: number
+  totalElements: number
+  users: AdminUserResponse[]
 }
 
-export function AdminUsersTable({
+export function AdminCustomersTable({
+  currentPage,
   isLoading,
-  pageData,
-  users,
   onEdit,
   onPageChange,
   onStatusChange,
-  onView
-}: AdminUsersTableProps) {
+  onView,
+  pageSize,
+  totalElements,
+  users
+}: AdminCustomersTableProps) {
   const { t } = useTranslation('admin')
-  const currentPage = pageData?.number ?? 0
-  const totalPages = pageData?.totalPages ?? 0
-  const totalElements = pageData?.totalElements ?? 0
-  const from = totalElements === 0 ? 0 : currentPage * (pageData?.size ?? 10) + 1
+  const totalPages = Math.ceil(totalElements / pageSize)
+  const from = totalElements === 0 ? 0 : currentPage * pageSize + 1
   const to = Math.min(from + users.length - 1, totalElements)
 
   return (
     <section className='overflow-hidden rounded-xl border border-border bg-card shadow-sm'>
       <div className='overflow-x-auto'>
-        <table className='w-full min-w-[1040px] border-collapse text-left'>
+        <table className='w-full min-w-[920px] border-collapse text-left'>
           <thead>
             <tr className='border-b border-border bg-muted text-sm font-semibold text-muted-foreground'>
-              <th className='p-4'>{t('users.table.columns.employee')}</th>
-              <th className='p-4'>{t('users.table.columns.role')}</th>
-              <th className='p-4'>{t('users.table.columns.staffTask')}</th>
-              <th className='p-4'>{t('users.table.columns.status')}</th>
-              <th className='p-4'>{t('users.table.columns.dateOfBirth')}</th>
-              <th className='p-4'>{t('users.table.columns.createdAt')}</th>
-              <th className='p-4 text-right'>{t('users.table.columns.actions')}</th>
+              <th className='p-4'>{t('customers.table.columns.user')}</th>
+              <th className='p-4'>{t('customers.table.columns.status')}</th>
+              <th className='p-4'>{t('customers.table.columns.dateOfBirth')}</th>
+              <th className='p-4'>{t('customers.table.columns.createdAt')}</th>
+              <th className='p-4 text-right'>{t('customers.table.columns.actions')}</th>
             </tr>
           </thead>
           <tbody className='divide-y divide-border'>
             {isLoading ? (
               Array.from({ length: 5 }).map((_, index) => (
                 <tr key={index}>
-                  <td colSpan={7} className='p-4'>
+                  <td colSpan={5} className='p-4'>
                     <div className='h-12 animate-pulse rounded-lg bg-muted' />
                   </td>
                 </tr>
@@ -80,7 +80,7 @@ export function AdminUsersTable({
                         {avatarUrl ? (
                           <img
                             src={avatarUrl}
-                            alt={t('users.table.avatarAlt')}
+                            alt={t('customers.table.avatarAlt')}
                             className='h-10 w-10 shrink-0 rounded-full object-cover'
                           />
                         ) : (
@@ -93,10 +93,6 @@ export function AdminUsersTable({
                           <p className='truncate text-xs text-muted-foreground'>{user.email}</p>
                         </div>
                       </div>
-                    </td>
-                    <td className='p-4 font-semibold text-card-foreground'>{t(`users.roles.${user.role}`)}</td>
-                    <td className='p-4 text-muted-foreground'>
-                      {user.staffTask ? t(`users.staffTasks.${user.staffTask}`) : '-'}
                     </td>
                     <td className='p-4'>
                       <span
@@ -114,7 +110,7 @@ export function AdminUsersTable({
                       <div className='flex justify-end gap-1'>
                         <button
                           type='button'
-                          aria-label={t('users.actions.view')}
+                          aria-label={t('customers.actions.view')}
                           onClick={() => onView(user)}
                           className='flex h-9 w-9 items-center justify-center rounded-full text-primary transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring'
                         >
@@ -122,7 +118,7 @@ export function AdminUsersTable({
                         </button>
                         <button
                           type='button'
-                          aria-label={t('users.actions.edit')}
+                          aria-label={t('customers.actions.edit')}
                           onClick={() => onEdit(user)}
                           className='flex h-9 w-9 items-center justify-center rounded-full text-primary transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring'
                         >
@@ -130,7 +126,7 @@ export function AdminUsersTable({
                         </button>
                         <button
                           type='button'
-                          aria-label={t('users.actions.changeStatus')}
+                          aria-label={t('customers.actions.changeStatus')}
                           onClick={() => onStatusChange(user)}
                           className='flex h-9 w-9 items-center justify-center rounded-full text-warning transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring'
                         >
@@ -143,8 +139,8 @@ export function AdminUsersTable({
               })
             ) : (
               <tr>
-                <td colSpan={7} className='p-10 text-center text-sm text-muted-foreground'>
-                  {t('users.table.empty')}
+                <td colSpan={5} className='p-10 text-center text-sm text-muted-foreground'>
+                  {t('customers.table.empty')}
                 </td>
               </tr>
             )}
@@ -154,12 +150,12 @@ export function AdminUsersTable({
 
       <div className='flex flex-col gap-4 border-t border-border bg-muted px-4 py-3 sm:flex-row sm:items-center sm:justify-between'>
         <p className='text-sm text-muted-foreground'>
-          {t('users.pagination.showing', { from, to, total: totalElements })}
+          {t('customers.pagination.showing', { from, to, total: totalElements })}
         </p>
-        <nav aria-label={t('users.pagination.label')} className='flex items-center gap-1'>
+        <nav aria-label={t('customers.pagination.label')} className='flex items-center gap-1'>
           <button
             type='button'
-            disabled={!pageData || pageData.first}
+            disabled={currentPage <= 0}
             onClick={() => onPageChange(Math.max(currentPage - 1, 0))}
             className='flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:text-primary disabled:cursor-not-allowed disabled:opacity-50'
           >
@@ -170,7 +166,7 @@ export function AdminUsersTable({
           </span>
           <button
             type='button'
-            disabled={!pageData || pageData.last}
+            disabled={currentPage + 1 >= totalPages}
             onClick={() => onPageChange(currentPage + 1)}
             className='flex h-9 w-9 items-center justify-center rounded-md border border-border bg-card text-muted-foreground hover:text-primary disabled:cursor-not-allowed disabled:opacity-50'
           >
