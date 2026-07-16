@@ -367,6 +367,8 @@ export interface ManagerReviewItem {
   productId: string
   productCode: string
   productName: string
+  orderId: number | null
+  orderCode: string | null
   userId: string
   userEmail: string
   userFullName: string
