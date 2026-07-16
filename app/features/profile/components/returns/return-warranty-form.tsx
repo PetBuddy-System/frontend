@@ -1,15 +1,15 @@
 // app/features/profile/components/returns/return-warranty-form.tsx
-import { useState, type ChangeEvent, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
 import { ReturnWarrantySuccess } from './return-warranty-success'
-import { ReturnWarrantyStepOrder, type ReturnOrder } from './return-warranty-step-order'
+import { ReturnOrderProducts } from './return-order-products'
 import { ReturnWarrantyStepType } from './return-warranty-step-type'
 import { ReturnWarrantyStepReason } from './return-warranty-step-reason'
 import { ReturnWarrantyStepPhotos } from './return-warranty-step-photos'
 import {
-  fetchMyOrdersApi,
+  fetchOrderDetailApi,
   calculateRefundApi,
   createReturnRequestApi,
   uploadReturnMediaApi,
@@ -24,6 +24,7 @@ import type {
 } from '~/shared/lib/returns'
 import type { OrderResponse } from '~/shared/lib/order'
 
+// Format helpers
 function formatPrice(value: number) {
   if (value == null || isNaN(Number(value))) return '0đ'
   return `${new Intl.NumberFormat('vi-VN').format(Number(value))}đ`
@@ -40,18 +41,19 @@ function formatDate(dateString: string) {
 }
 
 export interface ReturnWarrantyFormProps {
+  orderId: number // Bắt buộc nhận orderId từ Order Detail
   onSuccess?: () => void
+  onCancel?: () => void
 }
 
-export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
+export function ReturnWarrantyForm({ orderId, onSuccess, onCancel }: ReturnWarrantyFormProps) {
   const { t } = useTranslation('profile')
 
-  // Orders list state
-  const [orders, setOrders] = useState<OrderResponse[]>([])
-  const [isOrdersLoading, setIsOrdersLoading] = useState(true)
+  // Order detail state
+  const [order, setOrder] = useState<OrderResponse | null>(null)
+  const [isOrderLoading, setIsOrderLoading] = useState(true)
 
   // Form states
-  const [selectedOrderId, setSelectedOrderId] = useState<string>('')
   const [selectedProducts, setSelectedProducts] = useState<Record<string, boolean>>({})
   const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({})
   const [requestType, setRequestType] = useState<ReturnType>('RETURN')
@@ -76,64 +78,77 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
 
-  // State lưu payment method
-  const [selectedOrderPaymentMethod, setSelectedOrderPaymentMethod] = useState<string>('')
+  // Payment method state
+  const [orderPaymentMethod, setOrderPaymentMethod] = useState<string>('')
   const [isLoadingPayment, setIsLoadingPayment] = useState(false)
 
-  // Fetch client orders on mount
+  // Fetch order detail on mount
   useEffect(() => {
-    async function loadOrders() {
-      setIsOrdersLoading(true)
+    async function loadOrder() {
+      setIsOrderLoading(true)
       try {
-        const res = await fetchMyOrdersApi({ page: 0, size: 100 })
+        const res = await fetchOrderDetailApi(orderId)
         if (res.success && res.data) {
-          setOrders(res.data.content)
+          setOrder(res.data)
+        } else {
+          setError('Không thể tải thông tin đơn hàng')
         }
       } catch (err) {
-        console.error('Failed to load user orders', err)
+        console.error('Failed to load order detail', err)
+        setError('Không thể tải thông tin đơn hàng')
       } finally {
-        setIsOrdersLoading(false)
+        setIsOrderLoading(false)
       }
     }
-    void loadOrders()
-  }, [])
+    void loadOrder()
+  }, [orderId])
 
-  // Khi chọn order, gọi API lấy payment method
-  const handleOrderChange = async (e: ChangeEvent<HTMLSelectElement>) => {
-    const orderId = e.target.value
-    setSelectedOrderId(orderId)
-    setSelectedProducts({})
-    setSelectedQuantities({})
-    setCalculatedRefund(null)
-    setError(null)
-    setSelectedOrderPaymentMethod('')
-
-    if (!orderId) return
-
-    setIsLoadingPayment(true)
-    try {
-      const res = await fetchPaymentByOrderIdApi(Number(orderId))
-      if (res.success && res.data) {
-        const paymentMethod = res.data.paymentMethod || ''
-        setSelectedOrderPaymentMethod(paymentMethod)
-
-        // Nếu thanh toán bằng CASH, chỉ cho phép BANK_TRANSFER
-        if (paymentMethod === 'CASH') {
-          setRefundMethod('BANK_TRANSFER')
-        } else {
-          setRefundMethod('STRIPE_PAYMENT')
+  // Fetch payment method
+  useEffect(() => {
+    async function loadPayment() {
+      setIsLoadingPayment(true)
+      try {
+        const res = await fetchPaymentByOrderIdApi(orderId)
+        if (res.success && res.data) {
+          const paymentMethod = res.data.paymentMethod || ''
+          setOrderPaymentMethod(paymentMethod)
+          // Nếu thanh toán bằng CASH, chỉ cho phép BANK_TRANSFER
+          if (paymentMethod === 'CASH') {
+            setRefundMethod('BANK_TRANSFER')
+          } else {
+            setRefundMethod('STRIPE_PAYMENT')
+          }
         }
+      } catch (err) {
+        console.error('Failed to load payment info', err)
+      } finally {
+        setIsLoadingPayment(false)
       }
-    } catch (err) {
-      console.error('Failed to load payment info', err)
-    } finally {
-      setIsLoadingPayment(false)
     }
-  }
+    void loadPayment()
+  }, [orderId])
+
+  // Map order items to product list for ReturnOrderProducts
+  // Tính giá sau giảm từ totalPrice / quantity
+  const orderItems = order?.orderDetails?.map((item: any) => {
+    // Giá sau giảm = totalPrice / quantity
+    const finalPrice = (item.totalPrice && item.quantity)
+      ? item.totalPrice / item.quantity
+      : item.unitPrice || item.price || 0
+
+    return {
+      id: String(item.orderDetailId || item.id || ''),
+      productId: String(item.productId || ''),
+      name: item.productName || item.name || 'Sản phẩm',
+      quantity: item.quantity || 1,
+      price: formatPrice(finalPrice),  // ← Giá sau giảm
+      image: item.productImage || item.imageUrl || item.thumbnail || ''
+    }
+  }) || []
 
   // Calculate refund when selected items, quantity, or reason changes
   useEffect(() => {
-    if (!selectedOrderId) {
+    if (!order) {
       setCalculatedRefund(null)
       return
     }
@@ -154,7 +169,7 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
       setIsCalculating(true)
       try {
         const res = await calculateRefundApi({
-          orderId: Number(selectedOrderId),
+          orderId: orderId,
           reason,
           items: activeItems
         })
@@ -169,44 +184,7 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
     }, 400)
 
     return () => clearTimeout(timer)
-  }, [selectedOrderId, selectedProducts, selectedQuantities, reason])
-
-  // Map live orders to ReturnOrder[] UI structure
-  const mappedOrders: ReturnOrder[] = orders.map((o) => {
-    const rawItems = (o.orderDetails || (o as OrderResponse & { items?: unknown[] }).items || []) as Array<{
-      orderDetailId?: number
-      productId?: string
-      productName?: string
-      name?: string
-      quantity?: number
-      unitPrice?: number
-      price?: number
-      productImage?: string
-      imageUrl?: string
-    }>
-
-    return {
-      id: String(o.orderId),
-      orderCode: o.orderCode || String(o.orderId),
-      date: formatDate(o.createdAt),
-      products: rawItems.map((item, idx) => {
-        const orderDetailId = item.orderDetailId != null ? item.orderDetailId : (100 + idx)
-        const name = item.productName || item.name || 'Sản phẩm'
-        const quantity = item.quantity || 1
-        const unitPrice = item.unitPrice || item.price || 0
-        const image = item.productImage || item.imageUrl || ''
-
-        return {
-          id: String(orderDetailId),
-          productId: item.productId || String(idx),
-          name,
-          quantity,
-          price: formatPrice(unitPrice),
-          image
-        }
-      })
-    }
-  })
+  }, [orderId, selectedProducts, selectedQuantities, reason, order])
 
   const handleProductToggle = (productId: string) => {
     setSelectedProducts((prev) => {
@@ -230,22 +208,20 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!selectedOrderId) {
-      setError(t('returnWarranty.order.placeholder'))
-      return
-    }
-
+    // Validate: có chọn sản phẩm không?
     const hasSelectedProduct = Object.values(selectedProducts).some((val) => val === true)
     if (!hasSelectedProduct) {
-      setError(t('returnWarranty.order.selectProducts'))
+      setError('Vui lòng chọn ít nhất một sản phẩm để đổi trả.')
       return
     }
 
+    // Validate: mô tả
     if (!description.trim() || description.trim().length < 10) {
       setError('Vui lòng mô tả chi tiết lý do (tối thiểu 10 ký tự).')
       return
     }
 
+    // Validate: thông tin ngân hàng nếu là RETURN và chọn BANK_TRANSFER
     if (requestType === 'RETURN' && refundMethod === 'BANK_TRANSFER') {
       if (!bankName.trim() || !bankAccountNumber.trim() || !bankAccountHolder.trim()) {
         setError('Vui lòng nhập đầy đủ thông tin tài khoản ngân hàng để nhận hoàn tiền.')
@@ -265,7 +241,7 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         }))
 
       const payload: CreateReturnRequest = {
-        orderId: Number(selectedOrderId),
+        orderId: orderId,
         type: requestType,
         reason,
         description,
@@ -282,6 +258,7 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
       if (res.success && res.data) {
         const returnId = res.data.returnRequestId
 
+        // Upload files nếu có
         if (files.length > 0) {
           await uploadReturnMediaApi(returnId, files)
         }
@@ -298,7 +275,6 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
   }
 
   const resetForm = () => {
-    setSelectedOrderId('')
     setSelectedProducts({})
     setSelectedQuantities({})
     setRequestType('RETURN')
@@ -312,27 +288,46 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
     setCalculatedRefund(null)
     setError(null)
     setIsSubmitted(false)
-    setSelectedOrderPaymentMethod('')
 
     if (onSuccess) {
       onSuccess()
     }
   }
 
+  // Success state
   if (isSubmitted) {
     return <ReturnWarrantySuccess onReset={resetForm} />
   }
 
-  if (isOrdersLoading) {
+  // Loading state
+  if (isOrderLoading) {
     return (
       <div className='rounded-2xl border border-border bg-card p-12 text-center text-muted-foreground animate-pulse'>
-        Đang tải thông tin đơn hàng của bạn...
+        Đang tải thông tin đơn hàng...
+      </div>
+    )
+  }
+
+  // Error state - không tìm thấy order
+  if (!order) {
+    return (
+      <div className='rounded-2xl border border-border bg-card p-12 text-center'>
+        <MaterialIcon name='error_outline' className='mx-auto text-5xl text-destructive' />
+        <p className='mt-4 text-muted-foreground'>Không tìm thấy thông tin đơn hàng</p>
+        <button
+          type='button'
+          onClick={onCancel}
+          className='mt-4 rounded-lg bg-primary px-6 py-2 text-sm font-bold text-primary-foreground'
+        >
+          Đóng
+        </button>
       </div>
     )
   }
 
   return (
     <form onSubmit={handleSubmit} className='space-y-6'>
+      {/* Error display */}
       {error && (
         <div className='flex items-center gap-2 rounded-xl bg-destructive/10 p-4 text-sm font-semibold text-destructive'>
           <MaterialIcon name='error' className='shrink-0 text-xl' />
@@ -340,16 +335,19 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         </div>
       )}
 
-      <ReturnWarrantyStepOrder
-        selectedOrderId={selectedOrderId}
+      {/* Step 1: Chọn sản phẩm - sử dụng ReturnOrderProducts với giá sau giảm */}
+      <ReturnOrderProducts
+        orderId={orderId}
+        orderCode={order.orderCode}
+        orderDate={order.createdAt ? formatDate(order.createdAt) : undefined}
+        items={orderItems}
         selectedProducts={selectedProducts}
         selectedQuantities={selectedQuantities}
-        orders={mappedOrders}
-        onOrderChange={handleOrderChange}
         onProductToggle={handleProductToggle}
         onQuantityChange={handleQuantityChange}
       />
 
+      {/* Step 2: Chọn loại đổi trả */}
       <ReturnWarrantyStepType
         requestType={requestType}
         onChange={(val) => {
@@ -364,6 +362,7 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         }}
       />
 
+      {/* Step 3: Chọn lý do và thông tin hoàn tiền */}
       <ReturnWarrantyStepReason
         requestType={requestType}
         reason={reason}
@@ -372,7 +371,7 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         bankName={bankName}
         bankAccountNumber={bankAccountNumber}
         bankAccountHolder={bankAccountHolder}
-        orderPaymentMethod={selectedOrderPaymentMethod}
+        orderPaymentMethod={orderPaymentMethod}
         isLoadingPayment={isLoadingPayment}
         onReasonChange={(val) => {
           setReason(val)
@@ -391,8 +390,10 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
         onBankAccountHolderChange={setBankAccountHolder}
       />
 
+      {/* Step 4: Upload ảnh */}
       <ReturnWarrantyStepPhotos files={files} onFilesChange={setFiles} />
 
+      {/* Refund calculation display */}
       {requestType === 'RETURN' && isCalculating && (
         <div className='rounded-xl border border-border bg-card p-4 text-center text-sm text-muted-foreground animate-pulse'>
           Đang tính toán tiền hoàn...
@@ -400,8 +401,8 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
       )}
 
       {requestType === 'RETURN' && !isCalculating && calculatedRefund && (
-        <div className='rounded-xl border border-primary/20 bg-primary/5 p-5 space-y-3.5 shadow-sm animate-in fade-in duration-200'>
-          <div className='flex justify-between items-center border-b border-primary/10 pb-2'>
+        <div className='rounded-xl border border-primary/20 bg-primary/5 p-5 shadow-sm animate-in fade-in duration-200'>
+          <div className='flex justify-between items-center border-b border-primary/10 pb-3 mb-3'>
             <span className='font-display font-bold text-foreground text-sm flex items-center gap-1.5'>
               <MaterialIcon name='calculate' className='text-primary' />
               Chi tiết hoàn trả dự kiến
@@ -409,32 +410,59 @@ export function ReturnWarrantyForm({ onSuccess }: ReturnWarrantyFormProps) {
             <span className='text-xs text-muted-foreground'>({calculatedRefund.items.length} sản phẩm)</span>
           </div>
 
-          <div className='space-y-2.5'>
-            {calculatedRefund.items.map((item) => (
-              <div key={item.orderDetailId} className='flex justify-between gap-4 text-xs text-muted-foreground'>
-                <span className='truncate font-medium text-foreground'>{item.productName}</span>
-                <span className='shrink-0 text-right'>
-                  SL: <strong>{item.quantity}</strong> &rarr; <strong className='text-primary'>{formatPrice(item.refundAmount)}</strong>
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className='flex justify-between items-center pt-2.5 border-t border-primary/15 font-display'>
-            <span className='font-extrabold text-foreground text-sm'>Tổng tiền hoàn trả ước tính:</span>
-            <span className='text-xl font-black text-primary'>{formatPrice(calculatedRefund.totalRefundAmount)}</span>
+          {/* Table */}
+          <div className='overflow-x-auto'>
+            <table className='w-full text-sm'>
+              <thead>
+                <tr className='border-b border-primary/10 text-left text-xs font-semibold uppercase text-muted-foreground'>
+                  <th className='pb-2 pr-4 font-medium'>Sản phẩm</th>
+                  <th className='pb-2 pr-4 font-medium text-center'>Số lượng</th>
+                  <th className='pb-2 font-medium text-right'>Thành tiền</th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-border/50'>
+                {calculatedRefund.items.map((item) => (
+                  <tr key={item.orderDetailId} className='text-foreground'>
+                    <td className='py-2.5 pr-4 font-medium'>{item.productName}</td>
+                    <td className='py-2.5 pr-4 text-center text-muted-foreground'>x{item.quantity}</td>
+                    <td className='py-2.5 text-right font-semibold text-primary'>
+                      {formatPrice(item.refundAmount)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className='border-t-2 border-primary/20'>
+                  <td colSpan={2} className='py-3 pr-4 text-right font-display font-extrabold text-foreground text-sm'>
+                    Tổng tiền hoàn trả ước tính:
+                  </td>
+                  <td className='py-3 text-right text-xl font-black text-primary'>
+                    {formatPrice(calculatedRefund.totalRefundAmount)}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
           </div>
         </div>
       )}
-
-      <button
-        type='submit'
-        disabled={isSubmitting}
-        className='flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-display text-lg font-bold text-primary-foreground shadow-md hover:brightness-105 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none'
-      >
-        <span>{isSubmitting ? 'Đang gửi yêu cầu...' : t('returnWarranty.submit')}</span>
-        <MaterialIcon name='send' />
-      </button>
+      {/* Submit buttons */}
+      <div className='flex gap-3'>
+        <button
+          type='button'
+          onClick={onCancel}
+          className='flex-1 rounded-xl border border-border bg-background py-4 font-display text-lg font-bold text-foreground hover:bg-muted active:scale-[0.98] transition-all'
+        >
+          Hủy
+        </button>
+        <button
+          type='submit'
+          disabled={isSubmitting}
+          className='flex-1 flex items-center justify-center gap-2 rounded-xl bg-primary py-4 font-display text-lg font-bold text-primary-foreground shadow-md hover:brightness-105 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none'
+        >
+          <span>{isSubmitting ? 'Đang gửi yêu cầu...' : 'Gửi yêu cầu'}</span>
+          <MaterialIcon name='send' />
+        </button>
+      </div>
     </form>
   )
 }

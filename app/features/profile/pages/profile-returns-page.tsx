@@ -1,5 +1,5 @@
 // app/features/profile/pages/profile-returns.tsx
-import { useState, useEffect } from 'react'  // ✅ Thêm useEffect
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { MaterialIcon } from '~/shared/ui'
@@ -8,15 +8,12 @@ import { ProfilePageHeader } from '../components/layout/profile-page-header'
 import { ProfileSidebar } from '../components/layout/profile-sidebar'
 import { ReturnPolicyInfo } from '../components/returns/return-policy-info'
 import { ReturnSupportCard } from '../components/returns/return-support-card'
-import { ReturnWarrantyForm } from '../components/returns/return-warranty-form'
 import { ReturnHistoryList } from '../components/returns/return-history-list'
-import { cn } from '~/shared/lib/cn'
 
 export function ProfileReturnsPage() {
   const { t } = useTranslation('profile')
-  const [activeTab, setActiveTab] = useState<'history' | 'create'>('history')
 
-  // ✅ Ẩn overflow của body khi vào trang
+  // Ẩn overflow của body khi vào trang
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     return () => {
@@ -44,43 +41,10 @@ export function ProfileReturnsPage() {
               <span className='font-bold text-primary'>{t('returnWarranty.breadcrumb.current')}</span>
             </nav>
 
-            {/* Tabs */}
-            <div className='flex border-b border-border'>
-              <button
-                type='button'
-                onClick={() => setActiveTab('history')}
-                className={cn(
-                  'flex items-center gap-2 border-b-2 px-6 py-3 font-display text-sm font-bold transition-all',
-                  activeTab === 'history'
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
-                )}
-              >
-                <MaterialIcon name='history' className='text-xl' />
-                <span>Lịch sử đổi trả & bảo hành</span>
-              </button>
-              <button
-                type='button'
-                onClick={() => setActiveTab('create')}
-                className={cn(
-                  'flex items-center gap-2 border-b-2 px-6 py-3 font-display text-sm font-bold transition-all',
-                  activeTab === 'create'
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
-                )}
-              >
-                <MaterialIcon name='assignment_return' className='text-xl' />
-                <span>Tạo yêu cầu mới</span>
-              </button>
-            </div>
-
+            {/* Chỉ giữ lại History List, bỏ tab */}
             <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
               <div className='lg:col-span-2'>
-                {activeTab === 'history' ? (
-                  <ReturnHistoryList />
-                ) : (
-                  <ReturnWarrantyForm onSuccess={() => setActiveTab('history')} />
-                )}
+                <ReturnHistoryList />
               </div>
               <div className='space-y-6 lg:col-span-1'>
                 <ReturnPolicyInfo />
