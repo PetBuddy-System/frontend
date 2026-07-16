@@ -59,11 +59,41 @@
       "weeklySchedule": "Weekly shifts",
       "disposalRequest": "Disposal request",
       "inventory": "Inventory management",
-      "returns": "Manage Returns"
+      "returns": "Manage Returns",
+      "shipperAssignment": "Shipper Assignment"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Store Staff",
     "toggle": "Toggle sidebar"
+  },
+
+  "shipperAssignment": {
+    "title": "Shipper Assignment",
+    "subtitle": "Group orders in nearby areas and assign a delivery staff.",
+    "searchPlaceholder": "Search orders, customers, address...",
+    "noOrdersTitle": "No orders need assignment",
+    "noOrdersDesc": "There are currently no orders in PICKED status to assign shippers.",
+    "loadingOrders": "Loading order list...",
+    "otherArea": "Other Area",
+    "statusPicked": "To Deliver",
+    "orderDate": "Order Date",
+    "totalAmount": "Total Amount",
+    "suggestionsHeader": "Suggested Shippers",
+    "loadingSuggestions": "Loading shipper suggestions...",
+    "noSuggestions": "No active shippers found for today.",
+    "unknownDistance": "Distance: N/A",
+    "currentLoadLabel": "Current Load:",
+    "assignBtn": "Assign",
+    "stats": {
+      "pendingPickup": "Orders to Deliver",
+      "areas": "Active Areas"
+    },
+    "errors": {
+      "loadOrdersFailed": "Failed to load order list.",
+      "loadSuggestionsFailed": "Failed to load shipper suggestions.",
+      "assignFailed": "Failed to assign shipper to this order.",
+      "unknownError": "An error occurred."
+    }
   },
   "staff": {
     "name": "Nguyen Van An"
@@ -369,43 +399,37 @@
     "description": "View detailed work hours and attendance status.",
     "previousMonth": "Previous month",
     "nextMonth": "Next month",
-    "months": {
-      "oct2024": "October 2024",
-      "sep2024": "September 2024",
-      "aug2024": "August 2024"
-    },
     "summary": {
       "totalDays": {
         "label": "Total work days",
-        "value": "22",
         "unit": "days"
       },
       "totalHours": {
         "label": "Work hours",
-        "value": "176",
         "unit": "hours"
       },
       "lateEarly": {
-        "label": "Late/Early leave",
-        "value": "2",
+        "label": "Late check-ins",
         "unit": "times"
       },
       "daysOff": {
-        "label": "Days off",
-        "value": "1",
-        "unit": "day"
+        "label": "Leave/Absent",
+        "unit": "days"
       }
     },
     "status": {
       "onTime": "On time",
       "late": "Late",
-      "earlyLeave": "Early leave",
-      "dayOff": "Day off"
+      "leave": "On leave",
+      "absent": "Absent",
+      "pending": "Pending"
     },
     "table": {
       "title": "Daily Details",
       "export": "Export report",
       "showing": "Showing {{from}}-{{to}} of {{total}} records",
+      "showingEmpty": "No attendance records.",
+      "empty": "No attendance records for this month.",
       "columns": {
         "date": "Date",
         "checkIn": "Check in",
@@ -415,24 +439,8 @@
         "note": "Note"
       }
     },
-    "records": {
-      "day1": {
-        "dayLabel": "Fri, Oct 25"
-      },
-      "day2": {
-        "dayLabel": "Thu, Oct 24",
-        "note": "Traffic jam at Cau Giay area"
-      },
-      "day3": {
-        "dayLabel": "Wed, Oct 23"
-      },
-      "day4": {
-        "dayLabel": "Tue, Oct 22",
-        "note": "Annual leave (Approved)"
-      },
-      "day5": {
-        "dayLabel": "Mon, Oct 21"
-      }
+    "messages": {
+      "loadFailed": "Failed to load attendance history."
     }
   },
   "disposalRequest": {

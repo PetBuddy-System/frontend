@@ -1,5 +1,3 @@
-// features/manager/services/store-location/store-location-api.ts
-
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type {

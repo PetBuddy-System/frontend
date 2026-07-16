@@ -205,22 +205,22 @@
     }
   },
   "filters": {
-    "custom": "Custom",
-    "month": "This month",
     "today": "Today",
-    "week": "This week"
+    "week": "This week",
+    "year": "This year"
   },
   "metrics": {
     "averageOrder": {
       "change": "+8.4% vs previous period",
       "label": "Average Order"
     },
-    "orders": {
-      "change": "+5.2% vs previous period",
-      "label": "Orders"
+    "profit": {
+      "change_dynamic": "{{percent}}% vs previous period",
+      "label": "Profit"
     },
     "revenue": {
       "change": "+12.5% vs previous period",
+      "change_dynamic": "{{percent}}% vs previous period",
       "label": "Total Revenue"
     },
     "services": {

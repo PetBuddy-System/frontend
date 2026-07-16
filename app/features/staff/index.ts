@@ -9,3 +9,5 @@ export { StaffOrderDetailPage } from './pages/staff-order-detail-page'
 export { StaffScheduleDetailPage } from './pages/staff-schedule-detail-page'
 export { StaffWeeklySchedulePage } from './pages/staff-weekly-schedule-page'
 export { StaffReturnsPage } from './pages/staff-returns-page'
+export { StaffShipperAssignmentPage } from './pages/staff-shipper-assignment-page'
+

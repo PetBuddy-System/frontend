@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from '@tanstack/react-query'
 
 import { AdminBookingRevenueChartCard } from '../components/dashboard/admin-booking-revenue-chart-card'
 import { AdminBookingRevenueStructureCard } from '../components/dashboard/admin-booking-revenue-structure-card'
@@ -9,6 +10,9 @@ import { AdminRevenueChartCard } from '../components/dashboard/admin-revenue-cha
 import { AdminTopSalesTable } from '../components/dashboard/admin-top-sales-table'
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
+import { fetchRevenueDashboardApi } from '../services/dashboard'
+
+type FilterKey = 'today' | 'week' | 'year'
 import {
   fetchBookingStatsByPeriod,
   fetchBookingStatsByService,
@@ -19,66 +23,17 @@ import {
 } from '../services'
 
 const FILTER_KEYS = ['today', 'week', 'month', 'custom'] as const
-type FilterKey = (typeof FILTER_KEYS)[number]
-
-interface BookingStatsState {
-  summary: BookingStatsSummaryResponse | null
-  trend: BookingStatsByPeriodResponse[]
-  structure: BookingStatsByServiceResponse[]
-  isLoading: boolean
-  errorMessage: string | null
-}
-
-function formatDateInput(date: Date): string {
-  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60_000)
-  return offsetDate.toISOString().slice(0, 10)
-}
-
-function getDashboardDateRange(filter: FilterKey) {
-  const today = new Date()
-  const from = new Date(today)
-  const to = new Date(today)
-
-  if (filter === 'week') {
-    const day = today.getDay()
-    const mondayOffset = day === 0 ? -6 : 1 - day
-    from.setDate(today.getDate() + mondayOffset)
-  }
-
-  if (filter === 'month' || filter === 'custom') {
-    from.setDate(1)
-  }
-
-  return {
-    from: formatDateInput(from),
-    to: formatDateInput(to)
-  }
-}
-
-function formatCompactVnd(value: number): string {
-  const amount = Number(value ?? 0)
-
-  if (!Number.isFinite(amount) || amount <= 0) {
-    return '0 đ'
-  }
-
-  if (amount >= 1_000_000_000) {
-    return `${(amount / 1_000_000_000).toFixed(1).replace('.0', '')}B đ`
-  }
-
-  if (amount >= 1_000_000) {
-    return `${(amount / 1_000_000).toFixed(1).replace('.0', '')}M đ`
-  }
-
-  if (amount >= 1_000) {
-    return `${(amount / 1_000).toFixed(1).replace('.0', '')}K đ`
-  }
-
-  return `${new Intl.NumberFormat('vi-VN').format(amount)} đ`
-}
 
 export function AdminDashboardPage() {
   const { t } = useTranslation('admin')
+  const [filter, setFilter] = useState<FilterKey>('today')
+
+  const periodType = periodTypeMap[filter]
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['adminRevenueDashboard', periodType],
+    queryFn: () => fetchRevenueDashboardApi(periodType),
+  })
   const [activeFilter, setActiveFilter] = useState<FilterKey>('today')
   const dateRange = useMemo(() => getDashboardDateRange(activeFilter), [activeFilter])
   const [bookingStats, setBookingStats] = useState<BookingStatsState>({
@@ -135,7 +90,7 @@ export function AdminDashboardPage() {
               </div>
               <div className='flex flex-wrap items-center gap-2 rounded-xl border border-border bg-card p-1 shadow-sm'>
                 {FILTER_KEYS.map((key) => {
-                  const isActive = key === activeFilter
+                  const isActive = key === filter
 
                   return (
                     <button
@@ -156,14 +111,18 @@ export function AdminDashboardPage() {
               </div>
             </section>
 
-            <AdminMetricsGrid
-              bookingRevenueValue={formatCompactVnd(bookingStats.summary?.totalRevenue ?? 0)}
-              bookingRevenueBookings={bookingStats.summary?.totalBookings ?? 0}
-              isBookingRevenueLoading={bookingStats.isLoading}
-              hasBookingRevenueError={Boolean(bookingStats.errorMessage)}
+           <AdminMetricsGrid
+              totalRevenueValue={data?.totalRevenue?.value}
+              totalRevenueChangePercent={data?.totalRevenue?.changePercent}
+              profitValue={data?.profit?.value}
+              profitChangePercent={data?.profit?.changePercent}
+              isLoading={isLoading}
             />
             <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
-              <AdminRevenueChartCard />
+              <AdminRevenueChartCard
+                trendPoints={data?.revenueTrend}
+                isLoading={isLoading}
+              />
               <AdminRevenueBreakdownCard />
             </div>
             <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>

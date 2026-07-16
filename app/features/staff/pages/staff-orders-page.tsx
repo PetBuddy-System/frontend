@@ -1,4 +1,3 @@
-// app/features/staff/pages/staff-orders-page.tsx
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 

@@ -59,12 +59,43 @@
       "weeklySchedule": "Ca làm việc trong tuần",
       "disposalRequest": "Tạo yêu cầu hủy hàng",
       "inventory": "Quản lý kho hàng",
-      "returns": "Quản lý đổi trả"
+      "returns": "Quản lý đổi trả",
+      "shipperAssignment": "Giao việc cho shipper"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Nhân viên cửa hàng",
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
+
+  "shipperAssignment": {
+    "title": "Phân công Shipper",
+    "subtitle": "Gom nhóm các đơn hàng ở khu vực lân cận và chỉ định nhân viên giao hàng.",
+    "searchPlaceholder": "Tìm kiếm đơn hàng, khách hàng, địa chỉ...",
+    "noOrdersTitle": "Không có đơn hàng cần phân công",
+    "noOrdersDesc": "Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị để phân công shipper.",
+    "loadingOrders": "Đang tải danh sách đơn hàng...",
+    "otherArea": "Khu vực khác",
+    "statusPicked": "Chờ giao",
+    "orderDate": "Ngày đặt",
+    "totalAmount": "Tổng tiền",
+    "suggestionsHeader": "Đề xuất Shipper phù hợp",
+    "loadingSuggestions": "Đang tải gợi ý shipper...",
+    "noSuggestions": "Không tìm thấy shipper nào hoạt động trong hôm nay.",
+    "unknownDistance": "Khoảng cách: N/A",
+    "currentLoadLabel": "Tải trọng:",
+    "assignBtn": "Phân công",
+    "stats": {
+      "pendingPickup": "Đơn hàng chờ giao",
+      "areas": "Khu vực hoạt động"
+    },
+    "errors": {
+      "loadOrdersFailed": "Không thể tải danh sách đơn hàng.",
+      "loadSuggestionsFailed": "Không thể tải gợi ý shipper.",
+      "assignFailed": "Không thể phân công shipper cho đơn hàng này.",
+      "unknownError": "Có lỗi xảy ra."
+    }
+  },
+
   "staff": {
     "name": "Nguyễn Văn An"
   },
@@ -369,43 +400,37 @@
     "description": "Xem chi tiết giờ làm việc và trạng thái chuyên cần.",
     "previousMonth": "Tháng trước",
     "nextMonth": "Tháng sau",
-    "months": {
-      "oct2024": "Tháng 10/2024",
-      "sep2024": "Tháng 09/2024",
-      "aug2024": "Tháng 08/2024"
-    },
     "summary": {
       "totalDays": {
         "label": "Tổng ngày công",
-        "value": "22",
         "unit": "ngày"
       },
       "totalHours": {
         "label": "Số giờ làm việc",
-        "value": "176",
         "unit": "giờ"
       },
       "lateEarly": {
-        "label": "Đi muộn/Về sớm",
-        "value": "2",
+        "label": "Đi trễ",
         "unit": "lần"
       },
       "daysOff": {
-        "label": "Ngày nghỉ",
-        "value": "1",
+        "label": "Nghỉ/Vắng",
         "unit": "ngày"
       }
     },
     "status": {
       "onTime": "Đúng giờ",
-      "late": "Đi muộn",
-      "earlyLeave": "Về sớm",
-      "dayOff": "Nghỉ phép"
+      "late": "Đi trễ",
+      "leave": "Nghỉ phép",
+      "absent": "Vắng mặt",
+      "pending": "Chưa chấm công"
     },
     "table": {
       "title": "Chi tiết theo ngày",
       "export": "Xuất báo cáo",
       "showing": "Hiển thị {{from}}-{{to}} của {{total}} bản ghi",
+      "showingEmpty": "Không có bản ghi chấm công.",
+      "empty": "Không có dữ liệu chấm công trong tháng này.",
       "columns": {
         "date": "Ngày",
         "checkIn": "Giờ vào",
@@ -415,24 +440,8 @@
         "note": "Ghi chú"
       }
     },
-    "records": {
-      "day1": {
-        "dayLabel": "Thứ 6, 25/10"
-      },
-      "day2": {
-        "dayLabel": "Thứ 5, 24/10",
-        "note": "Tắc đường khu vực Cầu Giấy"
-      },
-      "day3": {
-        "dayLabel": "Thứ 4, 23/10"
-      },
-      "day4": {
-        "dayLabel": "Thứ 3, 22/10",
-        "note": "Nghỉ phép năm (Đã duyệt)"
-      },
-      "day5": {
-        "dayLabel": "Thứ 2, 21/10"
-      }
+    "messages": {
+      "loadFailed": "Không thể tải lịch sử chấm công."
     }
   },
   "disposalRequest": {
@@ -586,7 +595,7 @@
       "completed": "Hoàn thành",
       "cancelled": "Đã hủy",
       "pickedUp": "Đã lấy hàng",
-      "deliveryFailed": "Giao thất bại"
+      "deliveryFailed": "Liên lạc thất bại"
     },
     "filters": {
       "status": "Trạng thái",

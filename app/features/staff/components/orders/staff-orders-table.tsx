@@ -123,6 +123,12 @@ function renderPaymentStatusBadge(status?: string) {
                     Đang xử lý
                 </span>
             )
+        case 'REFUNDED':
+            return (
+                <span className='inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[10px] font-bold uppercase text-green-700 dark:bg-green-950/35 dark:text-green-400 border border-green-200/30 w-fit'>
+                    Đã hoàn tiền
+                </span>
+            )
         default:
             return (
                 <span className='inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-bold uppercase text-amber-700 dark:bg-amber-950/35 dark:text-amber-400 border border-amber-200/30 w-fit'>
@@ -161,25 +167,25 @@ export function StaffOrdersTable({
 }: StaffOrdersTableProps) {
     const { user } = useAuth()
     const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
+    const isCoordinator = user?.role === 'STAFF' && user?.staffTask === 'COORDINATOR'
 
-    // Filter orders locally
-    const filteredOrders = orders.filter((o) => {
-        if (statusFilter !== 'ALL') {
-            if (statusFilter === 'SHIPPING_DELIVERED') {
-                if (o.status !== 'SHIPPING' && o.status !== 'DELIVERED') return false
-            } else if (o.status !== statusFilter) {
-                return false
-            }
+   const filteredOrders = orders.filter((o) => {
+    if (statusFilter !== 'ALL') {
+        if (statusFilter === 'SHIPPING_DELIVERED') {
+            if (o.status !== 'SHIPPING' && o.status !== 'DELIVERED') return false
+        } else if (o.status !== statusFilter) {
+            return false
         }
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase()
-            const codeMatch = o.orderCode?.toLowerCase().includes(query)
-            const nameMatch = o.recipientName?.toLowerCase().includes(query)
-            const phoneMatch = o.phoneNumber?.includes(query)
-            return codeMatch || nameMatch || phoneMatch
-        }
-        return true
-    })
+    }
+    if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase()
+        const codeMatch = o.orderCode?.toLowerCase().includes(query)
+        const nameMatch = o.recipientName?.toLowerCase().includes(query)
+        const phoneMatch = o.phoneNumber?.includes(query)
+        return codeMatch || nameMatch || phoneMatch
+    }
+    return true
+})
 
     return (
         <div className='rounded-2xl border border-border bg-card shadow-sm'>
@@ -279,7 +285,7 @@ export function StaffOrdersTable({
                                                 Xem
                                             </button>
 
-                                            {order.status === 'CANCEL_REQUESTED' && (
+                                            {order.status === 'CANCEL_REQUESTED' && isCoordinator && (
                                                 <button
                                                     onClick={async () => {
                                                         if (!window.confirm(`Xác nhận hoàn tiền cho đơn #${order.orderCode}?`)) return
@@ -300,7 +306,7 @@ export function StaffOrdersTable({
                                                 </button>
                                             )}
 
-                                            {order.status === 'PENDING' && (
+                                            {order.status === 'PENDING' && isCoordinator && (
                                                 <>
                                                     {((order.payment?.paymentMethod === 'CARD' && order.payment?.status === 'PAID') || order.payment?.paymentMethod !== 'CARD') && (
                                                         <button
@@ -319,7 +325,7 @@ export function StaffOrdersTable({
                                                 </>
                                             )}
 
-                                            {order.status === 'CONFIRMED' && isShipper && (
+                                            {order.status === 'CONFIRMED' && isCoordinator && (
                                                 <button
                                                     onClick={() => onTransition(order.orderId, 'PICKING')}
                                                     className='rounded-xl bg-cyan-600 hover:bg-cyan-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
@@ -328,7 +334,7 @@ export function StaffOrdersTable({
                                                 </button>
                                             )}
 
-                                            {order.status === 'PICKING' && isShipper && (
+                                            {order.status === 'PICKING' && isCoordinator && (
                                                 <button
                                                     onClick={() => onOpenPicking(order)}
                                                     className='rounded-xl bg-teal-600 hover:bg-teal-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'

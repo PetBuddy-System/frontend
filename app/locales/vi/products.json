@@ -279,6 +279,32 @@
     },
     "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
   },
+  "voucherPicker": {
+    "back": "Quay lại",
+    "title": "Chọn mã giảm giá",
+    "eligibleCount": "{{count}} mã có thể dùng",
+    "loadError": "Không thể tải danh sách mã giảm giá. Vui lòng thử lại.",
+    "discountBadgePercent": "Giảm {{percent}}%",
+    "discountBadgeFixed": "Giảm {{value}}",
+    "minOrder": "Đơn tối thiểu {{min}}",
+    "maxDiscount": "Giảm tối đa {{max}}",
+    "expiredAt": "Hết hạn: {{date}}",
+    "savings": "Tiết kiệm: {{savings}}",
+    "ineligibleSection": "Chưa đủ điều kiện",
+    "hasNoVouchers": "Hiện không có mã giảm giá nào",
+    "selectedLabel": "Đang chọn:",
+    "noSelectedLabel": "Chưa chọn mã giảm giá",
+    "unselect": "Bỏ chọn",
+    "confirm": "Xác nhận",
+    "noMoreVouchers": "Không còn mã giảm giá nào khác",
+    "reasons": {
+      "hasPromotion": "Đang có sản phẩm trong chương trình giảm giá",
+      "inactive": "Voucher không còn hiệu lực",
+      "limitExceeded": "Voucher đã hết lượt sử dụng",
+      "minOrderMissing": "Thiếu {{missing}}đ nữa",
+      "ineligible": "Chưa đủ điều kiện"
+    }
+  },
   "orderSuccess": {
     "banner": {
       "title": "Cảm ơn bạn đã đặt hàng!",

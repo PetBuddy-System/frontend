@@ -16,7 +16,9 @@ export type OrderStatus =
 
 export interface ShipperSuggestionResponse {
   staffId: string
+  staffEmail: string
   staffName: string
+  staffTask: string 
   currentLoad: number
   maxCapacity: number
   distanceToClusterKm: number | null

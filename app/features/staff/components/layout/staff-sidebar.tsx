@@ -6,15 +6,35 @@ import { useAuth } from '~/providers/auth-provider'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
+type StaffTask = 'COORDINATOR' | 'SHIPPER'
+
+type AllowedTasks = readonly StaffTask[] | null
+
 const STAFF_NAV_ITEMS = [
   { icon: 'content_cut', key: 'groomerBookings', href: '/staff/groomer-bookings', roles: ['GROOMER'] },
   { icon: 'assignment_ind', key: 'coordinatorBookings', href: '/staff/coordinator-bookings', roles: ['COORDINATOR'] },
-  { icon: 'shopping_cart', key: 'orders', href: '/staff/orders' },
-  { icon: 'delete_sweep', key: 'disposalRequest', href: '/staff/disposal-request' },
-  { icon: 'assignment_return', key: 'returns', href: '/staff/returns' },
-  { icon: 'inventory_2', key: 'inventory', href: '/staff/add-product' },
-  { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule' },
-  { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance' }
+  { icon: 'shopping_cart', key: 'orders', href: '/staff/orders', allowedTasks: null as AllowedTasks },
+  {
+    icon: 'delete_sweep',
+    key: 'disposalRequest',
+    href: '/staff/disposal-request',
+    allowedTasks: ['COORDINATOR'] as AllowedTasks
+  },
+  {
+    icon: 'assignment_return',
+    key: 'returns',
+    href: '/staff/returns',
+    allowedTasks: ['COORDINATOR', 'SHIPPER'] as AllowedTasks
+  },
+  { icon: 'inventory_2', key: 'inventory', href: '/staff/add-product', allowedTasks: ['COORDINATOR'] as AllowedTasks },
+  {
+    icon: 'local_shipping',
+    key: 'shipperAssignment',
+    href: '/staff/shipper-assignment',
+    allowedTasks: ['COORDINATOR'] as AllowedTasks
+  },
+  { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule', allowedTasks: null as AllowedTasks },
+  { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance', allowedTasks: null as AllowedTasks }
 ] as const
 
 export type StaffNavKey = (typeof STAFF_NAV_ITEMS)[number]['key']

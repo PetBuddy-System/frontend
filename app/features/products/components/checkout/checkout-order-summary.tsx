@@ -12,7 +12,8 @@ const TRUST_BADGES = [
 export interface CheckoutOrderItem {
   key: string
   image: string
-  price: number
+  salePrice: number
+  price?: number
   quantity: number
   title?: string
   productId?: string
@@ -59,28 +60,41 @@ export function CheckoutOrderSummary({
         </h2>
 
         <div className='mb-6 flex max-h-[300px] flex-col gap-4 overflow-y-auto pr-2'>
-          {items.map((item) => (
-            <article key={item.key} className='flex gap-4'>
-              <div className='h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-muted'>
-                <img
-                  src={item.image}
-                  alt={item.title || t(`checkout.summary.items.${item.key}.imageAlt`)}
-                  className='h-full w-full object-cover'
-                />
-              </div>
-              <div className='flex flex-1 flex-col'>
-                <h3 className='line-clamp-1 text-sm font-semibold text-foreground'>
-                  {item.title || t(`checkout.summary.items.${item.key}.title`)}
-                </h3>
-                <span className='text-sm text-muted-foreground'>
-                  {t('checkout.summary.quantity', { count: item.quantity })}
-                </span>
-                <span className='mt-auto font-display text-sm font-bold text-primary'>
-                  {formatPrice(item.price * item.quantity)}
-                </span>
-              </div>
-            </article>
-          ))}
+          {items.map((item) => {
+            const hasPromotion =
+              item.price != null && item.price > item.salePrice
+
+            return (
+              <article key={item.key} className='flex gap-4'>
+                <div className='h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-muted'>
+                  <img
+                    src={item.image}
+                    alt={item.title || t(`checkout.summary.items.${item.key}.imageAlt`)}
+                    className='h-full w-full object-cover'
+                  />
+                </div>
+                <div className='flex flex-1 flex-col'>
+                  <h3 className='line-clamp-1 text-sm font-semibold text-foreground'>
+                    {item.title || t(`checkout.summary.items.${item.key}.title`)}
+                  </h3>
+                  <span className='text-sm text-muted-foreground'>
+                    {t('checkout.summary.quantity', { count: item.quantity })}
+                  </span>
+
+                  <div className='mt-auto flex flex-col'>
+                    {hasPromotion && (
+                      <span className='text-xs text-muted-foreground line-through'>
+                        {formatPrice(item.price! * item.quantity)}
+                      </span>
+                    )}
+                    <span className='font-display text-sm font-bold text-primary'>
+                      {formatPrice(item.salePrice * item.quantity)}
+                    </span>
+                  </div>
+                </div>
+              </article>
+            )
+          })}
         </div>
 
         <div className='mb-6 flex flex-col gap-3 border-t border-border pt-4'>
@@ -159,7 +173,6 @@ export function CheckoutOrderSummary({
             </button>
           </div>
         ) : (
-          /* Apply voucher button */
           <button
             type='button'
             onClick={() => navigate('/order/voucher')}

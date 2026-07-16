@@ -78,8 +78,8 @@ function getAuthHeaders() {
 
   return token
     ? {
-        Authorization: `Bearer ${token}`
-      }
+      Authorization: `Bearer ${token}`
+    }
     : undefined
 }
 

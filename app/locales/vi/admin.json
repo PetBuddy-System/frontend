@@ -205,22 +205,22 @@
     }
   },
   "filters": {
-    "custom": "Tùy chỉnh",
-    "month": "Tháng này",
     "today": "Hôm nay",
-    "week": "Tuần này"
+    "week": "Tuần này",
+    "year": "Năm này"
   },
   "metrics": {
     "averageOrder": {
       "change": "+8.4% so với kỳ trước",
       "label": "TB cỡ đơn"
     },
-    "orders": {
-      "change": "+5.2% so với kỳ trước",
-      "label": "Đơn hàng"
+    "profit": {
+      "change_dynamic": "{{percent}}% so với kỳ trước",
+      "label": "Lợi nhuận"
     },
     "revenue": {
       "change": "+12.5% so với kỳ trước",
+      "change_dynamic": "{{percent}}% so với kỳ trước",
       "label": "Tổng doanh thu"
     },
     "services": {
