@@ -25,9 +25,11 @@
     "@turf/turf": "^7.3.5",
     "axios": "^1.18.0",
     "clsx": "^2.1.1",
+    "country-flag-icons": "^1.6.20",
     "i18next": "^26.0.8",
     "i18next-browser-languagedetector": "^8.2.1",
     "isbot": "^5.1.36",
+    "js-yaml": "^4.3.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-i18next": "^17.0.6",
@@ -49,16 +51,19 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
     "msw": "^2.14.2",
-    "orval": "^7.19.0",
+    "orval": "^7.21.0",
     "prettier": "^3.8.3",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.59.1",
-    "vite": "^8.0.3"
+    "vite": "^8.0.16"
   },
   "msw": {
     "workerDirectory": [
       "public"
     ]
+  },
+  "overrides": {
+    "js-yaml": "^4.3.0"
   }
 }
