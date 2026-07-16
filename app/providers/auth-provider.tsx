@@ -17,7 +17,7 @@ interface AuthContextValue {
   accessToken: string | null
   isAuthenticated: boolean
   isLoading: boolean
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<UserResponse | null>
   logout: () => Promise<void>
   refetchUser: () => Promise<void>
   setSession: (session: { accessToken: string; user: UserResponse | null }) => void
@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser })
   }, [queryClient])
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string): Promise<UserResponse | null> => {
     const response = await loginApi({ email, password })
     const { userResponse, accessToken: token, refreshToken } = response.data
 
@@ -79,6 +79,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       console.error('Merge cart failed:', err)
     }
+
+    return userResponse
   }, [queryClient])
 
   const logout = useCallback(async () => {

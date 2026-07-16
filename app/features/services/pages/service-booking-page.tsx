@@ -20,7 +20,7 @@ export function ServiceBookingPage() {
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
-      <SiteHeader />
+      <SiteHeader activeItem='services' />
 
       <main className='mx-auto mb-20 w-full max-w-6xl flex-grow px-4 py-8 md:mb-0 md:px-6 md:py-16'>
         <header className='mb-10'>
