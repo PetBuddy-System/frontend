@@ -5,11 +5,12 @@ import type { OrderReviewResponse } from '~/shared/lib/review'
 
 interface ReviewCardProps {
     review: OrderReviewResponse
+    onView?: () => void      // ← Thêm dòng này
     onEdit?: () => void
     onDelete?: () => void
 }
 
-export function ReviewCard({ review, onEdit, onDelete }: ReviewCardProps) {
+export function ReviewCard({ review, onView, onEdit, onDelete }: ReviewCardProps) {
     const formatDate = (dateString: string) => {
         if (!dateString) return 'Vừa đăng'
         try {
@@ -65,9 +66,18 @@ export function ReviewCard({ review, onEdit, onDelete }: ReviewCardProps) {
                     </div>
                 </div>
 
-                {/* Actions - Edit & Delete */}
-                {(onEdit || onDelete) && (
+                {/* Actions - View, Edit & Delete */}
+                {(onView || onEdit || onDelete) && (
                     <div className='flex items-center gap-1'>
+                        {onView && (
+                            <button
+                                onClick={onView}
+                                className='rounded-lg p-2 text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary'
+                                title='Xem chi tiết đánh giá'
+                            >
+                                <MaterialIcon name='visibility' className='text-lg' />
+                            </button>
+                        )}
                         {onEdit && (
                             <button
                                 onClick={onEdit}
@@ -95,7 +105,7 @@ export function ReviewCard({ review, onEdit, onDelete }: ReviewCardProps) {
                 {review.content}
             </p>
 
-            {/* Footer - Order info */}
+            {/* Footer - Order info - CÓ THỂ BỎ HOẶC GIỮ */}
             <div className='mt-3 flex items-center gap-2 text-xs text-muted-foreground border-t border-border/50 pt-3'>
                 <MaterialIcon name='receipt_long' className='text-sm' />
                 <span>Đơn hàng #{review.orderCode}</span>
