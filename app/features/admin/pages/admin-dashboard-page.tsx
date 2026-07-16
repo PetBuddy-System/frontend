@@ -11,68 +11,101 @@ import { AdminTopSalesTable } from '../components/dashboard/admin-top-sales-tabl
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
 import { fetchRevenueDashboardApi } from '../services/dashboard'
+import { fetchBookingStatsByPeriod, fetchBookingStatsByService, fetchBookingStatsSummary } from '../services/statistics'
 
 type FilterKey = 'today' | 'week' | 'year'
-import {
-  fetchBookingStatsByPeriod,
-  fetchBookingStatsByService,
-  fetchBookingStatsSummary,
-  type BookingStatsByPeriodResponse,
-  type BookingStatsByServiceResponse,
-  type BookingStatsSummaryResponse
-} from '../services'
 
-const FILTER_KEYS = ['today', 'week', 'month', 'custom'] as const
+const FILTER_KEYS: FilterKey[] = ['today', 'week', 'year']
+
+const periodTypeMap = {
+  today: 'DAY',
+  week: 'WEEK',
+  year: 'YEAR'
+} as const
+
+function formatDateParam(date: Date): string {
+  const year = date.getFullYear()
+  const month = `${date.getMonth() + 1}`.padStart(2, '0')
+  const day = `${date.getDate()}`.padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
+function getDateRange(filter: FilterKey) {
+  const now = new Date()
+  const from = new Date(now)
+  const to = new Date(now)
+
+  if (filter === 'week') {
+    const day = now.getDay()
+    const mondayOffset = day === 0 ? -6 : 1 - day
+    from.setDate(now.getDate() + mondayOffset)
+    to.setDate(from.getDate() + 6)
+  }
+
+  if (filter === 'year') {
+    from.setMonth(0, 1)
+    to.setMonth(11, 31)
+  }
+
+  return {
+    from: formatDateParam(from),
+    to: formatDateParam(to)
+  }
+}
+
+function formatDashboardMoney(value: number): string {
+  const amount = Number(value ?? 0)
+
+  if (Math.abs(amount) >= 1_000_000) {
+    return `${(amount / 1_000_000).toFixed(1).replace('.0', '')}M đ`
+  }
+
+  if (Math.abs(amount) >= 1_000) {
+    return `${Math.round(amount / 1_000)}K đ`
+  }
+
+  return `${new Intl.NumberFormat('vi-VN').format(amount)} đ`
+}
 
 export function AdminDashboardPage() {
   const { t } = useTranslation('admin')
   const [filter, setFilter] = useState<FilterKey>('today')
 
   const periodType = periodTypeMap[filter]
+  const bookingStatsRange = getDateRange(filter)
 
   const { data, isLoading } = useQuery({
     queryKey: ['adminRevenueDashboard', periodType],
-    queryFn: () => fetchRevenueDashboardApi(periodType),
-  })
-  const [activeFilter, setActiveFilter] = useState<FilterKey>('today')
-  const dateRange = useMemo(() => getDashboardDateRange(activeFilter), [activeFilter])
-  const [bookingStats, setBookingStats] = useState<BookingStatsState>({
-    summary: null,
-    trend: [],
-    structure: [],
-    isLoading: true,
-    errorMessage: null
+    queryFn: () => fetchRevenueDashboardApi(periodType)
   })
 
-  const loadBookingStats = useCallback(async () => {
-    setBookingStats((current) => ({ ...current, isLoading: true, errorMessage: null }))
+  const {
+    data: bookingSummary,
+    isLoading: isBookingSummaryLoading,
+    error: bookingSummaryError
+  } = useQuery({
+    queryKey: ['adminBookingStatsSummary', bookingStatsRange.from, bookingStatsRange.to],
+    queryFn: () => fetchBookingStatsSummary(bookingStatsRange)
+  })
 
-    try {
-      const [summary, trend, structure] = await Promise.all([
-        fetchBookingStatsSummary(dateRange),
-        fetchBookingStatsByPeriod(dateRange),
-        fetchBookingStatsByService(dateRange)
-      ])
+  const {
+    data: bookingTrend = [],
+    isLoading: isBookingTrendLoading,
+    error: bookingTrendError
+  } = useQuery({
+    queryKey: ['adminBookingStatsByPeriod', bookingStatsRange.from, bookingStatsRange.to],
+    queryFn: () => fetchBookingStatsByPeriod(bookingStatsRange)
+  })
 
-      setBookingStats({
-        summary,
-        trend,
-        structure,
-        isLoading: false,
-        errorMessage: null
-      })
-    } catch (error) {
-      setBookingStats((current) => ({
-        ...current,
-        isLoading: false,
-        errorMessage: error instanceof Error ? error.message : t('charts.bookingStatsError')
-      }))
-    }
-  }, [dateRange, t])
-
-  useEffect(() => {
-    void loadBookingStats()
-  }, [loadBookingStats])
+  const {
+    data: bookingStructure = [],
+    isLoading: isBookingStructureLoading,
+    error: bookingStructureError
+  } = useQuery({
+    queryKey: ['adminBookingStatsByService', bookingStatsRange.from, bookingStatsRange.to],
+    queryFn: () => fetchBookingStatsByService(bookingStatsRange)
+  })
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -96,13 +129,12 @@ export function AdminDashboardPage() {
                     <button
                       key={key}
                       type='button'
-                      aria-pressed={isActive}
+                      onClick={() => setFilter(key)}
                       className={
                         isActive
                           ? 'rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground'
                           : 'rounded-lg px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-primary'
                       }
-                      onClick={() => setActiveFilter(key)}
                     >
                       {t(`filters.${key}`)}
                     </button>
@@ -111,32 +143,32 @@ export function AdminDashboardPage() {
               </div>
             </section>
 
-           <AdminMetricsGrid
+            <AdminMetricsGrid
               totalRevenueValue={data?.totalRevenue?.value}
               totalRevenueChangePercent={data?.totalRevenue?.changePercent}
               profitValue={data?.profit?.value}
               profitChangePercent={data?.profit?.changePercent}
+              bookingRevenueValue={bookingSummary?.totalRevenue}
+              bookingCount={bookingSummary?.totalBookings}
+              averageOrderValue={bookingSummary?.averageOrderValue}
+              hasBookingStatsError={Boolean(bookingSummaryError)}
               isLoading={isLoading}
+              isBookingStatsLoading={isBookingSummaryLoading}
             />
             <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
-              <AdminRevenueChartCard
-                trendPoints={data?.revenueTrend}
-                isLoading={isLoading}
-              />
+              <AdminRevenueChartCard trendPoints={data?.revenueTrend} isLoading={isLoading} />
               <AdminRevenueBreakdownCard />
-            </div>
-            <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
               <AdminBookingRevenueChartCard
-                data={bookingStats.trend}
-                errorMessage={bookingStats.errorMessage}
-                formatMoney={formatCompactVnd}
-                isLoading={bookingStats.isLoading}
+                data={bookingTrend}
+                isLoading={isBookingTrendLoading}
+                errorMessage={bookingTrendError instanceof Error ? bookingTrendError.message : null}
+                formatMoney={formatDashboardMoney}
               />
               <AdminBookingRevenueStructureCard
-                data={bookingStats.structure}
-                errorMessage={bookingStats.errorMessage}
-                formatMoney={formatCompactVnd}
-                isLoading={bookingStats.isLoading}
+                data={bookingStructure}
+                isLoading={isBookingStructureLoading}
+                errorMessage={bookingStructureError instanceof Error ? bookingStructureError.message : null}
+                formatMoney={formatDashboardMoney}
               />
             </div>
             <AdminTopSalesTable />
