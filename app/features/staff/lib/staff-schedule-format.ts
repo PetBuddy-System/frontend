@@ -1,8 +1,7 @@
 const VIETNAM_TIME_ZONE = 'Asia/Ho_Chi_Minh'
 const VIETNAM_UTC_OFFSET_HOURS = 7
 const DATE_ONLY_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
-const JAVA_LOCAL_DATE_TIME_PATTERN =
-  /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?$/
+const JAVA_LOCAL_DATE_TIME_PATTERN = /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?$/
 
 const dateFormatter = new Intl.DateTimeFormat('vi-VN', {
   day: '2-digit',
@@ -34,6 +33,13 @@ const dateTimeFormatter = new Intl.DateTimeFormat('vi-VN', {
   hour12: false
 })
 
+const timeFormatter = new Intl.DateTimeFormat('vi-VN', {
+  timeZone: VIETNAM_TIME_ZONE,
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false
+})
+
 function toDatePart(value: number) {
   return String(value).padStart(2, '0')
 }
@@ -42,14 +48,7 @@ function buildLocalDate(year: string, month: string, day: string) {
   return new Date(Number(year), Number(month) - 1, Number(day))
 }
 
-function buildVietnamDateTime(
-  year: string,
-  month: string,
-  day: string,
-  hour: string,
-  minute: string,
-  second = '0'
-) {
+function buildVietnamDateTime(year: string, month: string, day: string, hour: string, minute: string, second = '0') {
   return new Date(
     Date.UTC(
       Number(year),
@@ -67,6 +66,19 @@ function parseBrowserDate(value: string) {
   const date = new Date(normalizedValue)
 
   return Number.isNaN(date.getTime()) ? null : date
+}
+
+export function parseStaffScheduleDateTime(value?: string) {
+  if (!value) return null
+
+  const localDateTimeMatch = JAVA_LOCAL_DATE_TIME_PATTERN.exec(value)
+
+  if (localDateTimeMatch) {
+    const [, year, month, day, hour, minute, second] = localDateTimeMatch
+    return buildVietnamDateTime(year, month, day, hour, minute, second)
+  }
+
+  return parseBrowserDate(value)
 }
 
 function getDateTimePart(parts: Intl.DateTimeFormatPart[], type: string) {
@@ -144,17 +156,19 @@ export function formatStaffScheduleDate(value?: string) {
 export function formatStaffScheduleDateTime(value?: string) {
   if (!value) return '-'
 
-  const localDateTimeMatch = JAVA_LOCAL_DATE_TIME_PATTERN.exec(value)
-
-  if (localDateTimeMatch) {
-    const [, year, month, day, hour, minute, second] = localDateTimeMatch
-    return formatDateTimeParts(buildVietnamDateTime(year, month, day, hour, minute, second))
-  }
-
-  const date = parseBrowserDate(value)
+  const date = parseStaffScheduleDateTime(value)
   if (!date) return value
 
   return formatDateTimeParts(date)
+}
+
+export function formatStaffScheduleTime(value?: string) {
+  if (!value) return '-'
+
+  const date = parseStaffScheduleDateTime(value)
+  if (!date) return value
+
+  return timeFormatter.format(date)
 }
 
 export function formatWeekday(date: Date) {

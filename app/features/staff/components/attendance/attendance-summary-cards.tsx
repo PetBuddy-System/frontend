@@ -9,7 +9,18 @@ const SUMMARY_ITEMS = [
   { key: 'daysOff', icon: 'event_busy', colorClass: 'text-destructive', bgClass: 'bg-destructive/5' }
 ] as const
 
-export function AttendanceSummaryCards() {
+export interface AttendanceSummary {
+  daysOff: string
+  lateEarly: string
+  totalDays: string
+  totalHours: string
+}
+
+export interface AttendanceSummaryCardsProps {
+  summary: AttendanceSummary
+}
+
+export function AttendanceSummaryCards({ summary }: AttendanceSummaryCardsProps) {
   const { t } = useTranslation('staff')
 
   return (
@@ -31,7 +42,7 @@ export function AttendanceSummaryCards() {
               <span
                 className={`font-display text-3xl font-bold ${item.key === 'totalDays' ? 'text-primary' : item.key === 'daysOff' ? 'text-destructive' : item.key === 'lateEarly' ? 'text-accent' : 'text-foreground'}`}
               >
-                {t(`attendance.summary.${item.key}.value`)}
+                {summary[item.key]}
               </span>
               <span className='text-base text-muted-foreground'>{t(`attendance.summary.${item.key}.unit`)}</span>
             </div>
