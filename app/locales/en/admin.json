@@ -204,6 +204,122 @@
       "searchPlaceholder": "Search by name or employee code..."
     }
   },
+  "customers": {
+    "actions": {
+      "add": "Add user",
+      "backToList": "Back to list",
+      "changeStatus": "Change account status",
+      "edit": "Edit",
+      "view": "View details"
+    },
+    "create": {
+      "pageTitle": "Create user",
+      "pageSubtitle": "Create a new customer account.",
+      "title": "Create new user",
+      "subtitle": "Enter customer account details and add an avatar if available."
+    },
+    "detail": {
+      "pageTitle": "User details",
+      "pageSubtitle": "View customer account information.",
+      "title": "User details",
+      "subtitle": "Customer profile, birth date, and account status information.",
+      "avatarAlt": "User avatar",
+      "fields": {
+        "createdAt": "Created at",
+        "dateOfBirth": "Date of birth",
+        "gender": "Gender",
+        "updatedAt": "Updated at"
+      }
+    },
+    "edit": {
+      "pageTitle": "Edit user",
+      "pageSubtitle": "Update customer account information.",
+      "title": "Edit user",
+      "subtitle": "Update the user's basic profile and avatar."
+    },
+    "form": {
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Create user",
+        "edit": "Save changes",
+        "saving": "Saving..."
+      },
+      "avatar": {
+        "currentAlt": "Current avatar",
+        "hint": "Choose only 1 avatar image for this user.",
+        "selected": "Selected: {{name}}"
+      },
+      "fields": {
+        "avatar": "Avatar",
+        "dateOfBirth": "Date of birth",
+        "email": "Email",
+        "fullName": "Full name",
+        "gender": "Gender",
+        "password": "Password"
+      },
+      "placeholders": {
+        "email": "user@petbuddy.vn",
+        "fullName": "Enter full name",
+        "gender": "Select gender",
+        "password": "At least 8 characters"
+      },
+      "validation": {
+        "password": "Password must be at least 8 characters, start with an uppercase letter, and include at least 1 number and 1 special character.",
+        "required": "Please fill in all required fields."
+      }
+    },
+    "messages": {
+      "createFailed": "Could not create user.",
+      "createSuccess": "User created successfully.",
+      "loadDetailFailed": "Could not load user details.",
+      "loadFailed": "Could not load users.",
+      "notFound": "User not found.",
+      "statusFailed": "Could not update account status.",
+      "statusSuccess": "Account status updated.",
+      "updateFailed": "Could not update user.",
+      "updateSuccess": "User updated."
+    },
+    "pagination": {
+      "label": "User pagination",
+      "showing": "Showing {{from}} - {{to}} of {{total}} users"
+    },
+    "stats": {
+      "active": {
+        "label": "Active accounts",
+        "note": "Allowed to sign in"
+      },
+      "suspended": {
+        "label": "Suspended accounts",
+        "note": "Currently suspended"
+      },
+      "total": {
+        "label": "Total users",
+        "note": "Customer accounts"
+      }
+    },
+    "status": {
+      "ALL": "All statuses"
+    },
+    "subtitle": "Manage customer accounts, activity status, and contact information in the system.",
+    "table": {
+      "avatarAlt": "User avatar",
+      "columns": {
+        "actions": "Actions",
+        "createdAt": "Created at",
+        "dateOfBirth": "Date of birth",
+        "status": "Status",
+        "user": "User"
+      },
+      "empty": "No matching users found."
+    },
+    "title": "User Management",
+    "toolbar": {
+      "clear": "Clear filters",
+      "intro": "Track customer profiles, account status, and contact information in one place.",
+      "statusLabel": "Status",
+      "title": "User list"
+    }
+  },
   "filters": {
     "today": "Today",
     "week": "This week",
@@ -236,12 +352,12 @@
     "logout": "Logout",
     "nav": {
       "blog": "Blog",
-      "employees": "Employees",
+      "employees": "Users",
       "inventory": "Products",
       "reports": "Reports",
       "serviceBookings": "Service Bookings",
       "services": "Services",
-      "users": "Users",
+      "users": "Employees",
       "vouchers": "Vouchers",
       "shipping": "Shipping Config",
       "auditLogs": "Audit Logs"
@@ -702,69 +818,181 @@
   },
   "users": {
     "actions": {
-      "add": "Add user",
+      "addEmployee": "Add employee",
+      "backToList": "Back to list",
+      "changeStatus": "Change account status",
       "edit": "Edit",
-      "export": "Export list",
       "view": "View details"
     },
+    "create": {
+      "pageTitle": "Create employee",
+      "pageSubtitle": "Create a new manager or staff account.",
+      "title": "Create new employee",
+      "subtitle": "Enter account details and choose the correct operating role for the employee."
+    },
+    "detail": {
+      "pageTitle": "Employee details",
+      "pageSubtitle": "View employee account information.",
+      "title": "Employee details",
+      "subtitle": "Profile, role, task, and account status information.",
+      "avatarAlt": "Employee avatar",
+      "fields": {
+        "createdAt": "Created at",
+        "dateOfBirth": "Date of birth",
+        "gender": "Gender",
+        "role": "Role",
+        "staffTask": "Department",
+        "updatedAt": "Updated at"
+      }
+    },
+    "edit": {
+      "pageTitle": "Edit employee",
+      "pageSubtitle": "Update employee account information.",
+      "title": "Edit employee",
+      "subtitle": "Update employee profile, role, and task."
+    },
+    "form": {
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Create employee",
+        "edit": "Save changes",
+        "saving": "Saving..."
+      },
+      "fields": {
+        "dateOfBirth": "Date of birth",
+        "email": "Email",
+        "fullName": "Full name",
+        "gender": "Gender",
+        "password": "Password",
+        "role": "Role",
+        "staffTask": "Department",
+        "avatar": "Avatar"
+      },
+      "avatar": {
+        "currentAlt": "Current avatar",
+        "hint": "Choose only 1 avatar image for this employee.",
+        "selected": "Selected: {{name}}"
+      },
+      "placeholders": {
+        "email": "employee@petbuddy.vn",
+        "fullName": "Enter full name",
+        "gender": "Select gender",
+        "password": "At least 8 characters",
+        "staffTask": "Select department"
+      },
+      "validation": {
+        "password": "Password must be at least 8 characters, start with an uppercase letter, and include at least 1 number and 1 special character.",
+        "required": "Please fill in all required fields."
+      }
+    },
+    "gender": {
+      "FEMALE": "Female",
+      "MALE": "Male",
+      "OTHER": "Other"
+    },
+    "messages": {
+      "createFailed": "Could not create employee.",
+      "createSuccess": "Employee created successfully.",
+      "loadDetailFailed": "Could not load employee details.",
+      "loadFailed": "Could not load employees.",
+      "notFound": "Employee not found.",
+      "statusFailed": "Could not update account status.",
+      "statusSuccess": "Account status updated.",
+      "updateFailed": "Could not update employee.",
+      "updateSuccess": "Employee updated."
+    },
     "pagination": {
-      "label": "Pagination",
-      "showing": "Showing {{from}} - {{to}} of {{total}} results"
+      "label": "Employee pagination",
+      "showing": "Showing {{from}} - {{to}} of {{total}} employees"
+    },
+    "roles": {
+      "ALL": "All roles",
+      "ADMIN": "Admin",
+      "CUSTOMER": "Customer",
+      "MANAGER": "Manager",
+      "STAFF": "Staff"
+    },
+    "staffTasks": {
+      "ALL": "All departments",
+      "COORDINATOR": "Coordination department",
+      "GROOMER": "Care department",
+      "SHIPPER": "Delivery department"
     },
     "stats": {
       "active": {
-        "label": "Active users",
-        "note": "90% activity rate"
+        "label": "Active accounts",
+        "note": "Allowed to sign in"
       },
-      "newToday": {
-        "label": "New users today",
-        "note": "Updated 5 minutes ago"
+      "coordinator": {
+        "label": "Coordination department",
+        "note": "Staff in coordination department"
+      },
+      "groomer": {
+        "label": "Care department",
+        "note": "Staff in care department"
+      },
+      "inactive": {
+        "label": "Inactive accounts",
+        "note": "Currently inactive"
+      },
+      "managers": {
+        "label": "Managers",
+        "note": "Manager accounts"
+      },
+      "shipper": {
+        "label": "Delivery department",
+        "note": "Staff in delivery department"
+      },
+      "staff": {
+        "label": "Staff",
+        "note": "Staff accounts"
+      },
+      "suspended": {
+        "label": "Suspended accounts",
+        "note": "Currently suspended"
       },
       "total": {
-        "label": "Total users",
-        "note": "+24 new customers this month"
+        "label": "Total employees",
+        "note": "Managers and staff"
       }
     },
     "status": {
-      "active": "Active",
-      "locked": "Locked"
+      "ACTIVE": "Active",
+      "DELETED": "Deleted",
+      "INACTIVE": "Inactive",
+      "PENDING": "Pending",
+      "SUSPENDED": "Suspended"
     },
-    "subtitle": "Manage customer information, loyalty points, and purchase history.",
+    "statusModal": {
+      "cancel": "Cancel",
+      "close": "Close status dialog",
+      "description": "Choose a new account status for {{name}}.",
+      "save": "Update",
+      "saving": "Updating...",
+      "statusLabel": "Account status",
+      "title": "Change account status"
+    },
+    "subtitle": "Manage manager and staff accounts, task assignment, and account status.",
     "table": {
+      "avatarAlt": "Employee avatar",
       "columns": {
         "actions": "Actions",
-        "customer": "Customer",
-        "orders": "Total orders",
-        "phone": "Phone number",
-        "points": "Loyalty points",
+        "createdAt": "Created at",
+        "dateOfBirth": "Date of birth",
+        "employee": "Employee",
+        "role": "Role",
+        "staffTask": "Department",
         "status": "Status"
       },
-      "orderCount": "{{count}} orders",
-      "pointsUnit": "points",
-      "rows": {
-        "leThiB": {
-          "email": "lethib@email.com",
-          "name": "Le Thi B"
-        },
-        "nguyenVanA": {
-          "email": "nguyenvana@email.com",
-          "name": "Nguyen Van A"
-        },
-        "tranVanC": {
-          "email": "tranvanc@email.com",
-          "name": "Tran Van C"
-        }
-      }
+      "empty": "No matching employees found."
     },
-    "title": "User Management",
+    "title": "Employee Management",
     "toolbar": {
-      "advancedFilter": "Advanced filter",
-      "searchPlaceholder": "Search by name or phone number...",
-      "status": {
-        "active": "Active",
-        "all": "All statuses",
-        "locked": "Locked"
-      }
+      "clear": "Clear filters",
+      "intro": "Track your operations team, roles, and assigned departments in one consistent employee view.",
+      "roleLabel": "Role",
+      "staffTaskLabel": "Department",
+      "title": "Employee list"
     }
   },
   "productManagement": {

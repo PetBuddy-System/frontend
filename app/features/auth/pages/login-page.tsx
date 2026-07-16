@@ -4,14 +4,11 @@ import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '~/providers/auth-provider'
 import { redirectToGoogle } from '~/features/auth/services/auth/google-auth'
+import { getDashboardPathByRole } from '~/features/auth/services/auth'
 import { MaterialIcon } from '~/shared/ui'
 import { validateEmail, validatePassword } from '~/shared/lib/validation'
 
 import logo from '../assets/cho-login.jpg'
-
-function getRedirectPathByRole(): string {
-  return '/'
-}
 
 export function LoginPage() {
   const { t } = useTranslation('auth')
@@ -104,9 +101,9 @@ export function LoginPage() {
     setIsSubmitting(true)
 
     try {
-      await login(email, password)
-      // Redirect về landing page sau khi login thành công
-      window.location.href = getRedirectPathByRole()
+      const userResponse = await login(email, password)
+      const redirectPath = getDashboardPathByRole(userResponse?.role)
+      window.location.href = redirectPath
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : t('login.error')
       setErrorMessage(message)

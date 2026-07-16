@@ -204,6 +204,122 @@
       "searchPlaceholder": "Tìm kiếm theo tên, mã NV..."
     }
   },
+  "customers": {
+    "actions": {
+      "add": "Thêm người dùng",
+      "backToList": "Quay lại danh sách",
+      "changeStatus": "Đổi trạng thái tài khoản",
+      "edit": "Chỉnh sửa",
+      "view": "Xem chi tiết"
+    },
+    "create": {
+      "pageTitle": "Tạo người dùng",
+      "pageSubtitle": "Tạo tài khoản khách hàng mới.",
+      "title": "Tạo người dùng mới",
+      "subtitle": "Điền thông tin tài khoản khách hàng và ảnh đại diện nếu có."
+    },
+    "detail": {
+      "pageTitle": "Chi tiết người dùng",
+      "pageSubtitle": "Xem thông tin tài khoản khách hàng.",
+      "title": "Chi tiết người dùng",
+      "subtitle": "Thông tin hồ sơ, ngày sinh và trạng thái tài khoản khách hàng.",
+      "avatarAlt": "Ảnh đại diện người dùng",
+      "fields": {
+        "createdAt": "Ngày tạo",
+        "dateOfBirth": "Ngày sinh",
+        "gender": "Giới tính",
+        "updatedAt": "Ngày cập nhật"
+      }
+    },
+    "edit": {
+      "pageTitle": "Chỉnh sửa người dùng",
+      "pageSubtitle": "Cập nhật thông tin tài khoản khách hàng.",
+      "title": "Chỉnh sửa người dùng",
+      "subtitle": "Cập nhật hồ sơ cơ bản và ảnh đại diện của người dùng."
+    },
+    "form": {
+      "actions": {
+        "cancel": "Hủy",
+        "create": "Tạo người dùng",
+        "edit": "Lưu thay đổi",
+        "saving": "Đang lưu..."
+      },
+      "avatar": {
+        "currentAlt": "Ảnh đại diện hiện tại",
+        "hint": "Chỉ chọn 1 ảnh đại diện cho người dùng.",
+        "selected": "Đã chọn: {{name}}"
+      },
+      "fields": {
+        "avatar": "Ảnh đại diện",
+        "dateOfBirth": "Ngày sinh",
+        "email": "Email",
+        "fullName": "Họ và tên",
+        "gender": "Giới tính",
+        "password": "Mật khẩu"
+      },
+      "placeholders": {
+        "email": "nguoidung@petbuddy.vn",
+        "fullName": "Nhập họ và tên",
+        "gender": "Chọn giới tính",
+        "password": "Tối thiểu 8 ký tự"
+      },
+      "validation": {
+        "password": "Mật khẩu tối thiểu 8 ký tự, ký tự đầu viết hoa, có ít nhất 1 số và 1 ký tự đặc biệt.",
+        "required": "Vui lòng nhập đầy đủ các trường bắt buộc."
+      }
+    },
+    "messages": {
+      "createFailed": "Không thể tạo người dùng.",
+      "createSuccess": "Tạo người dùng thành công.",
+      "loadDetailFailed": "Không thể tải chi tiết người dùng.",
+      "loadFailed": "Không thể tải danh sách người dùng.",
+      "notFound": "Không tìm thấy người dùng.",
+      "statusFailed": "Không thể cập nhật trạng thái tài khoản.",
+      "statusSuccess": "Đã cập nhật trạng thái tài khoản.",
+      "updateFailed": "Không thể cập nhật người dùng.",
+      "updateSuccess": "Đã cập nhật người dùng."
+    },
+    "pagination": {
+      "label": "Phân trang người dùng",
+      "showing": "Hiển thị {{from}} - {{to}} trong số {{total}} người dùng"
+    },
+    "stats": {
+      "active": {
+        "label": "Tài khoản hoạt động",
+        "note": "Đang được phép đăng nhập"
+      },
+      "suspended": {
+        "label": "Tài khoản đình chỉ",
+        "note": "Đang bị đình chỉ"
+      },
+      "total": {
+        "label": "Tổng người dùng",
+        "note": "Tài khoản khách hàng"
+      }
+    },
+    "status": {
+      "ALL": "Tất cả trạng thái"
+    },
+    "subtitle": "Quản lý tài khoản khách hàng, trạng thái hoạt động và thông tin liên hệ trong hệ thống.",
+    "table": {
+      "avatarAlt": "Ảnh đại diện người dùng",
+      "columns": {
+        "actions": "Thao tác",
+        "createdAt": "Ngày tạo",
+        "dateOfBirth": "Ngày sinh",
+        "status": "Trạng thái",
+        "user": "Người dùng"
+      },
+      "empty": "Không tìm thấy người dùng phù hợp."
+    },
+    "title": "Quản lý người dùng",
+    "toolbar": {
+      "clear": "Xóa lọc",
+      "intro": "Theo dõi hồ sơ khách hàng, trạng thái tài khoản và thông tin liên hệ trong một nơi.",
+      "statusLabel": "Trạng thái",
+      "title": "Danh sách người dùng"
+    }
+  },
   "filters": {
     "today": "Hôm nay",
     "week": "Tuần này",
@@ -236,12 +352,12 @@
     "logout": "Đăng xuất",
     "nav": {
       "blog": "Blog",
-      "employees": "Nhân viên",
+      "employees": "Người dùng",
       "inventory": "Sản phẩm",
       "reports": "Báo cáo",
       "serviceBookings": "Lịch đặt dịch vụ",
       "services": "Dịch vụ",
-      "users": "Người dùng",
+      "users": "Nhân viên",
       "vouchers": "Voucher",
       "shipping": "Cấu hình vận chuyển",
       "auditLogs": "Lịch sử thay đổi"
@@ -702,69 +818,181 @@
   },
   "users": {
     "actions": {
-      "add": "Thêm người dùng",
+      "addEmployee": "Thêm nhân viên",
+      "backToList": "Quay lại danh sách",
+      "changeStatus": "Đổi trạng thái tài khoản",
       "edit": "Chỉnh sửa",
-      "export": "Xuất danh sách",
       "view": "Xem chi tiết"
     },
+    "create": {
+      "pageTitle": "Tạo nhân viên",
+      "pageSubtitle": "Tạo tài khoản manager hoặc staff mới.",
+      "title": "Tạo nhân viên mới",
+      "subtitle": "Điền thông tin tài khoản và chọn đúng vai trò vận hành cho nhân viên."
+    },
+    "detail": {
+      "pageTitle": "Chi tiết nhân viên",
+      "pageSubtitle": "Xem thông tin tài khoản nhân viên.",
+      "title": "Chi tiết nhân viên",
+      "subtitle": "Thông tin hồ sơ, vai trò, công việc và trạng thái tài khoản.",
+      "avatarAlt": "Ảnh đại diện nhân viên",
+      "fields": {
+        "createdAt": "Ngày tạo",
+        "dateOfBirth": "Ngày sinh",
+        "gender": "Giới tính",
+        "role": "Vai trò",
+        "staffTask": "Bộ phận",
+        "updatedAt": "Ngày cập nhật"
+      }
+    },
+    "edit": {
+      "pageTitle": "Chỉnh sửa nhân viên",
+      "pageSubtitle": "Cập nhật thông tin tài khoản nhân viên.",
+      "title": "Chỉnh sửa nhân viên",
+      "subtitle": "Cập nhật hồ sơ, vai trò và công việc của nhân viên."
+    },
+    "form": {
+      "actions": {
+        "cancel": "Hủy",
+        "create": "Tạo nhân viên",
+        "edit": "Lưu thay đổi",
+        "saving": "Đang lưu..."
+      },
+      "fields": {
+        "dateOfBirth": "Ngày sinh",
+        "email": "Email",
+        "fullName": "Họ và tên",
+        "gender": "Giới tính",
+        "password": "Mật khẩu",
+        "role": "Vai trò",
+        "staffTask": "Bộ phận",
+        "avatar": "Ảnh đại diện"
+      },
+      "avatar": {
+        "currentAlt": "Ảnh đại diện hiện tại",
+        "hint": "Chỉ chọn 1 ảnh đại diện cho nhân viên.",
+        "selected": "Đã chọn: {{name}}"
+      },
+      "placeholders": {
+        "email": "nhanvien@petbuddy.vn",
+        "fullName": "Nhập họ và tên",
+        "gender": "Chọn giới tính",
+        "password": "Tối thiểu 8 ký tự",
+        "staffTask": "Chọn bộ phận"
+      },
+      "validation": {
+        "password": "Mật khẩu tối thiểu 8 ký tự, ký tự đầu viết hoa, có ít nhất 1 số và 1 ký tự đặc biệt.",
+        "required": "Vui lòng nhập đầy đủ các trường bắt buộc."
+      }
+    },
+    "gender": {
+      "FEMALE": "Nữ",
+      "MALE": "Nam",
+      "OTHER": "Khác"
+    },
+    "messages": {
+      "createFailed": "Không thể tạo nhân viên.",
+      "createSuccess": "Tạo nhân viên thành công.",
+      "loadDetailFailed": "Không thể tải chi tiết nhân viên.",
+      "loadFailed": "Không thể tải danh sách nhân viên.",
+      "notFound": "Không tìm thấy nhân viên.",
+      "statusFailed": "Không thể cập nhật trạng thái tài khoản.",
+      "statusSuccess": "Đã cập nhật trạng thái tài khoản.",
+      "updateFailed": "Không thể cập nhật nhân viên.",
+      "updateSuccess": "Đã cập nhật nhân viên."
+    },
     "pagination": {
-      "label": "Phân trang",
-      "showing": "Hiển thị {{from}} - {{to}} trong số {{total}} kết quả"
+      "label": "Phân trang nhân viên",
+      "showing": "Hiển thị {{from}} - {{to}} trong số {{total}} nhân viên"
+    },
+    "roles": {
+      "ALL": "Tất cả vai trò",
+      "ADMIN": "Admin",
+      "CUSTOMER": "Khách hàng",
+      "MANAGER": "Manager",
+      "STAFF": "Staff"
+    },
+    "staffTasks": {
+      "ALL": "Tất cả bộ phận",
+      "COORDINATOR": "Bộ phận điều phối",
+      "GROOMER": "Bộ phận chăm sóc",
+      "SHIPPER": "Bộ phận giao nhận"
     },
     "stats": {
       "active": {
-        "label": "Đang hoạt động",
-        "note": "90% tỷ lệ hoạt động"
+        "label": "Tài khoản hoạt động",
+        "note": "Đang được phép đăng nhập"
       },
-      "newToday": {
-        "label": "Người dùng mới hôm nay",
-        "note": "Cập nhật 5 phút trước"
+      "coordinator": {
+        "label": "Bộ phận điều phối",
+        "note": "Staff thuộc bộ phận điều phối"
+      },
+      "groomer": {
+        "label": "Bộ phận chăm sóc",
+        "note": "Staff thuộc bộ phận chăm sóc"
+      },
+      "inactive": {
+        "label": "Tài khoản inactive",
+        "note": "Đang ngưng hoạt động"
+      },
+      "managers": {
+        "label": "Tổng manager",
+        "note": "Tài khoản quản lý"
+      },
+      "shipper": {
+        "label": "Bộ phận giao nhận",
+        "note": "Staff thuộc bộ phận giao nhận"
+      },
+      "staff": {
+        "label": "Tổng staff",
+        "note": "Tài khoản nhân viên"
+      },
+      "suspended": {
+        "label": "Tài khoản đình chỉ",
+        "note": "Đang bị đình chỉ"
       },
       "total": {
-        "label": "Tổng người dùng",
-        "note": "+24 khách mới tháng này"
+        "label": "Tổng nhân viên",
+        "note": "Bao gồm manager và staff"
       }
     },
     "status": {
-      "active": "Hoạt động",
-      "locked": "Bị khóa"
+      "ACTIVE": "Hoạt động",
+      "DELETED": "Đã xóa",
+      "INACTIVE": "Không hoạt động",
+      "PENDING": "Chờ kích hoạt",
+      "SUSPENDED": "Đình chỉ"
     },
-    "subtitle": "Quản lý thông tin, điểm tích lũy và lịch sử mua hàng của khách hàng.",
+    "statusModal": {
+      "cancel": "Hủy",
+      "close": "Đóng hộp thoại đổi trạng thái",
+      "description": "Chọn trạng thái tài khoản mới cho {{name}}.",
+      "save": "Cập nhật",
+      "saving": "Đang cập nhật...",
+      "statusLabel": "Trạng thái tài khoản",
+      "title": "Đổi trạng thái tài khoản"
+    },
+    "subtitle": "Quản lý tài khoản manager và staff, phân quyền công việc và trạng thái hoạt động.",
     "table": {
+      "avatarAlt": "Ảnh đại diện nhân viên",
       "columns": {
-        "actions": "Hành động",
-        "customer": "Khách hàng",
-        "orders": "Tổng đơn hàng",
-        "phone": "Số điện thoại",
-        "points": "Điểm tích lũy",
+        "actions": "Thao tác",
+        "createdAt": "Ngày tạo",
+        "dateOfBirth": "Ngày sinh",
+        "employee": "Nhân viên",
+        "role": "Vai trò",
+        "staffTask": "Bộ phận",
         "status": "Trạng thái"
       },
-      "orderCount": "{{count}} đơn",
-      "pointsUnit": "điểm",
-      "rows": {
-        "leThiB": {
-          "email": "lethib@email.com",
-          "name": "Lê Thị B"
-        },
-        "nguyenVanA": {
-          "email": "nguyenvana@email.com",
-          "name": "Nguyễn Văn A"
-        },
-        "tranVanC": {
-          "email": "tranvanc@email.com",
-          "name": "Trần Văn C"
-        }
-      }
+      "empty": "Không tìm thấy nhân viên phù hợp."
     },
-    "title": "Quản lý người dùng",
+    "title": "Quản lý nhân viên",
     "toolbar": {
-      "advancedFilter": "Lọc nâng cao",
-      "searchPlaceholder": "Tìm kiếm theo tên hoặc số điện thoại...",
-      "status": {
-        "active": "Hoạt động",
-        "all": "Tất cả trạng thái",
-        "locked": "Bị khóa"
-      }
+      "clear": "Xóa lọc",
+      "intro": "Theo dõi đội ngũ vận hành, vai trò và bộ phận phụ trách để quản trị nhân sự nhất quán.",
+      "roleLabel": "Vai trò",
+      "staffTaskLabel": "Bộ phận",
+      "title": "Danh sách nhân viên"
     }
   },
   "productManagement": {

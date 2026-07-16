@@ -17,7 +17,7 @@ export function ServiceDetailPage() {
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
-      <SiteHeader />
+      <SiteHeader activeItem='services' />
       <main className='flex-1 pb-24 md:pb-0'>
         <div className='mx-auto w-full max-w-6xl px-4 py-6 md:px-6'>
           <nav aria-label={t('detail.breadcrumb.label')} className='text-sm text-muted-foreground'>
