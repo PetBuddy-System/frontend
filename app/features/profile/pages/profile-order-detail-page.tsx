@@ -9,7 +9,7 @@ import { MaterialIcon } from '~/shared/ui'
 import { ReturnWarrantyForm } from '../components/returns/return-warranty-form'
 import { ReviewOrderModal } from '../components/returns/review-order-modal'
 import { EditReviewModal } from '../components/returns/edit-review-modal'
-import { ReviewCard } from '../components/returns/review-card'
+import { ViewReviewModal } from '../components/returns/view-review-modal'
 import { fetchOrderDetailApi } from '~/features/profile/services/order/order-api'
 import { getOrderReviewApi, deleteReviewApi } from '~/features/profile/services'
 import type { OrderReviewResponse } from '~/shared/lib/review'
@@ -22,6 +22,7 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
   const [showReturnForm, setShowReturnForm] = useState(false)
   const [showReviewModal, setShowReviewModal] = useState(false)
   const [showEditReviewModal, setShowEditReviewModal] = useState(false)
+  const [showViewReviewModal, setShowViewReviewModal] = useState(false)
   const [orderStatus, setOrderStatus] = useState<string | null>(null)
   const [isLoadingStatus, setIsLoadingStatus] = useState(true)
   const [existingReview, setExistingReview] = useState<OrderReviewResponse | null>(null)
@@ -51,10 +52,21 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
       if (!orderId) return
       setLoadingReview(true)
       try {
-        const review = await getOrderReviewApi(orderId)
-        setExistingReview(review)
+        const review: any = await getOrderReviewApi(orderId) // ← Thêm : any
+        console.log('📦 Review data:', review)
+
+        // Lấy data từ response
+        const reviewData = review?.data || review
+
+        // Kiểm tra có reviewId không
+        if (reviewData && reviewData.reviewId) {
+          setExistingReview(reviewData)
+        } else {
+          setExistingReview(null)
+        }
       } catch (error) {
         console.error('Failed to load review:', error)
+        setExistingReview(null)
       } finally {
         setLoadingReview(false)
       }
@@ -64,14 +76,21 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
 
   const canReturn = orderStatus === 'COMPLETED'
   const canReview = orderStatus === 'COMPLETED' && !existingReview
+  const hasReview = !!existingReview && !!existingReview.reviewId
 
   // Reload review
   const reloadReview = async () => {
     try {
-      const review = await getOrderReviewApi(orderId)
-      setExistingReview(review)
+      const review: any = await getOrderReviewApi(orderId) // ← Thêm : any
+      const reviewData = review?.data || review
+      if (reviewData && reviewData.reviewId) {
+        setExistingReview(reviewData)
+      } else {
+        setExistingReview(null)
+      }
     } catch (error) {
       console.error('Failed to reload review:', error)
+      setExistingReview(null)
     }
   }
 
@@ -87,6 +106,17 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
     await reloadReview()
   }
 
+  // Mở modal xem review
+  const handleViewReview = () => {
+    setShowViewReviewModal(true)
+  }
+
+  // Mở modal edit từ view
+  const handleEditFromView = () => {
+    setShowViewReviewModal(false)
+    setShowEditReviewModal(true)
+  }
+
   // Xóa review
   const handleDeleteReview = async () => {
     if (!existingReview) return
@@ -95,6 +125,7 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
     try {
       await deleteReviewApi(existingReview.reviewId)
       setExistingReview(null)
+      setShowViewReviewModal(false)
       alert('Đã xóa đánh giá thành công!')
     } catch (error) {
       console.error('Failed to delete review:', error)
@@ -111,22 +142,14 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
         </header>
 
         <main className='flex-1 overflow-y-auto p-4 md:p-6 pb-24'>
-          <div className='mx-auto flex max-w-7xl flex-col gap-6'>
-            <div className='relative'>
+          <div className='mx-auto flex max-w-7xl flex-col gap-4'>
+            <div>
+              {/* ✅ Chi tiết đơn hàng */}
               <OrderDetailView orderId={orderId} isStaff={false} />
 
-              {/* Review Card - Component đã tách riêng */}
-              {existingReview && (
-                <ReviewCard
-                  review={existingReview}
-                  onEdit={() => setShowEditReviewModal(true)}
-                  onDelete={handleDeleteReview}
-                />
-              )}
-
-              {/* Nút hành động */}
-              {!isLoadingStatus && (canReturn || canReview) && (
-                <div className='flex flex-wrap gap-3 justify-end border-t border-border pt-4 mt-4'>
+              {/* ✅ 2 nút nằm trong cùng khung, phía dưới */}
+              {!isLoadingStatus && (canReturn || canReview || hasReview) && (
+                <div className='flex flex-wrap gap-3 justify-end border-t border-border pt-3 mt-2'>
                   {canReturn && (
                     <Button
                       type='button'
@@ -138,7 +161,7 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
                     </Button>
                   )}
 
-                  {canReview && (
+                  {canReview && !hasReview && (
                     <Button
                       type='button'
                       variant='outline'
@@ -149,6 +172,18 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
                       <span>Đánh giá đơn hàng</span>
                     </Button>
                   )}
+
+                  {hasReview && (
+                    <Button
+                      type='button'
+                      variant='outline'
+                      onClick={handleViewReview}
+                      className='flex items-center gap-2'
+                    >
+                      <MaterialIcon name='visibility' className='text-lg' />
+                      <span>Xem đánh giá</span>
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
@@ -156,7 +191,6 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
         </main>
       </div>
       <ProfileFloatingSupport />
-
       {/* Return Form Modal */}
       {showReturnForm && (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4'>
@@ -188,6 +222,17 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
           isOpen={showReviewModal}
           onClose={() => setShowReviewModal(false)}
           onSuccess={handleReviewSuccess}
+        />
+      )}
+
+      {/* View Review Modal - Xem chi tiết */}
+      {showViewReviewModal && existingReview && (
+        <ViewReviewModal
+          review={existingReview}
+          isOpen={showViewReviewModal}
+          onClose={() => setShowViewReviewModal(false)}
+          onEdit={handleEditFromView}
+          onDelete={handleDeleteReview}
         />
       )}
 
