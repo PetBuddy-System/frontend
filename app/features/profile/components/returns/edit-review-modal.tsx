@@ -6,30 +6,50 @@ import { updateReviewApi } from '~/features/profile/services'
 import type { OrderReviewResponse } from '~/shared/lib/review'
 
 interface EditReviewModalProps {
-    review: OrderReviewResponse
+    review: OrderReviewResponse | any
     isOpen: boolean
     onClose: () => void
     onSuccess?: () => void
 }
 
 export function EditReviewModal({ review, isOpen, onClose, onSuccess }: EditReviewModalProps) {
-    const [rating, setRating] = useState(review.rating)
+    // Lấy data từ response nếu có
+    const reviewData = review?.data || review
+
+    const [rating, setRating] = useState(reviewData?.rating ?? 0)
     const [hoveredRating, setHoveredRating] = useState(0)
-    const [content, setContent] = useState(review.content)
+    const [content, setContent] = useState(reviewData?.content ?? '')
     const [submitting, setSubmitting] = useState(false)
 
     if (!isOpen) return null
 
     const handleSubmit = async () => {
-        if (rating === 0 || !content.trim()) return
+        if (rating === 0) {
+            alert('Vui lòng chọn số sao!')
+            return
+        }
+
+        if (!content.trim()) {
+            alert('Vui lòng nhập nội dung đánh giá!')
+            return
+        }
+
+        const reviewId = reviewData?.reviewId
+
+        if (!reviewId) {
+            console.error('❌ reviewId is undefined!', reviewData)
+            alert('Không tìm thấy ID đánh giá! Vui lòng thử lại.')
+            return
+        }
 
         setSubmitting(true)
         try {
-            await updateReviewApi(review.reviewId, {
+            await updateReviewApi(reviewId, {
                 rating,
                 content: content.trim(),
-                anonymous: review.anonymous  // ← Giữ nguyên giá trị anonymous hiện tại
+                anonymous: reviewData?.anonymous ?? false
             })
+            alert('Cập nhật đánh giá thành công!')
             onSuccess?.()
             onClose()
         } catch (error) {
@@ -42,7 +62,7 @@ export function EditReviewModal({ review, isOpen, onClose, onSuccess }: EditRevi
 
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4'>
-            <div className='relative w-full max-w-md rounded-2xl bg-background p-6 shadow-2xl'>
+            <div className='relative w-full max-w-md rounded-2xl bg-background p-6 shadow-2xl animate-in fade-in zoom-in duration-200'>
                 <button
                     type='button'
                     onClick={onClose}
@@ -91,7 +111,7 @@ export function EditReviewModal({ review, isOpen, onClose, onSuccess }: EditRevi
                 </p>
 
                 {/* Actions */}
-                <div className='mt-6 flex justify-end gap-2'>
+                <div className='mt-6 flex justify-end gap-2 border-t pt-4'>
                     <Button variant='outline' onClick={onClose}>
                         Hủy
                     </Button>
@@ -106,3 +126,6 @@ export function EditReviewModal({ review, isOpen, onClose, onSuccess }: EditRevi
         </div>
     )
 }
+
+// ✅ Đảm bảo export default (nếu cần)
+export default EditReviewModal
