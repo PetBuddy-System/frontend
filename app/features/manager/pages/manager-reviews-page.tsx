@@ -1,3 +1,5 @@
+// app/features/manager/pages/manager-reviews-page.tsx
+
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
@@ -13,6 +15,7 @@ import {
 import type { ManagerReviewItem } from '~/shared/lib/product'
 
 type SortKey = 'newest' | 'oldest' | 'highestRating' | 'lowestRating'
+type ReviewTypeFilter = 'ALL' | 'PRODUCT' | 'ORDER'
 
 const SORT_MAP: Record<SortKey, { sortBy: string; sortDir: 'asc' | 'desc' }> = {
   newest: { sortBy: 'createdAt', sortDir: 'desc' },
@@ -37,6 +40,7 @@ export function ManagerReviewsPage() {
   const [debouncedKeyword, setDebouncedKeyword] = useState('')
   const [ratingFilter, setRatingFilter] = useState<number | undefined>(undefined)
   const [statusFilter, setStatusFilter] = useState('')
+  const [reviewTypeFilter, setReviewTypeFilter] = useState<ReviewTypeFilter>('ALL')  // ← THÊM
   const [sortKey, setSortKey] = useState<SortKey>('newest')
 
   // ── Detail drawer state ──────────────────────────────────────────────────────
@@ -60,6 +64,7 @@ export function ManagerReviewsPage() {
         keyword: debouncedKeyword || undefined,
         rating: ratingFilter,
         status: statusFilter || undefined,
+        reviewType: reviewTypeFilter === 'ALL' ? undefined : reviewTypeFilter,  // ← THÊM
         page: currentPage,
         size: PAGE_SIZE,
         sortBy,
@@ -75,7 +80,7 @@ export function ManagerReviewsPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [debouncedKeyword, ratingFilter, statusFilter, currentPage, sortKey])
+  }, [debouncedKeyword, ratingFilter, statusFilter, reviewTypeFilter, currentPage, sortKey])
 
   useEffect(() => {
     void loadReviews()
@@ -110,6 +115,11 @@ export function ManagerReviewsPage() {
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusFilter(e.target.value)
+    setCurrentPage(0)
+  }
+
+  const handleReviewTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {  // ← THÊM
+    setReviewTypeFilter(e.target.value as ReviewTypeFilter)
     setCurrentPage(0)
   }
 
@@ -155,6 +165,8 @@ export function ManagerReviewsPage() {
               onStatusChange={handleStatusChange}
               ratingFilter={ratingFilter}
               onRatingChange={handleRatingChange}
+              reviewTypeFilter={reviewTypeFilter}        // ← THÊM
+              onReviewTypeChange={handleReviewTypeChange} // ← THÊM
               sortKey={currentSortKey}
               onSortChange={handleSortChange}
             />
