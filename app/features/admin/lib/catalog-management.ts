@@ -1,4 +1,4 @@
-import { SURCHARGE_WEIGHT_RANGES, type WeightRange } from '~/shared/lib/catalog-pricing'
+import { DURATION_CONFIG_WEIGHT_RANGES, SURCHARGE_WEIGHT_RANGES, type WeightRange } from '~/shared/lib/catalog-pricing'
 
 export const CATALOG_TYPES = ['AT_STORE', 'AT_HOME'] as const
 export const PET_SPECIES = ['DOG', 'CAT', 'ALL'] as const
@@ -6,7 +6,6 @@ export const PET_SPECIES = ['DOG', 'CAT', 'ALL'] as const
 export const WEIGHT_RANGES = [
   'EXTRA_SMALL',
   'SMALL',
-  'MEDIUM',
   ...SURCHARGE_WEIGHT_RANGES
 ] as const satisfies readonly WeightRange[]
 export const CATALOG_STATUSES = ['AVAILABLE', 'UNAVAILABLE'] as const
@@ -37,6 +36,7 @@ export interface CatalogResponse {
   bufferTime: number
   status: CatalogStatus | string
   surchargeConfig?: string | null
+  durationConfig?: string | null
   createdAt?: string | null
   updatedAt?: string | null
 }
@@ -51,6 +51,7 @@ export type CatalogRequest = {
   bufferTime: number
   status: CatalogStatus
   surchargeConfig?: string
+  durationConfig?: string
 }
 
 export interface TimeSlotResponse {
@@ -61,6 +62,7 @@ export interface TimeSlotResponse {
   dayOfWeek: WeekDay | string
   startTime: string
   isActive: boolean
+  maxPets?: number | null
 }
 
 export type TimeSlotRequest = {
@@ -68,6 +70,7 @@ export type TimeSlotRequest = {
   dayOfWeek: WeekDay
   startTime: string
   isActive: boolean
+  maxPets: number
 }
 
 export type TimeSlotUpdateRequest = Omit<TimeSlotRequest, 'catalogId'>
@@ -84,6 +87,7 @@ export interface AdminTimeSlot {
   dayOfWeek: WeekDay
   startTime: string
   isActive: boolean
+  maxPets: number
 }
 
 const ICON_BY_CATALOG_TYPE: Record<CatalogType, string> = {
@@ -134,6 +138,7 @@ export function mapCatalogResponseToAdminCatalog(catalog: CatalogResponse): Admi
     bufferTime: Number(catalog.bufferTime ?? 0),
     status: coerceCatalogStatus(catalog.status),
     surchargeConfig: catalog.surchargeConfig ?? undefined,
+    durationConfig: catalog.durationConfig ?? undefined,
     updatedAt: formatUpdatedAt(catalog.updatedAt ?? catalog.createdAt),
     icon: ICON_BY_CATALOG_TYPE[catalogType]
   }
@@ -145,7 +150,8 @@ export function mapTimeSlotResponseToAdminTimeSlot(slot: TimeSlotResponse): Admi
     catalogId: slot.catalogId,
     dayOfWeek: coerceWeekDay(slot.dayOfWeek),
     startTime: slot.startTime,
-    isActive: Boolean(slot.isActive)
+    isActive: Boolean(slot.isActive),
+    maxPets: Number(slot.maxPets ?? 5)
   }
 }
 
@@ -159,6 +165,9 @@ export function mapAdminCatalogToCatalogRequest(catalog: AdminCatalog): CatalogR
     durationMinute: catalog.durationMinute,
     bufferTime: catalog.bufferTime,
     status: catalog.status,
-    surchargeConfig: catalog.surchargeConfig
+    surchargeConfig: catalog.surchargeConfig,
+    durationConfig: catalog.durationConfig
   }
 }
+
+export { DURATION_CONFIG_WEIGHT_RANGES, SURCHARGE_WEIGHT_RANGES }

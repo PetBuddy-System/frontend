@@ -49,32 +49,32 @@ export function ManagerPromotionsTable({
     switch (status) {
       case 'ACTIVE':
         return {
-          label: 'ACTIVE',
+          label: 'Hoạt động',
           className: 'bg-success/10 text-success border border-success/20'
         }
       case 'DRAFT':
         return {
-          label: 'DRAFT',
+          label: 'Bản nháp',
           className: 'bg-warning/10 text-warning border border-warning/20'
         }
       case 'EXPIRED':
         return {
-          label: 'EXPIRED',
+          label: 'Hết hạn',
           className: 'bg-destructive/10 text-destructive border border-destructive/20'
         }
       case 'CANCELLED':
         return {
-          label: 'CANCELLED',
+          label: 'Đã hủy',
           className: 'bg-muted-foreground/15 text-muted-foreground border border-muted-foreground/20'
         }
       case 'DELETED':
         return {
-          label: 'DELETED',
+          label: 'Đã xóa',
           className: 'bg-destructive/15 text-destructive/80 border border-destructive/20'
         }
       default:
         return {
-          label: 'UNKNOWN',
+          label: 'Không xác định',
           className: 'bg-muted-foreground/10 text-muted-foreground'
         }
     }
@@ -98,12 +98,24 @@ export function ManagerPromotionsTable({
             <tbody className='divide-y divide-border'>
               {Array.from({ length: 4 }).map((_, idx) => (
                 <tr key={idx} className='h-20 bg-card'>
-                  <td className='px-6 py-4'><div className='h-5 w-40 bg-muted rounded' /></td>
-                  <td className='px-6 py-4'><div className='h-4 w-60 bg-muted rounded' /></td>
-                  <td className='px-6 py-4'><div className='h-4 w-24 bg-muted rounded' /></td>
-                  <td className='px-6 py-4'><div className='h-4 w-24 bg-muted rounded' /></td>
-                  <td className='px-6 py-4'><div className='h-6 w-20 bg-muted rounded' /></td>
-                  <td className='px-6 py-4'><div className='h-8 w-24 bg-muted rounded ml-auto' /></td>
+                  <td className='px-6 py-4'>
+                    <div className='h-5 w-40 bg-muted rounded' />
+                  </td>
+                  <td className='px-6 py-4'>
+                    <div className='h-4 w-60 bg-muted rounded' />
+                  </td>
+                  <td className='px-6 py-4'>
+                    <div className='h-4 w-24 bg-muted rounded' />
+                  </td>
+                  <td className='px-6 py-4'>
+                    <div className='h-4 w-24 bg-muted rounded' />
+                  </td>
+                  <td className='px-6 py-4'>
+                    <div className='h-6 w-20 bg-muted rounded' />
+                  </td>
+                  <td className='px-6 py-4'>
+                    <div className='h-8 w-24 bg-muted rounded ml-auto' />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -156,19 +168,19 @@ export function ManagerPromotionsTable({
 
               return (
                 <tr key={promo.promotionId} className='group transition-colors hover:bg-muted/70'>
-                  <td className='px-6 py-4 font-bold text-primary font-display'>
-                    {promo.name}
-                  </td>
+                  <td className='px-6 py-4 font-bold text-primary font-display'>{promo.name}</td>
                   <td className='px-6 py-4 text-sm text-card-foreground max-w-xs'>
                     <span className='line-clamp-2'>{promo.description || '—'}</span>
                   </td>
                   <td className='px-6 py-4 text-sm font-medium text-foreground'>{formatDate(promo.startDate)}</td>
                   <td className='px-6 py-4 text-sm font-medium text-foreground'>{formatDate(promo.endDate)}</td>
                   <td className='px-6 py-4'>
-                    <span className={cn(
-                      'inline-flex rounded-full px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wide',
-                      status.className
-                    )}>
+                    <span
+                      className={cn(
+                        'inline-flex rounded-full px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wide',
+                        status.className
+                      )}
+                    >
                       {status.label}
                     </span>
                   </td>
@@ -220,7 +232,10 @@ export function ManagerPromotionsTable({
 
       <div className='flex flex-col gap-4 border-t border-border bg-muted/30 px-6 py-4 sm:flex-row sm:items-center sm:justify-between'>
         <p className='text-sm text-muted-foreground font-semibold'>
-          {t('promotions.table.showing', `Hiển thị ${resultsFrom}-${resultsTo} trong tổng số ${totalElements} khuyến mãi`)}
+          {t(
+            'promotions.table.showing',
+            `Hiển thị ${resultsFrom}-${resultsTo} trong tổng số ${totalElements} khuyến mãi`
+          )}
         </p>
         {totalPages > 1 && (
           <div className='flex items-center gap-2'>

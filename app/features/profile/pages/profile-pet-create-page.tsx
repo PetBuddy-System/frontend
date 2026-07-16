@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 
 import { cn } from '~/shared/lib/cn'
 import { Button, MaterialIcon } from '~/shared/ui'
@@ -15,6 +15,9 @@ import { petProfileApi, type PetProfileImages, type PetProfilePayload } from '..
 export function ProfilePetCreatePage() {
   const { t } = useTranslation('profile')
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const returnTo = searchParams.get('returnTo')
+  const safeReturnTo = returnTo?.startsWith('/') ? returnTo : null
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState<{ type: 'error'; text: string } | null>(null)
 
@@ -24,7 +27,7 @@ export function ProfilePetCreatePage() {
 
     try {
       const response = await petProfileApi.createPet(payload, images)
-      void navigate(`/profile/pets/${response.data.petId}`)
+      void navigate(safeReturnTo ?? `/profile/pets/${response.data.petId}`)
     } catch (error) {
       setMessage({
         type: 'error',
@@ -49,7 +52,7 @@ export function ProfilePetCreatePage() {
                 </h1>
                 <p className='mt-2 text-muted-foreground'>{t('petProfiles.create.description')}</p>
               </div>
-              <Button type='button' variant='outline' onClick={() => void navigate('/profile/pets')}>
+              <Button type='button' variant='outline' onClick={() => void navigate(safeReturnTo ?? '/profile/pets')}>
                 <MaterialIcon name='arrow_back' className='text-lg' />
                 {t('petProfiles.actions.backToList')}
               </Button>
@@ -69,7 +72,7 @@ export function ProfilePetCreatePage() {
             <PetProfileForm
               isSubmitting={isSubmitting}
               submitLabel={t('petProfiles.actions.saveCreate')}
-              onCancel={() => void navigate('/profile/pets')}
+              onCancel={() => void navigate(safeReturnTo ?? '/profile/pets')}
               onSubmit={handleSubmit}
             />
           </div>

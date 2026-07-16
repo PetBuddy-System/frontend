@@ -105,6 +105,7 @@
     "title": "Blog Management"
   },
   "charts": {
+    "bookingStatsError": "Unable to load booking statistics.",
     "breakdown": {
       "items": {
         "grooming": "Spa & Grooming",
@@ -126,6 +127,28 @@
       },
       "title": "Revenue Trend",
       "unit": "Million VND"
+    },
+    "bookingRevenueTrend": {
+      "days": {
+        "fri": "Fri",
+        "mon": "Mon",
+        "sat": "Sat",
+        "sun": "Sun",
+        "thu": "Thu",
+        "tue": "Tue",
+        "wed": "Wed"
+      },
+      "empty": "No booking revenue was found for this date range.",
+      "error": "Unable to load the booking revenue chart. Please try again later.",
+      "subtitle": "Spa and grooming service revenue by day in the selected range.",
+      "title": "Booking Revenue Trend"
+    },
+    "bookingStructure": {
+      "centerLabel": "Total",
+      "empty": "No booking revenue structure data is available.",
+      "error": "Unable to load booking revenue structure. Please try again later.",
+      "subtitle": "Revenue share by booking service.",
+      "title": "Booking Revenue Structure"
     }
   },
   "dashboard": {
@@ -201,7 +224,8 @@
       "label": "Total Revenue"
     },
     "services": {
-      "change": "-2.1% vs previous period",
+      "change": "{{count}} bookings in range",
+      "error": "Data unavailable",
       "label": "Services"
     }
   },
@@ -300,7 +324,8 @@
           "pet": "Bo (Poodle)"
         }
       },
-      "remaining": "Remaining {{value}}"
+      "remaining": "Remaining {{value}}",
+      "estimatedEndAt": "Ends around {{value}}"
     },
     "title": "Service Booking Management",
     "tabs": {
@@ -355,6 +380,7 @@
     },
     "bookingTypes": {
       "IN_STORE": "In store",
+      "AT_STORE": "At store",
       "AT_HOME": "At home"
     },
     "detail": {
@@ -368,6 +394,7 @@
         "service": "Service",
         "pet": "Pet",
         "schedule": "Schedule",
+        "estimatedEndAt": "Estimated end",
         "bookingType": "Booking type",
         "totalAmount": "Total amount",
         "depositAmount": "Deposit",
@@ -560,11 +587,23 @@
     },
     "surcharge": {
       "title": "Weight surcharges",
-      "help": "Leave a surcharge empty or 0 to omit it from surchargeConfig. Base price already covers EXTRA_SMALL, SMALL, and MEDIUM pets.",
+      "help": "Leave a surcharge empty or 0 to omit it from surchargeConfig. Base price applies to EXTRA_SMALL and SMALL pets.",
       "ranges": {
+        "MEDIUM": "MEDIUM (8kg - 12kg)",
         "LARGE": "LARGE (12kg - 18kg)",
         "EXTRA_LARGE": "EXTRA_LARGE (18kg - 25kg)",
         "EXTRA_EXTRA_LARGE": "EXTRA_EXTRA_LARGE (Above 25kg)"
+      }
+    },
+    "durationConfig": {
+      "title": "Duration by weight",
+      "help": "Enter extra minutes on top of the base duration. The system sends durationConfig as the final duration minutes for each weight range.",
+      "unit": "extra min",
+      "ranges": {
+        "MEDIUM": "Medium",
+        "LARGE": "Large",
+        "EXTRA_LARGE": "Extra large",
+        "EXTRA_EXTRA_LARGE": "Extra extra large"
       }
     },
     "searchPlaceholder": "Search service name or catalog ID...",
@@ -614,8 +653,12 @@
         "catalog": "Catalog",
         "dayOfWeek": "Day of week",
         "startTime": "Start time",
+        "maxPets": "Pet capacity",
         "isActive": "Open this slot"
-      }
+      },
+      "maxPetsValue": "{{count}} pets",
+      "maxPetsCompact": "{{count}} slot",
+      "edit": "Edit"
     },
     "weekDays": {
       "MONDAY": "Monday",

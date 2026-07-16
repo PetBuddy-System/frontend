@@ -316,6 +316,9 @@
       "unassigned": "Not assigned yet",
       "address": "Address",
       "cancelReason": "Cancel reason",
+      "beforeMedia": "Before-service photos",
+      "afterMedia": "After-service photos",
+      "noMedia": "No photos have been uploaded by staff yet.",
       "paymentTitle": "Payment summary"
     },
     "payment": {

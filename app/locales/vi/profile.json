@@ -316,6 +316,9 @@
       "unassigned": "Chưa phân công",
       "address": "Địa chỉ",
       "cancelReason": "Lý do hủy",
+      "beforeMedia": "Ảnh trước khi thực hiện",
+      "afterMedia": "Ảnh sau khi thực hiện",
+      "noMedia": "Chưa có ảnh được nhân viên tải lên.",
       "paymentTitle": "Tóm tắt thanh toán"
     },
     "payment": {

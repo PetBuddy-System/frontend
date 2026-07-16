@@ -2,7 +2,12 @@ import { type FormEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button, MaterialIcon } from '~/shared/ui'
-import { SURCHARGE_WEIGHT_RANGES, serializeSurchargeConfig } from '~/shared/lib/catalog-pricing'
+import {
+  DURATION_CONFIG_WEIGHT_RANGES,
+  SURCHARGE_WEIGHT_RANGES,
+  serializeDurationConfig,
+  serializeSurchargeConfig
+} from '~/shared/lib/catalog-pricing'
 
 import { CATALOG_STATUSES, CATALOG_TYPES, PET_SPECIES, type CatalogRequest } from '../../lib/catalog-management'
 
@@ -50,9 +55,24 @@ export function AdminCreateServiceModal({ isOpen, isSaving = false, onClose, onS
       bufferTime: Number(formData.get('bufferTime') ?? 0),
       status: String(formData.get('status') ?? 'AVAILABLE') as CatalogRequest['status'],
       surchargeConfig: serializeSurchargeConfig({
+        MEDIUM: Number(formData.get('surcharge_MEDIUM') ?? 0),
         LARGE: Number(formData.get('surcharge_LARGE') ?? 0),
         EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_LARGE') ?? 0),
         EXTRA_EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_EXTRA_LARGE') ?? 0)
+      }),
+      durationConfig: serializeDurationConfig({
+        MEDIUM: Number(formData.get('durationExtra_MEDIUM') ?? 0)
+          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_MEDIUM') ?? 0)
+          : 0,
+        LARGE: Number(formData.get('durationExtra_LARGE') ?? 0)
+          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_LARGE') ?? 0)
+          : 0,
+        EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0)
+          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0)
+          : 0,
+        EXTRA_EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
+          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
+          : 0
       })
     })
   }
@@ -131,14 +151,11 @@ export function AdminCreateServiceModal({ isOpen, isSaving = false, onClose, onS
                 options={[...CATALOG_STATUSES]}
                 optionLabels={statusLabels}
               />
-              <CurrencyField
-                name='price'
-                label={t('serviceManagement.create.fields.price')}
-                defaultValue={250000}
-              />
+              <CurrencyField name='price' label={t('serviceManagement.create.fields.price')} defaultValue={250000} />
 
               {/* Phụ thu theo cân nặng — full width */}
               <SurchargeFields title={t('serviceManagement.surcharge.title')} />
+              <DurationConfigFields title={t('serviceManagement.durationConfig.title')} />
 
               {/* Thời lượng & Thời gian đệm */}
               <NumberField
@@ -243,7 +260,7 @@ function SurchargeFields({ title }: { title: string }) {
       <legend className='px-1 text-sm font-semibold text-card-foreground'>{title}</legend>
       <p className='text-xs leading-relaxed text-muted-foreground'>{t('serviceManagement.surcharge.help')}</p>
       {/* grid-cols-3 cố định để 3 cột luôn ngang hàng */}
-      <div className='grid grid-cols-3 items-end gap-3'>
+      <div className='grid grid-cols-2 items-end gap-3 lg:grid-cols-4'>
         {SURCHARGE_WEIGHT_RANGES.map((range) => (
           <CurrencyField
             key={range}
@@ -251,6 +268,29 @@ function SurchargeFields({ title }: { title: string }) {
             label={t(`serviceManagement.surcharge.ranges.${range}`)}
             defaultValue={0}
             required={false}
+          />
+        ))}
+      </div>
+    </fieldset>
+  )
+}
+
+function DurationConfigFields({ title }: { title: string }) {
+  const { t } = useTranslation('admin')
+
+  return (
+    <fieldset className='space-y-3 rounded-lg border border-border bg-card p-4 md:col-span-2'>
+      <legend className='px-1 text-sm font-semibold text-card-foreground'>{title}</legend>
+      <p className='text-xs leading-relaxed text-muted-foreground'>{t('serviceManagement.durationConfig.help')}</p>
+      <div className='grid grid-cols-2 items-end gap-3 lg:grid-cols-4'>
+        {DURATION_CONFIG_WEIGHT_RANGES.map((range) => (
+          <NumberField
+            key={range}
+            name={`durationExtra_${range}`}
+            label={t(`serviceManagement.durationConfig.ranges.${range}`)}
+            defaultValue={0}
+            required={false}
+            unit={t('serviceManagement.durationConfig.unit')}
           />
         ))}
       </div>

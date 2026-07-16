@@ -39,6 +39,14 @@ function getCoverflowOffset(index: number, activeIndex: number, total: number): 
   return offset
 }
 
+function getCatalogTypeLabel(type: string, t: (key: string, options?: Record<string, string>) => string): string {
+  return t(`catalog.catalogTypes.${type}`, { defaultValue: type })
+}
+
+function getPetSpeciesLabel(species: string, t: (key: string, options?: Record<string, string>) => string): string {
+  return t(`catalog.petSpeciesLabels.${species}`, { defaultValue: species })
+}
+
 export function ServicesIndividual({ catalogs, errorMessage, isLoading = false }: ServicesIndividualProps) {
   const { t } = useTranslation('services')
   const [activeIndex, setActiveIndex] = useState(0)
@@ -164,7 +172,7 @@ export function ServicesIndividual({ catalogs, errorMessage, isLoading = false }
                         <MaterialIcon name={icon} filled className='text-[26px]' />
                       </span>
                       <span className='rounded-full bg-muted px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground'>
-                        {catalog.catalogType}
+                        {getCatalogTypeLabel(catalog.catalogType, t)}
                       </span>
                     </div>
                     <h3 className='font-display text-2xl font-semibold leading-tight text-foreground'>
@@ -177,7 +185,9 @@ export function ServicesIndividual({ catalogs, errorMessage, isLoading = false }
                         {t('catalog.minutes')}
                       </span>
                       <span className='rounded-xl bg-muted/70 px-3 py-2'>
-                        <span className='block font-semibold text-foreground'>{catalog.petSpecies}</span>
+                        <span className='block font-semibold text-foreground'>
+                          {getPetSpeciesLabel(catalog.petSpecies, t)}
+                        </span>
                         {t('catalog.petSpecies')}
                       </span>
                     </div>

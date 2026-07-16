@@ -2,7 +2,14 @@ import { useMemo, useState, type FormEvent, type InputHTMLAttributes, type Selec
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/shared/lib/cn'
-import { SURCHARGE_WEIGHT_RANGES, parseSurchargeConfig, serializeSurchargeConfig } from '~/shared/lib/catalog-pricing'
+import {
+  DURATION_CONFIG_WEIGHT_RANGES,
+  SURCHARGE_WEIGHT_RANGES,
+  parseDurationConfig,
+  parseSurchargeConfig,
+  serializeDurationConfig,
+  serializeSurchargeConfig
+} from '~/shared/lib/catalog-pricing'
 import { Button, MaterialIcon } from '~/shared/ui'
 
 import {
@@ -152,11 +159,12 @@ export function AdminServicesTable({
                           <div>
                             <p className='font-bold text-card-foreground'>{service.catalogName}</p>
                             <p className='text-xs text-muted-foreground'>
-                              #{service.catalogId} — {
-                                service.petSpecies === 'DOG' ? 'Dành cho Chó' : 
-                                service.petSpecies === 'CAT' ? 'Dành cho Mèo' : 
-                                'Dành cho cả Chó & Mèo'
-                              }
+                              #{service.catalogId} —{' '}
+                              {service.petSpecies === 'DOG'
+                                ? 'Dành cho Chó'
+                                : service.petSpecies === 'CAT'
+                                  ? 'Dành cho Mèo'
+                                  : 'Dành cho cả Chó & Mèo'}
                             </p>
                           </div>
                         </div>
@@ -363,14 +371,34 @@ function ServiceDetailModal({
       status: String(formData.get('status') ?? service.status) as CatalogRequest['status'],
       description: String(formData.get('description') ?? '').trim(),
       surchargeConfig: serializeSurchargeConfig({
+        MEDIUM: Number(formData.get('surcharge_MEDIUM') ?? 0),
         LARGE: Number(formData.get('surcharge_LARGE') ?? 0),
         EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_LARGE') ?? 0),
         EXTRA_EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_EXTRA_LARGE') ?? 0)
+      }),
+      durationConfig: serializeDurationConfig({
+        MEDIUM: Number(formData.get('durationExtra_MEDIUM') ?? 0)
+          ? Number(formData.get('durationMinute') ?? service.durationMinute) +
+            Number(formData.get('durationExtra_MEDIUM') ?? 0)
+          : 0,
+        LARGE: Number(formData.get('durationExtra_LARGE') ?? 0)
+          ? Number(formData.get('durationMinute') ?? service.durationMinute) +
+            Number(formData.get('durationExtra_LARGE') ?? 0)
+          : 0,
+        EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0)
+          ? Number(formData.get('durationMinute') ?? service.durationMinute) +
+            Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0)
+          : 0,
+        EXTRA_EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
+          ? Number(formData.get('durationMinute') ?? service.durationMinute) +
+            Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
+          : 0
       })
     })
   }
 
   const surchargeValues = parseSurchargeConfig(service.surchargeConfig)
+  const durationValues = parseDurationConfig(service.durationConfig)
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
@@ -447,7 +475,7 @@ function ServiceDetailModal({
               {t('serviceManagement.surcharge.title')}
             </legend>
             <p className='text-xs leading-relaxed text-muted-foreground'>{t('serviceManagement.surcharge.help')}</p>
-            <div className='grid grid-cols-3 gap-3'>
+            <div className='grid grid-cols-2 gap-3 lg:grid-cols-4'>
               {SURCHARGE_WEIGHT_RANGES.map((range) => (
                 <CurrencyField
                   key={range}
@@ -456,6 +484,27 @@ function ServiceDetailModal({
                   defaultValue={surchargeValues[range] ?? 0}
                   readOnly={isReadOnly}
                   required={false}
+                />
+              ))}
+            </div>
+          </fieldset>
+          <fieldset className='space-y-3 rounded-lg border border-border bg-muted/40 p-4 md:col-span-2'>
+            <legend className='px-1 text-sm font-semibold text-card-foreground'>
+              {t('serviceManagement.durationConfig.title')}
+            </legend>
+            <p className='text-xs leading-relaxed text-muted-foreground'>
+              {t('serviceManagement.durationConfig.help')}
+            </p>
+            <div className='grid grid-cols-2 gap-3 lg:grid-cols-4'>
+              {DURATION_CONFIG_WEIGHT_RANGES.map((range) => (
+                <NumberField
+                  key={range}
+                  name={`durationExtra_${range}`}
+                  label={t(`serviceManagement.durationConfig.ranges.${range}`)}
+                  defaultValue={Math.max(0, Number(durationValues[range] ?? 0) - service.durationMinute)}
+                  readOnly={isReadOnly}
+                  required={false}
+                  unit={t('serviceManagement.durationConfig.unit')}
                 />
               ))}
             </div>
@@ -596,14 +645,20 @@ function WeeklyScheduleModal({
                               }
                             />
                           </div>
-                          <div className='flex justify-end border-t border-border/50 pt-2'>
+                          <div className='grid grid-cols-[3.75rem_minmax(0,1fr)] items-center gap-2 border-t border-border/50 pt-2'>
+                            <span className='inline-flex h-8 min-w-0 items-center justify-center gap-1 rounded-md bg-muted px-2 text-center text-[11px] font-semibold leading-none text-muted-foreground'>
+                              <MaterialIcon name='pets' className='shrink-0 text-[16px] leading-none' />
+                              <span className='whitespace-nowrap'>
+                                {t('serviceManagement.timeSlot.maxPetsCompact', { count: slot.maxPets })}
+                              </span>
+                            </span>
                             <button
                               type='button'
                               onClick={() => onEditSlot(slot)}
-                              className='flex items-center gap-1 text-xs font-semibold text-primary hover:underline'
+                              className='inline-flex h-8 min-w-0 items-center justify-center gap-1 rounded-md border border-primary/30 bg-primary/10 px-2 text-xs font-bold leading-none text-primary transition hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
                             >
-                              <MaterialIcon name='edit' className='text-sm' />
-                              Sửa giờ
+                              <MaterialIcon name='edit' className='shrink-0 text-[16px] leading-none' />
+                              <span>{t('serviceManagement.timeSlot.edit')}</span>
                             </button>
                           </div>
                         </div>
@@ -654,7 +709,8 @@ function CreateTimeSlotModal({
       catalogId: service.catalogId,
       dayOfWeek: String(formData.get('dayOfWeek') ?? 'MONDAY') as TimeSlotRequest['dayOfWeek'],
       startTime: `${String(formData.get('startTime') ?? '08:00')}:00`,
-      isActive: formData.get('isActive') === 'on'
+      isActive: formData.get('isActive') === 'on',
+      maxPets: Math.max(1, Number(formData.get('maxPets') ?? 1))
     })
   }
 
@@ -686,6 +742,14 @@ function CreateTimeSlotModal({
             label={t('serviceManagement.timeSlot.fields.startTime')}
             defaultValue='08:00'
             type='time'
+            required
+          />
+          <Field
+            name='maxPets'
+            label={t('serviceManagement.timeSlot.fields.maxPets')}
+            defaultValue='5'
+            type='number'
+            min={1}
             required
           />
           <label className='flex items-center justify-between gap-3 rounded-lg border border-border bg-muted p-4'>
@@ -744,7 +808,8 @@ function EditTimeSlotModal({
     onSubmit(slot.timeSlotId, {
       dayOfWeek: String(formData.get('dayOfWeek') ?? slot.dayOfWeek) as TimeSlotUpdateRequest['dayOfWeek'],
       startTime: startTimeFormatted,
-      isActive: formData.get('isActive') === 'on'
+      isActive: formData.get('isActive') === 'on',
+      maxPets: Math.max(1, Number(formData.get('maxPets') ?? slot.maxPets))
     })
   }
 
@@ -777,6 +842,14 @@ function EditTimeSlotModal({
             label={t('serviceManagement.timeSlot.fields.startTime')}
             defaultValue={currentStartTime}
             type='time'
+            required
+          />
+          <Field
+            name='maxPets'
+            label={t('serviceManagement.timeSlot.fields.maxPets')}
+            defaultValue={String(slot.maxPets)}
+            type='number'
+            min={1}
             required
           />
           <label className='flex items-center justify-between gap-3 rounded-lg border border-border bg-muted p-4'>
@@ -941,4 +1014,3 @@ function CurrencyField({
     </div>
   )
 }
-

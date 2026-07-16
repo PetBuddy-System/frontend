@@ -98,6 +98,7 @@ export interface CatalogResponse {
   bufferTime: number
   status: string
   surchargeConfig?: string | null
+  durationConfig?: string | null
 }
 
 export interface PetProfileResponse {
@@ -126,6 +127,7 @@ export interface TimeSlotResponse {
   dayOfWeek: string
   startTime: string
   isActive: boolean
+  maxPets?: number | null
 }
 
 export interface BookingListParams {
@@ -135,7 +137,7 @@ export interface BookingListParams {
 }
 
 interface ApiResponse<T> {
-  code?: number
+  code?: number | string
   message?: string
   success?: boolean
   data: T
@@ -166,10 +168,13 @@ function toApiError(error: unknown): Error {
   }
 
   const responseData = error.response?.data as
-    | { message?: string; error?: string; errors?: Record<string, string> }
+    | { code?: number | string; message?: string; error?: string; errors?: Record<string, string> }
     | undefined
   const firstFieldError = responseData?.errors ? Object.values(responseData.errors)[0] : undefined
-  return new Error(firstFieldError ?? responseData?.message ?? responseData?.error ?? error.message)
+  return Object.assign(new Error(firstFieldError ?? responseData?.message ?? responseData?.error ?? error.message), {
+    apiCode: responseData?.code,
+    status: error.response?.status
+  })
 }
 
 async function request<T>(config: AxiosRequestConfig): Promise<T> {

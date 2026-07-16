@@ -1,12 +1,16 @@
 export type WeightRange = 'EXTRA_SMALL' | 'SMALL' | 'MEDIUM' | 'LARGE' | 'EXTRA_LARGE' | 'EXTRA_EXTRA_LARGE'
 
 export type SurchargeMap = Partial<Record<WeightRange, number>>
+export type DurationConfigMap = Partial<Record<WeightRange, number>>
 
 export const SURCHARGE_WEIGHT_RANGES = [
+  'MEDIUM',
   'LARGE',
   'EXTRA_LARGE',
   'EXTRA_EXTRA_LARGE'
 ] as const satisfies readonly WeightRange[]
+
+export const DURATION_CONFIG_WEIGHT_RANGES = SURCHARGE_WEIGHT_RANGES
 
 export interface PriceableCatalog {
   price: number
@@ -35,6 +39,35 @@ export function serializeSurchargeConfig(surcharges: SurchargeMap): string | und
     const amount = Number(surcharges[range] ?? 0)
 
     return Number.isFinite(amount) && amount > 0 ? `${range}:${amount}` : null
+  })
+    .filter(Boolean)
+    .join(';')
+
+  return config.length > 0 ? config : undefined
+}
+
+export function parseDurationConfig(config?: string | null): DurationConfigMap {
+  if (!config) {
+    return {}
+  }
+
+  return config.split(';').reduce<DurationConfigMap>((acc, entry) => {
+    const [range, rawMinutes] = entry.split(':')
+    const minutes = Number(rawMinutes)
+
+    if (isWeightRange(range) && Number.isFinite(minutes) && minutes > 0) {
+      acc[range] = minutes
+    }
+
+    return acc
+  }, {})
+}
+
+export function serializeDurationConfig(durations: DurationConfigMap): string | undefined {
+  const config = DURATION_CONFIG_WEIGHT_RANGES.map((range) => {
+    const minutes = Number(durations[range] ?? 0)
+
+    return Number.isFinite(minutes) && minutes > 0 ? `${range}:${minutes}` : null
   })
     .filter(Boolean)
     .join(';')

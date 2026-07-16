@@ -7,6 +7,8 @@ import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
 const STAFF_NAV_ITEMS = [
+  { icon: 'content_cut', key: 'groomerBookings', href: '/staff/groomer-bookings', roles: ['GROOMER'] },
+  { icon: 'assignment_ind', key: 'coordinatorBookings', href: '/staff/coordinator-bookings', roles: ['COORDINATOR'] },
   { icon: 'shopping_cart', key: 'orders', href: '/staff/orders' },
   { icon: 'delete_sweep', key: 'disposalRequest', href: '/staff/disposal-request' },
   { icon: 'assignment_return', key: 'returns', href: '/staff/returns' },
@@ -24,8 +26,20 @@ export interface StaffSidebarProps {
 export function StaffSidebar({ activeItem }: StaffSidebarProps) {
   const { t } = useTranslation('staff')
   const { isCollapsed, toggleSidebar } = useSidebar()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const navigate = useNavigate()
+  const staffTask = user?.staffTask
+  const visibleNavItems = STAFF_NAV_ITEMS.filter((item) => {
+    if ('roles' in item && item.roles && !(item.roles as readonly string[]).includes(staffTask ?? '')) {
+      return false
+    }
+
+    if (staffTask === 'GROOMER' && ['orders', 'disposalRequest', 'returns', 'inventory'].includes(item.key)) {
+      return false
+    }
+
+    return true
+  })
 
   return (
     <aside
@@ -58,7 +72,7 @@ export function StaffSidebar({ activeItem }: StaffSidebarProps) {
       </div>
 
       <nav className='min-h-0 flex-1 space-y-1 overflow-y-auto p-3'>
-        {STAFF_NAV_ITEMS.map((item) => {
+        {visibleNavItems.map((item) => {
           const isActive = activeItem === item.key
 
           return (
