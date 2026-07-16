@@ -859,7 +859,7 @@
     },
     "entityTypes": {
       "PAYMENT": "Thanh toán",
-      "VOUCHER": "Khuyến mãi (Voucher)",
+      "VOUCHER": "Khuyến mãi",
       "VOUCHER_USAGE": "Lượt dùng Voucher"
     },
     "reasonMap": {

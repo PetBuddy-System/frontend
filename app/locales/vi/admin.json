@@ -191,13 +191,13 @@
       "change": "+8.4% so với kỳ trước",
       "label": "TB cỡ đơn"
     },
-    "orders": {
-      "change": "+5.2% so với kỳ trước",
+    "profit": {
       "change_dynamic": "{{percent}}% so với kỳ trước",
-      "label": "Đơn hàng"
+      "label": "Lợi nhuận"
     },
     "revenue": {
       "change": "+12.5% so với kỳ trước",
+      "change_dynamic": "{{percent}}% so với kỳ trước",
       "label": "Tổng doanh thu"
     },
     "services": {

@@ -4,27 +4,39 @@ import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 
 const METRICS = [
-  { key: 'revenue', icon: 'payments', value: '124.5M đ', trend: 'positive' },
-  { key: 'orders', icon: 'shopping_cart', value: '342', trend: 'positive' },
+  { key: 'revenue', icon: 'payments', value: '0 M đ', trend: 'positive' },
+  { key: 'profit', icon: 'account_balance_wallet', value: '0 M đ', trend: 'positive' },
   { key: 'services', icon: 'medical_services', value: '45.2M đ', trend: 'negative' },
   { key: 'averageOrder', icon: 'receipt_long', value: '364K đ', trend: 'positive' }
 ] as const
 
 interface AdminMetricsGridProps {
-  ordersValue?: number
-  ordersChangePercent?: number | null
+  totalRevenueValue?: number
+  totalRevenueChangePercent?: number | null
+  profitValue?: number
+  profitChangePercent?: number | null
   isLoading?: boolean
 }
 
-export function AdminMetricsGrid({ ordersValue, ordersChangePercent, isLoading }: AdminMetricsGridProps) {
+function formatMillion(value: number): string {
+  return `${(value / 1_000_000).toFixed(1)}M đ`
+}
+
+export function AdminMetricsGrid({
+  totalRevenueValue,
+  totalRevenueChangePercent,
+  profitValue,
+  profitChangePercent,
+  isLoading
+}: AdminMetricsGridProps) {
   const { t } = useTranslation('admin')
 
   return (
     <section className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4'>
       {METRICS.map((metric) => {
-        const isOrders = metric.key === 'orders'
-        
-        if (isOrders && isLoading) {
+        const isDynamic = metric.key === 'revenue' || metric.key === 'profit'
+
+        if (isDynamic && isLoading) {
           return (
             <article
               key={metric.key}
@@ -40,16 +52,28 @@ export function AdminMetricsGrid({ ordersValue, ordersChangePercent, isLoading }
           )
         }
 
-        let displayValue = metric.value
+        let displayValue: string = metric.value
         let isPositive = metric.trend === 'positive'
         let changeText = t(`metrics.${metric.key}.change`)
 
-        if (isOrders && ordersValue !== undefined) {
-          displayValue = ordersValue.toString()
-          if (ordersChangePercent !== undefined && ordersChangePercent !== null) {
-            isPositive = ordersChangePercent >= 0
-            const formattedPercent = ordersChangePercent > 0 ? `+${ordersChangePercent}` : `${ordersChangePercent}`
-            changeText = t('metrics.orders.change_dynamic', { percent: formattedPercent })
+        if (metric.key === 'revenue' && totalRevenueValue !== undefined) {
+          displayValue = formatMillion(totalRevenueValue)
+          if (totalRevenueChangePercent !== undefined && totalRevenueChangePercent !== null) {
+            isPositive = totalRevenueChangePercent >= 0
+            const formattedPercent =
+              totalRevenueChangePercent > 0 ? `+${totalRevenueChangePercent}` : `${totalRevenueChangePercent}`
+            changeText = t('metrics.revenue.change_dynamic', { percent: formattedPercent })
+          } else {
+            changeText = ''
+          }
+        }
+
+        if (metric.key === 'profit' && profitValue !== undefined) {
+          displayValue = formatMillion(profitValue)
+          if (profitChangePercent !== undefined && profitChangePercent !== null) {
+            isPositive = profitChangePercent >= 0
+            const formattedPercent = profitChangePercent > 0 ? `+${profitChangePercent}` : `${profitChangePercent}`
+            changeText = t('metrics.profit.change_dynamic', { percent: formattedPercent })
           } else {
             changeText = ''
           }

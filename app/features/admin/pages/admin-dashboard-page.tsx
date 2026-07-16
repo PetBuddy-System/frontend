@@ -67,9 +67,11 @@ export function AdminDashboardPage() {
               </div>
             </section>
 
-            <AdminMetricsGrid
-              ordersValue={data?.orderCount?.value}
-              ordersChangePercent={data?.orderCount?.changePercent}
+           <AdminMetricsGrid
+              totalRevenueValue={data?.totalRevenue?.value}
+              totalRevenueChangePercent={data?.totalRevenue?.changePercent}
+              profitValue={data?.profit?.value}
+              profitChangePercent={data?.profit?.changePercent}
               isLoading={isLoading}
             />
             <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>

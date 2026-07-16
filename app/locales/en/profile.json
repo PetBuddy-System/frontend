@@ -585,7 +585,6 @@
     "cancel": "Cancel",
     "suggestRouteBtn": "Suggest Route",
     "routeModalTitle": "Suggested Delivery Route",
-    "routeModalSubtitle": "Optimal sequence based on Nearest Neighbor routing.",
     "routeStop": "Stop {{seq}}",
     "distanceFromPrev": "Distance from previous: {{distance}} km",
     "distanceFromStore": "Distance from store: {{distance}} km",

@@ -585,7 +585,6 @@
     "cancel": "Hủy",
     "suggestRouteBtn": "Gợi ý tuyến đường",
     "routeModalTitle": "Đề xuất Tuyến đường Giao hàng",
-    "routeModalSubtitle": "Thứ tự tối ưu dựa trên thuật toán tìm đường Nearest Neighbor.",
     "routeStop": "Chặng {{seq}}",
     "distanceFromPrev": "Cách điểm trước: {{distance}} km",
     "distanceFromStore": "Cách cửa hàng: {{distance}} km",

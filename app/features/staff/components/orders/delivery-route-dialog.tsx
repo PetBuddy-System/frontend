@@ -57,7 +57,6 @@ export function DeliveryRouteDialog({
             </div>
             <div>
               <h3 className='font-bold text-foreground'>{t('orderDetail.routeModalTitle', 'Đề xuất Tuyến đường Giao hàng')}</h3>
-              <p className='text-xs text-muted-foreground'>{t('orderDetail.routeModalSubtitle', 'Thứ tự tối ưu dựa trên thuật toán Nearest Neighbor')}</p>
             </div>
           </div>
           <button
