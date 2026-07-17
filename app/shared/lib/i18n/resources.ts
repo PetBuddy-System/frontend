@@ -6,6 +6,7 @@ import enLanding from '~/locales/en/landing.json'
 import enManager from '~/locales/en/manager.json'
 import enProducts from '~/locales/en/products.json'
 import enProfile from '~/locales/en/profile.json'
+import enReturns from '~/locales/en/returns.json'
 import enServices from '~/locales/en/services.json'
 import enStaff from '~/locales/en/staff.json'
 import enWelcome from '~/locales/en/welcome.json'
@@ -17,6 +18,7 @@ import viLanding from '~/locales/vi/landing.json'
 import viManager from '~/locales/vi/manager.json'
 import viProducts from '~/locales/vi/products.json'
 import viProfile from '~/locales/vi/profile.json'
+import viReturns from '~/locales/vi/returns.json'
 import viServices from '~/locales/vi/services.json'
 import viStaff from '~/locales/vi/staff.json'
 import viWelcome from '~/locales/vi/welcome.json'
@@ -40,6 +42,7 @@ export const NAMESPACES = [
   'auth',
   'products',
   'profile',
+  'returns',
   'services',
   'staff',
   'manager',
@@ -59,6 +62,7 @@ export const resources = {
     manager: enManager,
     products: enProducts,
     profile: enProfile,
+    returns: enReturns,
     services: enServices,
     staff: enStaff,
     welcome: enWelcome
@@ -72,6 +76,7 @@ export const resources = {
     manager: viManager,
     products: viProducts,
     profile: viProfile,
+    returns: viReturns,
     services: viServices,
     staff: viStaff,
     welcome: viWelcome

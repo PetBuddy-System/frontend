@@ -8,12 +8,11 @@ export function ThemeToggle() {
   return (
     <Button
       variant='outline'
-      size='icon'
       onClick={toggleTheme}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className='rounded-full'
+      aria-label={isDark ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
+      className='h-8 w-12 rounded-full p-0'
     >
-      {isDark ? <SunIcon /> : <MoonIcon />}
+      {isDark ? <MoonIcon /> : <SunIcon />}
     </Button>
   )
 }
