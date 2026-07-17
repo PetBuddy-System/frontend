@@ -15,6 +15,7 @@ interface OrderActionButtonsProps {
   isCanceling: boolean
   onPrint: () => void
   onProofOpen: () => void
+  onOpenPicking: () => void
   onRetryPayment: () => void
   onCancelOrder: () => void
   onStatusUpdate: () => void
@@ -31,6 +32,7 @@ export function OrderActionButtons({
   isCanceling,
   onPrint,
   onProofOpen,
+  onOpenPicking,
   onRetryPayment,
   onCancelOrder,
   onStatusUpdate,
@@ -87,7 +89,7 @@ export function OrderActionButtons({
               if (res.success) {
                 onStatusUpdate()
               } else {
-                alert(res.message || 'Lỗi khi nhận giao hàng')
+                alert(res.message || 'Lỗi khi bắt đầu xuất kho')
               }
             } catch (err: unknown) {
               const message = err instanceof Error ? err.message : 'Có lỗi xảy ra'
@@ -96,12 +98,23 @@ export function OrderActionButtons({
           }}
           className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm transition-colors shadow-sm"
         >
-          <MaterialIcon name="local_shipping" className="text-[18px]" />
-          <span>{t('orderDetail.startShipping', 'Giao hàng')}</span>
+          <MaterialIcon name="inventory_2" className="text-[18px]" />
+          <span>{t('orderDetail.startPicking', 'Xuất kho')}</span>
         </button>
       )}
 
       {isStaff && isCoordinator && order.status === 'PICKING' && (
+        <button
+          type="button"
+          onClick={onOpenPicking}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm transition-colors shadow-sm"
+        >
+          <MaterialIcon name="checklist" className="text-[18px]" />
+          <span>{t('orderDetail.viewPicking', 'Xem lấy hàng')}</span>
+        </button>
+      )}
+
+      {isStaff && isShipper && order.status === 'PICKED' && (
         <button
           type="button"
           onClick={async () => {
@@ -119,23 +132,12 @@ export function OrderActionButtons({
           }}
           className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm transition-colors shadow-sm"
         >
-          <MaterialIcon name="inventory_2" className="text-[18px]" />
+          <MaterialIcon name="local_shipping" className="text-[18px]" />
           <span>{t('orderDetail.startShipping', 'Giao hàng')}</span>
         </button>
       )}
 
-      {isStaff && isShipper && order.status === 'SHIPPING' && (
-        <button
-          type="button"
-          onClick={onProofOpen}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm transition-colors shadow-sm"
-        >
-          <MaterialIcon name="check_circle" className="text-[18px]" />
-          <span>{t('orderDetail.confirmDelivered', 'Đã giao')}</span>
-        </button>
-      )}
-
-      {!isStaff && order.status === 'PENDING' && order.payment?.paymentMethod === 'CARD' && (
+      {!isStaff && order.status === 'PENDING' && order.payment?.paymentMethod === 'CARD' && order.payment?.status !== 'PAID' && (
         <button
           onClick={onRetryPayment}
           disabled={isExpired}

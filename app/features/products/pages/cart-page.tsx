@@ -29,7 +29,6 @@ export function CartPage() {
   const [isMutating, setIsMutating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Sản phẩm bị server tự giảm số lượng do hết hàng — chờ user xác nhận
   const [adjustedItem, setAdjustedItem] = useState<CartItemResponse | null>(null)
 
 

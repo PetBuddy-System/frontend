@@ -163,8 +163,7 @@
       "title": "Order summary",
       "products": "Products ({{count}})",
       "total": "Total",
-      "checkout": "Checkout now",
-      "securePayment": "Safe and secure payment"
+      "checkout": "Checkout now"
     },
     "support": {
       "title": "Need support?",
@@ -265,11 +264,6 @@
           "title": "Royal Canin dry food",
           "imageAlt": "Royal Canin Poodle Adult dry food bag"
         }
-      },
-      "trust": {
-        "secure": "Secure payment",
-        "returns": "7-day returns",
-        "authentic": "Authentic products guaranteed"
       }
     },
     "coupon": {

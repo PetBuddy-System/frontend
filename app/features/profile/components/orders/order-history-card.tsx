@@ -5,6 +5,7 @@ import { cn } from '~/shared/lib/cn'
 import { updateOrderStatusApi } from '~/features/profile/services'
 import { getPaymentByOrderIdApi } from '~/features/products/services/payment/payment-api'
 import type { VoucherResponse } from '~/shared/lib/voucher'
+import { formatDateOnly, formatTimeOnly } from '~/shared/lib/date'
 
 export interface OrderHistoryCardProps {
   order: {
@@ -149,7 +150,8 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
               {getStatusLabel(order.status)} | {order.status}
             </span>
           </div>
-          <p className="text-sm text-muted-foreground">Ngày đặt: {formatDate(order.createdAt)}</p>
+          <span>Ngày đặt: {formatDateOnly(order.createdAt)}</span>
+          <span className='text-xs text-muted-foreground'>{formatTimeOnly(order.createdAt)}</span>
         </div>
 
         <div className="flex items-center justify-between gap-6 md:justify-end md:gap-8 w-full md:w-auto">

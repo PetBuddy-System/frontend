@@ -4,6 +4,7 @@ export interface OrderSuccessItem {
   productId: string
   name: string
   price: number
+  salePrice?: number | null
   quantity: number
   imageUrl: string
 }
@@ -27,28 +28,42 @@ export function OrderSuccessDetails({ items, formatPrice }: OrderSuccessDetailsP
       </div>
 
       <div className='space-y-6 p-6 md:p-8'>
-        {items.map((item) => (
-          <article key={item.productId} className='flex items-center gap-5 md:gap-6'>
-            <div className='h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-border bg-muted'>
-              <img
-                src={item.imageUrl}
-                alt={item.name}
-                className='h-full w-full object-cover'
-              />
-            </div>
-            <div className='min-w-0 flex-1'>
-              <h3 className='line-clamp-2 font-display text-lg font-semibold text-foreground'>
-                {item.name}
-              </h3>
-              <p className='mt-1 text-sm text-muted-foreground'>
-                {t('orderSuccess.details.quantity', { count: item.quantity })}
+        {items.map((item) => {
+          const hasSale = item.salePrice !== undefined && item.salePrice !== null && item.salePrice < item.price
+          const unitPrice = hasSale ? item.salePrice! : item.price
+          const subtotal = unitPrice * item.quantity
+
+          return (
+            <article key={item.productId} className='flex items-center gap-5 md:gap-6'>
+              <div className='h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-border bg-muted'>
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  className='h-full w-full object-cover'
+                />
+              </div>
+              <div className='min-w-0 flex-1'>
+                <h3 className='line-clamp-2 font-display text-lg font-semibold text-foreground'>
+                  {item.name}
+                </h3>
+                <p className='mt-1 text-sm text-muted-foreground'>
+                  {t('orderSuccess.details.quantity', { count: item.quantity })}
+                </p>
+                <div className='mt-1 flex items-center gap-2 text-sm'>
+                  {hasSale && (
+                    <span className='text-muted-foreground line-through'>{formatPrice(item.price)}</span>
+                  )}
+                  <span className={hasSale ? 'font-semibold text-primary' : 'text-muted-foreground'}>
+                    {formatPrice(unitPrice)}
+                  </span>
+                </div>
+              </div>
+              <p className='text-right font-display text-lg font-bold text-primary'>
+                {formatPrice(subtotal)}
               </p>
-            </div>
-            <p className='text-right font-display text-lg font-bold text-primary'>
-              {formatPrice(item.price * item.quantity)}
-            </p>
-          </article>
-        ))}
+            </article>
+          )
+        })}
       </div>
     </section>
   )

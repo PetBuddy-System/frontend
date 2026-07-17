@@ -15,6 +15,8 @@ import { OrderShippingInfo } from './order-detail/order-shipping-info'
 import { OrderProductList } from './order-detail/order-product-list'
 import { OrderPaymentDetail } from './order-detail/order-payment-detail'
 import { OrderActionButtons } from './order-detail/order-action-buttons'
+import { StaffOrderPickingDialog } from '~/features/staff/components/orders/staff-order-picking-dialog'
+import {formatDateOnly, formatTimeOnly } from '~/shared/lib/date'
 
 interface OrderDetailViewProps {
   orderId: number
@@ -24,19 +26,6 @@ interface OrderDetailViewProps {
 function formatPrice(value: number) {
   if (value == null || isNaN(Number(value))) return '0đ'
   return `${new Intl.NumberFormat('vi-VN').format(Number(value))}đ`
-}
-
-function formatDateTime(dateStr: string) {
-  if (!dateStr) return '—'
-  const normalized = dateStr.includes('Z') || dateStr.includes('+') ? dateStr : dateStr + 'Z'
-  const d = new Date(normalized)
-  if (isNaN(d.getTime())) return dateStr
-  return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}/${d.getFullYear()} ${d.getHours().toString().padStart(2, '0')}:${d
-      .getMinutes()
-      .toString()
-      .padStart(2, '0')}`
 }
 
 function getSecondsUntil(isoStr?: string): number {
@@ -63,6 +52,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
   const [countdown, setCountdown] = useState(0)
   const [isProofOpen, setIsProofOpen] = useState(false)
   const [isRouteOpen, setIsRouteOpen] = useState(false)
+  const [isPickingOpen, setIsPickingOpen] = useState(false)
   const { user } = useAuth()
   const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
   const isCoordinator = user?.role === 'STAFF' && user?.staffTask === 'COORDINATOR'
@@ -75,7 +65,6 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
     countdown === 0 &&
     Boolean(order?.paymentExpiredAt)
 
-  // REFUND_PENDING là trạng thái của payment, không phải order — check đúng field
   const isRefundPending = order?.status === 'CANCEL_REQUESTED'
 
   const loadDetail = useCallback(async () => {
@@ -296,11 +285,14 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                   ? t('orderDetail.expiredBanner')
                   : t('orderDetail.cancelledMessage', 'Đơn hàng đã bị hủy')}
               </p>
-              <p className="text-xs text-muted-foreground">{formatDateTime(order.updatedAt || order.createdAt)}</p>
+              <div className="flex flex-col items-center text-xs text-muted-foreground">
+                <span>{formatDateOnly(order.updatedAt || order.createdAt)}</span>
+                <span>{formatTimeOnly(order.updatedAt || order.createdAt)}</span>
+              </div>
             </div>
           ) : (
             <div className="mt-12 px-2 pb-4">
-              <OrderStatusSteps order={order} formatDateTime={formatDateTime} />
+              <OrderStatusSteps order={order} formatDate={formatDateOnly} formatTime={formatTimeOnly} />
             </div>
           )}
         </div>
@@ -331,6 +323,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                 isCanceling={isCanceling}
                 onPrint={() => setIsPrintOpen(true)}
                 onProofOpen={() => setIsProofOpen(true)}
+                onOpenPicking={() => setIsPickingOpen(true)}
                 onRetryPayment={handleRetryPayment}
                 onCancelOrder={handleCancelOrder}
                 onStatusUpdate={() => void loadDetail()}
@@ -365,6 +358,13 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           staffId={user?.userId ?? ''}
           isOpen={isRouteOpen}
           onClose={() => setIsRouteOpen(false)}
+        />
+      )}
+      {order && isPickingOpen && (
+        <StaffOrderPickingDialog
+          order={order}
+          onClose={() => setIsPickingOpen(false)}
+          onSuccess={() => void loadDetail()}
         />
       )}
     </div>

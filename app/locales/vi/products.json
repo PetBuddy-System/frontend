@@ -163,8 +163,7 @@
       "title": "Thông tin đơn hàng",
       "products": "Sản phẩm ({{count}})",
       "total": "Tổng cộng",
-      "checkout": "Thanh toán ngay",
-      "securePayment": "Thanh toán an toàn và bảo mật"
+      "checkout": "Thanh toán ngay"
     },
     "support": {
       "title": "Cần hỗ trợ?",
@@ -265,11 +264,6 @@
           "title": "Thức ăn hạt Royal Canin",
           "imageAlt": "Túi thức ăn hạt Royal Canin Poodle Adult"
         }
-      },
-      "trust": {
-        "secure": "Thanh toán bảo mật",
-        "returns": "Hoàn trả 7 ngày",
-        "authentic": "Cam kết chính hãng"
       }
     },
     "coupon": {

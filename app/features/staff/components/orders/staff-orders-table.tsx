@@ -2,23 +2,11 @@ import { MaterialIcon } from '~/shared/ui'
 import type { OrderResponse, OrderStatus } from '~/shared/lib/order'
 import { useAuth } from '~/providers/auth-provider'
 import { confirmRefundApi } from '../../services/order'
+import { formatDateOnly, formatTimeOnly } from '~/shared/lib/date'
 
 function formatPrice(value: number) {
     if (value == null || isNaN(Number(value))) return '—'
     return `${new Intl.NumberFormat('vi-VN').format(Number(value))}đ`
-}
-
-function formatDate(dateStr: string) {
-    if (!dateStr) return '—'
-    const normalized = dateStr.includes('Z') || dateStr.includes('+') ? dateStr : dateStr + 'Z'
-    const d = new Date(normalized)
-    if (isNaN(d.getTime())) return dateStr
-    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1)
-        .toString()
-        .padStart(2, '0')}/${d.getFullYear()} - ${d.getHours().toString().padStart(2, '0')}:${d
-        .getMinutes()
-        .toString()
-        .padStart(2, '0')}`
 }
 
 function renderStatusBadge(status: string) {
@@ -261,7 +249,18 @@ export function StaffOrdersTable({
                                             </div>
                                         </div>
                                     </td>
-                                    <td className='px-6 py-4 text-muted-foreground'>{formatDate(order.createdAt)}</td>
+                                    <td className='px-6 py-4 text-muted-foreground'>
+                                        {(() => {
+                                            const date = formatDateOnly(order.createdAt)
+                                            const time = formatTimeOnly(order.createdAt)
+                                            return (
+                                                <div className='flex flex-col'>
+                                                    <span className='font-medium text-foreground'>{date}</span>
+                                                    <span className='text-xs text-muted-foreground'>{time}</span>
+                                                </div>
+                                            )
+                                        })()}
+                                    </td>
                                     <td className='px-6 py-4 font-bold text-foreground'>{formatPrice(order.finalAmount)}</td>
                                     <td className='px-6 py-4'>
                                         <div className='flex flex-col gap-1'>

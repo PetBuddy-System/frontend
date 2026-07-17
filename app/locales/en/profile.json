@@ -577,6 +577,8 @@
     "totalOrder": "Order total",
     "printOrder": "Print order",
     "startShipping": "Ship Order",
+    "startPicking": "Start Picking",
+    "viewPicking": "View Picking",
     "confirmDelivered": "Mark Delivered",
     "deliveryProofTitle": "Confirm Delivery",
     "deliveryProofDesc": "Please upload an image proof of successful delivery to complete this order.",
@@ -594,8 +596,9 @@
     "noActiveDeliveryOrders": "No active shipping orders for route suggestion.",
     "steps": {
       "ordered": "Order placed",
-      "confirmed": "Order confirmed",
-      "shipping": "Shipped out",
+      "confirmed": "Confirmed",
+      "picking": "Picking",
+      "onTheWay": "On the way",
       "delivered": "Delivered",
       "completed": "Completed"
     }

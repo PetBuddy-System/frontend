@@ -64,11 +64,6 @@ export function CartOrderSummary({
           {t('cart.summary.checkout')}
           <MaterialIcon name='arrow_forward' className='text-[22px]' />
         </button>
-
-        <div className='mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground'>
-          <MaterialIcon name='verified_user' className='text-[20px] text-success' />
-          {t('cart.summary.securePayment')}
-        </div>
       </section>
 
       <section className='relative overflow-hidden rounded-xl bg-primary p-6 text-primary-foreground shadow-lg'>

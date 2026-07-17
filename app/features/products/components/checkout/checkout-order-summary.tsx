@@ -137,15 +137,6 @@ export function CheckoutOrderSummary({
           />
           {!isSubmitting && (paymentMethod === 'CARD' ? 'Thanh toán ngay' : t('checkout.summary.placeOrder', 'Đặt hàng ngay'))}
         </button>
-
-        <div className='mt-6 flex flex-col gap-3 border-t border-border pt-4'>
-          {TRUST_BADGES.map((badge) => (
-            <div key={badge.key} className='flex items-center gap-3 text-sm text-muted-foreground'>
-              <MaterialIcon name={badge.icon} className='text-[20px] text-success' />
-              <span>{t(`checkout.summary.trust.${badge.key}`)}</span>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* Voucher section */}

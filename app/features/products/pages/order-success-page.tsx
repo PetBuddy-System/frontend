@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '~/providers/auth-provider'
 import { useNavigate } from 'react-router'
+import { useCart } from '~/providers/cart-provider'
 
 import { OrderSuccessBanner } from '../components/order-success/order-success-banner'
 import { OrderSuccessConfetti } from '../components/order-success/order-success-confetti'
@@ -26,6 +27,7 @@ interface StoredOrderDetails {
     productId: string
     name: string
     price: number
+    salePrice?: number | null
     quantity: number
     imageUrl: string
   }[]
@@ -38,10 +40,15 @@ function formatPrice(value: number) {
 export function OrderSuccessPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { refetchCart } = useCart()
   const [order, setOrder] = useState<StoredOrderDetails | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    // Giỏ hàng đã được xoá ở backend sau khi đặt hàng thành công,
+    // cần refetch để badge số lượng trên header cập nhật lại (về 0).
+    refetchCart()
+
     const raw = sessionStorage.getItem('petbuddy_last_order')
     if (raw) {
       try {

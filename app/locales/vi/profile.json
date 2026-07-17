@@ -577,6 +577,8 @@
     "totalOrder": "Tổng đơn hàng",
     "printOrder": "In đơn hàng",
     "startShipping": "Giao hàng",
+    "startPicking": "Bắt đầu lấy hàng",
+    "viewPicking": "Xem lấy hàng",
     "confirmDelivered": "Đã giao",
     "deliveryProofTitle": "Xác nhận đã giao hàng",
     "deliveryProofDesc": "Vui lòng chụp và tải lên hình ảnh xác nhận đã giao hàng thành công để hoàn tất đơn hàng.",
@@ -595,7 +597,8 @@
     "steps": {
       "ordered": "Đã đặt hàng",
       "confirmed": "Xác nhận đơn hàng",
-      "shipping": "Giao xuất kho",
+      "picking": "Giao xuất kho",
+      "onTheWay": "Đang giao",
       "delivered": "Đã giao hàng",
       "completed": "Hoàn thành"
     }

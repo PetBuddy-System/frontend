@@ -5,20 +5,21 @@ import { cn } from '~/shared/lib/cn'
 
 interface OrderStatusStepsProps {
   order: OrderDetailFull
-  formatDateTime: (dateStr: string) => string
+  formatDate: (dateStr: string) => string
+  formatTime: (dateStr: string) => string
 }
 
-export function OrderStatusSteps({ order, formatDateTime }: OrderStatusStepsProps) {
+export function OrderStatusSteps({ order, formatDate, formatTime }: OrderStatusStepsProps) {
   const { t } = useTranslation('profile')
 
   const statusLevels: Record<string, number> = {
     'PENDING': 0,
     'CONFIRMED': 1,
-    'PICKING': 1,
-    'PICKED': 1,
-    'SHIPPING': 2,
-    'DELIVERED': 3,
-    'COMPLETED': 4,
+    'PICKING': 2,
+    'PICKED': 2,
+    'SHIPPING': 3,
+    'DELIVERED': 4,
+    'COMPLETED': 5,
     'CANCEL_REQUESTED': 1,
   }
   const currentLevel = statusLevels[order.status] ?? 0
@@ -27,27 +28,38 @@ export function OrderStatusSteps({ order, formatDateTime }: OrderStatusStepsProp
     {
       icon: 'receipt_long',
       label: t('orderDetail.steps.ordered', 'Đã đặt hàng'),
-      time: formatDateTime(order.createdAt),
+      rawTime: order.createdAt,
+      show: true,
     },
     {
       icon: 'payments',
       label: t('orderDetail.steps.confirmed', 'Xác nhận đơn hàng'),
-      time: currentLevel >= 1 ? formatDateTime(order.updatedAt || order.createdAt) : null,
+      rawTime: order.updatedAt || order.createdAt,
+      show: currentLevel >= 1,
+    },
+    {
+      icon: 'inventory_2',
+      label: t('orderDetail.steps.picking', 'Giao xuất kho'),
+      rawTime: order.updatedAt || order.createdAt,
+      show: currentLevel >= 2,
     },
     {
       icon: 'local_shipping',
-      label: t('orderDetail.steps.shipping', 'Giao xuất kho'),
-      time: currentLevel >= 2 ? formatDateTime(order.updatedAt || order.createdAt) : null,
+      label: t('orderDetail.steps.onTheWay', 'Đang giao'),
+      rawTime: order.updatedAt || order.createdAt,
+      show: currentLevel >= 3,
     },
     {
       icon: 'move_to_inbox',
       label: t('orderDetail.steps.delivered', 'Đã giao hàng'),
-      time: currentLevel >= 3 ? formatDateTime(order.updatedAt || order.createdAt) : null,
+      rawTime: order.updatedAt || order.createdAt,
+      show: currentLevel >= 4,
     },
     {
       icon: 'grade',
       label: t('orderDetail.steps.completed', 'Hoàn thành'),
-      time: currentLevel >= 4 ? formatDateTime(order.updatedAt || order.createdAt) : null,
+      rawTime: order.updatedAt || order.createdAt,
+      show: currentLevel >= 5,
     },
   ]
 
@@ -81,7 +93,14 @@ export function OrderStatusSteps({ order, formatDateTime }: OrderStatusStepsProp
                 >
                   {step.label}
                 </p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">{step.time ?? '—'}</p>
+                {step.show ? (
+                  <div className="flex flex-col text-[10px] text-muted-foreground mt-0.5">
+                    <span>{formatDate(step.rawTime)}</span>
+                    <span>{formatTime(step.rawTime)}</span>
+                  </div>
+                ) : (
+                  <p className="text-[10px] text-muted-foreground mt-0.5">—</p>
+                )}
               </div>
             </div>
 
