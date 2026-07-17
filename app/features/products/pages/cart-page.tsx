@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -10,7 +9,8 @@ import { useCart } from '~/providers/cart-provider'
 import { MaterialIcon } from '~/shared/ui'
 import { getCartApi, updateCartItemApi, removeCartItemApi } from '../services'
 import type { CartItemResponse } from '~/shared/lib/cart'
-
+import { guestCart } from '~/shared/lib/cart'
+import { isLoggedIn } from '~/features/products/services/cart/cart-api'
 
 const CART_PLACEHOLDER_IMAGE = 'https://placehold.co/300x300?text=PetBuddy'
 
@@ -33,22 +33,38 @@ export function CartPage() {
 
 
   const fetchCart = useCallback(async () => {
-    try {
-      setError(null)
+  try {
+    setError(null)
+    if (isLoggedIn()) {
       const cart = await getCartApi()
       setCartItems(cart.cartItems ?? [])
-      await refetchCart()
-    } catch {
-      setError('Không thể tải giỏ hàng. Vui lòng thử lại.')
-    } finally {
-      setIsLoading(false)
+    } else {
+      const guestItems = guestCart.getAll()
+      setCartItems(
+        guestItems.map((i) => ({
+          cartItemId: i.cartItemId,
+          productId: i.productId,
+          productName: i.productName,
+          description: undefined,
+          price: i.price,
+          salePrice: null,
+          quantity: i.quantity,
+          imageUrl: i.imageUrl,
+          subtotal: i.subtotal,
+        }))
+      )
     }
-  }, [refetchCart])
+    await refetchCart()
+  } catch {
+    setError('Không thể tải giỏ hàng. Vui lòng thử lại.')
+  } finally {
+    setIsLoading(false)
+  }
+}, [refetchCart])
 
   useEffect(() => {
     fetchCart()
   }, [fetchCart])
-
 
   const items = useMemo<CartItem[]>(() => {
     return cartItems.map((item) => ({
@@ -67,7 +83,11 @@ export function CartPage() {
   }, [cartItems])
 
   const subtotal = useMemo(() => {
-    return cartItems.reduce((total, item) => total + item.subtotal, 0)
+    return cartItems.reduce((total, item) => {
+      const effectivePrice =
+        item.salePrice != null && item.salePrice < item.price ? item.salePrice : item.price
+      return total + effectivePrice * item.quantity
+    }, 0)
   }, [cartItems])
 
   const itemCount = useMemo(() => {

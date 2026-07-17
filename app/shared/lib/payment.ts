@@ -1,4 +1,4 @@
-export type PaymentMethod = 'CASH' | 'CARD'
+export type PaymentMethod = 'CASH' | 'CARD' | 'MOMO'
 
 export type PaymentStatus =
   | 'PENDING'
@@ -17,6 +17,7 @@ export interface PaymentResponse {
   status: PaymentStatus
   amount: number
   stripeClientSecret?: string
+  momoPayUrl?: string
   cancelReason?: string
   paidAt?: string
   createdAt: string

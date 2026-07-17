@@ -1,37 +1,46 @@
-import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { useAuth } from '~/providers/auth-provider'
 
-export type SelectedPaymentMethod = 'CASH' | 'CARD'
+export type SelectedPaymentMethod = 'CASH' | 'CARD' | 'MOMO'
 
 export interface CheckoutPaymentMethodsProps {
   selectedMethod: SelectedPaymentMethod
   onMethodChange: (method: SelectedPaymentMethod) => void
 }
 
-const PAYMENT_METHODS = [
-  {
-    key: 'CASH' as const,
-    label: 'Tiền mặt (COD)',
-    description: 'Thanh toán khi nhận hàng',
-    icon: 'payments',
-  },
-  {
-    key: 'CARD' as const,
-    label: 'Thẻ ngân hàng / Tín dụng',
-    description: 'Visa, Mastercard, JCB — thanh toán qua Stripe',
-    icon: 'credit_card',
-  },
-] as const
-
 export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: CheckoutPaymentMethodsProps) {
   const { user } = useAuth()
+  const { t } = useTranslation('products')
+
+  const PAYMENT_METHODS = [
+    {
+      key: 'CASH' as const,
+      label: t('payment.methods.cod', 'Tiền mặt (COD)'),
+      description: t('payment.methods.codDesc', 'Thanh toán khi nhận hàng'),
+      icon: 'payments',
+    },
+    {
+      key: 'CARD' as const,
+      label: t('payment.methods.card', 'Thẻ ngân hàng / Tín dụng'),
+      description: t('payment.methods.cardDesc', 'Visa, Mastercard, JCB — thanh toán qua Stripe'),
+      icon: 'credit_card',
+    },
+    {
+      key: 'MOMO' as const,
+      label: t('payment.methods.momo', 'Ví MoMo'),
+      description: t('payment.methods.momoDesc', 'Thanh toán qua ứng dụng MoMo'),
+      icon: 'qr_code_2',
+    },
+  ] as const
 
   return (
     <section className='rounded-xl border border-border/60 bg-card p-6 shadow-sm md:p-8'>
       <div className='mb-6 flex items-center gap-3'>
         <MaterialIcon name='account_balance_wallet' className='text-[24px] text-primary' />
-        <h2 className='font-display text-2xl font-semibold text-primary'>Phương thức thanh toán</h2>
+        <h2 className='font-display text-2xl font-semibold text-primary'>
+          {t('payment.title', 'Phương thức thanh toán')}
+        </h2>
       </div>
 
       <div className='grid grid-cols-1 gap-3'>
@@ -71,14 +80,18 @@ export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: Check
         })}
       </div>
 
-      {selectedMethod === 'CARD' && user && user.paymentFailStreak !== undefined && user.paymentFailStreak >= 3 && (
+      {(selectedMethod === 'CARD' || selectedMethod === 'MOMO') && user && user.paymentFailStreak !== undefined && user.paymentFailStreak >= 3 && (
         <div className='mt-4 flex items-start gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive dark:border-destructive/30 dark:bg-destructive/10 animate-fade-in'>
           <MaterialIcon name='warning' className='mt-0.5 shrink-0 text-[20px] text-destructive' />
           <div className='flex flex-col gap-1'>
-            <span className='font-semibold'>Cảnh báo thanh toán quá hạn</span>
+            <span className='font-semibold'>
+              {t('payment.warning.title', 'Cảnh báo thanh toán quá hạn')}
+            </span>
             <p className='text-muted-foreground text-xs leading-relaxed'>
-              Tài khoản của bạn đã có {user.paymentFailStreak} lần thanh toán quá hạn.
-              Vui lòng hoàn thành giao dịch trước khi hết thời gian chờ để tránh ảnh hưởng đến tài khoản hoặc bị hủy dịch vụ.
+              {t('payment.warning.description', {
+                defaultValue: 'Tài khoản của bạn đã có {{streak}} lần thanh toán quá hạn. Vui lòng hoàn thành giao dịch trước khi hết thời gian chờ để tránh ảnh hưởng đến tài khoản hoặc bị hủy dịch vụ.',
+                streak: user.paymentFailStreak
+              })}
             </p>
           </div>
         </div>

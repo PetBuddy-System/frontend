@@ -137,7 +137,10 @@ export function OrderActionButtons({
         </button>
       )}
 
-      {!isStaff && order.status === 'PENDING' && order.payment?.paymentMethod === 'CARD' && order.payment?.status !== 'PAID' && (
+      {!isStaff &&
+        order.status === 'PENDING' &&
+        (order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO') &&
+        order.payment?.status !== 'PAID' && (
         <button
           onClick={onRetryPayment}
           disabled={isExpired}
@@ -147,7 +150,10 @@ export function OrderActionButtons({
             isExpired && 'opacity-50 cursor-not-allowed hover:bg-success'
           )}
         >
-          <MaterialIcon name="credit_card" className="text-[18px]" />
+          <MaterialIcon
+            name={order.payment?.paymentMethod === 'MOMO' ? 'qr_code_2' : 'credit_card'}
+            className="text-[18px]"
+          />
           <span>{t('orderDetail.payAgain', 'Thanh toán lại')}</span>
         </button>
       )}

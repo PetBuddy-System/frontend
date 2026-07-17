@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import type { FormEvent } from 'react'
 import type { NavigateFunction } from 'react-router'
 import type { TFunction } from 'i18next'
-import { guestCart } from '~/shared/lib/guest-cart'
+import { guestCart } from '~/shared/lib/cart'
 import {
   createOrderApi,
   updateOrderApi,
@@ -10,7 +10,7 @@ import {
   removeCartItemApi,
   fetchActiveVouchersApi,
 } from '../services'
-import type { CreateOrderRequest, UpdateOrderRequest } from '~/shared/lib/order'
+import type { CreateOrderRequest, UpdateOrderRequest, OrderResponse } from '~/shared/lib/order'
 import type { CartItemResponse } from '~/shared/lib/cart'
 import type { CheckoutOrderItem } from '../components/checkout/checkout-order-summary'
 import type { SelectedPaymentMethod } from '../components/checkout/checkout-payment-methods'
@@ -165,11 +165,21 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
 
     const response = await updateOrderApi(pendingOrder.orderId, updateRequest)
     const orderId = pendingOrder.orderId
-    clearCheckoutSession()
-    clearCheckoutSessionData()
-    guestCart.clear()
 
-    const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế' : 'Tiền mặt'
+    if (selectedPaymentMethod === 'CASH') {
+      clearCheckoutSession()
+      clearCheckoutSessionData()
+      guestCart.clear()
+    } else {
+      guestCart.clear()
+    }
+
+    const paymentMethodLabel =
+      selectedPaymentMethod === 'CARD'
+        ? 'Thẻ quốc tế'
+        : selectedPaymentMethod === 'MOMO'
+        ? 'Ví MoMo'
+        : 'Tiền mặt'
 
     const lastOrderDetails = {
       orderId,
@@ -198,7 +208,7 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
     }
 
     sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
-    await navigateAfterSubmit(orderId, response.data?.clientSecret || pendingOrder.clientSecret || '', lastOrderDetails)
+    await navigateAfterSubmit(orderId, response.data, lastOrderDetails)
   }
 
   // --- Create brand new order ---
@@ -216,15 +226,25 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
 
     const response = await createOrderApi(request)
     const orderId = response.data?.orderId
-    clearCheckoutSession()
 
     if (!orderId) {
       throw new Error('Không nhận được mã đơn hàng từ hệ thống.')
     }
 
-    clearCheckoutSessionData()
-    guestCart.clear()
-    const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế' : 'Tiền mặt'
+    if (selectedPaymentMethod === 'CASH') {
+      clearCheckoutSession()
+      clearCheckoutSessionData()
+      guestCart.clear()
+    } else {
+      sessionStorage.setItem('petbuddy_checkout_pending_order_id', String(orderId))
+      guestCart.clear()
+    }
+    const paymentMethodLabel =
+      selectedPaymentMethod === 'CARD'
+        ? 'Thẻ quốc tế'
+        : selectedPaymentMethod === 'MOMO'
+        ? 'Ví MoMo'
+        : 'Tiền mặt'
 
     const lastOrderDetails = {
       orderId,
@@ -253,17 +273,17 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
     }
 
     sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
-    await navigateAfterSubmit(orderId, response.data?.clientSecret || '', lastOrderDetails)
+    await navigateAfterSubmit(orderId, response.data, lastOrderDetails)
   }
 
   // --- Navigate to payment or success ---
   async function navigateAfterSubmit(
     orderId: number,
-    clientSecretHint: string,
+    orderData: OrderResponse | null | undefined,
     lastOrderDetails: { finalAmount: number; shippingFee: number; isFreeShipping: boolean }
   ) {
     if (selectedPaymentMethod === 'CARD') {
-      let clientSecret = clientSecretHint
+      let clientSecret = orderData?.clientSecret || orderData?.payment?.stripeClientSecret || pendingOrder?.clientSecret || ''
 
       if (!clientSecret) {
         try {
@@ -283,6 +303,25 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
           isFreeShipping: lastOrderDetails.isFreeShipping,
         },
       })
+    } else if (selectedPaymentMethod === 'MOMO') {
+      let momoPayUrl = orderData?.payment?.momoPayUrl
+
+      if (!momoPayUrl) {
+        try {
+          const paymentRes = await getPaymentByOrderIdApi(orderId)
+          momoPayUrl = paymentRes.data?.momoPayUrl
+        } catch (payErr) {
+          console.error('Lỗi lấy thông tin MoMo payment URL:', payErr)
+        }
+      }
+
+      if (momoPayUrl) {
+        sessionStorage.setItem('pendingMomoOrderId', String(orderId))
+        sessionStorage.removeItem('isMomoRetry')
+        window.location.href = momoPayUrl
+      } else {
+        setErrorMessage(t('checkout.momoUrlMissing', 'Không tìm thấy liên kết thanh toán MoMo.'))
+      }
     } else {
       navigate('/order-success')
     }

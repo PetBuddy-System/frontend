@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { LanguageSwitcher, ThemeToggle } from '~/shared/components'
 import { useAuth } from '~/providers/auth-provider'
+import { useCart } from '~/providers/cart-provider'
 
 const PROFILE_AVATAR_URL =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuBYPki0QBRVMSU_gWuywGYHn2MGY0cy3c-I4AAJ1_AGgnsJhDdnUw4dxmNLwCruTAGeNIlHm_hINFhjIHPh_xLPeWBEkHAY9W3t97tqqozH0jF0ksRy6LmXQuVxlAph8P4-UpAphk1wILD996LWc4UhSdrZasTcPSzgFTGdqusfTOZY73gIJMLsF51IhPqG41XlPiHaolRIBOrT5HUwMwS6M80kSFL6PJwyJMATjUpg9fHXI58YLmNXqBV78v1g6YrkqOFUGOvXWJg'
@@ -15,6 +16,7 @@ export interface ProfilePageHeaderProps {
 export function ProfilePageHeader({ titleKey = 'header.title', subtitleKey }: ProfilePageHeaderProps) {
   const { t } = useTranslation('profile')
   const { user } = useAuth()
+  const { cartCount } = useCart()
 
   return (
     <header className='flex h-20 shrink-0 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:px-8'>
@@ -46,9 +48,14 @@ export function ProfilePageHeader({ titleKey = 'header.title', subtitleKey }: Pr
         <a
           href='/cart'
           aria-label={t('header.cart')}
-          className='rounded-full p-3 text-muted-foreground transition-colors hover:bg-muted hover:text-primary'
+          className='relative rounded-full p-3 text-muted-foreground transition-colors hover:bg-muted hover:text-primary'
         >
           <MaterialIcon name='shopping_cart' />
+          {cartCount > 0 && (
+            <span className='absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground'>
+              {cartCount}
+            </span>
+          )}
         </a>
 
         <div className='mx-1 h-8 w-px bg-border' />

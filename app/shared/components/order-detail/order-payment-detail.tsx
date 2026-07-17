@@ -38,18 +38,28 @@ export function OrderPaymentDetail({
             </p>
             <div className="flex items-center gap-3 p-3 bg-muted rounded-lg border border-border/40">
               <MaterialIcon
-                name={order.payment?.paymentMethod === 'CARD' ? 'credit_card' : 'payments'}
+                name={
+                  order.payment?.paymentMethod === 'CARD'
+                    ? 'credit_card'
+                    : order.payment?.paymentMethod === 'MOMO'
+                    ? 'qr_code_2'
+                    : 'payments'
+                }
                 className="text-primary text-[28px]"
               />
               <div>
                 <p className="font-bold text-sm text-foreground">
                   {order.payment?.paymentMethod === 'CARD'
                     ? t('orderDetail.cardPayment', 'Thanh toán thẻ')
+                    : order.payment?.paymentMethod === 'MOMO'
+                    ? t('orderDetail.momoPayment', 'Ví MoMo')
                     : t('orderDetail.cashPayment', 'Tiền mặt')}
                 </p>
                 <p className="text-[10px] text-muted-foreground">
                   {order.payment?.paymentMethod === 'CARD'
                     ? t('orderDetail.viaGateway', 'Qua cổng thanh toán')
+                    : order.payment?.paymentMethod === 'MOMO'
+                    ? t('orderDetail.viaMomo', 'Qua ví điện tử MoMo')
                     : t('orderDetail.payOnDelivery', 'Thanh toán khi nhận hàng')}
                 </p>
               </div>

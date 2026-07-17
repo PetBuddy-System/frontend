@@ -49,8 +49,10 @@ export function CartItemsList({
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {items.map((item) => {
+                  {items.map((item) => {
                 const hasSale = item.salePrice !== undefined && item.salePrice !== null && item.salePrice < item.price
+                const effectivePrice = hasSale ? item.salePrice! : item.price
+                const effectiveSubtotal = effectivePrice * item.quantity
                 return (
                   <tr key={item.key} className="hover:bg-muted/30 transition-colors">
                     <td className="px-4 py-5">
@@ -115,7 +117,7 @@ export function CartItemsList({
                     </td>
                     <td className="px-6 py-6 text-center align-middle">
                       <span className="text-base font-bold text-primary whitespace-nowrap">
-                        {formatPrice(item.subtotal)}
+                        {formatPrice(effectiveSubtotal)}
                       </span>
                     </td>
                     <td className="px-6 py-6 text-center align-middle">
@@ -136,7 +138,6 @@ export function CartItemsList({
         </div>
       </div>
 
-      {/* Back Link */}
       <a
         className="inline-flex items-center text-primary font-semibold hover:underline gap-2 mt-4"
         href="/products"

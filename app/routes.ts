@@ -17,6 +17,7 @@ export default [
   route('products/:productId', 'routes/product-detail.tsx'),
   route('services', 'routes/services.tsx'),
   route('services/:serviceId', 'routes/service-detail.tsx'),
+  route('payment/momo/return', 'routes/momo-return.tsx'),
 
   // ─── Authenticated General Routes ─────────────────────────────────────────
   layout('routes/auth-layout.tsx', [

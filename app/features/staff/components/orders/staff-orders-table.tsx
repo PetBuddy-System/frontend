@@ -266,10 +266,20 @@ export function StaffOrdersTable({
                                         <div className='flex flex-col gap-1'>
                                             <span className='inline-flex items-center gap-1 text-xs font-semibold text-foreground'>
                                                 <MaterialIcon
-                                                    name={order.payment?.paymentMethod === 'CARD' ? 'credit_card' : 'payments'}
+                                                    name={
+                                                      order.payment?.paymentMethod === 'CARD'
+                                                        ? 'credit_card'
+                                                        : order.payment?.paymentMethod === 'MOMO'
+                                                        ? 'qr_code_2'
+                                                        : 'payments'
+                                                    }
                                                     className='text-[16px] text-muted-foreground'
                                                 />
-                                                {order.payment?.paymentMethod === 'CARD' ? 'Thẻ' : 'Tiền mặt'}
+                                                {order.payment?.paymentMethod === 'CARD'
+                                                  ? 'Thẻ'
+                                                  : order.payment?.paymentMethod === 'MOMO'
+                                                  ? 'MoMo'
+                                                  : 'Tiền mặt'}
                                             </span>
                                             {renderPaymentStatusBadge(order.payment?.status)}
                                         </div>
@@ -307,7 +317,13 @@ export function StaffOrdersTable({
 
                                             {order.status === 'PENDING' && isCoordinator && (
                                                 <>
-                                                    {((order.payment?.paymentMethod === 'CARD' && order.payment?.status === 'PAID') || order.payment?.paymentMethod !== 'CARD') && (
+                                                    {((
+                                                (order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO')
+                                                && order.payment?.status === 'PAID'
+                                              ) || (
+                                                order.payment?.paymentMethod !== 'CARD'
+                                                && order.payment?.paymentMethod !== 'MOMO'
+                                              )) && (
                                                         <button
                                                             onClick={() => onTransition(order.orderId, 'CONFIRMED')}
                                                             className='rounded-xl bg-blue-600 hover:bg-blue-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'

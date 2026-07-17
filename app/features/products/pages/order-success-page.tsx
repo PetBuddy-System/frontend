@@ -75,6 +75,7 @@ export function OrderSuccessPage() {
       'petbuddy_checkout_subtotal',
       'petbuddy_checkout_distance',
       'petbuddy_checkout_note',
+      'petbuddy_checkout_pending_order_id',
     ]
     keysToRemove.forEach((k) => sessionStorage.removeItem(k))
   }, [])

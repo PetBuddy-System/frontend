@@ -196,6 +196,7 @@
   "checkout": {
     "title": "Thanh toán",
     "backToCart": "Quay lại giỏ hàng",
+    "momoUrlMissing": "Không tìm thấy liên kết thanh toán MoMo.",
     "shipping": {
       "title": "Thông tin giao hàng",
       "fullName": "Họ và tên",
@@ -233,13 +234,21 @@
       "title": "Phương thức thanh toán",
       "methods": {
         "cod": "Thanh toán khi nhận hàng (COD)",
+        "codDesc": "Thanh toán khi nhận hàng",
         "bank": "Chuyển khoản ngân hàng",
+        "card": "Thẻ ngân hàng / Tín dụng",
+        "cardDesc": "Visa, Mastercard, JCB — thanh toán qua Stripe",
         "momo": "Ví MoMo",
+        "momoDesc": "Thanh toán qua ứng dụng MoMo",
         "zaloPay": "Ví ZaloPay"
       },
       "alt": {
         "momo": "Logo MoMo",
         "zaloPay": "Logo ZaloPay"
+      },
+      "warning": {
+        "title": "Cảnh báo thanh toán quá hạn",
+        "description": "Tài khoản của bạn đã có {{streak}} lần thanh toán quá hạn. Vui lòng hoàn thành giao dịch trước khi hết thời gian chờ để tránh ảnh hưởng đến tài khoản hoặc bị hủy dịch vụ."
       }
     },
     "note": {
@@ -255,6 +264,7 @@
       "discount": "Giảm giá",
       "total": "Tổng cộng",
       "placeOrder": "Đặt hàng ngay",
+      "payNow": "Thanh toán ngay",
       "items": {
         "oliveShampoo": {
           "title": "Sữa tắm Olive Essence",
@@ -569,5 +579,9 @@
       "PRODUCT_INACTIVE": "Sản phẩm đã ngừng kinh doanh",
       "INVALID_EXCEL_TEMPLATE": "Template Excel không hợp lệ"
     }
+  },
+  "momoReturn": {
+    "confirming": "Đang xác nhận thanh toán, vui lòng chờ trong giây lát...",
+    "paymentNotCompleted": "Thanh toán chưa hoàn tất, vui lòng thử lại."
   }
 }

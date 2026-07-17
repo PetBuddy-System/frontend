@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 
 import { cn } from '~/shared/lib/cn'
 import { updateOrderStatusApi } from '~/features/profile/services'
-import { getPaymentByOrderIdApi } from '~/features/products/services/payment/payment-api'
+import { getPaymentByOrderIdApi, retryMomoPaymentApi } from '~/features/products/services/payment/payment-api'
 import type { VoucherResponse } from '~/shared/lib/voucher'
 import { formatDateOnly, formatTimeOnly } from '~/shared/lib/date'
 
@@ -121,10 +121,14 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
     }
   }
 
-  const isCard = order.payment?.paymentMethod === 'CARD' || order.paymentMethod === 'CARD'
+  const isOnlinePayment =
+    order.payment?.paymentMethod === 'CARD' ||
+    order.payment?.paymentMethod === 'MOMO' ||
+    order.paymentMethod === 'CARD' ||
+    order.paymentMethod === 'MOMO'
   const isPaid = order.payment?.status === 'PAID' || order.paymentStatus === 'PAID'
   const canPayAgain =
-    isCard &&
+    isOnlinePayment &&
     !isPaid &&
     order.status !== 'CANCELLED' &&
     order.status !== 'EXPIRED'
@@ -179,22 +183,37 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                   e.stopPropagation()
                   setIsLoadingPayment(true)
                   try {
-                    const res = await getPaymentByOrderIdApi(order.orderId)
-                    if (res.success && res.data) {
-                      const clientSecret = res.data.stripeClientSecret || ''
-                      const orderShippingFee = order.shippingFee ?? 0
-                      const orderIsFreeShipping = orderShippingFee === 0
-                      navigate('/payment', {
-                        state: {
-                          orderId: order.orderId,
-                          clientSecret,
-                          amount: order.finalAmount,
-                          shippingFee: orderShippingFee,
-                          isFreeShipping: orderIsFreeShipping
-                        }
-                      })
+                    const isMomo =
+                      order.payment?.paymentMethod === 'MOMO' ||
+                      order.paymentMethod === 'MOMO'
+                    if (isMomo) {
+                      const res = await retryMomoPaymentApi(order.orderId)
+                      if (res.success && res.data?.momoPayUrl) {
+                        sessionStorage.setItem('pendingMomoOrderId', String(order.orderId))
+                        sessionStorage.setItem('isMomoRetry', 'true')
+                        window.location.href = res.data.momoPayUrl
+                      } else {
+                        alert(res.message || 'Không tìm thấy liên kết thanh toán MoMo.')
+                      }
                     } else {
-                      alert(res.message || 'Không thể lấy thông tin thanh toán.')
+                      const res = await getPaymentByOrderIdApi(order.orderId)
+                      if (res.success && res.data) {
+                        const clientSecret = res.data.stripeClientSecret || ''
+                        const orderShippingFee = order.shippingFee ?? 0
+                        const orderIsFreeShipping = orderShippingFee === 0
+                        navigate('/payment', {
+                          state: {
+                            orderId: order.orderId,
+                            clientSecret,
+                            amount: order.finalAmount,
+                            shippingFee: orderShippingFee,
+                            isFreeShipping: orderIsFreeShipping,
+                            isRetry: true,
+                          }
+                        })
+                      } else {
+                        alert(res.message || 'Không thể lấy thông tin thanh toán.')
+                      }
                     }
                   } catch {
                     alert('Có lỗi xảy ra khi lấy thông tin thanh toán.')

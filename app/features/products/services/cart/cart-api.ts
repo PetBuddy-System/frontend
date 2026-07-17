@@ -2,8 +2,8 @@ import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import { readStorage } from '~/shared/lib/storage'
 import { STORAGE_KEYS } from '~/shared/config/site'
-import { guestCart } from '~/shared/lib/guest-cart'
-import type {CartResponse,AddToCartRequest,UpdateCartItemRequest,MergeCartRequest, CartItemResponse,} from '~/shared/lib/cart'
+import { guestCart } from '~/shared/lib/cart'
+import type { CartResponse, AddToCartRequest, UpdateCartItemRequest, MergeCartRequest, CartItemResponse } from '~/shared/lib/cart'
 
 interface ApiResponse<T> {
   success: boolean
@@ -13,7 +13,7 @@ interface ApiResponse<T> {
 
 const CART_BASE_URL = `${env.API_URL}${env.API_CART_PATH}`
 
-function isLoggedIn(): boolean {
+export function isLoggedIn(): boolean {
   return !!readStorage(STORAGE_KEYS.accessToken)
 }
 
@@ -29,7 +29,13 @@ export async function getCartApi(): Promise<CartResponse> {
 }
 
 export async function addToCartApi(
-  request: AddToCartRequest & { productName?: string; price?: number; imageUrl?: string }
+  request: AddToCartRequest & {
+    productName?: string
+    price?: number
+    salePrice?: number | null
+    imageUrl?: string
+    description?: string
+  }
 ): Promise<void> {
   if (!isLoggedIn()) {
     if (request.productName === undefined || request.price === undefined) {

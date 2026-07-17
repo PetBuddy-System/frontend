@@ -67,7 +67,7 @@ export interface CreateOrderRequest {
   voucherCode?: string
   latitude: number
   longitude: number
-  paymentMethod?: 'CASH' | 'CARD'
+  paymentMethod?: 'CASH' | 'CARD' | 'MOMO'
 }
 
 export interface UpdateOrderRequest {

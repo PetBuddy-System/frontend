@@ -30,7 +30,7 @@ export interface CheckoutOrderSummaryProps {
   isSubmitting?: boolean
   mode?: 'checkout' | 'retry-payment'
   onRetryPayment?: () => void
-  paymentMethod?: 'CASH' | 'CARD'
+  paymentMethod?: 'CASH' | 'CARD' | 'MOMO'
 }
 
 export function CheckoutOrderSummary({
@@ -131,11 +131,23 @@ export function CheckoutOrderSummary({
           className='flex w-full items-center justify-center gap-3 rounded-full bg-secondary px-6 py-4 font-display font-semibold text-secondary-foreground shadow-md transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
         >
          <MaterialIcon
-            name={isSubmitting ? 'progress_activity' : (paymentMethod === 'CARD' ? 'credit_card' : 'lock')}
+            name={
+              isSubmitting
+                ? 'progress_activity'
+                : paymentMethod === 'CARD'
+                ? 'credit_card'
+                : paymentMethod === 'MOMO'
+                ? 'qr_code_2'
+                : 'lock'
+            }
             filled={!isSubmitting}
             className={isSubmitting ? 'animate-spin text-[20px]' : 'text-[20px]'}
           />
-          {!isSubmitting && (paymentMethod === 'CARD' ? 'Thanh toán ngay' : t('checkout.summary.placeOrder', 'Đặt hàng ngay'))}
+          {!isSubmitting && (
+            paymentMethod === 'CARD' || paymentMethod === 'MOMO'
+              ? t('checkout.summary.payNow', 'Thanh toán ngay')
+              : t('checkout.summary.placeOrder', 'Đặt hàng ngay')
+          )}
         </button>
       </section>
 

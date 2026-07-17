@@ -31,6 +31,7 @@ import {
 export interface PendingOrderView {
   orderId: number
   clientSecret: string
+  momoPayUrl?: string
   subtotal: number
   shippingFee: number
   isFreeShipping: boolean
@@ -78,7 +79,7 @@ export function useCheckoutState() {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<SelectedPaymentMethod>(() => {
     const saved = typeof window !== 'undefined' ? sessionStorage.getItem(SESSION_KEY_PAYMENT_METHOD) : null
-    return (saved === 'CASH' || saved === 'CARD') ? saved : 'CASH'
+    return (saved === 'CASH' || saved === 'CARD' || saved === 'MOMO') ? saved : 'CASH'
   })
 
   // --- Callbacks ---
@@ -98,6 +99,7 @@ export function useCheckoutState() {
               ? {
                 ...prev,
                 clientSecret: res.data.stripeClientSecret ?? prev.clientSecret,
+                momoPayUrl: res.data.momoPayUrl ?? prev.momoPayUrl,
                 finalAmount: res.data.amount ?? prev.finalAmount,
               }
               : null
@@ -221,6 +223,7 @@ export function useCheckoutState() {
       setPendingOrder({
         orderId: order.orderId,
         clientSecret: order.clientSecret ?? '',
+        momoPayUrl: order.payment?.momoPayUrl ?? '',
         subtotal: subtotalVal,
         shippingFee: shippingFeeVal,
         isFreeShipping: isFreeShippingVal,

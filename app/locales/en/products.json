@@ -196,6 +196,7 @@
   "checkout": {
     "title": "Checkout",
     "backToCart": "Back to cart",
+    "momoUrlMissing": "MoMo payment link not found.",
     "shipping": {
       "title": "Shipping information",
       "fullName": "Full name",
@@ -233,13 +234,21 @@
       "title": "Payment method",
       "methods": {
         "cod": "Cash on delivery (COD)",
+        "codDesc": "Pay on delivery",
         "bank": "Bank transfer",
-        "momo": "MoMo wallet",
+        "card": "Credit / Debit Card",
+        "cardDesc": "Visa, Mastercard, JCB — pay via Stripe",
+        "momo": "MoMo Wallet",
+        "momoDesc": "Pay via MoMo e-wallet application",
         "zaloPay": "ZaloPay wallet"
       },
       "alt": {
         "momo": "MoMo logo",
         "zaloPay": "ZaloPay logo"
+      },
+      "warning": {
+        "title": "Overdue Payment Warning",
+        "description": "Your account has had {{streak}} overdue payments. Please complete the transaction before it expires."
       }
     },
     "note": {
@@ -255,6 +264,7 @@
       "discount": "Discount",
       "total": "Total",
       "placeOrder": "Place order",
+      "payNow": "Pay now",
       "items": {
         "oliveShampoo": {
           "title": "Olive Essence shampoo",
@@ -569,5 +579,9 @@
       "PRODUCT_INACTIVE": "Product is inactive",
       "INVALID_EXCEL_TEMPLATE": "Invalid Excel template"
     }
+  },
+  "momoReturn": {
+    "confirming": "Confirming your payment, please wait...",
+    "paymentNotCompleted": "Payment was not completed, please try again."
   }
 }

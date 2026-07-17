@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { fetchOrderDetailApi, updateOrderStatusApi } from '~/features/profile/services/order/order-api'
+import { retryMomoPaymentApi } from '~/features/products/services/payment/payment-api'
 import type { OrderDetailFull } from '~/shared/lib/order'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
@@ -60,7 +61,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
 
   const isCountdownExpired =
     order?.status === 'PENDING' &&
-    order?.payment?.paymentMethod === 'CARD' &&
+    (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO') &&
     order?.payment?.status !== 'PAID' &&
     countdown === 0 &&
     Boolean(order?.paymentExpiredAt)
@@ -104,13 +105,11 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
 
 
   async function handleCancelOrder() {
-    // Khách hàng thanh toán bằng CARD (đã trả tiền) -> phải gửi yêu cầu hủy để staff xác nhận hoàn tiền
-    if (!isStaff && order?.payment?.paymentMethod === 'CARD') {
+    if (!isStaff && (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO')) {
       navigate(`/profile/orders/${orderId}/cancel`)
       return
     }
 
-    // Còn lại (staff, hoặc khách hàng thanh toán CASH chưa trả tiền) -> chỉ cần popup confirm rồi hủy trực tiếp
     if (!window.confirm(t('orderDetail.cancelConfirm', 'Bạn có chắc chắn muốn hủy đơn hàng này không?'))) return
     setIsCanceling(true)
     try {
@@ -127,8 +126,25 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
     }
   }
 
-  function handleRetryPayment() {
-    if (!order?.clientSecret) return
+  async function handleRetryPayment() {
+    if (!order) return
+    if (order.payment?.paymentMethod === 'MOMO') {
+      try {
+        const res = await retryMomoPaymentApi(order.orderId)
+        if (res.success && res.data?.momoPayUrl) {
+          sessionStorage.setItem('pendingMomoOrderId', String(order.orderId))
+          sessionStorage.setItem('isMomoRetry', 'true')
+          window.location.href = res.data.momoPayUrl
+        } else {
+          alert(res.message || t('orderDetail.momoUrlMissing', 'Không tìm thấy liên kết thanh toán MoMo.'))
+        }
+      } catch (err) {
+        alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      }
+      return
+    }
+
+    if (!order.clientSecret) return
     navigate('/payment', {
       state: {
         orderId: order.orderId,
@@ -136,6 +152,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
         amount: order.finalAmount,
         shippingFee: order.shippingFee ?? 0,
         isFreeShipping: false,
+        isRetry: true,
       },
     })
   }
@@ -184,7 +201,8 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
   const canRetryPayment =
     !isStaff &&
     order?.status === 'PENDING' &&
-    order?.payment?.paymentMethod === 'CARD' &&
+    (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO') &&
+    order?.payment?.status !== 'PAID' &&
     !isExpired
 
   const isTerminal = order?.status === 'CANCELLED' || order?.status === 'EXPIRED'
@@ -201,7 +219,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           </div>
         )}
 
-        {order && order.status === 'PENDING' && order.payment?.paymentMethod === 'CARD' && order.payment?.status !== 'PAID' && !isExpired && !isLoading && (
+        {order && order.status === 'PENDING' && (order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO') && order.payment?.status !== 'PAID' && !isExpired && !isLoading && (
           <div className="flex items-center gap-3 rounded-xl border border-warning/40 bg-warning/10 px-5 py-4 text-warning">
             <MaterialIcon name="schedule" className="text-[22px] shrink-0" />
             <p className="font-semibold text-sm">

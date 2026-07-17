@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 import { addToCartApi } from '../../services/cart'
+import { useCart } from '~/providers/cart-provider'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 
@@ -46,6 +47,7 @@ export function ProductDetailInfo({
 }: ProductDetailInfoProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
+  const { refreshCart } = useCart()
   const [quantity, setQuantity] = useState(1)
   const [isAdding, setIsAdding] = useState(false)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
@@ -82,6 +84,7 @@ export function ProductDetailInfo({
     setAddError(null)
     try {
       await addToCartApi({ productId, quantity, productName: name, price: displayPrice, imageUrl })
+      await refreshCart()
       setShowSuccessToast(true)
       setTimeout(() => setShowSuccessToast(false), 3000)
     } catch (err) {

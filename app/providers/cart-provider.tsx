@@ -3,7 +3,7 @@ import { axiosInstance } from '~/api/mutator/custom-fetch'
 import { env } from '~/shared/config/env'
 import { STORAGE_KEYS } from '~/shared/config/site'
 import { readStorage } from '~/shared/lib/storage'
-import { guestCart } from '~/shared/lib/guest-cart'
+import { guestCart } from '~/shared/lib/cart'
 import { useAuth } from './auth-provider'
 
 // ─── Types ──────────────────────────────────────────────────────────────────────

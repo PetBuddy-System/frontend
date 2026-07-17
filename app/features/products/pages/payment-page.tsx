@@ -92,9 +92,10 @@ function CheckoutForm({
     }
 
     if (paymentIntent?.status === 'succeeded') {
-      onPaymentSuccess() // stop the timer before navigating
+      onPaymentSuccess()
       sessionStorage.removeItem(`petbuddy_payment_start_${orderId}`)
       sessionStorage.removeItem(SESSION_KEY_CARDHOLDER)
+      sessionStorage.removeItem('petbuddy_checkout_pending_order_id')
       navigate('/order-success')
     } else {
       setErrorMessage('Thanh toán chưa hoàn tất. Vui lòng thử lại.')
@@ -180,12 +181,14 @@ export function PaymentPage() {
     amount?: number
     shippingFee?: number
     isFreeShipping?: boolean
+    isRetry?: boolean
   }
   const orderId = paymentState.orderId ?? 0
   const clientSecret = paymentState.clientSecret ?? ''
   const amount = paymentState.amount ?? 0
   const shippingFee = paymentState.shippingFee ?? 0
   const isFreeShipping = paymentState.isFreeShipping ?? true
+  const isRetry = paymentState.isRetry ?? false
 
   const [timeLeft, setTimeLeft] = useState(300)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -233,8 +236,11 @@ export function PaymentPage() {
   async function handleCancelPayment() {
     if (timerRef.current) clearInterval(timerRef.current)
     sessionStorage.removeItem(`petbuddy_payment_start_${orderId}`)
-    sessionStorage.removeItem('petbuddy_checkout_pending_order_id')
-    navigate('/order', { state: { orderId } })
+    if (isRetry) {
+      navigate('/profile/orders')
+    } else {
+      navigate('/order', { state: { orderId } })
+    }
   }
 
   const minutes = Math.floor(timeLeft / 60)
