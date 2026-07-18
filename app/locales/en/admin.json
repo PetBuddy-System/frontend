@@ -105,6 +105,7 @@
     "title": "Blog Management"
   },
   "charts": {
+    "bookingStatsError": "Unable to load booking statistics.",
     "breakdown": {
       "items": {
         "grooming": "Spa & Grooming",
@@ -126,6 +127,28 @@
       },
       "title": "Revenue Trend",
       "unit": "Million VND"
+    },
+    "bookingRevenueTrend": {
+      "days": {
+        "fri": "Fri",
+        "mon": "Mon",
+        "sat": "Sat",
+        "sun": "Sun",
+        "thu": "Thu",
+        "tue": "Tue",
+        "wed": "Wed"
+      },
+      "empty": "No booking revenue was found for this date range.",
+      "error": "Unable to load the booking revenue chart. Please try again later.",
+      "subtitle": "Spa and grooming service revenue by day in the selected range.",
+      "title": "Booking Revenue Trend"
+    },
+    "bookingStructure": {
+      "centerLabel": "Total",
+      "empty": "No booking revenue structure data is available.",
+      "error": "Unable to load booking revenue structure. Please try again later.",
+      "subtitle": "Revenue share by booking service.",
+      "title": "Booking Revenue Structure"
     }
   },
   "dashboard": {
@@ -181,27 +204,144 @@
       "searchPlaceholder": "Search by name or employee code..."
     }
   },
+  "customers": {
+    "actions": {
+      "add": "Add user",
+      "backToList": "Back to list",
+      "changeStatus": "Change account status",
+      "edit": "Edit",
+      "view": "View details"
+    },
+    "create": {
+      "pageTitle": "Create user",
+      "pageSubtitle": "Create a new customer account.",
+      "title": "Create new user",
+      "subtitle": "Enter customer account details and add an avatar if available."
+    },
+    "detail": {
+      "pageTitle": "User details",
+      "pageSubtitle": "View customer account information.",
+      "title": "User details",
+      "subtitle": "Customer profile, birth date, and account status information.",
+      "avatarAlt": "User avatar",
+      "fields": {
+        "createdAt": "Created at",
+        "dateOfBirth": "Date of birth",
+        "gender": "Gender",
+        "updatedAt": "Updated at"
+      }
+    },
+    "edit": {
+      "pageTitle": "Edit user",
+      "pageSubtitle": "Update customer account information.",
+      "title": "Edit user",
+      "subtitle": "Update the user's basic profile and avatar."
+    },
+    "form": {
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Create user",
+        "edit": "Save changes",
+        "saving": "Saving..."
+      },
+      "avatar": {
+        "currentAlt": "Current avatar",
+        "hint": "Choose only 1 avatar image for this user.",
+        "selected": "Selected: {{name}}"
+      },
+      "fields": {
+        "avatar": "Avatar",
+        "dateOfBirth": "Date of birth",
+        "email": "Email",
+        "fullName": "Full name",
+        "gender": "Gender",
+        "password": "Password"
+      },
+      "placeholders": {
+        "email": "user@petbuddy.vn",
+        "fullName": "Enter full name",
+        "gender": "Select gender",
+        "password": "At least 8 characters"
+      },
+      "validation": {
+        "password": "Password must be at least 8 characters, start with an uppercase letter, and include at least 1 number and 1 special character.",
+        "required": "Please fill in all required fields."
+      }
+    },
+    "messages": {
+      "createFailed": "Could not create user.",
+      "createSuccess": "User created successfully.",
+      "loadDetailFailed": "Could not load user details.",
+      "loadFailed": "Could not load users.",
+      "notFound": "User not found.",
+      "statusFailed": "Could not update account status.",
+      "statusSuccess": "Account status updated.",
+      "updateFailed": "Could not update user.",
+      "updateSuccess": "User updated."
+    },
+    "pagination": {
+      "label": "User pagination",
+      "showing": "Showing {{from}} - {{to}} of {{total}} users"
+    },
+    "stats": {
+      "active": {
+        "label": "Active accounts",
+        "note": "Allowed to sign in"
+      },
+      "suspended": {
+        "label": "Suspended accounts",
+        "note": "Currently suspended"
+      },
+      "total": {
+        "label": "Total users",
+        "note": "Customer accounts"
+      }
+    },
+    "status": {
+      "ALL": "All statuses"
+    },
+    "subtitle": "Manage customer accounts, activity status, and contact information in the system.",
+    "table": {
+      "avatarAlt": "User avatar",
+      "columns": {
+        "actions": "Actions",
+        "createdAt": "Created at",
+        "dateOfBirth": "Date of birth",
+        "status": "Status",
+        "user": "User"
+      },
+      "empty": "No matching users found."
+    },
+    "title": "User Management",
+    "toolbar": {
+      "clear": "Clear filters",
+      "intro": "Track customer profiles, account status, and contact information in one place.",
+      "statusLabel": "Status",
+      "title": "User list"
+    }
+  },
   "filters": {
-    "custom": "Custom",
-    "month": "This month",
     "today": "Today",
-    "week": "This week"
+    "week": "This week",
+    "year": "This year"
   },
   "metrics": {
     "averageOrder": {
       "change": "+8.4% vs previous period",
       "label": "Average Order"
     },
-    "orders": {
-      "change": "+5.2% vs previous period",
-      "label": "Orders"
+    "profit": {
+      "change_dynamic": "{{percent}}% vs previous period",
+      "label": "Profit"
     },
     "revenue": {
       "change": "+12.5% vs previous period",
+      "change_dynamic": "{{percent}}% vs previous period",
       "label": "Total Revenue"
     },
     "services": {
-      "change": "-2.1% vs previous period",
+      "change": "{{count}} bookings in range",
+      "error": "Data unavailable",
       "label": "Services"
     }
   },
@@ -212,14 +352,16 @@
     "logout": "Logout",
     "nav": {
       "blog": "Blog",
-      "employees": "Employees",
+      "employees": "Users",
       "inventory": "Products",
       "reports": "Reports",
+      "orders": "Order Management",
       "serviceBookings": "Service Bookings",
       "services": "Services",
-      "users": "Users",
+      "users": "Employees",
       "vouchers": "Vouchers",
-      "shipping": "Shipping Config"
+      "shipping": "Shipping Config",
+      "auditLogs": "Audit Logs"
     },
     "toggle": "Toggle sidebar"
   },
@@ -227,7 +369,16 @@
     "actions": {
       "create": "Create new booking",
       "edit": "Edit booking",
+      "openActions": "Open booking actions",
+      "refresh": "Refresh",
       "view": "View booking"
+    },
+    "actionsByStatus": {
+      "ACCEPTED": "Accept booking",
+      "IN_PROGRESS": "Start service",
+      "READY_FOR_PICKUP": "Mark ready for pickup",
+      "COMPLETED": "Complete booking",
+      "CANCELLED": "Cancel booking"
     },
     "pagination": {
       "label": "Booking pagination",
@@ -249,7 +400,15 @@
       "cancelled": "Cancelled",
       "completed": "Done",
       "confirmed": "Confirmed",
-      "pending": "Pending"
+      "pending": "Pending",
+      "PENDING_PAYMENT": "Pending payment",
+      "FAILED": "Failed",
+      "PENDING_ACCEPTANCE": "Pending",
+      "ACCEPTED": "Accepted",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
     },
     "subtitle": "Track and coordinate pet care appointments.",
     "table": {
@@ -260,8 +419,10 @@
         "dateTime": "Date & time",
         "pet": "Pet",
         "service": "Service",
-        "status": "Status"
+        "status": "Status",
+        "deposit": "Deposit"
       },
+      "emptyValue": "—",
       "rows": {
         "cj9915": {
           "customer": "Hoang Kim Yen",
@@ -279,9 +440,47 @@
           "customer": "Nguyen Van An",
           "pet": "Bo (Poodle)"
         }
-      }
+      },
+      "remaining": "Remaining {{value}}",
+      "estimatedEndAt": "Ends around {{value}}"
     },
     "title": "Service Booking Management",
+    "tabs": {
+      "ALL": "All",
+      "PENDING_PAYMENT": "Pending payment",
+      "FAILED": "Failed",
+      "PENDING_ACCEPTANCE": "Pending acceptance",
+      "ACCEPTED": "Accepted",
+      "IN_PROGRESS": "In progress",
+      "READY_FOR_PICKUP": "Ready for pickup",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "filters": {
+      "status": "Booking status",
+      "fromDate": "From date",
+      "toDate": "To date",
+      "clear": "Clear"
+    },
+    "feedback": {
+      "loadFailed": "Could not load bookings.",
+      "detailFailed": "Could not load booking details.",
+      "updateFailed": "Could not update booking status.",
+      "updateSuccess": "Booking status updated.",
+      "emptyTitle": "No bookings found",
+      "emptyText": "Try another status tab or adjust the date range."
+    },
+    "cancelModal": {
+      "close": "Close cancellation dialog",
+      "title": "Cancel booking",
+      "subtitle": "Enter the cancellation reason for booking {{code}}.",
+      "reasonLabel": "Cancellation reason",
+      "reasonPlaceholder": "Explain why this booking is cancelled...",
+      "reasonRequired": "Please enter a cancellation reason.",
+      "keep": "Keep booking",
+      "confirm": "Cancel booking",
+      "submitting": "Cancelling..."
+    },
     "toolbar": {
       "customerLabel": "Search customer",
       "dateLabel": "Date range",
@@ -295,6 +494,34 @@
         "earCare": "Ear cleaning",
         "grooming": "Grooming"
       }
+    },
+    "bookingTypes": {
+      "IN_STORE": "In store",
+      "AT_STORE": "At store",
+      "AT_HOME": "At home"
+    },
+    "detail": {
+      "close": "Close booking detail",
+      "title": "Booking details",
+      "cancel": "Close",
+      "save": "Update status",
+      "paymentTitle": "Payment summary",
+      "unassigned": "Unassigned",
+      "fields": {
+        "service": "Service",
+        "pet": "Pet",
+        "schedule": "Schedule",
+        "estimatedEndAt": "Estimated end",
+        "bookingType": "Booking type",
+        "totalAmount": "Total amount",
+        "depositAmount": "Deposit",
+        "remainingAmount": "Remaining",
+        "status": "Status",
+        "note": "Note",
+        "staff": "Staff",
+        "address": "Address",
+        "cancelReason": "Cancel reason"
+      }
     }
   },
   "serviceManagement": {
@@ -302,7 +529,10 @@
       "add": "Add new service",
       "delete": "Delete service",
       "edit": "Edit service",
-      "view": "View service"
+      "view": "View service",
+      "schedule": "View weekly schedule",
+      "activate": "Activate service",
+      "deactivate": "Deactivate service"
     },
     "create": {
       "accent": {
@@ -321,7 +551,13 @@
         "category": "Category",
         "description": "Service description",
         "name": "Service name",
-        "status": "Active status"
+        "status": "Active status",
+        "catalogType": "Catalog type",
+        "petSpecies": "Pet species",
+        "price": "Base price",
+        "weightRange": "Weight range",
+        "durationMinute": "Duration minute",
+        "bufferTime": "Buffer time"
       },
       "media": {
         "hint": "PNG, JPG up to 10MB",
@@ -348,10 +584,15 @@
       "save": "Save service",
       "subtitle": "Create a new pet-care package, set weight-based pricing, and add visuals for faster rollout.",
       "tip": {
-        "text": "High-quality imagery and detailed descriptions help customers decide faster and improve service booking conversion.",
-        "title": "Quick tip"
+        "text": "💡 Description tip: List the step-by-step process of the service so pet owners feel safe and trustful.\n✨ Naming tip: Keep the service name clear and simple, including the target pet (e.g., Small dog bath, Cat grooming).",
+        "title": "Tips for attracting customers"
       },
-      "title": "Add new service"
+      "title": "Add new service",
+      "dto": {
+        "label": "CONFIGURATION GUIDE",
+        "title": "Notes on setting up service",
+        "text": "1. Service Type: Choose 'At store' if customers bring pets in, choose 'At home' if a staff member goes to their place.\n2. Base price applies to EXTRA_SMALL, SMALL, and MEDIUM pets.\n3. Add surcharges only for LARGE, EXTRA_LARGE, and EXTRA_EXTRA_LARGE pets.\n4. Buffer time is the cleaning/prep slot between appointments."
+      }
     },
     "categories": {
       "grooming": "Grooming & Spa",
@@ -362,9 +603,10 @@
       "advanced": "Advanced filter",
       "categories": {
         "all": "All",
-        "grooming": "Grooming & Spa",
+        "grooming": "Grooming",
         "hotel": "Hotel",
-        "vet": "Vet"
+        "vet": "Vet",
+        "spa": "Spa"
       },
       "status": {
         "active": "Active",
@@ -372,12 +614,22 @@
         "inactive": "Inactive"
       }
     },
+    "feedback": {
+      "empty": "No services found.",
+      "loadFailed": "Failed to load services.",
+      "loadSlotsFailed": "Failed to load time slots.",
+      "loading": "Loading services...",
+      "saveFailed": "Unable to save changes.",
+      "saving": "Saving..."
+    },
     "pagination": {
-      "showing": "Showing 1 - 10 of 24 services"
+      "showing": "Showing {{shown}} of {{total}} services",
+      "previous": "Previous page",
+      "next": "Next page"
     },
     "stats": {
       "active": "Active",
-      "promotions": "Promotions",
+      "promotions": "Inactive",
       "total": "Total services"
     },
     "status": {
@@ -392,7 +644,8 @@
         "name": "Service name",
         "price": "Base price",
         "status": "Status",
-        "updatedAt": "Updated"
+        "updatedAt": "Updated",
+        "duration": "Duration"
       },
       "rows": {
         "bathTrimCombo": {
@@ -407,7 +660,8 @@
           "description": "Air-conditioned single room",
           "name": "VIP Pet Hotel"
         }
-      }
+      },
+      "durationValue": "{{duration}} min"
     },
     "title": "Service Management",
     "pricing": {
@@ -439,6 +693,98 @@
           "title": "Trimming & styling"
         }
       }
+    },
+    "weightRanges": {
+      "EXTRA_SMALL": "Under 5kg",
+      "SMALL": "5kg to 8kg",
+      "MEDIUM": "8kg to 12kg",
+      "LARGE": "12kg to 18kg",
+      "EXTRA_LARGE": "18kg to 25kg",
+      "EXTRA_EXTRA_LARGE": "Over 25kg"
+    },
+    "surcharge": {
+      "title": "Weight surcharges",
+      "help": "Leave a surcharge empty or 0 to omit it from surchargeConfig. Base price applies to EXTRA_SMALL and SMALL pets.",
+      "ranges": {
+        "MEDIUM": "MEDIUM (8kg - 12kg)",
+        "LARGE": "LARGE (12kg - 18kg)",
+        "EXTRA_LARGE": "EXTRA_LARGE (18kg - 25kg)",
+        "EXTRA_EXTRA_LARGE": "EXTRA_EXTRA_LARGE (Above 25kg)"
+      }
+    },
+    "durationConfig": {
+      "title": "Duration by weight",
+      "help": "Enter extra minutes on top of the base duration. The system sends durationConfig as the final duration minutes for each weight range.",
+      "unit": "extra min",
+      "ranges": {
+        "MEDIUM": "Medium",
+        "LARGE": "Large",
+        "EXTRA_LARGE": "Extra large",
+        "EXTRA_EXTRA_LARGE": "Extra extra large"
+      }
+    },
+    "searchPlaceholder": "Search service name or catalog ID...",
+    "catalogTypes": {
+      "AT_STORE": "At store",
+      "AT_HOME": "At home"
+    },
+    "catalogStatus": {
+      "AVAILABLE": "Available",
+      "UNAVAILABLE": "Unavailable",
+      "DISCONTINUED": "Discontinued"
+    },
+    "detail": {
+      "close": "Close service detail",
+      "viewTitle": "Service details",
+      "editTitle": "Edit service",
+      "cancel": "Close",
+      "save": "Save changes",
+      "fields": {
+        "catalogName": "Service name",
+        "catalogType": "Catalog type",
+        "petSpecies": "Pet species",
+        "weightRange": "Weight range",
+        "price": "Base price",
+        "durationMinute": "Duration minute",
+        "bufferTime": "Buffer time",
+        "status": "Status",
+        "description": "Description"
+      }
+    },
+    "schedule": {
+      "close": "Close weekly schedule",
+      "title": "Weekly time slots",
+      "subtitle": "{{duration}} minutes per service, {{buffer}} minutes buffer between sessions.",
+      "closeButton": "Close",
+      "createSlot": "Create time slot",
+      "active": "Active time slot",
+      "inactive": "Inactive time slot",
+      "empty": "No slots"
+    },
+    "timeSlot": {
+      "close": "Close time-slot form",
+      "title": "Create time slot",
+      "cancel": "Cancel",
+      "save": "Save time slot",
+      "fields": {
+        "catalog": "Catalog",
+        "dayOfWeek": "Day of week",
+        "startTime": "Start time",
+        "maxPets": "Pet capacity",
+        "isActive": "Open this slot"
+      },
+      "maxPetsValue": "{{count}} pets",
+      "maxPetsCompact": "{{count}} slot",
+      "edit": "Edit"
+    },
+    "weekDays": {
+      "MONDAY": "Monday",
+      "TUESDAY": "Tuesday",
+      "WEDNESDAY": "Wednesday",
+      "THURSDAY": "Thursday",
+      "FRIDAY": "Friday",
+      "SATURDAY": "Saturday",
+      "SUNDAY": "Sunday"
     }
   },
   "topNav": {
@@ -473,69 +819,181 @@
   },
   "users": {
     "actions": {
-      "add": "Add user",
+      "addEmployee": "Add employee",
+      "backToList": "Back to list",
+      "changeStatus": "Change account status",
       "edit": "Edit",
-      "export": "Export list",
       "view": "View details"
     },
+    "create": {
+      "pageTitle": "Create employee",
+      "pageSubtitle": "Create a new manager or staff account.",
+      "title": "Create new employee",
+      "subtitle": "Enter account details and choose the correct operating role for the employee."
+    },
+    "detail": {
+      "pageTitle": "Employee details",
+      "pageSubtitle": "View employee account information.",
+      "title": "Employee details",
+      "subtitle": "Profile, role, task, and account status information.",
+      "avatarAlt": "Employee avatar",
+      "fields": {
+        "createdAt": "Created at",
+        "dateOfBirth": "Date of birth",
+        "gender": "Gender",
+        "role": "Role",
+        "staffTask": "Department",
+        "updatedAt": "Updated at"
+      }
+    },
+    "edit": {
+      "pageTitle": "Edit employee",
+      "pageSubtitle": "Update employee account information.",
+      "title": "Edit employee",
+      "subtitle": "Update employee profile, role, and task."
+    },
+    "form": {
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Create employee",
+        "edit": "Save changes",
+        "saving": "Saving..."
+      },
+      "fields": {
+        "dateOfBirth": "Date of birth",
+        "email": "Email",
+        "fullName": "Full name",
+        "gender": "Gender",
+        "password": "Password",
+        "role": "Role",
+        "staffTask": "Department",
+        "avatar": "Avatar"
+      },
+      "avatar": {
+        "currentAlt": "Current avatar",
+        "hint": "Choose only 1 avatar image for this employee.",
+        "selected": "Selected: {{name}}"
+      },
+      "placeholders": {
+        "email": "employee@petbuddy.vn",
+        "fullName": "Enter full name",
+        "gender": "Select gender",
+        "password": "At least 8 characters",
+        "staffTask": "Select department"
+      },
+      "validation": {
+        "password": "Password must be at least 8 characters, start with an uppercase letter, and include at least 1 number and 1 special character.",
+        "required": "Please fill in all required fields."
+      }
+    },
+    "gender": {
+      "FEMALE": "Female",
+      "MALE": "Male",
+      "OTHER": "Other"
+    },
+    "messages": {
+      "createFailed": "Could not create employee.",
+      "createSuccess": "Employee created successfully.",
+      "loadDetailFailed": "Could not load employee details.",
+      "loadFailed": "Could not load employees.",
+      "notFound": "Employee not found.",
+      "statusFailed": "Could not update account status.",
+      "statusSuccess": "Account status updated.",
+      "updateFailed": "Could not update employee.",
+      "updateSuccess": "Employee updated."
+    },
     "pagination": {
-      "label": "Pagination",
-      "showing": "Showing {{from}} - {{to}} of {{total}} results"
+      "label": "Employee pagination",
+      "showing": "Showing {{from}} - {{to}} of {{total}} employees"
+    },
+    "roles": {
+      "ALL": "All roles",
+      "ADMIN": "Admin",
+      "CUSTOMER": "Customer",
+      "MANAGER": "Manager",
+      "STAFF": "Staff"
+    },
+    "staffTasks": {
+      "ALL": "All departments",
+      "COORDINATOR": "Coordination department",
+      "GROOMER": "Care department",
+      "SHIPPER": "Delivery department"
     },
     "stats": {
       "active": {
-        "label": "Active users",
-        "note": "90% activity rate"
+        "label": "Active accounts",
+        "note": "Allowed to sign in"
       },
-      "newToday": {
-        "label": "New users today",
-        "note": "Updated 5 minutes ago"
+      "coordinator": {
+        "label": "Coordination department",
+        "note": "Staff in coordination department"
+      },
+      "groomer": {
+        "label": "Care department",
+        "note": "Staff in care department"
+      },
+      "inactive": {
+        "label": "Inactive accounts",
+        "note": "Currently inactive"
+      },
+      "managers": {
+        "label": "Managers",
+        "note": "Manager accounts"
+      },
+      "shipper": {
+        "label": "Delivery department",
+        "note": "Staff in delivery department"
+      },
+      "staff": {
+        "label": "Staff",
+        "note": "Staff accounts"
+      },
+      "suspended": {
+        "label": "Suspended accounts",
+        "note": "Currently suspended"
       },
       "total": {
-        "label": "Total users",
-        "note": "+24 new customers this month"
+        "label": "Total employees",
+        "note": "Managers and staff"
       }
     },
     "status": {
-      "active": "Active",
-      "locked": "Locked"
+      "ACTIVE": "Active",
+      "DELETED": "Deleted",
+      "INACTIVE": "Inactive",
+      "PENDING": "Pending",
+      "SUSPENDED": "Suspended"
     },
-    "subtitle": "Manage customer information, loyalty points, and purchase history.",
+    "statusModal": {
+      "cancel": "Cancel",
+      "close": "Close status dialog",
+      "description": "Choose a new account status for {{name}}.",
+      "save": "Update",
+      "saving": "Updating...",
+      "statusLabel": "Account status",
+      "title": "Change account status"
+    },
+    "subtitle": "Manage manager and staff accounts, task assignment, and account status.",
     "table": {
+      "avatarAlt": "Employee avatar",
       "columns": {
         "actions": "Actions",
-        "customer": "Customer",
-        "orders": "Total orders",
-        "phone": "Phone number",
-        "points": "Loyalty points",
+        "createdAt": "Created at",
+        "dateOfBirth": "Date of birth",
+        "employee": "Employee",
+        "role": "Role",
+        "staffTask": "Department",
         "status": "Status"
       },
-      "orderCount": "{{count}} orders",
-      "pointsUnit": "points",
-      "rows": {
-        "leThiB": {
-          "email": "lethib@email.com",
-          "name": "Le Thi B"
-        },
-        "nguyenVanA": {
-          "email": "nguyenvana@email.com",
-          "name": "Nguyen Van A"
-        },
-        "tranVanC": {
-          "email": "tranvanc@email.com",
-          "name": "Tran Van C"
-        }
-      }
+      "empty": "No matching employees found."
     },
-    "title": "User Management",
+    "title": "Employee Management",
     "toolbar": {
-      "advancedFilter": "Advanced filter",
-      "searchPlaceholder": "Search by name or phone number...",
-      "status": {
-        "active": "Active",
-        "all": "All statuses",
-        "locked": "Locked"
-      }
+      "clear": "Clear filters",
+      "intro": "Track your operations team, roles, and assigned departments in one consistent employee view.",
+      "roleLabel": "Role",
+      "staffTaskLabel": "Department",
+      "title": "Employee list"
     }
   },
   "productManagement": {
@@ -691,5 +1149,217 @@
     "title": "Voucher & Reward Management"
   },
   "shippingTitle": "Shipping Fee Configuration",
-  "shippingSubtitle": "Set up fee configuration based on geographical distance to optimize operational costs."
+  "shippingSubtitle": "Set up fee configuration based on geographical distance to optimize operational costs.",
+  "audit": {
+    "title": "Audit Logs",
+    "subtitle": "Track all changes made to the system",
+    "filter": {
+      "entityType": "Entity Type",
+      "action": "Action",
+      "fromDate": "From Date",
+      "toDate": "To Date",
+      "performedBy": "Performed By",
+      "all": "All",
+      "reset": "Reset",
+      "apply": "Apply",
+      "entityCode": "Entity Code",
+      "entityCodePlaceholder": "PRD123, PRM456...",
+      "performedByPlaceholder": "email@example.com"
+    },
+    "table": {
+      "time": "Time",
+      "user": "User",
+      "action": "Action",
+      "entityType": "Entity Type",
+      "entityCode": "Entity Code",
+      "reason": "Reason",
+      "viewDetail": "View Detail",
+      "empty": "No data"
+    },
+    "detail": {
+      "title": "Audit Log Detail",
+      "back": "Back to list",
+      "performedBy": "Performed By",
+      "performedAt": "Performed At",
+      "entityType": "Entity Type",
+      "action": "Action",
+      "reason": "Reason",
+      "note": "Note",
+      "changes": "Changes",
+      "field": "Field",
+      "oldValue": "Old Value",
+      "newValue": "New Value",
+      "entityChanges": "Entity Changes",
+      "detailChanges": "Detail Changes"
+    },
+    "actions": {
+      "CREATE": "Create",
+      "UPDATE": "Update",
+      "DELETE": "Delete",
+      "ADDED": "Added",
+      "REMOVED": "Removed",
+      "UPDATED": "Updated",
+      "PAY": "Pay",
+      "REFUND": "Refund",
+      "USE": "Use"
+    },
+    "entityTypes": {
+      "PRODUCT": "Product",
+      "PROMOTION": "Promotion",
+      "BATCH": "Batch",
+      "ORDER": "Order",
+      "USER": "User",
+      "PAYMENT": "Payment",
+      "VOUCHER_USAGE": "Voucher Usage"
+    },
+    "fields": {
+      "name": "Name",
+      "description": "Description",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "status": "Status",
+      "promotionCode": "Promotion Code",
+      "productCode": "Product Code",
+      "batchCode": "Batch Code",
+      "salePrice": "Sale Price",
+      "unit": "Unit",
+      "brandName": "Brand Name",
+      "stockQuantity": "Stock Quantity",
+      "expiryDate": "Expiry Date",
+      "basePrice": "Base Price",
+      "promotionDetail": "Product Detail",
+      "promotionDetails": "Product Details",
+      "promotionType": "Promotion Type",
+      "discountValue": "Discount Value",
+      "productId": "Product ID",
+      "ingredients": "Ingredients",
+      "usageInstructions": "Usage Instructions",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "deletedAt": "Deleted At",
+      "refundAmount": "Refund amount"
+    },
+    "reasonMap": {
+      "CREATE_PRODUCT": "Create new product",
+      "CREATE_PRODUCT_IMPORT": "Create new product from import",
+      "UPDATE_PRODUCT": "Update product",
+      "CREATE_PROMOTION": "Create new promotion",
+      "UPDATE_PROMOTION": "Update promotion",
+      "CREATE_BATCH": "Create new batch",
+      "CREATE_BATCH_IMPORT": "Create new batch from import",
+      "UPDATE_BATCH": "Update batch",
+      "PAYMENT_SUCCESS": "Payment success",
+      "PAYMENT_BY_MOMO": "Payment by MoMo",
+      "PAYMENT_BY_CARD": "Payment by Card",
+      "CREATE_VOUCHER": "Create new voucher",
+      "VOUCHER_USED": "Voucher used"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "of": "of"
+    },
+    "reason": {
+      "default": "Update"
+    },
+    "error": {
+      "loadFailed": "Failed to load data"
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "DELETED": "Deleted"
+    },
+    "promotionType": {
+      "PERCENTAGE": "Percentage",
+      "FIXED_AMOUNT": "Fixed Amount"
+    }
+  },
+  "voucherModal": {
+    "createTitle": "Create New Voucher",
+    "editTitle": "Edit Voucher",
+    "detailTitle": "Voucher Details",
+    "code": "Voucher Code",
+    "codeRequired": "Voucher code must be at most 20 characters",
+    "codeDisabledHint": "Voucher code cannot be changed.",
+    "codePlaceholder": "E.g., SUMMER2025",
+    "name": "Voucher Name",
+    "nameRequired": "Voucher name must be at most 100 characters",
+    "namePlaceholder": "E.g., Save 50k for order from 500k",
+    "discountType": "Discount Type",
+    "fixedAmount": "Fixed Amount (VND)",
+    "percentage": "Percentage (%)",
+    "discountValue": "Discount Value",
+    "discountPercentRange": "Discount percentage must be between 0% and 100%",
+    "discountAmountRange": "Discount value must be between 0.01 and 999,999,999.99 VND",
+    "maxDiscount": "Max Discount (VND)",
+    "maxDiscountRange": "Max discount must be between 0 and 999,999,999.99 VND",
+    "minOrderValue": "Min Order Value (VND)",
+    "minOrderValueRange": "Min order value must be between 0 and 999,999,999.99 VND",
+    "usageLimit": "Total Usage Limit",
+    "usageLimitRange": "Total usage limit must be between 1 and 999,999",
+    "usageLimitRelation": "Total usage limit must be greater than or equal to per-user limit",
+    "perUserLimit": "Per-User Limit",
+    "perUserLimitRange": "Per-user limit must be between 1 and 1,000",
+    "perUserLimitRelation": "Per-user limit must be less than or equal to total usage limit",
+    "startAt": "Start Date",
+    "expiredAt": "Expiration Date",
+    "status": "Status",
+    "expired": "Expired",
+    "expiredDescription": "Voucher has passed its expiration date and cannot be reactivated.",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "activeDescription": "Voucher is activated for customers to use.",
+    "inactiveDescription": "Voucher is inactive, customers cannot use it.",
+    "upcomingDescription": "Start date has not arrived yet — voucher will activate automatically on time.",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save Changes",
+    "create": "Create Voucher",
+    "saving": "Saving...",
+    "unexpectedError": "An error occurred. Please try again.",
+    "emptyPlaceholder": "Leave blank = unlimited",
+    "emptyOrderPlaceholder": "Leave blank = no requirement"
+  },
+  "footer": {
+    "label": "Admin footer",
+    "version": "PETBUDDY ADMIN v2.4.0",
+    "privacy": "Privacy policy",
+    "terms": "Terms of service"
+  },
+  "orderManagement": {
+    "title": "Order Management",
+    "subtitle": "View and manage all product purchase orders in the system"
+  },
+  "orders": {
+    "stats": {
+      "total": "Total Orders",
+      "processing": "Processing",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "listTitle": "All Orders List",
+    "searchPlaceholder": "Search order code, name, phone...",
+    "loadError": "Failed to load order list.",
+    "empty": "No orders found",
+    "table": {
+      "orderCode": "Order Code",
+      "customer": "Customer",
+      "paymentMethod": "Payment Method",
+      "totalAmount": "Total Amount",
+      "createdAt": "Created At",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "viewDetail": "View details"
+    },
+    "loading": "Loading...",
+    "totalCount": "Total {{count}} order(s)",
+    "paymentMethod": {
+      "card": "Card",
+      "momo": "MoMo",
+      "cash": "Cash"
+    }
+  }
 }

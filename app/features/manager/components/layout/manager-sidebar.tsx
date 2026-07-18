@@ -1,3 +1,4 @@
+// app/features/manager/components/layout/manager-sidebar.tsx
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
@@ -9,10 +10,16 @@ import { MaterialIcon } from '~/shared/ui'
 const MANAGER_NAV_ITEMS = [
   { icon: 'dashboard', key: 'dashboard', href: '/manager/dashboard' },
   { icon: 'shopping_bag', key: 'products', href: '/manager/products' },
-  { icon: 'inventory_2', key: 'inventory', href: '/manager/inventory-transactions' },
+  { icon: 'medical_services', key: 'services', href: '/manager/services' },
+  { icon: 'event_note', key: 'serviceBookings', href: '/manager/bookings' },
   { icon: 'groups', key: 'staff', href: '/manager/staff-schedule' },
   { icon: 'assignment_turned_in', key: 'returnRequests', href: '/manager/return-requests' },
-  { icon: 'delete_sweep', key: 'disposalApprovals', href: '/manager/disposal-approvals' }
+  { icon: 'inventory_2', key: 'restock', href: '/manager/restock' },
+  { icon: 'delete_sweep', key: 'disposalApprovals', href: '/manager/disposal-approvals' },
+  { icon: 'local_offer', key: 'promotions', href: '/manager/promotions' },
+  { icon: 'confirmation_number', key: 'vouchers', href: '/manager/vouchers' },
+  { icon: 'storefront', key: 'storeLocations', href: '/manager/store-locations' },
+  { icon: 'rate_review', key: 'reviews', href: '/manager/reviews' }
 ] as const
 
 export type ManagerNavKey = (typeof MANAGER_NAV_ITEMS)[number]['key']
@@ -21,7 +28,7 @@ export interface ManagerSidebarProps {
   activeItem?: ManagerNavKey
 }
 
-export function ManagerSidebar({ activeItem = 'inventory' }: ManagerSidebarProps) {
+export function ManagerSidebar({ activeItem = 'dashboard' }: ManagerSidebarProps) {
   const { t } = useTranslation('manager')
   const { isCollapsed, toggleSidebar } = useSidebar()
   const { logout } = useAuth()

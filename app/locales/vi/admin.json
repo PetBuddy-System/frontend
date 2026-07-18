@@ -105,6 +105,7 @@
     "title": "Quản lý Blog"
   },
   "charts": {
+    "bookingStatsError": "Không thể tải thống kê booking.",
     "breakdown": {
       "items": {
         "grooming": "Spa & Grooming",
@@ -126,6 +127,28 @@
       },
       "title": "Xu hướng doanh thu",
       "unit": "Triệu VNĐ"
+    },
+    "bookingRevenueTrend": {
+      "days": {
+        "fri": "T6",
+        "mon": "T2",
+        "sat": "T7",
+        "sun": "CN",
+        "thu": "T5",
+        "tue": "T3",
+        "wed": "T4"
+      },
+      "empty": "Chưa có doanh thu booking trong khoảng thời gian này.",
+      "error": "Không thể tải biểu đồ doanh thu booking. Vui lòng thử lại sau.",
+      "subtitle": "Doanh thu dịch vụ spa/grooming theo ngày trong khoảng lọc hiện tại.",
+      "title": "Xu hướng doanh thu booking"
+    },
+    "bookingStructure": {
+      "centerLabel": "Tổng",
+      "empty": "Chưa có dữ liệu cơ cấu doanh thu booking.",
+      "error": "Không thể tải cơ cấu doanh thu booking. Vui lòng thử lại sau.",
+      "subtitle": "Tỷ trọng doanh thu theo từng dịch vụ booking.",
+      "title": "Cơ cấu doanh thu booking"
     }
   },
   "dashboard": {
@@ -181,27 +204,144 @@
       "searchPlaceholder": "Tìm kiếm theo tên, mã NV..."
     }
   },
+  "customers": {
+    "actions": {
+      "add": "Thêm người dùng",
+      "backToList": "Quay lại danh sách",
+      "changeStatus": "Đổi trạng thái tài khoản",
+      "edit": "Chỉnh sửa",
+      "view": "Xem chi tiết"
+    },
+    "create": {
+      "pageTitle": "Tạo người dùng",
+      "pageSubtitle": "Tạo tài khoản khách hàng mới.",
+      "title": "Tạo người dùng mới",
+      "subtitle": "Điền thông tin tài khoản khách hàng và ảnh đại diện nếu có."
+    },
+    "detail": {
+      "pageTitle": "Chi tiết người dùng",
+      "pageSubtitle": "Xem thông tin tài khoản khách hàng.",
+      "title": "Chi tiết người dùng",
+      "subtitle": "Thông tin hồ sơ, ngày sinh và trạng thái tài khoản khách hàng.",
+      "avatarAlt": "Ảnh đại diện người dùng",
+      "fields": {
+        "createdAt": "Ngày tạo",
+        "dateOfBirth": "Ngày sinh",
+        "gender": "Giới tính",
+        "updatedAt": "Ngày cập nhật"
+      }
+    },
+    "edit": {
+      "pageTitle": "Chỉnh sửa người dùng",
+      "pageSubtitle": "Cập nhật thông tin tài khoản khách hàng.",
+      "title": "Chỉnh sửa người dùng",
+      "subtitle": "Cập nhật hồ sơ cơ bản và ảnh đại diện của người dùng."
+    },
+    "form": {
+      "actions": {
+        "cancel": "Hủy",
+        "create": "Tạo người dùng",
+        "edit": "Lưu thay đổi",
+        "saving": "Đang lưu..."
+      },
+      "avatar": {
+        "currentAlt": "Ảnh đại diện hiện tại",
+        "hint": "Chỉ chọn 1 ảnh đại diện cho người dùng.",
+        "selected": "Đã chọn: {{name}}"
+      },
+      "fields": {
+        "avatar": "Ảnh đại diện",
+        "dateOfBirth": "Ngày sinh",
+        "email": "Email",
+        "fullName": "Họ và tên",
+        "gender": "Giới tính",
+        "password": "Mật khẩu"
+      },
+      "placeholders": {
+        "email": "nguoidung@petbuddy.vn",
+        "fullName": "Nhập họ và tên",
+        "gender": "Chọn giới tính",
+        "password": "Tối thiểu 8 ký tự"
+      },
+      "validation": {
+        "password": "Mật khẩu tối thiểu 8 ký tự, ký tự đầu viết hoa, có ít nhất 1 số và 1 ký tự đặc biệt.",
+        "required": "Vui lòng nhập đầy đủ các trường bắt buộc."
+      }
+    },
+    "messages": {
+      "createFailed": "Không thể tạo người dùng.",
+      "createSuccess": "Tạo người dùng thành công.",
+      "loadDetailFailed": "Không thể tải chi tiết người dùng.",
+      "loadFailed": "Không thể tải danh sách người dùng.",
+      "notFound": "Không tìm thấy người dùng.",
+      "statusFailed": "Không thể cập nhật trạng thái tài khoản.",
+      "statusSuccess": "Đã cập nhật trạng thái tài khoản.",
+      "updateFailed": "Không thể cập nhật người dùng.",
+      "updateSuccess": "Đã cập nhật người dùng."
+    },
+    "pagination": {
+      "label": "Phân trang người dùng",
+      "showing": "Hiển thị {{from}} - {{to}} trong số {{total}} người dùng"
+    },
+    "stats": {
+      "active": {
+        "label": "Tài khoản hoạt động",
+        "note": "Đang được phép đăng nhập"
+      },
+      "suspended": {
+        "label": "Tài khoản đình chỉ",
+        "note": "Đang bị đình chỉ"
+      },
+      "total": {
+        "label": "Tổng người dùng",
+        "note": "Tài khoản khách hàng"
+      }
+    },
+    "status": {
+      "ALL": "Tất cả trạng thái"
+    },
+    "subtitle": "Quản lý tài khoản khách hàng, trạng thái hoạt động và thông tin liên hệ trong hệ thống.",
+    "table": {
+      "avatarAlt": "Ảnh đại diện người dùng",
+      "columns": {
+        "actions": "Thao tác",
+        "createdAt": "Ngày tạo",
+        "dateOfBirth": "Ngày sinh",
+        "status": "Trạng thái",
+        "user": "Người dùng"
+      },
+      "empty": "Không tìm thấy người dùng phù hợp."
+    },
+    "title": "Quản lý người dùng",
+    "toolbar": {
+      "clear": "Xóa lọc",
+      "intro": "Theo dõi hồ sơ khách hàng, trạng thái tài khoản và thông tin liên hệ trong một nơi.",
+      "statusLabel": "Trạng thái",
+      "title": "Danh sách người dùng"
+    }
+  },
   "filters": {
-    "custom": "Tùy chỉnh",
-    "month": "Tháng này",
     "today": "Hôm nay",
-    "week": "Tuần này"
+    "week": "Tuần này",
+    "year": "Năm này"
   },
   "metrics": {
     "averageOrder": {
       "change": "+8.4% so với kỳ trước",
       "label": "TB cỡ đơn"
     },
-    "orders": {
-      "change": "+5.2% so với kỳ trước",
-      "label": "Đơn hàng"
+    "profit": {
+      "change_dynamic": "{{percent}}% so với kỳ trước",
+      "label": "Lợi nhuận"
     },
     "revenue": {
       "change": "+12.5% so với kỳ trước",
+      "change_dynamic": "{{percent}}% so với kỳ trước",
       "label": "Tổng doanh thu"
     },
     "services": {
-      "change": "-2.1% so với kỳ trước",
+      "change": "{{count}} booking trong kỳ",
+      "error": "Chưa tải được dữ liệu",
       "label": "Dịch vụ"
     }
   },
@@ -212,14 +352,16 @@
     "logout": "Đăng xuất",
     "nav": {
       "blog": "Blog",
-      "employees": "Nhân viên",
+      "employees": "Người dùng",
       "inventory": "Sản phẩm",
       "reports": "Báo cáo",
+      "orders": "Quản lý đơn hàng",
       "serviceBookings": "Lịch đặt dịch vụ",
       "services": "Dịch vụ",
-      "users": "Người dùng",
+      "users": "Nhân viên",
       "vouchers": "Voucher",
-      "shipping": "Cấu hình vận chuyển"
+      "shipping": "Cấu hình vận chuyển",
+      "auditLogs": "Lịch sử thay đổi"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
@@ -227,7 +369,16 @@
     "actions": {
       "create": "Tạo lịch hẹn mới",
       "edit": "Chỉnh sửa lịch hẹn",
+      "openActions": "Mở thao tác lịch hẹn",
+      "refresh": "Làm mới",
       "view": "Xem lịch hẹn"
+    },
+    "actionsByStatus": {
+      "ACCEPTED": "Nhận lịch",
+      "IN_PROGRESS": "Bắt đầu dịch vụ",
+      "READY_FOR_PICKUP": "Báo sẵn sàng đón",
+      "COMPLETED": "Hoàn thành lịch",
+      "CANCELLED": "Hủy lịch"
     },
     "pagination": {
       "label": "Phân trang lịch đặt",
@@ -249,7 +400,15 @@
       "cancelled": "Đã hủy",
       "completed": "Đã xong",
       "confirmed": "Đã xác nhận",
-      "pending": "Đang chờ"
+      "pending": "Đang chờ",
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "FAILED": "Thanh toán lỗi",
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "ACCEPTED": "Đã nhận",
+      "IN_PROGRESS": "Đang thực hiện",
+      "READY_FOR_PICKUP": "Sẵn sàng đón",
+      "COMPLETED": "Hoàn thành",
+      "CANCELLED": "Đã hủy"
     },
     "subtitle": "Theo dõi và điều phối lịch hẹn chăm sóc thú cưng.",
     "table": {
@@ -260,8 +419,10 @@
         "dateTime": "Ngày & giờ",
         "pet": "Thú cưng",
         "service": "Dịch vụ",
-        "status": "Trạng thái"
+        "status": "Trạng thái",
+        "deposit": "Tiền cọc"
       },
+      "emptyValue": "—",
       "rows": {
         "cj9915": {
           "customer": "Hoàng Kim Yến",
@@ -279,9 +440,47 @@
           "customer": "Nguyễn Văn An",
           "pet": "Bơ (Poodle)"
         }
-      }
+      },
+      "remaining": "Còn lại {{value}}",
+      "estimatedEndAt": "Kết thúc dự kiến {{value}}"
     },
     "title": "Quản lý lịch đặt dịch vụ",
+    "tabs": {
+      "ALL": "Tất cả",
+      "PENDING_PAYMENT": "Chờ thanh toán",
+      "FAILED": "Thanh toán lỗi",
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "ACCEPTED": "Đã nhận",
+      "IN_PROGRESS": "Đang thực hiện",
+      "READY_FOR_PICKUP": "Sẵn sàng đón",
+      "COMPLETED": "Hoàn thành",
+      "CANCELLED": "Đã hủy"
+    },
+    "filters": {
+      "status": "Trạng thái lịch",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "clear": "Xóa lọc"
+    },
+    "feedback": {
+      "loadFailed": "Không thể tải danh sách booking.",
+      "detailFailed": "Không thể tải chi tiết booking.",
+      "updateFailed": "Không thể cập nhật trạng thái booking.",
+      "updateSuccess": "Đã cập nhật trạng thái booking.",
+      "emptyTitle": "Không tìm thấy booking",
+      "emptyText": "Thử chọn tab trạng thái khác hoặc điều chỉnh khoảng ngày."
+    },
+    "cancelModal": {
+      "close": "Đóng hộp thoại hủy lịch",
+      "title": "Hủy booking",
+      "subtitle": "Nhập lý do hủy cho booking {{code}}.",
+      "reasonLabel": "Lý do hủy",
+      "reasonPlaceholder": "Nhập lý do hủy booking...",
+      "reasonRequired": "Vui lòng nhập lý do hủy.",
+      "keep": "Giữ lịch",
+      "confirm": "Hủy lịch",
+      "submitting": "Đang hủy..."
+    },
     "toolbar": {
       "customerLabel": "Tìm kiếm khách hàng",
       "dateLabel": "Khoảng ngày",
@@ -295,6 +494,34 @@
         "earCare": "Vệ sinh tai",
         "grooming": "Cắt tỉa lông"
       }
+    },
+    "bookingTypes": {
+      "IN_STORE": "Tại cửa hàng",
+      "AT_STORE": "Tại tiệm",
+      "AT_HOME": "Tại nhà"
+    },
+    "detail": {
+      "close": "Đóng chi tiết booking",
+      "title": "Chi tiết booking dịch vụ",
+      "cancel": "Đóng",
+      "save": "Cập nhật trạng thái",
+      "paymentTitle": "Tóm tắt thanh toán",
+      "unassigned": "Chưa phân công",
+      "fields": {
+        "service": "Dịch vụ",
+        "pet": "Thú cưng",
+        "schedule": "Lịch hẹn",
+        "estimatedEndAt": "Kết thúc dự kiến",
+        "bookingType": "Hình thức booking",
+        "totalAmount": "Tổng tiền",
+        "depositAmount": "Tiền cọc",
+        "remainingAmount": "Còn lại",
+        "status": "Trạng thái",
+        "note": "Ghi chú",
+        "staff": "Nhân viên",
+        "address": "Địa chỉ",
+        "cancelReason": "Lý do hủy"
+      }
     }
   },
   "serviceManagement": {
@@ -302,7 +529,10 @@
       "add": "Thêm dịch vụ mới",
       "delete": "Xóa dịch vụ",
       "edit": "Chỉnh sửa dịch vụ",
-      "view": "Xem dịch vụ"
+      "view": "Xem dịch vụ",
+      "schedule": "Xem lịch tuần",
+      "activate": "Kích hoạt dịch vụ",
+      "deactivate": "Tạm ngừng dịch vụ"
     },
     "create": {
       "accent": {
@@ -321,7 +551,13 @@
         "category": "Danh mục",
         "description": "Mô tả dịch vụ",
         "name": "Tên dịch vụ",
-        "status": "Trạng thái hoạt động"
+        "status": "Trạng thái hoạt động",
+        "catalogType": "Hình thức cung ứng",
+        "petSpecies": "Loài thú cưng áp dụng",
+        "price": "Giá cơ bản (VNĐ)",
+        "weightRange": "Khoảng cân nặng",
+        "durationMinute": "Thời lượng thực hiện",
+        "bufferTime": "Thời gian dọn dẹp giữa các ca"
       },
       "media": {
         "hint": "PNG, JPG tối đa 10MB",
@@ -348,10 +584,15 @@
       "save": "Lưu dịch vụ",
       "subtitle": "Tạo gói dịch vụ mới, thiết lập giá theo trọng lượng và bổ sung hình ảnh để triển khai nhanh chóng.",
       "tip": {
-        "text": "Hình ảnh chất lượng cao và mô tả chi tiết giúp khách hàng ra quyết định nhanh hơn và tăng tỷ lệ đặt lịch dịch vụ.",
-        "title": "Mẹo nhỏ"
+        "text": "💡 Mẹo viết mô tả: Liệt kê rõ quy trình từng bước phục vụ để khách hàng cảm thấy an tâm và tin tưởng.\n✨ Mẹo đặt tên: Đặt tên dịch vụ ngắn gọn, rõ ràng kèm loài áp dụng (Ví dụ: Tắm sấy cún nhỏ, Cắt tỉa lông mèo).",
+        "title": "Gợi ý thu hút khách hàng"
       },
-      "title": "Thêm dịch vụ mới"
+      "title": "Thêm dịch vụ mới",
+      "dto": {
+        "label": "HƯỚNG DẪN CẤU HÌNH",
+        "title": "Lưu ý khi thiết lập dịch vụ",
+        "text": "1. Hình thức dịch vụ: Chọn 'Tại tiệm' nếu khách mang thú cưng đến cửa hàng, chọn 'Tại nhà' nếu cử nhân viên đến tận nơi.\n2. Giá gốc áp dụng cho thú cưng dưới 12kg (nhỏ & vừa).\n3. Phụ thu theo cân nặng chỉ điền khi dịch vụ áp dụng cho thú cưng trên 12kg.\n4. Thời gian đệm là khoảng dọn dẹp, chuẩn bị dụng cụ giữa các ca."
+      }
     },
     "categories": {
       "grooming": "Grooming & Spa",
@@ -362,9 +603,10 @@
       "advanced": "Lọc nâng cao",
       "categories": {
         "all": "Tất cả",
-        "grooming": "Grooming & Spa",
+        "grooming": "Grooming",
         "hotel": "Khách sạn",
-        "vet": "Thú y"
+        "vet": "Thú y",
+        "spa": "Spa"
       },
       "status": {
         "active": "Đang hoạt động",
@@ -372,12 +614,22 @@
         "inactive": "Ngừng hoạt động"
       }
     },
+    "feedback": {
+      "empty": "Không tìm thấy dịch vụ.",
+      "loadFailed": "Không thể tải danh sách dịch vụ.",
+      "loadSlotsFailed": "Không thể tải time slot.",
+      "loading": "Đang tải dịch vụ...",
+      "saveFailed": "Không thể lưu thay đổi.",
+      "saving": "Đang lưu..."
+    },
     "pagination": {
-      "showing": "Hiển thị 1 - 10 trên tổng số 24 dịch vụ"
+      "showing": "Hiển thị {{shown}} trên {{total}} dịch vụ",
+      "previous": "Trang trước",
+      "next": "Trang sau"
     },
     "stats": {
       "active": "Đang hoạt động",
-      "promotions": "Khuyến mãi",
+      "promotions": "Tạm khóa",
       "total": "Tổng số dịch vụ"
     },
     "status": {
@@ -392,7 +644,8 @@
         "name": "Tên dịch vụ",
         "price": "Giá cơ bản",
         "status": "Trạng thái",
-        "updatedAt": "Cập nhật"
+        "updatedAt": "Cập nhật",
+        "duration": "Thời lượng"
       },
       "rows": {
         "bathTrimCombo": {
@@ -407,7 +660,8 @@
           "description": "Phòng đơn điều hòa",
           "name": "Khách sạn thú cưng VIP"
         }
-      }
+      },
+      "durationValue": "{{duration}} phút"
     },
     "title": "Quản lý dịch vụ",
     "pricing": {
@@ -439,6 +693,98 @@
           "title": "Cắt tỉa & tạo kiểu"
         }
       }
+    },
+    "weightRanges": {
+      "EXTRA_SMALL": "Dưới 5kg",
+      "SMALL": "Từ 5kg đến 8kg",
+      "MEDIUM": "Từ 8kg đến 12kg",
+      "LARGE": "Từ 12kg đến 18kg",
+      "EXTRA_LARGE": "Từ 18kg đến 25kg",
+      "EXTRA_EXTRA_LARGE": "Trên 25kg"
+    },
+    "surcharge": {
+      "title": "Phụ thu theo cân nặng",
+      "help": "Để trống hoặc nhập 0 nếu không áp dụng phụ thu. Giá gốc áp dụng cho EXTRA_SMALL và SMALL.",
+      "ranges": {
+        "MEDIUM": "Cỡ vừa (8kg - 12kg)",
+        "LARGE": "Cỡ lớn (12kg – 18kg)",
+        "EXTRA_LARGE": "Cỡ rất lớn (18kg – 25kg)",
+        "EXTRA_EXTRA_LARGE": "Cỡ siêu lớn (trên 25kg)"
+      }
+    },
+    "durationConfig": {
+      "title": "Thời lượng theo cân nặng",
+      "help": "Nhập số phút cộng thêm so với thời lượng gốc. Hệ thống sẽ gửi durationConfig là tổng thời lượng cuối cùng theo từng hạng cân.",
+      "unit": "phút thêm",
+      "ranges": {
+        "MEDIUM": "Cỡ vừa",
+        "LARGE": "Cỡ lớn",
+        "EXTRA_LARGE": "Cỡ rất lớn",
+        "EXTRA_EXTRA_LARGE": "Cỡ siêu lớn"
+      }
+    },
+    "searchPlaceholder": "Tìm tên dịch vụ hoặc mã catalog...",
+    "catalogTypes": {
+      "AT_STORE": "Tại tiệm",
+      "AT_HOME": "Tại nhà"
+    },
+    "catalogStatus": {
+      "AVAILABLE": "Đang mở",
+      "UNAVAILABLE": "Tạm khóa",
+      "DISCONTINUED": "Ngừng kinh doanh"
+    },
+    "detail": {
+      "close": "Đóng chi tiết dịch vụ",
+      "viewTitle": "Chi tiết dịch vụ",
+      "editTitle": "Chỉnh sửa dịch vụ",
+      "cancel": "Đóng",
+      "save": "Lưu thay đổi",
+      "fields": {
+        "catalogName": "Tên dịch vụ",
+        "catalogType": "Loại catalog",
+        "petSpecies": "Loại áp dụng",
+        "weightRange": "Khoảng cân nặng",
+        "price": "Giá gốc",
+        "durationMinute": "Thời lượng phút",
+        "bufferTime": "Thời gian đệm",
+        "status": "Trạng thái",
+        "description": "Mô tả"
+      }
+    },
+    "schedule": {
+      "close": "Đóng lịch tuần",
+      "title": "Cấu hình ca làm việc theo tuần",
+      "subtitle": "{{duration}} phút mỗi ca, nghỉ dọn dẹp {{buffer}} phút giữa các ca.",
+      "closeButton": "Đóng",
+      "createSlot": "Thêm khung giờ",
+      "active": "Khung giờ đang mở",
+      "inactive": "Khung giờ đang khóa",
+      "empty": "Chưa có khung giờ"
+    },
+    "timeSlot": {
+      "close": "Đóng form khung giờ",
+      "title": "Thêm khung giờ làm việc",
+      "cancel": "Hủy",
+      "save": "Lưu khung giờ",
+      "fields": {
+        "catalog": "Dịch vụ",
+        "dayOfWeek": "Thứ trong tuần",
+        "startTime": "Giờ bắt đầu",
+        "maxPets": "Sức chứa thú cưng",
+        "isActive": "Mở khung giờ này"
+      },
+      "maxPetsValue": "{{count}} thú cưng",
+      "maxPetsCompact": "{{count}} chỗ",
+      "edit": ""
+    },
+    "weekDays": {
+      "MONDAY": "Thứ 2",
+      "TUESDAY": "Thứ 3",
+      "WEDNESDAY": "Thứ 4",
+      "THURSDAY": "Thứ 5",
+      "FRIDAY": "Thứ 6",
+      "SATURDAY": "Thứ 7",
+      "SUNDAY": "Chủ nhật"
     }
   },
   "topNav": {
@@ -473,69 +819,181 @@
   },
   "users": {
     "actions": {
-      "add": "Thêm người dùng",
+      "addEmployee": "Thêm nhân viên",
+      "backToList": "Quay lại danh sách",
+      "changeStatus": "Đổi trạng thái tài khoản",
       "edit": "Chỉnh sửa",
-      "export": "Xuất danh sách",
       "view": "Xem chi tiết"
     },
+    "create": {
+      "pageTitle": "Tạo nhân viên",
+      "pageSubtitle": "Tạo tài khoản manager hoặc staff mới.",
+      "title": "Tạo nhân viên mới",
+      "subtitle": "Điền thông tin tài khoản và chọn đúng vai trò vận hành cho nhân viên."
+    },
+    "detail": {
+      "pageTitle": "Chi tiết nhân viên",
+      "pageSubtitle": "Xem thông tin tài khoản nhân viên.",
+      "title": "Chi tiết nhân viên",
+      "subtitle": "Thông tin hồ sơ, vai trò, công việc và trạng thái tài khoản.",
+      "avatarAlt": "Ảnh đại diện nhân viên",
+      "fields": {
+        "createdAt": "Ngày tạo",
+        "dateOfBirth": "Ngày sinh",
+        "gender": "Giới tính",
+        "role": "Vai trò",
+        "staffTask": "Bộ phận",
+        "updatedAt": "Ngày cập nhật"
+      }
+    },
+    "edit": {
+      "pageTitle": "Chỉnh sửa nhân viên",
+      "pageSubtitle": "Cập nhật thông tin tài khoản nhân viên.",
+      "title": "Chỉnh sửa nhân viên",
+      "subtitle": "Cập nhật hồ sơ, vai trò và công việc của nhân viên."
+    },
+    "form": {
+      "actions": {
+        "cancel": "Hủy",
+        "create": "Tạo nhân viên",
+        "edit": "Lưu thay đổi",
+        "saving": "Đang lưu..."
+      },
+      "fields": {
+        "dateOfBirth": "Ngày sinh",
+        "email": "Email",
+        "fullName": "Họ và tên",
+        "gender": "Giới tính",
+        "password": "Mật khẩu",
+        "role": "Vai trò",
+        "staffTask": "Bộ phận",
+        "avatar": "Ảnh đại diện"
+      },
+      "avatar": {
+        "currentAlt": "Ảnh đại diện hiện tại",
+        "hint": "Chỉ chọn 1 ảnh đại diện cho nhân viên.",
+        "selected": "Đã chọn: {{name}}"
+      },
+      "placeholders": {
+        "email": "nhanvien@petbuddy.vn",
+        "fullName": "Nhập họ và tên",
+        "gender": "Chọn giới tính",
+        "password": "Tối thiểu 8 ký tự",
+        "staffTask": "Chọn bộ phận"
+      },
+      "validation": {
+        "password": "Mật khẩu tối thiểu 8 ký tự, ký tự đầu viết hoa, có ít nhất 1 số và 1 ký tự đặc biệt.",
+        "required": "Vui lòng nhập đầy đủ các trường bắt buộc."
+      }
+    },
+    "gender": {
+      "FEMALE": "Nữ",
+      "MALE": "Nam",
+      "OTHER": "Khác"
+    },
+    "messages": {
+      "createFailed": "Không thể tạo nhân viên.",
+      "createSuccess": "Tạo nhân viên thành công.",
+      "loadDetailFailed": "Không thể tải chi tiết nhân viên.",
+      "loadFailed": "Không thể tải danh sách nhân viên.",
+      "notFound": "Không tìm thấy nhân viên.",
+      "statusFailed": "Không thể cập nhật trạng thái tài khoản.",
+      "statusSuccess": "Đã cập nhật trạng thái tài khoản.",
+      "updateFailed": "Không thể cập nhật nhân viên.",
+      "updateSuccess": "Đã cập nhật nhân viên."
+    },
     "pagination": {
-      "label": "Phân trang",
-      "showing": "Hiển thị {{from}} - {{to}} trong số {{total}} kết quả"
+      "label": "Phân trang nhân viên",
+      "showing": "Hiển thị {{from}} - {{to}} trong số {{total}} nhân viên"
+    },
+    "roles": {
+      "ALL": "Tất cả vai trò",
+      "ADMIN": "Admin",
+      "CUSTOMER": "Khách hàng",
+      "MANAGER": "Manager",
+      "STAFF": "Staff"
+    },
+    "staffTasks": {
+      "ALL": "Tất cả bộ phận",
+      "COORDINATOR": "Bộ phận điều phối",
+      "GROOMER": "Bộ phận chăm sóc",
+      "SHIPPER": "Bộ phận giao nhận"
     },
     "stats": {
       "active": {
-        "label": "Đang hoạt động",
-        "note": "90% tỷ lệ hoạt động"
+        "label": "Tài khoản hoạt động",
+        "note": "Đang được phép đăng nhập"
       },
-      "newToday": {
-        "label": "Người dùng mới hôm nay",
-        "note": "Cập nhật 5 phút trước"
+      "coordinator": {
+        "label": "Bộ phận điều phối",
+        "note": "Staff thuộc bộ phận điều phối"
+      },
+      "groomer": {
+        "label": "Bộ phận chăm sóc",
+        "note": "Staff thuộc bộ phận chăm sóc"
+      },
+      "inactive": {
+        "label": "Tài khoản inactive",
+        "note": "Đang ngưng hoạt động"
+      },
+      "managers": {
+        "label": "Tổng manager",
+        "note": "Tài khoản quản lý"
+      },
+      "shipper": {
+        "label": "Bộ phận giao nhận",
+        "note": "Staff thuộc bộ phận giao nhận"
+      },
+      "staff": {
+        "label": "Tổng staff",
+        "note": "Tài khoản nhân viên"
+      },
+      "suspended": {
+        "label": "Tài khoản đình chỉ",
+        "note": "Đang bị đình chỉ"
       },
       "total": {
-        "label": "Tổng người dùng",
-        "note": "+24 khách mới tháng này"
+        "label": "Tổng nhân viên",
+        "note": "Bao gồm manager và staff"
       }
     },
     "status": {
-      "active": "Hoạt động",
-      "locked": "Bị khóa"
+      "ACTIVE": "Hoạt động",
+      "DELETED": "Đã xóa",
+      "INACTIVE": "Không hoạt động",
+      "PENDING": "Chờ kích hoạt",
+      "SUSPENDED": "Đình chỉ"
     },
-    "subtitle": "Quản lý thông tin, điểm tích lũy và lịch sử mua hàng của khách hàng.",
+    "statusModal": {
+      "cancel": "Hủy",
+      "close": "Đóng hộp thoại đổi trạng thái",
+      "description": "Chọn trạng thái tài khoản mới cho {{name}}.",
+      "save": "Cập nhật",
+      "saving": "Đang cập nhật...",
+      "statusLabel": "Trạng thái tài khoản",
+      "title": "Đổi trạng thái tài khoản"
+    },
+    "subtitle": "Quản lý tài khoản manager và staff, phân quyền công việc và trạng thái hoạt động.",
     "table": {
+      "avatarAlt": "Ảnh đại diện nhân viên",
       "columns": {
-        "actions": "Hành động",
-        "customer": "Khách hàng",
-        "orders": "Tổng đơn hàng",
-        "phone": "Số điện thoại",
-        "points": "Điểm tích lũy",
+        "actions": "Thao tác",
+        "createdAt": "Ngày tạo",
+        "dateOfBirth": "Ngày sinh",
+        "employee": "Nhân viên",
+        "role": "Vai trò",
+        "staffTask": "Bộ phận",
         "status": "Trạng thái"
       },
-      "orderCount": "{{count}} đơn",
-      "pointsUnit": "điểm",
-      "rows": {
-        "leThiB": {
-          "email": "lethib@email.com",
-          "name": "Lê Thị B"
-        },
-        "nguyenVanA": {
-          "email": "nguyenvana@email.com",
-          "name": "Nguyễn Văn A"
-        },
-        "tranVanC": {
-          "email": "tranvanc@email.com",
-          "name": "Trần Văn C"
-        }
-      }
+      "empty": "Không tìm thấy nhân viên phù hợp."
     },
-    "title": "Quản lý người dùng",
+    "title": "Quản lý nhân viên",
     "toolbar": {
-      "advancedFilter": "Lọc nâng cao",
-      "searchPlaceholder": "Tìm kiếm theo tên hoặc số điện thoại...",
-      "status": {
-        "active": "Hoạt động",
-        "all": "Tất cả trạng thái",
-        "locked": "Bị khóa"
-      }
+      "clear": "Xóa lọc",
+      "intro": "Theo dõi đội ngũ vận hành, vai trò và bộ phận phụ trách để quản trị nhân sự nhất quán.",
+      "roleLabel": "Vai trò",
+      "staffTaskLabel": "Bộ phận",
+      "title": "Danh sách nhân viên"
     }
   },
   "productManagement": {
@@ -691,5 +1149,217 @@
     "title": "Quản lý ưu đãi & điểm thưởng"
   },
   "shippingTitle": "Cấu hình phí vận chuyển",
-  "shippingSubtitle": "Thiết lập biểu phí dựa trên khoảng cách địa lý để tối ưu hóa chi phí vận hành."
+  "shippingSubtitle": "Thiết lập biểu phí dựa trên khoảng cách địa lý để tối ưu hóa chi phí vận hành.",
+  "audit": {
+    "title": "Lịch sử thay đổi",
+    "subtitle": "Theo dõi tất cả thay đổi trong hệ thống",
+    "filter": {
+      "entityType": "Loại đối tượng",
+      "action": "Hành động",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "performedBy": "Người thực hiện",
+      "all": "Tất cả",
+      "reset": "Đặt lại",
+      "apply": "Áp dụng",
+      "entityCode": "Mã code",
+      "entityCodePlaceholder": "PRD123, PRM456...",
+      "performedByPlaceholder": "email@example.com"
+    },
+    "table": {
+      "time": "Thời gian",
+      "user": "Người thực hiện",
+      "action": "Hành động",
+      "entityType": "Loại đối tượng",
+      "entityCode": "Mã code",
+      "reason": "Lý do",
+      "viewDetail": "Xem chi tiết",
+      "empty": "Không có dữ liệu"
+    },
+    "detail": {
+      "title": "Chi tiết thay đổi",
+      "back": "Quay lại danh sách",
+      "performedBy": "Người thực hiện",
+      "performedAt": "Thời gian",
+      "entityType": "Loại đối tượng",
+      "action": "Hành động",
+      "reason": "Lý do",
+      "note": "Ghi chú",
+      "changes": "Thay đổi",
+      "field": "Trường",
+      "oldValue": "Giá trị cũ",
+      "newValue": "Giá trị mới",
+      "entityChanges": "Thay đổi đối tượng",
+      "detailChanges": "Thay đổi chi tiết"
+    },
+    "actions": {
+      "CREATE": "Tạo mới",
+      "UPDATE": "Cập nhật",
+      "DELETE": "Xóa",
+      "ADDED": "Đã thêm",
+      "REMOVED": "Đã xóa",
+      "UPDATED": "Cập nhật",
+      "PAY": "Thanh toán",
+      "REFUND": "Hoàn tiền",
+      "USE": "Sử dụng"
+    },
+    "entityTypes": {
+      "PRODUCT": "Sản phẩm",
+      "PROMOTION": "Khuyến mãi",
+      "BATCH": "Lô hàng",
+      "ORDER": "Đơn hàng",
+      "USER": "Người dùng",
+      "PAYMENT": "Thanh toán",
+      "VOUCHER_USAGE": "Sử dụng Voucher"
+    },
+    "fields": {
+      "name": "Tên",
+      "description": "Mô tả",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "status": "Trạng thái",
+      "promotionCode": "Mã khuyến mãi",
+      "productCode": "Mã sản phẩm",
+      "batchCode": "Mã lô",
+      "salePrice": "Giá bán",
+      "unit": "Đơn vị",
+      "brandName": "Thương hiệu",
+      "stockQuantity": "Số lượng tồn",
+      "expiryDate": "Ngày hết hạn",
+      "basePrice": "Giá nhập",
+      "promotionDetail": "Chi tiết sản phẩm",
+      "promotionDetails": "Chi tiết sản phẩm",
+      "promotionType": "Loại khuyến mãi",
+      "discountValue": "Giá trị giảm",
+      "productId": "Mã sản phẩm (ID)",
+      "ingredients": "Thành phần",
+      "usageInstructions": "Hướng dẫn sử dụng",
+      "createdAt": "Ngày tạo",
+      "updatedAt": "Ngày cập nhật",
+      "deletedAt": "Ngày xóa",
+      "refundAmount": "Số tiền hoàn"
+    },
+    "reasonMap": {
+      "CREATE_PRODUCT": "Tạo mới sản phẩm",
+      "CREATE_PRODUCT_IMPORT": "Tạo mới sản phẩm từ import",
+      "UPDATE_PRODUCT": "Cập nhật sản phẩm",
+      "CREATE_PROMOTION": "Tạo mới chương trình khuyến mãi",
+      "UPDATE_PROMOTION": "Cập nhật chương trình khuyến mãi",
+      "CREATE_BATCH": "Tạo mới lô hàng",
+      "CREATE_BATCH_IMPORT": "Tạo mới lô hàng từ import",
+      "UPDATE_BATCH": "Cập nhật lô hàng",
+      "PAYMENT_SUCCESS": "Thanh toán thành công",
+      "PAYMENT_BY_MOMO": "Thanh toán MoMo",
+      "PAYMENT_BY_CARD": "Thanh toán bằng thẻ",
+      "CREATE_VOUCHER": "Tạo voucher",
+      "VOUCHER_USED": "Sử dụng voucher"
+    },
+    "pagination": {
+      "showing": "Hiển thị",
+      "of": "của"
+    },
+    "reason": {
+      "default": "Cập nhật"
+    },
+    "error": {
+      "loadFailed": "Không thể tải dữ liệu"
+    },
+    "status": {
+      "DRAFT": "Nháp",
+      "ACTIVE": "Đang hoạt động",
+      "INACTIVE": "Không hoạt động",
+      "DELETED": "Đã xóa"
+    },
+    "promotionType": {
+      "PERCENTAGE": "Giảm theo %",
+      "FIXED_AMOUNT": "Giảm theo số tiền"
+    }
+  },
+  "voucherModal": {
+    "createTitle": "Tạo Voucher mới",
+    "editTitle": "Chỉnh sửa Voucher",
+    "detailTitle": "Chi tiết Voucher",
+    "code": "Mã Voucher",
+    "codeRequired": "Mã voucher tối đa 20 ký tự",
+    "codeDisabledHint": "Không thể thay đổi mã voucher.",
+    "codePlaceholder": "VD: SUMMER2025",
+    "name": "Tên Voucher",
+    "nameRequired": "Tên voucher tối đa 100 ký tự",
+    "namePlaceholder": "VD: Giảm 50k đơn hàng từ 500k",
+    "discountType": "Loại giảm giá",
+    "fixedAmount": "Số tiền cố định (VND)",
+    "percentage": "Phần trăm (%)",
+    "discountValue": "Giá trị giảm",
+    "discountPercentRange": "Phần trăm giảm giá phải từ 0% đến 100%",
+    "discountAmountRange": "Giá trị giảm phải từ 0.01đ đến 999.999.999,99đ",
+    "maxDiscount": "Giảm tối đa (VND)",
+    "maxDiscountRange": "Giảm tối đa phải từ 0đ đến 999.999.999,99đ",
+    "minOrderValue": "Đơn hàng tối thiểu (VND)",
+    "minOrderValueRange": "Đơn hàng tối thiểu phải từ 0đ đến 999.999.999,99đ",
+    "usageLimit": "Tổng lượt sử dụng",
+    "usageLimitRange": "Tổng lượt sử dụng phải từ 1 đến 999.999",
+    "usageLimitRelation": "Tổng lượt sử dụng phải lớn hơn hoặc bằng lượt sử dụng/người",
+    "perUserLimit": "Lượt sử dụng / người",
+    "perUserLimitRange": "Lượt sử dụng/người phải từ 1 đến 1.000",
+    "perUserLimitRelation": "Lượt sử dụng/người phải nhỏ hơn hoặc bằng tổng lượt sử dụng",
+    "startAt": "Ngày bắt đầu",
+    "expiredAt": "Ngày hết hạn",
+    "status": "Trạng thái",
+    "expired": "Hết hạn",
+    "expiredDescription": "Voucher đã quá ngày hết hạn và không thể kích hoạt lại.",
+    "statusActive": "Hoạt động",
+    "statusInactive": "Tạm dừng",
+    "activeDescription": "Voucher đang được kích hoạt cho khách hàng sử dụng.",
+    "inactiveDescription": "Voucher đang tạm dừng, khách hàng không thể sử dụng.",
+    "upcomingDescription": "Ngày bắt đầu chưa tới — voucher sẽ tự động kích hoạt đúng hẹn.",
+    "cancel": "Hủy",
+    "close": "Đóng",
+    "save": "Lưu thay đổi",
+    "create": "Tạo Voucher",
+    "saving": "Đang lưu...",
+    "unexpectedError": "Có lỗi xảy ra. Vui lòng thử lại.",
+    "emptyPlaceholder": "Để trống = không giới hạn",
+    "emptyOrderPlaceholder": "Để trống = không yêu cầu"
+  },
+  "footer": {
+    "label": "Chọn trang quản trị",
+    "version": "PETBUDDY ADMIN v2.4.0",
+    "privacy": "Chính sách bảo mật",
+    "terms": "Điều khoản dịch vụ"
+  },
+  "orderManagement": {
+    "title": "Quản lý đơn hàng",
+    "subtitle": "Xem và quản lý tất cả các đơn hàng mua sản phẩm trong hệ thống"
+  },
+  "orders": {
+    "stats": {
+      "total": "Tổng đơn",
+      "processing": "Đang xử lý",
+      "completed": "Đã hoàn thành",
+      "cancelled": "Đã hủy"
+    },
+    "listTitle": "Danh sách tất cả đơn hàng",
+    "searchPlaceholder": "Tìm mã đơn, tên, SĐT...",
+    "loadError": "Không thể tải danh sách đơn hàng.",
+    "empty": "Không có đơn hàng nào",
+    "table": {
+      "orderCode": "Mã đơn",
+      "customer": "Khách hàng",
+      "paymentMethod": "Phương thức TT",
+      "totalAmount": "Tổng tiền",
+      "createdAt": "Ngày tạo",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "actions": {
+      "viewDetail": "Xem chi tiết"
+    },
+    "loading": "Đang tải...",
+    "totalCount": "Tổng {{count}} đơn hàng",
+    "paymentMethod": {
+      "card": "Thẻ",
+      "momo": "MoMo",
+      "cash": "Tiền mặt"
+    }
+  }
 }

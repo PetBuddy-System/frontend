@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { useAuth } from '~/providers/auth-provider'
+import { useCart } from '~/providers/cart-provider'
 import { getDashboardPathByRole } from '~/features/auth/services/auth'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
 export function SiteBottomNav() {
   const { t } = useTranslation('landing')
   const { user } = useAuth()
+  const { cartCount } = useCart()
 
   return (
     <nav className='fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-border bg-card px-4 py-2 shadow-lg md:hidden'>
@@ -29,9 +31,9 @@ export function SiteBottomNav() {
         >
           <MaterialIcon name={navItem.icon} className='text-[22px]' />
           <span className='mt-1'>{t(`mobileNav.${navItem.key}`)}</span>
-          {navItem.key === 'cart' ? (
-            <span className='absolute -translate-y-2 translate-x-6 rounded-full bg-destructive px-1.5 text-[10px] font-semibold text-destructive-foreground'>
-              2
+          {navItem.key === 'cart' && cartCount > 0 ? (
+            <span className='absolute -translate-y-2 translate-x-6 rounded-full bg-destructive px-1.5 text-[10px] font-semibold text-destructive-foreground animate-in zoom-in duration-200'>
+              {cartCount}
             </span>
           ) : null}
         </a>
@@ -39,3 +41,4 @@ export function SiteBottomNav() {
     </nav>
   )
 }
+

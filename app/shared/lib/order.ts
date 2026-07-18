@@ -1,17 +1,29 @@
-/**
- * Order types — chỉ chứa types/interfaces, không có API functions.
- * API functions nằm trong features/services/.
- */
+import type { PaymentResponse } from './payment'
+import type { VoucherResponse } from './voucher'
+import type { MediaFileResponse } from '../../features/admin/services/booking-management/booking-management-api'
 
 export type OrderStatus =
   | 'PENDING'
   | 'CONFIRMED'
   | 'PICKING'
+  | 'PICKED'
   | 'SHIPPING'
   | 'DELIVERED'
   | 'COMPLETED'
-  | 'CANCELED'
+  | 'CANCELLED'
+  | 'EXPIRED'
+  | 'CANCEL_REQUESTED'
   | (string & {})
+
+export interface ShipperSuggestionResponse {
+  staffId: string
+  staffEmail: string
+  staffName: string
+  staffTask: string 
+  currentLoad: number
+  maxCapacity: number
+  distanceToClusterKm: number | null
+}
 
 export interface PickingItemResponse {
   productId: string
@@ -49,11 +61,24 @@ export interface PageableParams {
 
 
 export interface CreateOrderRequest {
-  userName: string
+  recipientName: string
   phoneNumber: string
   address: string
   note?: string
   voucherCode?: string
+  latitude: number
+  longitude: number
+  paymentMethod?: 'CASH' | 'CARD' | 'MOMO'
+}
+
+export interface UpdateOrderRequest {
+  recipientName?: string
+  phoneNumber?: string
+  address?: string
+  note?: string
+  voucherCode?: string
+  latitude?: number
+  longitude?: number
 }
 
 export interface OrderDetailResponse {
@@ -62,6 +87,7 @@ export interface OrderDetailResponse {
   productName: string
   productImage?: string
   unitPrice: number
+  salePrice?: number | null
   quantity: number
   totalPrice: number
   createdAt: string
@@ -71,17 +97,23 @@ export interface OrderDetailResponse {
 export interface OrderDetailFull {
   orderId: number
   orderCode: string
-  status: string
-  finalAmount: number
-  createdAt: string
-  updatedAt?: string
-  orderDetails: OrderDetailResponse[]
-  userName?: string
   recipientName?: string
   phoneNumber?: string
   address?: string
   note?: string
+  status: string
+  finalAmount: number
+  clientSecret?: string
+  createdAt: string
+  updatedAt?: string
+  paymentExpiredAt?: string
+  orderDetails: OrderDetailResponse[]
+  payment?: PaymentResponse  
   voucherCode?: string
+  voucher?: VoucherResponse
+  shippingFee?: number
+  mediaFiles?: MediaFileResponse[]
+  cancelReason?: string
 }
 
 export interface OrderResponse {
@@ -90,9 +122,27 @@ export interface OrderResponse {
   recipientName?: string
   phoneNumber?: string
   address?: string
+  note?: string
   status: OrderStatus
   finalAmount: number
+  clientSecret?: string
   createdAt: string
   updatedAt?: string
+  paymentExpiredAt?: string
   orderDetails?: OrderDetailResponse[]
+  payment?: PaymentResponse
+  voucher?: VoucherResponse
+  shippingFee?: number
+  mediaFiles?: MediaFileResponse[]
+  cancelReason?: string
+}
+
+export interface DeliveryStopResponse {
+  orderId: number
+  orderCode: string
+  address: string
+  recipientName: string
+  phoneNumber: string
+  sequence: number
+  distanceFromPreviousKm: number
 }

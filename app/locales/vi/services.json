@@ -33,6 +33,24 @@
       }
     }
   },
+  "catalog": {
+    "startingPrice": "Từ {{price}}",
+    "empty": "Chưa có dịch vụ khả dụng để hiển thị.",
+    "error": "Không thể tải dịch vụ: {{message}}",
+    "minutes": "phút",
+    "petSpecies": "loài thú cưng",
+    "catalogTypes": {
+      "AT_STORE": "Tại tiệm",
+      "AT_HOME": "Tại nhà"
+    },
+    "petSpeciesLabels": {
+      "DOG": "Chó",
+      "CAT": "Mèo",
+      "ALL": "Chó & mèo"
+    },
+    "previous": "Dịch vụ trước",
+    "next": "Dịch vụ tiếp theo"
+  },
   "combo": {
     "title": "Combo Vé Tiết Kiệm",
     "subtitle": "Tắm thả ga - Không lo về giá",
@@ -379,6 +397,174 @@
     },
     "actions": {
       "confirm": "Xác nhận đặt lịch"
+    }
+  },
+  "bookingFlow": {
+    "eyebrow": "Thanh toán & đặt lịch",
+    "title": "Đặt lịch spa và grooming",
+    "subtitle": "Chọn dịch vụ, chọn khung giờ, bổ sung thông tin thú cưng và thanh toán cọc 20%.",
+    "steps": {
+      "step": "Bước {{step}}",
+      "items": {
+        "1": "Dịch vụ",
+        "2": "Ngày & giờ",
+        "3": "Thú cưng & thông tin",
+        "4": "Tổng hợp"
+      }
+    },
+    "capacity": {
+      "title": "Sức chứa khung giờ",
+      "value": "Đã chọn {{selected}}/{{max}} thú cưng",
+      "progress": "Số thú cưng trong lịch này"
+    },
+    "service": {
+      "title": "Chọn dịch vụ",
+      "subtitle": "Danh sách các gói dịch vụ chăm sóc và làm đẹp hiện có.",
+      "duration": "{{minutes}} phút",
+      "basePrice": "Giá cơ bản {{price}}",
+      "selectedPetsTotal": "Tổng chi phí dịch vụ: {{price}}"
+    },
+    "pet": {
+      "title": "Chọn thú cưng",
+      "subtitle": "Chọn những thú cưng bạn muốn đăng ký dịch vụ.",
+      "createNote": "Dành cho khách chưa có thú cưng: hãy thêm hồ sơ thú cưng trước rồi quay lại bước này.",
+      "createCta": "Thêm thú cưng",
+      "profile": "{{breed}}, {{weight}}kg",
+      "empty": "Chưa tìm thấy hồ sơ thú cưng cho tài khoản này."
+    },
+    "time": {
+      "title": "Chọn ngày và giờ",
+      "subtitle": "Chỉ hiển thị khung giờ đang hoạt động theo dịch vụ và ngày đã chọn.",
+      "dateLabel": "Ngày hẹn",
+      "duration": "{{minutes}} phút",
+      "empty": "Không có khung giờ đang hoạt động cho dịch vụ này vào ngày đã chọn."
+    },
+    "review": {
+      "title": "Tổng hợp và thanh toán",
+      "subtitle": "Vui lòng soát lại thông tin chi tiết trước khi tiến hành đặt cọc.",
+      "customerSection": "Khách hàng",
+      "serviceSection": "Lịch dịch vụ",
+      "created": "Lịch đặt {{code}} đã sẵn sàng thanh toán.",
+      "createdHint": "Giữ trang này mở cho đến khi thanh toán thẻ thành công."
+    },
+    "summary": {
+      "title": "Tóm tắt đặt lịch",
+      "bookingType": "Hình thức",
+      "service": "Dịch vụ",
+      "pets": "Thú cưng",
+      "schedule": "Lịch hẹn",
+      "subtotal": "Tạm tính",
+      "deposit": "Cọc 20%",
+      "remaining": "Còn lại",
+      "priceByPet": "Giá theo cân nặng từng thú cưng",
+      "priceWithSurcharge": "{{total}} (gồm phụ thu {{surcharge}})",
+      "empty": "Chưa chọn",
+      "depositNote": "Lịch hẹn áp dụng chung cho tất cả thú cưng được chọn. Dịch vụ tại nhà sẽ được phục vụ theo địa chỉ bạn cung cấp."
+    },
+    "weightRanges": {
+      "EXTRA_SMALL": "Dưới 5kg",
+      "SMALL": "Từ 5kg đến 8kg",
+      "MEDIUM": "Từ 8kg đến 12kg",
+      "LARGE": "Từ 12kg đến 18kg",
+      "EXTRA_LARGE": "Từ 18kg đến 25kg",
+      "EXTRA_EXTRA_LARGE": "Trên 25kg"
+    },
+    "actions": {
+      "back": "Quay lại",
+      "next": "Tiếp tục",
+      "reset": "Đặt lại form",
+      "checkout": "Thanh toán",
+      "submit": "Tạo đặt lịch",
+      "submitting": "Đang tạo đặt lịch..."
+    },
+    "toast": {
+      "loadError": "Không thể tải dữ liệu đặt lịch.",
+      "timeSlotLoadError": "Không thể tải khung giờ khả dụng.",
+      "submitError": "Không thể tạo đặt lịch.",
+      "success": "Đã ghi nhận thông tin đặt lịch. Vui lòng thanh toán cọc để hoàn tất.",
+      "paymentSuccess": "Đặt lịch và thanh toán cọc thành công!",
+      "selectService": "Vui lòng chọn dịch vụ trước.",
+      "selectPet": "Vui lòng chọn ít nhất một thú cưng.",
+      "selectTime": "Vui lòng chọn ngày hẹn và khung giờ.",
+      "customerMissing": "Vui lòng nhập tên khách hàng và số điện thoại.",
+      "addressMissing": "Vui lòng nhập địa chỉ sử dụng dịch vụ tại nhà.",
+      "slotLimit": "Số thú cưng đã đạt sức chứa của khung giờ này.",
+      "resetSuccess": "Đã đặt lại thông tin đặt lịch.",
+      "paymentSecretMissing": "Lịch đặt đã được tạo nhưng backend chưa trả Stripe payment secret.",
+      "retryPaymentFailed": "Không thể tạo lượt thanh toán mới.",
+      "cardElementMissing": "Không thể tải ô nhập thẻ.",
+      "cardholderMissing": "Vui lòng nhập tên chủ thẻ.",
+      "paymentFailed": "Thanh toán thất bại. Vui lòng thử lại.",
+      "paymentIncomplete": "Thanh toán chưa hoàn tất. Vui lòng thử lại."
+    },
+    "apiErrors": {
+      "BOOKING_NOT_FOUND": "Mình chưa tìm thấy lịch đặt này. Bạn thử tải lại trang rồi kiểm tra lại nhé.",
+      "BOOKING_DETAIL_NOT_FOUND": "Mình chưa tìm thấy chi tiết lịch đặt. Bạn vui lòng thử lại sau ít phút.",
+      "BOOKING_ALREADY_CANCELLED": "Lịch đặt này đã được hủy trước đó.",
+      "BOOKING_CANNOT_CANCEL": "Lịch đặt này hiện không thể hủy. Bạn vui lòng liên hệ PetBuddy để được hỗ trợ nhé.",
+      "BOOKING_STATUS_INVALID": "Trạng thái lịch đặt chưa phù hợp để thực hiện thao tác này.",
+      "BOOKING_TIME_INVALID": "Thời gian đặt lịch chưa hợp lệ. Bạn vui lòng chọn lại ngày và khung giờ.",
+      "CATALOG_NOT_FOUND": "Dịch vụ này hiện chưa còn trong hệ thống. Bạn vui lòng chọn dịch vụ khác nhé.",
+      "CATALOG_UNAVAILABLE": "Dịch vụ này đang tạm ngưng nhận lịch. Bạn vui lòng chọn dịch vụ khác nhé.",
+      "CATALOG_TIME_SLOT_NOT_FOUND": "Khung giờ này không còn khả dụng. Bạn vui lòng chọn khung giờ khác nhé.",
+      "TIME_SLOT_NOT_FOUND": "Khung giờ này không còn khả dụng. Bạn vui lòng chọn khung giờ khác nhé.",
+      "TIME_SLOT_UNAVAILABLE": "Khung giờ này vừa hết chỗ. Bạn vui lòng chọn khung giờ khác nhé.",
+      "TIME_SLOT_FULL": "Khung giờ này đã đủ số lượng thú cưng. Bạn vui lòng chọn khung giờ khác nhé.",
+      "PET_NOT_FOUND": "Mình chưa tìm thấy hồ sơ thú cưng này. Bạn vui lòng kiểm tra lại danh sách thú cưng nhé.",
+      "PET_INACTIVE": "Hồ sơ thú cưng này hiện chưa thể đặt lịch. Bạn vui lòng chọn thú cưng khác nhé.",
+      "PAYMENT_FAILED": "Thanh toán chưa thành công. Bạn vui lòng kiểm tra thẻ và thử lại nhé.",
+      "PAYMENT_NOT_FOUND": "Mình chưa tìm thấy lượt thanh toán này. Bạn vui lòng thử lại sau ít phút.",
+      "PAYMENT_ALREADY_PAID": "Lịch đặt này đã được thanh toán cọc rồi.",
+      "STRIPE_PAYMENT_FAILED": "Cổng thanh toán chưa xử lý được giao dịch. Bạn vui lòng thử lại nhé.",
+      "UNAUTHENTICATED": "Phiên đăng nhập đã hết hạn. Bạn vui lòng đăng nhập lại để tiếp tục đặt lịch.",
+      "FORBIDDEN": "Bạn chưa có quyền thực hiện thao tác này.",
+      "notFound": "Mình chưa tìm thấy dữ liệu cần xử lý. Bạn thử tải lại trang nhé.",
+      "server": "Hệ thống đang hơi bận. Bạn vui lòng thử lại sau ít phút nhé.",
+      "network": "Kết nối mạng chưa ổn định. Bạn kiểm tra lại mạng rồi thử lại nhé."
+    },
+    "myBookings": {
+      "title": "Lịch đặt gần đây",
+      "empty": "Chưa có lịch đặt nào.",
+      "status": {
+        "PENDING_PAYMENT": "Chờ thanh toán",
+        "FAILED": "Thanh toán thất bại",
+        "PENDING_ACCEPTANCE": "Chờ xác nhận",
+        "ACCEPTED": "Đã nhận lịch",
+        "IN_PROGRESS": "Đang thực hiện",
+        "READY_FOR_PICKUP": "Sẵn sàng đón",
+        "COMPLETED": "Hoàn tất",
+        "CANCELLED": "Đã hủy",
+        "unknown": "Đang cập nhật"
+      }
+    },
+    "bookingTypes": {
+      "AT_STORE": "Tại tiệm",
+      "AT_HOME": "Tại nhà"
+    },
+    "customer": {
+      "title": "Thông tin khách hàng",
+      "subtitle": "Nhập thông tin liên hệ và chọn thú cưng sẽ sử dụng dịch vụ.",
+      "name": "Tên khách hàng",
+      "phone": "Số điện thoại",
+      "address": "Địa chỉ sử dụng dịch vụ",
+      "note": "Ghi chú đặt lịch"
+    },
+    "schedule": {
+      "title": "Chọn ngày và khung giờ",
+      "subtitle": "Khung giờ khả dụng được tải theo dịch vụ và ngày đã chọn."
+    },
+    "payment": {
+      "title": "Thanh toán cọc an toàn",
+      "bookingReady": "Đã tạo lịch đặt",
+      "cardholder": "Tên chủ thẻ",
+      "cardInfo": "Thông tin thẻ tín dụng/ghi nợ",
+      "payDeposit": "Thanh toán cọc {{amount}}",
+      "processing": "Đang xử lý thanh toán...",
+      "successTitle": "Thanh toán thành công",
+      "successDescription": "Bạn đã thanh toán cọc thành công cho lịch đặt {{code}}.",
+      "failedTitle": "Thanh toán thất bại",
+      "retry": "Thanh toán lại",
+      "retrying": "Đang tạo lượt thanh toán mới..."
     }
   },
   "gallery": {

@@ -59,12 +59,8 @@ export function ForgotPasswordPage() {
 
           {/* Heading */}
           <div className='mb-10 text-center'>
-            <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
-              {t('forgot.title')}
-            </h1>
-            <p className='mt-3 text-sm leading-relaxed text-muted-foreground md:text-base'>
-              {t('forgot.subtitle')}
-            </p>
+            <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>{t('forgot.title')}</h1>
+            <p className='mt-3 text-sm leading-relaxed text-muted-foreground md:text-base'>{t('forgot.subtitle')}</p>
           </div>
 
           {/* Error */}
@@ -75,7 +71,7 @@ export function ForgotPasswordPage() {
             </div>
           )}
 
-          {/* Success → chuyển sang nhập OTP + mật khẩu mới */}
+          {/* Success → chuyển sang verify OTP */}
           {isSent ? (
             <div className='space-y-6'>
               <div className='flex items-center gap-3 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success'>
@@ -83,7 +79,7 @@ export function ForgotPasswordPage() {
                 <p>{t('forgot.sent')}</p>
               </div>
               <a
-                href={`/reset-password?email=${encodeURIComponent(email)}`}
+                href={`/verify-email?email=${encodeURIComponent(email)}&purpose=reset-password`}
                 className='flex w-full items-center justify-center rounded-xl bg-secondary px-4 py-4 text-base font-bold uppercase tracking-widest text-secondary-foreground shadow-md transition-all hover:opacity-90'
               >
                 {t('forgot.continue')}

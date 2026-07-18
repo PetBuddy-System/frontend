@@ -3,44 +3,14 @@ import { useTranslation } from 'react-i18next'
 
 import { CartItemsList, type CartItem } from '../components/cart/cart-items-list'
 import { CartOrderSummary } from '../components/cart/cart-order-summary'
-import { CartSuggestions, type CartSuggestion } from '../components/cart/cart-suggestions'
+import { AdjustedQuantityModal } from '../components/checkout/adjusted-quantity-modal'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import {
-  getCartApi,
-  updateCartItemApi,
-  removeCartItemApi,
-  clearCartApi,
-} from '../services/cart'
+import { useCart } from '~/providers/cart-provider'
+import { MaterialIcon } from '~/shared/ui'
+import { getCartApi, updateCartItemApi, removeCartItemApi } from '../services'
 import type { CartItemResponse } from '~/shared/lib/cart'
-
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-// const SUGGESTIONS: CartSuggestion[] = [
-//   {
-//     key: 'treats',
-//     image:
-//       'https://lh3.googleusercontent.com/aida-public/AB6AXuAh0Mt6FVKZtoZIl8hmpDSsxvCx6L1TKQ5qRwm5_xTvWTzzLlj7EtK3CNi6AhdkRuvKbRyHbsNB5dztwxU6jm02uBewG26QLu7OaxUSiIlAJQhPWrynOSWUA-Guyf10N2WqYv6P0vlXRH3ysKcNaOJBqtpA7ps8SkLZ29t0qWni6O08YfwgfbBj6D9iUa_dJVW_LiuRiafZIH6qH5mFE8QScPIBVwX4X7DD3UlqQ7WMB018sLlXjvONm_qgeSyKre1OEWq3cTz_WmA',
-//     price: 85000,
-//   },
-//   {
-//     key: 'ropeToy',
-//     image:
-//       'https://lh3.googleusercontent.com/aida-public/AB6AXuBDBudYeLKEdmwXy5PdXabk8pPTMta8e7woVqNCjuh0usqTa-LdUolvcpn5xIp58m9-fxYDg08HC25OVOyyTm0A2P_U0dRcnxqkxwD_WtCIvzYhi1TVXgsy4mCCR1rsaneVLsb5s-oMVCr_odxoOmtulAccheNytvG_cCo3qodaRqZANN4eWvDe3OlQyuVCcPHDxF_w18oepm-IbIcQbT4ISlc6pN7JkE3-kjBUuMPHrU0Z-vgFVaLNCV4UP6OXv_LPiE3iAP9Z4GQ',
-//     price: 120000,
-//   },
-//   {
-//     key: 'leatherCollar',
-//     image:
-//       'https://lh3.googleusercontent.com/aida-public/AB6AXuArwBf7UHSiWPAQRs5-02N0HWuz9jmofJ_e9rICLQSIynaGrkRm9_wTgtmtrUBWscRJQBd43haD1tm4ioBGU3qorsnaVx-RU2hrwsR9bExWLMF9T3KAAdNWnO5lb9VCEEjWW2YWulkiJCzGmt2aFEpp8c9b0uZ90TVH1aWMEv8okZogchwFlsgE2NCJchSJwde3eWVXTeXJ4ZCaxtoPSt067ALgjO05337NHrAsSMiLZnRfB742vKPXoFcDPA6JYNGPnNKU9Vg8VFU',
-//     price: 350000,
-//   },
-//   {
-//     key: 'ceramicBowl',
-//     image:
-//       'https://lh3.googleusercontent.com/aida-public/AB6AXuCdf_YqJ2ZfNOBKzXiCy-IHUrXjgLClIzIZjWt5VdZeJxG7bQlU1PbcRbDZ_zQmH3aWpJk4irp1xMUeoZ-pLONJMBYzQU85Cx31mmUHkr-Ur007CEVRPFOeLH0NFcFrzVyac31YUC7kd1mygBsnJN4RgRnDeuKsaVJqQ1fLiJVw0jBLAG1W86sfcWk5SbeJSd3zAC_IOHm2n9qFzekhtpmKkDRD_svrOvkyrva-DYE377-MJDQEghzzAuGlG2rlLxoLZDNvaatDSfM',
-//     price: 215000,
-//   },
-// ]
+import { guestCart } from '~/shared/lib/cart'
+import { isLoggedIn } from '~/features/products/services/cart/cart-api'
 
 const CART_PLACEHOLDER_IMAGE = 'https://placehold.co/300x300?text=PetBuddy'
 
@@ -52,24 +22,45 @@ function formatPrice(value: number) {
 
 export function CartPage() {
   const { t } = useTranslation('products')
+  const { refetchCart } = useCart()
 
   const [cartItems, setCartItems] = useState<CartItemResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isMutating, setIsMutating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const [adjustedItem, setAdjustedItem] = useState<CartItemResponse | null>(null)
+
 
   const fetchCart = useCallback(async () => {
-    try {
-      setError(null)
+  try {
+    setError(null)
+    if (isLoggedIn()) {
       const cart = await getCartApi()
-      setCartItems(cart.items ?? [])
-    } catch {
-      setError('Không thể tải giỏ hàng. Vui lòng thử lại.')
-    } finally {
-      setIsLoading(false)
+      setCartItems(cart.cartItems ?? [])
+    } else {
+      const guestItems = guestCart.getAll()
+      setCartItems(
+        guestItems.map((i) => ({
+          cartItemId: i.cartItemId,
+          productId: i.productId,
+          productName: i.productName,
+          description: undefined,
+          price: i.price,
+          salePrice: i.salePrice ?? null, 
+          quantity: i.quantity,
+          imageUrl: i.imageUrl,
+          subtotal: i.subtotal,
+        }))
+      )
     }
-  }, [])
+    await refetchCart()
+  } catch {
+    setError('Không thể tải giỏ hàng. Vui lòng thử lại.')
+  } finally {
+    setIsLoading(false)
+  }
+}, [refetchCart])
 
   useEffect(() => {
     fetchCart()
@@ -81,15 +72,22 @@ export function CartPage() {
       cartItemId: item.cartItemId,
       productId: item.productId,
       title: item.productName,
+      description: item.description,
       category: '',
       image: item.imageUrl || CART_PLACEHOLDER_IMAGE,
       price: item.price,
+      salePrice: item.salePrice,
       quantity: item.quantity,
+      subtotal: item.subtotal,
     }))
   }, [cartItems])
 
   const subtotal = useMemo(() => {
-    return cartItems.reduce((total, item) => total + item.subtotal, 0)
+    return cartItems.reduce((total, item) => {
+      const effectivePrice =
+        item.salePrice != null && item.salePrice < item.price ? item.salePrice : item.price
+      return total + effectivePrice * item.quantity
+    }, 0)
   }, [cartItems])
 
   const itemCount = useMemo(() => {
@@ -116,8 +114,13 @@ export function CartPage() {
     setIsMutating(true)
 
     try {
-      await updateCartItemApi(item.cartItemId, { quantity: item.quantity + 1 })
+      const updated = await updateCartItemApi(item.cartItemId, { quantity: item.quantity + 1 })
       await fetchCart()
+
+      // Server đã tự giới hạn số lượng do không đủ tồn kho → hỏi lại người dùng
+      if (updated?.adjusted) {
+        setAdjustedItem(updated)
+      }
     } catch {
       setError('Không thể cập nhật số lượng.')
     } finally {
@@ -130,7 +133,7 @@ export function CartPage() {
     setIsMutating(true)
 
     try {
-      await removeCartItemApi(item.productId)
+      await removeCartItemApi(item.cartItemId)
       await fetchCart()
     } catch {
       setError('Không thể xoá sản phẩm.')
@@ -139,21 +142,27 @@ export function CartPage() {
     }
   }
 
-  async function handleClearCart() {
-    if (isMutating) return
+  /** User đồng ý giữ sản phẩm với số lượng đã bị giảm */
+  function handleAdjustedConfirm() {
+    setAdjustedItem(null)
+  }
+
+  /** User từ chối → xóa sản phẩm khỏi giỏ hàng */
+  async function handleAdjustedDecline() {
+    if (!adjustedItem) return
     setIsMutating(true)
 
     try {
-      await clearCartApi()
-      setCartItems([])
+      await removeCartItemApi(adjustedItem.cartItemId)
+      await fetchCart()
     } catch {
-      setError('Không thể xoá giỏ hàng.')
+      setError('Không thể xoá sản phẩm.')
     } finally {
       setIsMutating(false)
+      setAdjustedItem(null)
     }
   }
 
-  // ─── Render ─────────────────────────────────────────────────────────────
 
   if (isLoading) {
     return (
@@ -180,50 +189,81 @@ export function CartPage() {
           {t('cart.title')}
         </h1>
 
-        {/* Error banner */}
+        <a
+          className="inline-flex items-center text-primary font-semibold hover:underline gap-2 mt-4"
+          href="/products"
+        >
+          <MaterialIcon name="arrow_back" className="text-[18px]" />
+          {t('cart.continueShopping', 'Tiếp tục mua sắm')}
+        </a>
         {error && (
           <div className='mb-6 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
             {error}
           </div>
         )}
 
-        <div className='grid grid-cols-1 items-start gap-6 lg:grid-cols-12'>
-          <CartItemsList
-            items={items}
-            formatPrice={formatPrice}
-            isMutating={isMutating}
-            onDecrease={async (key) => {
-              const target = items.find((i) => i.key === key)
-              if (!target) return
-              await handleDecrease(target)
-            }}
-            onIncrease={async (key) => {
-              const target = items.find((i) => i.key === key)
-              if (!target) return
-              await handleIncrease(target)
-            }}
-            onRemove={async (item) => {
-              await handleRemove(item)
-            }}
-          />
-
-          <div className='space-y-4 lg:col-span-4'>
-            <CartOrderSummary
-              itemCount={itemCount}
-              subtotal={subtotal}
-              formatPrice={formatPrice}
-              isMutating={isMutating}
-              onClearCart={handleClearCart}
-            />
+        {cartItems.length === 0 ? (
+          <div className='flex flex-col items-center justify-center py-20 text-center rounded-2xl border border-border/60 bg-card p-8 shadow-sm'>
+            <div className='mb-4 rounded-full bg-primary/10 p-5 text-primary'>
+              <MaterialIcon name='shopping_cart_checkout' className='text-[48px]' />
+            </div>
+            <h2 className='text-lg font-bold mb-2 text-foreground'>Giỏ hàng trống</h2>
+            <p className='mb-6 text-sm text-muted-foreground max-w-sm'>
+              Không có sản phẩm nào trong giỏ hàng. Bấm quay lại để mua sắm
+            </p>
+            <a
+              href='/products'
+              className='inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow transition hover:opacity-90 active:scale-95'
+            >
+              <MaterialIcon name='arrow_back' className='text-[18px]' />
+              <span>Quay lại mua sắm</span>
+            </a>
           </div>
-        </div>
+        ) : (
+          <div className='grid grid-cols-1 items-start gap-6 lg:grid-cols-12'>
+            <CartItemsList
+              items={items}
+              formatPrice={formatPrice}
+              onDecrease={async (key) => {
+                const target = items.find((i) => i.key === key)
+                if (!target) return
+                await handleDecrease(target)
+              }}
+              onIncrease={async (key) => {
+                const target = items.find((i) => i.key === key)
+                if (!target) return
+                await handleIncrease(target)
+              }}
+              onRemove={async (item) => {
+                await handleRemove(item)
+              }}
+            />
 
-        {/* <CartSuggestions items={SUGGESTIONS} formatPrice={formatPrice} /> */}
+            <div className='space-y-4 lg:col-span-4'>
+              <CartOrderSummary
+                itemCount={itemCount}
+                subtotal={subtotal}
+                formatPrice={formatPrice}
+                isMutating={isMutating}
+              />
+            </div>
+          </div>
+        )}
+
       </main>
 
       <SiteFooter />
       <SiteBottomNav />
       <SiteFab />
+
+      {adjustedItem && (
+        <AdjustedQuantityModal
+          productName={adjustedItem.productName}
+          newQuantity={adjustedItem.quantity}
+          onConfirm={handleAdjustedConfirm}
+          onDecline={handleAdjustedDecline}
+        />
+      )}
     </div>
   )
 }

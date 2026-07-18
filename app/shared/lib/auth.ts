@@ -12,9 +12,11 @@ export interface UserResponse {
   gender: string
   dateOfBirth: string
   role: string
+  staffTask?: 'GROOMER' | 'SHIPPER' | 'COORDINATOR'
   status: UserStatus
   createdAt: string
   updatedAt: string
+  paymentFailStreak?: number
 }
 
 export interface AuthenticationRequest {
@@ -62,9 +64,28 @@ export interface OtpRequest {
   email: string
 }
 
+export interface ResetOtpResponse {
+  resetToken: string
+}
+
 export interface ResetPasswordRequest {
-  email: string
-  otp: string
+  resetToken: string
   newPassword: string
   confirmNewPassword: string
+}
+
+export interface PasswordUpdateRequest {
+  oldPassword: string
+  newPassword: string
+  confirmNewPassword: string
+}
+
+/**
+ * Query params BE gửi về FE sau khi Google OAuth thành công.
+ * Pattern: BE redirect về FE kèm token qua query string.
+ * FE đọc và lưu vào localStorage, sau đó cleanup URL.
+ */
+export interface GoogleOAuthCallback {
+  accessToken: string
+  refreshToken: string
 }

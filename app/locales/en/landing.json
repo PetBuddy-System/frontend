@@ -20,9 +20,9 @@
     "addToCart": "Add to cart",
     "supportChat": "Support chat",
     "callNow": "Call now",
-    "login": "Log in",
+    "login": "Login",
     "register": "Sign up",
-    "logout": "Log out",
+    "logout": "Logout",
     "profile": "My account"
   },
   "chatModal": {

@@ -2,8 +2,8 @@ import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import { readStorage } from '~/shared/lib/storage'
 import { STORAGE_KEYS } from '~/shared/config/site'
-import { guestCart } from '~/shared/lib/guest-cart'
-import type {CartResponse,AddToCartRequest,UpdateCartItemRequest,MergeCartRequest,} from '~/shared/lib/cart'
+import { guestCart } from '~/shared/lib/cart'
+import type { CartResponse, AddToCartRequest, UpdateCartItemRequest, MergeCartRequest, CartItemResponse } from '~/shared/lib/cart'
 
 interface ApiResponse<T> {
   success: boolean
@@ -13,13 +13,13 @@ interface ApiResponse<T> {
 
 const CART_BASE_URL = `${env.API_URL}${env.API_CART_PATH}`
 
-function isLoggedIn(): boolean {
+export function isLoggedIn(): boolean {
   return !!readStorage(STORAGE_KEYS.accessToken)
 }
 
 export async function getCartApi(): Promise<CartResponse> {
   if (!isLoggedIn()) {
-    return { userId: '', items: guestCart.getAll() }
+    return { userId: '', cartItems: guestCart.getAll() }
   }
   const response = await customFetch<ApiResponse<CartResponse>>({
     url: CART_BASE_URL,
@@ -29,7 +29,13 @@ export async function getCartApi(): Promise<CartResponse> {
 }
 
 export async function addToCartApi(
-  request: AddToCartRequest & { productName?: string; price?: number; imageUrl?: string }
+  request: AddToCartRequest & {
+    productName?: string
+    price?: number
+    salePrice?: number | null
+    imageUrl?: string
+    description?: string
+  }
 ): Promise<void> {
   if (!isLoggedIn()) {
     if (request.productName === undefined || request.price === undefined) {
@@ -39,6 +45,7 @@ export async function addToCartApi(
       productId: request.productId,
       quantity: request.quantity,
       productName: request.productName,
+      salePrice: request.salePrice,
       price: request.price,
       imageUrl: request.imageUrl ?? '',
     })
@@ -54,41 +61,36 @@ export async function addToCartApi(
 export async function updateCartItemApi(
   cartItemId: string,
   request: UpdateCartItemRequest
-): Promise<void> {
+): Promise<CartItemResponse> {
   if (!isLoggedIn()) {
-    guestCart.update(cartItemId, request)
-    return
+    const updated = guestCart.update(cartItemId, request)
+    if (Array.isArray(updated)) {
+      const found = updated.find((it) => it.cartItemId === cartItemId)
+      return (found ?? (updated[0] as any)) as CartItemResponse
+    }
+
+    return updated as CartItemResponse
   }
-  await customFetch<ApiResponse<void>>({
+
+  const response = await customFetch<ApiResponse<CartItemResponse>>({
     url: `${CART_BASE_URL}/items/${cartItemId}`,
     method: 'PUT',
     data: request,
   })
-}
 
-export async function removeCartItemApi(productId: string): Promise<void> {
+  return response.data
+}
+export async function removeCartItemApi(cartItemId: string): Promise<void> {
   if (!isLoggedIn()) {
-    guestCart.remove(productId)
+    guestCart.remove(cartItemId)
     return
   }
   await customFetch<ApiResponse<void>>({
-    url: `${CART_BASE_URL}/items/${productId}`,
+    url: `${CART_BASE_URL}/items/${cartItemId}`,
     method: 'DELETE',
   })
 }
 
-export async function clearCartApi(): Promise<void> {
-  if (!isLoggedIn()) {
-    guestCart.clear()
-    return
-  }
-  await customFetch<ApiResponse<void>>({
-    url: CART_BASE_URL,
-    method: 'DELETE',
-  })
-}
-
-/** Gọi ngay sau khi login thành công, để gộp guest cart vào cart của user. */
 export async function mergeCartApi(): Promise<CartResponse> {
   const guestItems = guestCart.getAll()
   if (guestItems.length === 0) {

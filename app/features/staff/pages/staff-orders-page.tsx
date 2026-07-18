@@ -1,5 +1,5 @@
-// app/features/staff/pages/staff-orders-page.tsx
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 
 import { StaffSidebar } from '../components/layout/staff-sidebar'
 import { StaffTopNav } from '../components/layout/staff-top-nav'
@@ -10,11 +10,15 @@ import { cn } from '~/shared/lib/cn'
 import { StaffOrdersStats } from '../components/orders/staff-orders-stats'
 import { StaffOrdersTable } from '../components/orders/staff-orders-table'
 import { StaffOrderPickingDialog } from '../components/orders/staff-order-picking-dialog'
-import { OrderDetailModal } from '~/shared/components'
-
-
+import { DeliveryProofDialog } from '../components/orders/delivery-proof-dialog'
+import { useAuth } from '~/providers/auth-provider'
+import { DeliveryRouteDialog } from '../components/orders/delivery-route-dialog'
 
 export function StaffOrdersPage() {
+    const navigate = useNavigate()
+    const { user } = useAuth()
+    const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
+    const [isRouteOpen, setIsRouteOpen] = useState(false)
     const [orders, setOrders] = useState<OrderResponse[]>([])
     const [stats, setStats] = useState({
         pending: 0,
@@ -22,7 +26,8 @@ export function StaffOrdersPage() {
         picking: 0,
         shipping: 0,
         completed: 0,
-        canceled: 0
+        cancelled: 0,
+        refundPending: 0
     })
 
     const [totalElements, setTotalElements] = useState(0)
@@ -34,11 +39,9 @@ export function StaffOrdersPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [statusFilter, setStatusFilter] = useState<string>('ALL')
 
-    // Detail Modal state
-    const [selectedOrderForDetail, setSelectedOrderForDetail] = useState<OrderResponse | null>(null)
-
     // Picking Modal state
     const [selectedOrderForPicking, setSelectedOrderForPicking] = useState<OrderResponse | null>(null)
+    const [selectedOrderForProof, setSelectedOrderForProof] = useState<OrderResponse | null>(null)
 
     // Load orders & recalculate counters
     async function loadData() {
@@ -65,7 +68,8 @@ export function StaffOrdersPage() {
                     picking: all.filter((o) => o.status === 'PICKING').length,
                     shipping: all.filter((o) => o.status === 'SHIPPING' || o.status === 'DELIVERED').length,
                     completed: all.filter((o) => o.status === 'COMPLETED').length,
-                    canceled: all.filter((o) => o.status === 'CANCELED').length
+                    cancelled: all.filter((o) => o.status === 'CANCELLED').length,
+                    refundPending: all.filter((o) => o.status === 'CANCEL_REQUESTED').length
                 })
             }
         } catch (err) {
@@ -110,11 +114,20 @@ export function StaffOrdersPage() {
                 <main className='flex-1 overflow-y-auto p-4 md:p-6 pb-20'>
                     <div className='mx-auto flex max-w-7xl flex-col gap-6'>
                         {/* Header section */}
-                        <div className='flex justify-between items-end'>
+                        <div className='flex justify-between items-end gap-4'>
                             <div>
                                 <h2 className='font-display text-2xl font-bold text-foreground mb-1'>Danh sách đơn hàng</h2>
                                 <p className='text-sm text-muted-foreground'>Theo dõi và xử lý các đơn hàng của hệ thống.</p>
                             </div>
+                            {isShipper && (
+                                <button
+                                    onClick={() => setIsRouteOpen(true)}
+                                    className='flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-95 transition-all shadow-md active:scale-95'
+                                >
+                                    <MaterialIcon name='alt_route' className='text-[18px]' />
+                                    <span>Gợi ý tuyến đường</span>
+                                </button>
+                            )}
                         </div>
 
                         {/* Stats Grid - Extracted Component */}
@@ -132,10 +145,14 @@ export function StaffOrdersPage() {
                             statusFilter={statusFilter}
                             onSearchChange={setSearchQuery}
                             onStatusFilterChange={setStatusFilter}
-                            onViewDetail={setSelectedOrderForDetail}
+                            onViewDetail={(order) => navigate(`/staff/orders/${order.orderId}`)}
                             onTransition={handleTransition}
                             onOpenPicking={handleOpenPicking}
-                            onTransitionToShipped={(orderId) => handleTransition(orderId, 'DELIVERED')}
+                            onTransitionToShipped={(orderId) => {
+                                 const o = orders.find(x => x.orderId === orderId)
+                                 if (o) setSelectedOrderForProof(o)
+                             }}
+                            onRefresh={() => void loadData()}
                         />
 
                         {/* Pagination */}
@@ -186,13 +203,24 @@ export function StaffOrdersPage() {
                 onSuccess={() => void loadData()}
             />
 
-            {/* Order Detail Modal */}
-            {selectedOrderForDetail && (
-                <OrderDetailModal
-                    orderId={selectedOrderForDetail.orderId}
-                    orderCode={selectedOrderForDetail.orderCode}
-                    isStaff={true}
-                    onClose={() => setSelectedOrderForDetail(null)}
+            {/* Delivery Proof Dialog */}
+            <DeliveryProofDialog
+                orderId={selectedOrderForProof?.orderId ?? 0}
+                orderCode={selectedOrderForProof?.orderCode ?? ''}
+                isOpen={!!selectedOrderForProof}
+                onClose={() => setSelectedOrderForProof(null)}
+                onSuccess={() => {
+                    void loadData()
+                    setIsRouteOpen(true)
+                }}
+            />
+
+            {/* Delivery Route Dialog */}
+            {isShipper && (
+                <DeliveryRouteDialog
+                    staffId={user?.userId ?? ''}
+                    isOpen={isRouteOpen}
+                    onClose={() => setIsRouteOpen(false)}
                 />
             )}
         </div>

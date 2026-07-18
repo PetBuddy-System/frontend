@@ -1,17 +1,51 @@
+// app/features/manager/components/products/manager-product-info-card.tsx
+
+import { useTranslation } from 'react-i18next'
 import type { ProductDetailData } from '~/shared/lib/product'
 import { MaterialIcon } from '~/shared/ui'
 
 export interface ManagerProductInfoCardProps {
   product: ProductDetailData
-  expiringSoonCount: number
   formatDate: (dateStr: string) => string
 }
 
 export function ManagerProductInfoCard({
   product,
-  expiringSoonCount,
   formatDate
 }: ManagerProductInfoCardProps) {
+  const { t } = useTranslation('manager')
+
+  // ✅ Lấy unit label từ translation
+  const unitLabel = product.unit ? t(`unit.${product.unit}`, product.unit.toLowerCase()) : ''
+
+  const getStatusLabel = (status: string | undefined) => {
+    if (!status) return 'Không xác định'
+    switch (status) {
+      case 'ACTIVE':
+        return 'Đang hoạt động'
+      case 'INACTIVE':
+        return 'Ngừng kinh doanh'
+      case 'DELETED':
+        return 'Đã xóa'
+      default:
+        return status
+    }
+  }
+
+  const formatDateSafe = (dateStr: string | undefined) => {
+    if (!dateStr) return 'N/A'
+    return formatDate(dateStr)
+  }
+
+  const formatPrice = (price: number | undefined | null) => {
+    if (price === undefined || price === null || isNaN(price)) {
+      return '0'
+    }
+    return price.toLocaleString('en-US')
+  }
+
+  const displayPrice = product.salePrice ?? product.price ?? 0
+
   return (
     <div className='bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col md:flex-row gap-6 justify-between'>
       {/* Left Column: Properties Grid */}
@@ -27,9 +61,9 @@ export function ManagerProductInfoCard({
         <div>
           <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Trạng thái</span>
           <div className='flex items-center gap-1.5 mt-0.5'>
-            <span className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-success' : 'bg-muted-foreground'}`}></span>
-            <span className={`text-sm font-semibold ${product.status === 'ACTIVE' ? 'text-success' : 'text-muted-foreground'}`}>
-              {product.status}
+            <span className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-success' : product.status === 'DELETED' ? 'bg-destructive' : 'bg-muted-foreground'}`}></span>
+            <span className={`text-sm font-semibold ${product.status === 'ACTIVE' ? 'text-success' : product.status === 'DELETED' ? 'text-destructive' : 'text-muted-foreground'}`}>
+              {getStatusLabel(product.status)}
             </span>
           </div>
         </div>
@@ -47,24 +81,33 @@ export function ManagerProductInfoCard({
         </div>
         <div>
           <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Giá bán</span>
-          <span className='text-base font-bold text-primary block'>{product.price?.toLocaleString('en-US')} VNĐ</span>
+          <div className='flex items-baseline gap-1 mt-0.5'>
+            <span className='text-base font-bold text-primary'>
+              {formatPrice(displayPrice)} VNĐ
+            </span>
+            {/* ⭐ Unit to hơn và đậm hơn */}
+            {unitLabel && (
+              <span className='text-sm font-semibold text-muted-foreground'>
+                /{unitLabel}
+              </span>
+            )}
+          </div>
         </div>
         <div>
           <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Tổng kho</span>
           <div className='flex items-baseline gap-1 mt-0.5'>
-            <span className='text-base font-bold text-foreground'>{product.totalStock}</span>
-            <span className='text-xs text-muted-foreground'>gói</span>
+            <span className='text-base font-bold text-foreground'>{product.totalStock ?? 0}</span>
+            {/* ⭐ Unit to hơn và đậm hơn */}
+            {unitLabel && (
+              <span className='text-sm font-semibold text-muted-foreground'>
+                {unitLabel}
+              </span>
+            )}
           </div>
         </div>
         <div>
           <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Tổng lô hàng</span>
-          <span className='text-base font-bold text-foreground block mt-0.5'>{product.batchCount}</span>
-        </div>
-        <div>
-          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Hết hạn &lt; 3 tháng</span>
-          <span className={`text-base font-bold block mt-0.5 ${expiringSoonCount > 0 ? 'text-destructive' : 'text-foreground'}`}>
-            {expiringSoonCount}
-          </span>
+          <span className='text-base font-bold text-foreground block mt-0.5'>{product.batchCount ?? 0}</span>
         </div>
       </div>
 
@@ -74,14 +117,14 @@ export function ManagerProductInfoCard({
           <MaterialIcon name='calendar_month' className='text-muted-foreground text-xl mt-0.5' />
           <div>
             <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block'>Ngày tạo</span>
-            <span className='text-sm font-semibold text-muted-foreground block'>{formatDate(product.createdAt)}</span>
+            <span className='text-sm font-semibold text-muted-foreground block'>{formatDateSafe(product.createdAt)}</span>
           </div>
         </div>
         <div className='flex items-start gap-3 border-t border-border/50 pt-3'>
           <MaterialIcon name='history' className='text-muted-foreground text-xl mt-0.5' />
           <div>
             <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block'>Cập nhật cuối</span>
-            <span className='text-sm font-semibold text-muted-foreground block'>{formatDate(product.updatedAt)}</span>
+            <span className='text-sm font-semibold text-muted-foreground block'>{formatDateSafe(product.updatedAt)}</span>
           </div>
         </div>
       </div>

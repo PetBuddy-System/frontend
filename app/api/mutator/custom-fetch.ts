@@ -1,8 +1,10 @@
 import axios from 'axios'
-import type { AxiosRequestConfig } from 'axios'
+import { AxiosHeaders, type AxiosRequestConfig } from 'axios'
 import { STORAGE_KEYS } from '~/shared/config/site'
 import { env } from '~/shared/config/env'
 import { readStorage, writeStorage, removeStorage } from '~/shared/lib/storage'
+import { ERROR_CODE_I18N_KEY } from '~/shared/config/error-codes'
+import i18n from '~/shared/lib/i18n'
 
 // ─── Axios Instance ──────────────────────────────────────────────────────────
 
@@ -10,7 +12,6 @@ export const axiosInstance = axios.create({
   baseURL: env.API_URL,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
     Accept: 'application/json'
   }
 })
@@ -21,16 +22,24 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = readStorage(STORAGE_KEYS.accessToken)
-    // Only inject Bearer token if it exists and we're not hitting auth endpoints
-    if (token && config.headers && !config.url?.includes('/auth/')) {
+    // Skip Bearer cho 2 endpoint xác thực dùng body credentials
+    // (login dùng email/password body, refresh dùng refreshToken body).
+    const url = config.url ?? ''
+    const isPublicAuthEndpoint =
+      url.includes('/auth/login') || url.includes('/auth/refresh') || url.includes('/auth/outbound/')
+    if (token && config.headers && !isPublicAuthEndpoint) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
 
     // When sending FormData, delete Content-Type so Axios auto-sets
     // 'multipart/form-data; boundary=...' correctly. Without this,
     // the instance-level 'application/json' default wins and causes 415.
-    if (config.data instanceof FormData) {
-      delete config.headers['Content-Type']
+    if (config.data instanceof FormData && config.headers) {
+      if (config.headers instanceof AxiosHeaders) {
+        config.headers.delete('Content-Type')
+      } else {
+        delete config.headers['Content-Type']
+      }
     }
 
     return config
@@ -63,12 +72,42 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
+    if (error.response) {
+      const status = error.response.status
+      const responseData = error.response.data
+      const msg = (responseData?.message || '').toLowerCase()
+      const isBlocked =
+        msg.includes('tài khoản của bạn đã bị') ||
+        msg.includes('tài khoản đã bị') ||
+        msg.includes('bị khóa') ||
+        msg.includes('bị đình chỉ') ||
+        msg.includes('ngưng hoạt động') ||
+        responseData?.status === 'SUSPENDED' ||
+        responseData?.status === 'DELETED' ||
+        responseData?.status === 'INACTIVE'
+
+      if (isBlocked) {
+        removeStorage(STORAGE_KEYS.accessToken)
+        removeStorage(STORAGE_KEYS.refreshToken)
+        removeStorage(STORAGE_KEYS.user)
+
+        let errMsg = responseData?.message
+        if (!errMsg && responseData?.status && responseData?.reason) {
+          errMsg = `Tài khoản của bạn đã bị ${responseData.status} do ${responseData.reason}`
+        } else if (!errMsg) {
+          errMsg = 'Tài khoản của bạn đã bị khóa hoặc đình chỉ hoạt động.'
+        }
+
+        if (typeof window !== 'undefined') {
+          window.location.href = `/login?error=${encodeURIComponent(errMsg)}`
+        }
+        return Promise.reject(error)
+      }
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Do not try to refresh if it's already an auth endpoint
-      if (
-        originalRequest.url?.includes('/auth/login') ||
-        originalRequest.url?.includes('/auth/refresh')
-      ) {
+      if (originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/refresh')) {
         return Promise.reject(error)
       }
 
@@ -122,10 +161,7 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest)
         }
       } catch (refreshError: unknown) {
-        processQueue(
-          refreshError instanceof Error ? refreshError : new Error('Refresh token failed'),
-          null
-        )
+        processQueue(refreshError instanceof Error ? refreshError : new Error('Refresh token failed'), null)
         removeStorage(STORAGE_KEYS.accessToken)
         removeStorage(STORAGE_KEYS.refreshToken)
         removeStorage(STORAGE_KEYS.user)
@@ -145,7 +181,7 @@ type RequestOptions = {
   url: string
   method: string
   headers?: Record<string, string>
-  params?: Record<string, string | number | boolean | undefined>
+  params?: Record<string, string | number | boolean | undefined | null>
   data?: unknown
   signal?: AbortSignal
 }
@@ -153,11 +189,25 @@ type RequestOptions = {
 export async function customFetch<T>(options: RequestOptions): Promise<T> {
   const { url, method, headers, params, data, signal } = options
 
+  const cleanParams = params
+    ? Object.entries(params).reduce(
+        (acc, [key, value]) => {
+          if (value !== undefined && value !== null && value !== '') {
+            acc[key] = value
+          }
+          return acc
+        },
+        {} as Record<string, string | number | boolean>
+      )
+    : undefined
+
+  console.log('🔍 CustomFetch - Clean Params:', cleanParams) // Debug
+
   const config: AxiosRequestConfig = {
     url,
     method,
     headers,
-    params,
+    params: cleanParams,
     data,
     signal
   }
@@ -167,9 +217,45 @@ export async function customFetch<T>(options: RequestOptions): Promise<T> {
     return response.data as T
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response) {
-      throw Object.assign(new Error(error.response.data?.message ?? 'API error'), {
+      // Extract user-friendly message from response
+      const responseData = error.response.data
+      let errorMessage: string
+
+      if (responseData?.code && ERROR_CODE_I18N_KEY[responseData.code]) {
+        errorMessage = i18n.t(ERROR_CODE_I18N_KEY[responseData.code])
+      }
+      else if (responseData?.message) {
+        errorMessage = responseData.message
+      } else if (responseData?.errors && typeof responseData.errors === 'object') {
+        // Handle validation errors array
+        const errors = Array.isArray(responseData.errors) ? responseData.errors : Object.values(responseData.errors)
+        errorMessage = errors[0] ?? 'Có lỗi xảy ra'
+      } else {
+        // Fallback based on HTTP status
+        switch (error.response.status) {
+          case 401:
+            errorMessage = 'Email hoặc mật khẩu không đúng'
+            break
+          case 403:
+            errorMessage = 'Bạn không có quyền truy cập'
+            break
+          case 404:
+            errorMessage = 'Không tìm thấy dữ liệu'
+            break
+          case 422:
+            errorMessage = 'Dữ liệu không hợp lệ'
+            break
+          case 500:
+            errorMessage = 'Lỗi máy chủ. Vui lòng thử lại sau'
+            break
+          default:
+            errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại'
+        }
+      }
+
+      throw Object.assign(new Error(errorMessage), {
         status: error.response.status,
-        data: error.response.data
+        data: responseData
       })
     }
     throw error

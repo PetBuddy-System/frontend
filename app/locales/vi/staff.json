@@ -3,6 +3,11 @@
     "subtitle": "Tổng quan ca làm và hoạt động cửa hàng trong ngày",
     "title": "Bảng điều khiển nhân viên"
   },
+  "petSpeciesLabels": {
+    "DOG": "Chó",
+    "CAT": "Mèo",
+    "ALL": "Chó & mèo"
+  },
   "notifications": {
     "items": {
       "process": {
@@ -47,20 +52,310 @@
     "logoAlt": "Logo PetBuddy",
     "logout": "Đăng xuất",
     "nav": {
+      "groomerBookings": "Công việc của tôi",
+      "coordinatorBookings": "Phân công booking",
       "orders": "Quản lý đơn hàng",
       "attendanceHistory": "Lịch sử chấm công",
-      "shiftRequest": "Tạo yêu cầu đổi ca",
-      "violations": "Xem các lần vi phạm",
-      "weeklySchedule": "Xem các ca làm việc trong tuần",
+      "weeklySchedule": "Ca làm việc trong tuần",
       "disposalRequest": "Tạo yêu cầu hủy hàng",
-      "inventory": "Quản lý kho hàng"
+      "inventory": "Quản lý kho hàng",
+      "returns": "Quản lý đổi trả",
+      "shipperAssignment": "Giao việc cho shipper"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Nhân viên cửa hàng",
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
+
+  "shipperAssignment": {
+    "title": "Phân công Shipper",
+    "subtitle": "Gom nhóm các đơn hàng ở khu vực lân cận và chỉ định nhân viên giao hàng.",
+    "searchPlaceholder": "Tìm kiếm đơn hàng, khách hàng, địa chỉ...",
+    "noOrdersTitle": "Không có đơn hàng cần phân công",
+    "noOrdersDesc": "Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị để phân công shipper.",
+    "loadingOrders": "Đang tải danh sách đơn hàng...",
+    "otherArea": "Khu vực khác",
+    "statusPicked": "Chờ giao",
+    "orderDate": "Ngày đặt",
+    "totalAmount": "Tổng tiền",
+    "suggestionsHeader": "Đề xuất Shipper phù hợp",
+    "loadingSuggestions": "Đang tải gợi ý shipper...",
+    "noSuggestions": "Không tìm thấy shipper nào hoạt động trong hôm nay.",
+    "unknownDistance": "Khoảng cách: N/A",
+    "currentLoadLabel": "Tải trọng:",
+    "assignBtn": "Phân công",
+    "confirmAssignBtn": "Xác nhận phân công",
+    "recommendedShipper": "Shipper quản lý khu vực (Đề xuất)",
+    "ordersToDeliver": "{{count}} đơn hàng cần giao",
+    "stats": {
+      "pendingPickup": "Đơn hàng chờ giao",
+      "areas": "Khu vực hoạt động"
+    },
+    "errors": {
+      "loadOrdersFailed": "Không thể tải danh sách đơn hàng.",
+      "loadSuggestionsFailed": "Không thể tải gợi ý shipper.",
+      "assignFailed": "Không thể phân công shipper cho đơn hàng này.",
+      "unknownError": "Có lỗi xảy ra."
+    }
+  },
+
   "staff": {
     "name": "Nguyễn Văn An"
+  },
+  "groomerBookings": {
+    "title": "Công việc của tôi",
+    "subtitle": "Theo dõi booking tại tiệm được phân công và cập nhật tiến độ grooming.",
+    "kicker": "Khu vực Groomer",
+    "heading": "Danh sách công việc được giao",
+    "description": "Chỉ hiển thị các booking được Coordinator phân công cho bạn. Groomer không thấy booking chờ duyệt và không tự nhận đơn.",
+    "empty": "Không có booking được giao trong trạng thái này.",
+    "status": {
+      "ACCEPTED": "Chờ thực hiện",
+      "IN_PROGRESS": "Đang thực hiện",
+      "READY_FOR_PICKUP": "Chờ khách nhận",
+      "COMPLETED": "Hoàn thành",
+      "CANCELLED": "Đã hủy"
+    },
+    "bookingTypes": {
+      "AT_STORE": "Tại tiệm",
+      "AT_HOME": "Tại nhà"
+    },
+    "timeline": {
+      "ACCEPTED": "Đã phân công",
+      "IN_PROGRESS": "Đang thực hiện",
+      "READY_FOR_PICKUP": "Chờ khách nhận",
+      "COMPLETED": "Hoàn thành"
+    },
+    "card": {
+      "customer": "Khách hàng",
+      "phone": "Số điện thoại",
+      "petCount": "Số pet",
+      "serviceCount": "Số dịch vụ",
+      "duration": "Thời lượng dự kiến",
+      "type": "Loại booking",
+      "minutesValue": "{{value}} phút"
+    },
+    "actions": {
+      "cancelBooking": "Hủy đơn",
+      "chooseAfterImage": "Chọn ảnh sau dịch vụ",
+      "chooseBeforeImage": "Chọn ảnh trước dịch vụ",
+      "chooseImage": "Chọn ảnh",
+      "close": "Đóng",
+      "complete": "Xác nhận khách đã nhận pet",
+      "confirm": "Xác nhận",
+      "loading": "Đang tải...",
+      "readyForPickup": "Hoàn tất và báo khách đến nhận",
+      "reload": "Tải lại",
+      "start": "Bắt đầu thực hiện",
+      "upload": "Upload ảnh",
+      "viewDetail": "Xem chi tiết"
+    },
+    "detail": {
+      "bookingInfo": "Thông tin booking",
+      "afterMedia": "Ảnh sau dịch vụ",
+      "beforeMedia": "Ảnh trước dịch vụ",
+      "cancelReason": "Lý do hủy",
+      "catalogName": "Dịch vụ",
+      "customerInfo": "Thông tin khách hàng",
+      "customerName": "Tên khách",
+      "customerPhone": "Số điện thoại",
+      "depositAmount": "Tiền cọc",
+      "detailList": "Danh sách pet và dịch vụ",
+      "duration": "Thời lượng",
+      "healthNote": "Ghi chú sức khỏe",
+      "media": "Ảnh đã upload",
+      "noHealthNote": "Không có ghi chú sức khỏe.",
+      "noMedia": "Chưa có ảnh nào.",
+      "note": "Ghi chú",
+      "privateNote": "Ghi chú riêng",
+      "remainingAmount": "Số tiền còn lại",
+      "scheduledAt": "Ngày giờ hẹn",
+      "title": "Chi tiết booking",
+      "totalAmount": "Tổng tiền",
+      "unitPrice": "Giá dịch vụ"
+    },
+    "confirm": {
+      "IN_PROGRESS": {
+        "title": "Bắt đầu thực hiện booking này?",
+        "description": "Booking sẽ chuyển từ chờ thực hiện sang đang thực hiện."
+      },
+      "READY_FOR_PICKUP": {
+        "title": "Đánh dấu dịch vụ đã hoàn tất?",
+        "description": "Upload ảnh sẽ bị khóa và khách có thể đến nhận pet."
+      },
+      "COMPLETED": {
+        "title": "Xác nhận khách đã nhận pet?",
+        "description": "Booking sẽ được đánh dấu hoàn thành."
+      },
+      "CANCELLED": {
+        "title": "Hủy booking được giao này?",
+        "description": "Chỉ được hủy khi booking chưa bắt đầu thực hiện. Bắt buộc nhập lý do hủy."
+      }
+    },
+    "messages": {
+      "cancelReasonRequired": "Vui lòng nhập lý do hủy.",
+      "afterRequired": "Cần upload ít nhất một ảnh sau dịch vụ trước khi báo khách đến nhận.",
+      "beforeRequired": "Cần upload ít nhất một ảnh trước dịch vụ trước khi bắt đầu thực hiện.",
+      "imageOnly": "Chỉ được upload file ảnh.",
+      "loadDetailFailed": "Không thể tải chi tiết booking.",
+      "loadFailed": "Không thể tải booking được giao.",
+      "noPreview": "Vui lòng chọn ảnh trước khi upload.",
+      "statusUpdated": "Đã cập nhật trạng thái booking.",
+      "statusUpdateFailed": "Không thể cập nhật trạng thái booking.",
+      "uploaded": "Đã upload ảnh vào chi tiết booking.",
+      "uploadFailed": "Không thể upload ảnh.",
+      "uploadLocked": "Chỉ được upload ảnh khi booking đang thực hiện."
+    }
+  },
+  "coordinatorBookings": {
+    "title": "Phân công booking",
+    "subtitle": "Phân công booking dịch vụ đã thanh toán cho Groomer phù hợp.",
+    "kicker": "Khu vực Coordinator",
+    "heading": "Booking chờ phân công",
+    "description": "Chỉ hiển thị booking đang chờ phân công. Khi chọn Groomer, booking sẽ chuyển sang trạng thái chờ thực hiện cho Groomer đó.",
+    "empty": "Không có booking nào đang chờ phân công.",
+    "pendingStatus": "Chờ phân công",
+    "card": {
+      "customer": "Khách hàng",
+      "phone": "Số điện thoại",
+      "petCount": "Số pet",
+      "duration": "Thời lượng dự kiến",
+      "minutesValue": "{{value}} phút"
+    },
+    "actions": {
+      "assign": "Phân công Groomer",
+      "loading": "Đang tải...",
+      "reload": "Tải lại",
+      "viewDetail": "Xem chi tiết"
+    },
+    "assignment": {
+      "groomer": "Groomer",
+      "placeholder": "Chọn Groomer"
+    },
+    "detail": {
+      "address": "Địa chỉ",
+      "bookingInfo": "Thông tin booking",
+      "customerInfo": "Thông tin khách hàng",
+      "customerName": "Tên khách",
+      "customerPhone": "Số điện thoại",
+      "depositAmount": "Tiền cọc",
+      "detailList": "Danh sách pet và dịch vụ",
+      "note": "Ghi chú",
+      "remainingAmount": "Số tiền còn lại",
+      "title": "Chi tiết booking",
+      "totalAmount": "Tổng tiền"
+    },
+    "messages": {
+      "assigned": "Đã phân công booking cho Groomer.",
+      "assignFailed": "Không thể phân công Groomer.",
+      "chooseGroomer": "Vui lòng chọn Groomer.",
+      "loadFailed": "Không thể tải booking chờ phân công."
+    }
+  },
+  "staffSchedule": {
+    "pageTitle": "Ca làm việc trong tuần",
+    "pageSubtitle": "Theo dõi lịch làm việc của bạn và check-in/check-out ca làm.",
+    "heading": "Ca làm việc trong tuần",
+    "description": "Xem các ca được phân bổ trong tuần, mở từng ca để xem chi tiết và thực hiện check-in hoặc check-out khi làm việc.",
+    "actions": {
+      "backToSchedule": "Quay lại lịch làm việc",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "clearFilters": "Xóa lọc",
+      "nextWeek": "Tuần sau",
+      "previousWeek": "Tuần trước",
+      "refresh": "Tải lại",
+      "thisWeek": "Tuần này"
+    },
+    "detail": {
+      "actionsTitle": "Check-in / Check-out",
+      "actionHint": "Hệ thống sẽ kiểm tra trạng thái ca trước khi ghi nhận check-in hoặc check-out.",
+      "attendanceStatus": "Trạng thái chấm công",
+      "assignedAt": "Được phân công",
+      "checkInAt": "Giờ check-in",
+      "checkInWindow": "Check-in mở trước giờ vào ca {{before}} phút. Trong {{onTime}} phút sau giờ vào ca được tính đúng giờ; sau đó tính trễ và đóng sau {{close}} phút.",
+      "checkOutAt": "Giờ check-out",
+      "date": "Ngày làm",
+      "empty": "Chọn một ca trong bảng tuần để xem chi tiết.",
+      "endTime": "Giờ tan ca",
+      "noNote": "Không có ghi chú.",
+      "note": "Ghi chú",
+      "pageSubtitle": "Xem thông tin ca làm và ghi nhận check-in/check-out.",
+      "pageTitle": "Chi tiết ca làm",
+      "startTime": "Giờ vào ca",
+      "status": "Trạng thái",
+      "subtitle": "Thông tin ca và thao tác chấm công.",
+      "time": "Thời gian",
+      "title": "Chi tiết ca làm",
+      "updatedAt": "Cập nhật"
+    },
+    "errors": {
+      "badRequest": "Không thể xử lý thao tác này. Vui lòng kiểm tra lại ca làm.",
+      "checkInAlreadyDone": "Bạn đã check-in ca làm này rồi.",
+      "checkInClosed": "Thời gian check-in đã đóng. Ca làm này sẽ được ghi nhận vắng mặt.",
+      "checkInNotAllowed": "Chỉ có thể check-in khi ca làm đang ở trạng thái đã lên lịch.",
+      "checkInTooEarly": "Chưa tới giờ được check-in. Vui lòng quay lại trong khung giờ cho phép.",
+      "checkOutAlreadyDone": "Bạn đã check-out ca làm này rồi.",
+      "checkOutNotAllowed": "Ca làm hiện không thể check-out.",
+      "checkOutRequiresCheckIn": "Chỉ có thể check-out khi bạn đã check-in ca làm này.",
+      "checkOutTooEarly": "Chưa tới giờ check-out. Bạn chỉ có thể check-out sau giờ tan ca.",
+      "forbidden": "Bạn không có quyền thao tác trên ca làm này.",
+      "invalidDateRange": "Khoảng ngày không hợp lệ. Ngày kết thúc không được trước ngày bắt đầu.",
+      "network": "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
+      "notFound": "Ca làm này không tồn tại hoặc không còn thuộc lịch của bạn.",
+      "server": "Máy chủ đang gặp sự cố. Vui lòng thử lại sau."
+    },
+    "filters": {
+      "fromDate": "Từ ngày",
+      "status": "Trạng thái",
+      "toDate": "Đến ngày",
+      "week": "Tuần đang xem"
+    },
+    "messages": {
+      "checkInFailed": "Check-in thất bại.",
+      "checkInSuccess": "Check-in ca làm thành công.",
+      "checkOutFailed": "Check-out thất bại.",
+      "checkOutSuccess": "Check-out ca làm thành công.",
+      "loadDetailFailed": "Không thể tải chi tiết ca làm.",
+      "loadFailed": "Không thể tải lịch làm việc trong tuần."
+    },
+    "shiftTypes": {
+      "AFTERNOON": "Ca chiều",
+      "CUSTOM": "Tùy chỉnh",
+      "EVENING": "Ca tối",
+      "FULL_DAY": "Cả ngày",
+      "MORNING": "Ca sáng"
+    },
+    "attendanceStatuses": {
+      "ABSENT": "Vắng mặt",
+      "LEAVE": "Nghỉ phép",
+      "LATE": "Trễ giờ",
+      "ON_TIME": "Đúng giờ"
+    },
+    "stats": {
+      "completed": "Đã hoàn thành",
+      "scheduled": "Đã lên lịch",
+      "total": "Tổng ca",
+      "working": "Đang làm"
+    },
+    "statuses": {
+      "ALL": "Tất cả",
+      "CANCELLED": "Đã hủy",
+      "COMPLETED": "Hoàn thành",
+      "SCHEDULED": "Đã lên lịch",
+      "WORKING": "Đang làm"
+    },
+    "scheduleBoard": {
+      "emptyRange": "Vui lòng chọn khoảng ngày hợp lệ để xem lịch làm việc.",
+      "monthYear": "Tháng / năm",
+      "noShift": "Không có ca",
+      "rangeCount": "{{count}} ngày"
+    },
+    "weekGrid": {
+      "noShift": "Không có ca",
+      "subtitle": "Các ca được nhóm theo ngày để bạn dễ theo dõi phân bổ trong tuần.",
+      "title": "Bảng lịch tuần"
+    }
   },
   "stats": {
     "completed": {
@@ -108,43 +403,37 @@
     "description": "Xem chi tiết giờ làm việc và trạng thái chuyên cần.",
     "previousMonth": "Tháng trước",
     "nextMonth": "Tháng sau",
-    "months": {
-      "oct2024": "Tháng 10/2024",
-      "sep2024": "Tháng 09/2024",
-      "aug2024": "Tháng 08/2024"
-    },
     "summary": {
       "totalDays": {
         "label": "Tổng ngày công",
-        "value": "22",
         "unit": "ngày"
       },
       "totalHours": {
         "label": "Số giờ làm việc",
-        "value": "176",
         "unit": "giờ"
       },
       "lateEarly": {
-        "label": "Đi muộn/Về sớm",
-        "value": "2",
+        "label": "Đi trễ",
         "unit": "lần"
       },
       "daysOff": {
-        "label": "Ngày nghỉ",
-        "value": "1",
+        "label": "Nghỉ/Vắng",
         "unit": "ngày"
       }
     },
     "status": {
       "onTime": "Đúng giờ",
-      "late": "Đi muộn",
-      "earlyLeave": "Về sớm",
-      "dayOff": "Nghỉ phép"
+      "late": "Đi trễ",
+      "leave": "Nghỉ phép",
+      "absent": "Vắng mặt",
+      "pending": "Chưa chấm công"
     },
     "table": {
       "title": "Chi tiết theo ngày",
       "export": "Xuất báo cáo",
       "showing": "Hiển thị {{from}}-{{to}} của {{total}} bản ghi",
+      "showingEmpty": "Không có bản ghi chấm công.",
+      "empty": "Không có dữ liệu chấm công trong tháng này.",
       "columns": {
         "date": "Ngày",
         "checkIn": "Giờ vào",
@@ -154,73 +443,8 @@
         "note": "Ghi chú"
       }
     },
-    "records": {
-      "day1": {
-        "dayLabel": "Thứ 6, 25/10"
-      },
-      "day2": {
-        "dayLabel": "Thứ 5, 24/10",
-        "note": "Tắc đường khu vực Cầu Giấy"
-      },
-      "day3": {
-        "dayLabel": "Thứ 4, 23/10"
-      },
-      "day4": {
-        "dayLabel": "Thứ 3, 22/10",
-        "note": "Nghỉ phép năm (Đã duyệt)"
-      },
-      "day5": {
-        "dayLabel": "Thứ 2, 21/10"
-      }
-    }
-  },
-  "shiftRequest": {
-    "pageTitle": "Tạo yêu cầu đổi ca",
-    "pageSubtitle": "Điền thông tin chi tiết bên dưới để yêu cầu đổi ca",
-    "heading": "Tạo yêu cầu đổi ca",
-    "description": "Điền thông tin chi tiết bên dưới để yêu cầu đổi ca làm việc hoặc tìm người thay thế.",
-    "form": {
-      "shiftLabel": "Ca làm việc muốn đổi",
-      "shiftPlaceholder": "Chọn ca làm việc...",
-      "shiftOptions": {
-        "morning": "Sáng: 08:00 - 14:00 | Thứ 5, 24/10/2023 | Grooming",
-        "afternoon": "Chiều: 14:00 - 20:00 | Thứ 6, 25/10/2023 | Bán hàng"
-      },
-      "reasonLabel": "Lý do đổi ca",
-      "reasonPlaceholder": "Nhập lý do chi tiết...",
-      "solutionLabel": "Phương án thay thế",
-      "solutionOptions": {
-        "specific": "Đổi ca trực tiếp với đồng nghiệp",
-        "open": "Đăng lên bảng tin (Tìm người thay thế)"
-      },
-      "colleagueLabel": "Chọn đồng nghiệp",
-      "colleaguePlaceholder": "Tìm kiếm tên...",
-      "compensationLabel": "Ca bạn sẽ làm bù (Tùy chọn)",
-      "cancel": "Hủy",
-      "submit": "Gửi yêu cầu"
-    },
-    "recent": {
-      "title": "Yêu cầu gần đây",
-      "viewAll": "Xem tất cả",
-      "status": {
-        "pending": "Đang chờ xử lý",
-        "approved": "Đã chấp nhận",
-        "rejected": "Từ chối"
-      },
-      "items": {
-        "req1": {
-          "title": "Đổi với: Nguyễn Văn A",
-          "shift": "Ca: Sáng 22/10"
-        },
-        "req2": {
-          "title": "Đăng lên bảng tin",
-          "shift": "Ca: Chiều 18/10"
-        },
-        "req3": {
-          "title": "Đổi với: Trần Thị B",
-          "shift": "Ca: Sáng 10/10"
-        }
-      }
+    "messages": {
+      "loadFailed": "Không thể tải lịch sử chấm công."
     }
   },
   "disposalRequest": {
@@ -358,5 +582,127 @@
   },
   "inventory": {
     "title": "Kho hàng"
+  },
+  "returns": {
+    "title": "Quản lý đổi trả hàng",
+    "subtitle": "Xem xét, phê duyệt hoặc từ chối các yêu cầu hoàn trả/bảo hành từ khách hàng.",
+    "breadcrumb": {
+      "ops": "Vận hành",
+      "current": "Quản lý đổi trả"
+    },
+    "stats": {
+      "all": "Tổng số yêu cầu",
+      "pending": "Chờ duyệt",
+      "approved": "Đã duyệt",
+      "rejected": "Đã từ chối",
+      "completed": "Hoàn thành",
+      "cancelled": "Đã hủy",
+      "pickedUp": "Đã lấy hàng",
+      "deliveryFailed": "Liên lạc thất bại"
+    },
+    "filters": {
+      "status": "Trạng thái",
+      "type": "Loại yêu cầu",
+      "refundMethod": "Phương thức hoàn tiền",
+      "keyword": "Tìm kiếm",
+      "searchPlaceholder": "Tìm theo Tên KH, Mã đơn, Mã đổi trả...",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "clear": "Xóa bộ lọc",
+      "all": "Tất cả"
+    },
+    "table": {
+      "columns": {
+        "code": "Mã đổi trả",
+        "order": "Mã đơn hàng",
+        "customer": "Khách hàng",
+        "type": "Loại",
+        "refund": "Hoàn tiền",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo",
+        "actions": "Thao tác"
+      },
+      "actions": {
+        "view": "Xem chi tiết",
+        "process": "Xử lý"
+      },
+      "empty": "Không tìm thấy yêu cầu đổi trả nào."
+    },
+    "detail": {
+      "title": "Chi tiết yêu cầu đổi trả",
+      "code": "Mã yêu cầu",
+      "orderCode": "Mã đơn hàng",
+      "type": "Loại yêu cầu",
+      "createdAt": "Thời gian gửi",
+      "status": "Trạng thái",
+      "customerInfo": "Thông tin khách hàng",
+      "customerName": "Họ và tên",
+      "customerEmail": "Email",
+      "reason": "Lý do đổi trả",
+      "description": "Mô tả của khách hàng",
+      "refundInfo": "Thông tin hoàn tiền",
+      "refundMethod": "Phương thức hoàn",
+      "refundStatus": "Trạng thái hoàn",
+      "refundAmount": "Số tiền hoàn trả",
+      "bankName": "Tên ngân hàng",
+      "bankAccountNumber": "Số tài khoản",
+      "bankAccountHolder": "Chủ tài khoản",
+      "media": "Hình ảnh/Video đính kèm",
+      "mediaEmpty": "Không có tệp đính kèm",
+      "items": "Danh sách sản phẩm đổi trả",
+      "processInfo": "Thông tin xử lý",
+      "processedBy": "Người xử lý",
+      "processedAt": "Thời gian xử lý",
+      "completedAt": "Thời gian hoàn thành",
+      "staffNote": "Ghi chú của nhân viên",
+      "actionTitle": "Xử lý yêu cầu",
+      "notePlaceholder": "Nhập lý do duyệt/từ chối hoặc ghi chú bổ sung...",
+      "btnApprove": "Duyệt yêu cầu",
+      "btnReject": "Từ chối",
+      "btnComplete": "Hoàn thành",
+      "successApprove": "Đã duyệt yêu cầu thành công",
+      "successReject": "Đã từ chối yêu cầu thành công",
+      "successComplete": "Đã hoàn thành yêu cầu đổi trả",
+      "errorUpdate": "Cập nhật trạng thái thất bại",
+      "requiredNote": "Vui lòng nhập ghi chú khi từ chối yêu cầu."
+    }
+  },
+  "orderCancel": {
+    "title": "Hủy đơn hàng",
+    "subtitle": "Xác nhận lý do và hủy đơn ngay lập tức",
+    "warningTitle": "Hành động không thể hoàn tác",
+    "warningDesc": "Đơn hàng sẽ được hủy ngay lập tức (không cần chờ xác nhận). Vui lòng chọn đúng lý do.",
+    "selectReasonLabel": "Lý do hủy đơn",
+    "selectReasonPlaceholder": "-- Vui lòng chọn lý do hủy --",
+    "customReasonPlaceholder": "Nhập lý do cụ thể...",
+    "summaryTitle": "Tóm tắt đơn hàng",
+    "totalAmount": "Tổng tiền",
+    "paymentMethod": "Phương thức TT",
+    "paymentMethodCard": "Thẻ ngân hàng",
+    "paymentMethodMomo": "Ví MoMo",
+    "paymentMethodCOD": "Tiền mặt (COD)",
+    "confirmCancelBtn": "Xác nhận hủy đơn",
+    "processing": "Đang hủy...",
+    "backBtn": "Quay lại",
+    "validationError": "Vui lòng chọn hoặc nhập lý do hủy đơn hàng",
+    "successMessage": "Đơn hàng #{{code}} đã được hủy thành công.\nLý do: {{reason}}",
+    "submitError": "Không thể hủy đơn hàng.",
+    "unexpectedError": "Có lỗi xảy ra khi hủy đơn.",
+    "loadError": "Không thể tải chi tiết đơn hàng.",
+    "loadingTitle": "Hủy đơn hàng",
+    "loadingSubtitle": "Chọn lý do hủy đơn",
+    "loadingText": "Đang tải chi tiết đơn hàng...",
+    "notFound": "Không tìm thấy đơn hàng.",
+    "backToOrders": "Quay lại danh sách đơn hàng",
+    "productInfo": "Sản phẩm trong đơn",
+    "reasons": {
+      "customerRequest": "Khách hàng yêu cầu hủy",
+      "invalidAddress": "Địa chỉ giao hàng không hợp lệ",
+      "noContact": "Không liên lạc được với khách hàng",
+      "outOfStock": "Sản phẩm hết hàng / lỗi",
+      "duplicateOrder": "Đơn hàng trùng lặp",
+      "policyViolation": "Vi phạm chính sách cửa hàng",
+      "other": "Khác"
+    }
   }
 }

@@ -11,12 +11,12 @@ import { ManagerProductsToolbar } from '../components/products/manager-products-
 import { ManagerCreateProductModal } from '../components/products/manager-create-product-modal'
 import { ManagerEditProductModal } from '../components/products/manager-edit-product-modal'
 import { ManagerImportProductsModal } from '../components/products/manager-import-products-modal'
-import { ManagerProductDeleteDialog } from '../components/products/manager-product-delete-dialog' // ✅ Import thêm
+import { ManagerProductDeleteDialog } from '../components/products/manager-product-delete-dialog'
 import {
   fetchProductsManagementApi,
   fetchCategoriesApi,
-  fetchProductStatsApi, // ✅ Import thêm
-  updateProductApi, // ✅ Import thêm
+  fetchProductStatsApi,
+  updateProductApi,
 } from '../services/product'
 import type { ProductManagementItem, CategoryData } from '~/shared/lib/product'
 
@@ -28,6 +28,7 @@ export function ManagerProductsPage() {
   const [keyword, setKeyword] = useState('')
   const [category, setCategory] = useState<string | number>('all')
   const [status, setStatus] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<string>('date_desc')
   const [page, setPage] = useState(0)
 
   // API Data States
@@ -46,7 +47,7 @@ export function ManagerProductsPage() {
   const [editingProductId, setEditingProductId] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
 
-  // ✅ Delete Dialog states
+  // Delete Dialog states
   const [deletingProductId, setDeletingProductId] = useState<string | null>(null)
   const [deletingProductName, setDeletingProductName] = useState('')
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
@@ -122,13 +123,17 @@ export function ManagerProductsPage() {
     async function loadManagementProducts() {
       setIsLoading(true)
       try {
-        const response = await fetchProductsManagementApi({
+        const params = {
           keyword,
           categoryId: category !== 'all' ? Number(category) : undefined,
           status: status !== 'all' ? (status as 'ACTIVE' | 'INACTIVE' | 'DELETED') : undefined,
+          sortBy: sortBy,
           page,
           size: 10
-        })
+        }
+
+        const response = await fetchProductsManagementApi(params)
+
         if (active && response.success) {
           setProducts(response.data.content)
           setTotalElements(response.data.totalElements)
@@ -150,13 +155,12 @@ export function ManagerProductsPage() {
     return () => {
       active = false
     }
-  }, [keyword, category, status, page, refreshKey])
+  }, [keyword, category, status, sortBy, page, refreshKey])
 
   const handleEdit = (productId: string) => {
     setEditingProductId(productId)
   }
 
-  // ✅ Xử lý mở dialog xóa
   const handleDelete = (productId: string) => {
     const product = products.find(p => p.productId === productId)
     if (product) {
@@ -167,7 +171,6 @@ export function ManagerProductsPage() {
     }
   }
 
-  // ✅ Xử lý xóa sản phẩm (soft delete)
   const handleDeleteProduct = async () => {
     if (!deletingProductId) return
 
@@ -178,7 +181,7 @@ export function ManagerProductsPage() {
       const product = products.find(p => p.productId === deletingProductId)
       const response = await updateProductApi(deletingProductId, {
         name: product?.name ?? '',
-        price: product?.price ?? 0,
+        salePrice: product?.salePrice ?? 0,
         brandName: product?.brandName ?? '',
         status: 'DELETED'
       })
@@ -186,7 +189,7 @@ export function ManagerProductsPage() {
       if (response.success) {
         setIsDeleteConfirmOpen(false)
         setDeletingProductId(null)
-        setRefreshKey(prev => prev + 1) // Refresh lại danh sách
+        setRefreshKey(prev => prev + 1)
       } else {
         setDeleteError(response.message || 'Không thể xóa sản phẩm')
       }
@@ -213,6 +216,7 @@ export function ManagerProductsPage() {
         <ManagerTopNav titleKey='productManagement.title' subtitleKey='productManagement.subtitle' />
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
+            {/* ⭐ Header - đã bỏ search */}
             <section className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
               <div>
                 <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
@@ -220,20 +224,7 @@ export function ManagerProductsPage() {
                 </h1>
                 <p className='mt-2 max-w-3xl text-muted-foreground'>{t('productManagement.subtitle')}</p>
               </div>
-              <div className='flex flex-col gap-3 sm:flex-row sm:items-center w-full lg:w-auto lg:max-w-xl shrink-0'>
-                <div className='relative flex-1 lg:w-80'>
-                  <MaterialIcon
-                    name='search'
-                    className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'
-                  />
-                  <input
-                    type='search'
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    placeholder={t('productManagement.searchPlaceholder')}
-                    className='h-11 w-full rounded-full border border-input bg-card pl-10 pr-4 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring'
-                  />
-                </div>
+              <div className='flex flex-col gap-3 sm:flex-row sm:items-center w-full lg:w-auto shrink-0'>
                 <button
                   type='button'
                   onClick={() => setIsImportModalOpen(true)}
@@ -267,6 +258,7 @@ export function ManagerProductsPage() {
               isLoading={isStatsLoading}
             />
 
+            {/* ⭐ Toolbar với search + category dropdown + status + sort */}
             <ManagerProductsToolbar
               categories={categories}
               selectedCategory={category}
@@ -279,6 +271,13 @@ export function ManagerProductsPage() {
                 setStatus(stat)
                 setPage(0)
               }}
+              selectedSort={sortBy}
+              onSortSelect={(sort) => {
+                setSortBy(sort)
+                setPage(0)
+              }}
+              searchValue={searchInput}
+              onSearchChange={setSearchInput}
             />
 
             <ManagerProductsTable
@@ -289,7 +288,7 @@ export function ManagerProductsPage() {
               totalElements={totalElements}
               onPageChange={setPage}
               onEditClick={handleEdit}
-              onDeleteClick={handleDelete} // ✅ Đã sửa
+              onDeleteClick={handleDelete}
               onViewClick={handleView}
             />
 
@@ -318,7 +317,6 @@ export function ManagerProductsPage() {
               />
             )}
 
-            {/* ✅ Delete Confirm Dialog */}
             <ManagerProductDeleteDialog
               productName={deletingProductName}
               isOpen={isDeleteConfirmOpen}

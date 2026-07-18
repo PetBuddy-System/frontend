@@ -1,13 +1,12 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import { point } from '@turf/helpers'
 
 import { MaterialIcon } from '~/shared/ui'
 import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/components'
-import { calculateShippingFeeApi  } from '../services/shipping'
-import { fetchAllShippingRulesApi } from '~/features/admin/services/shipping'
-import type { ShippingRule } from '~/shared/lib/shipping'
+import { calculateShippingFeeApi } from '../services'
 
 const STORE_LAT = 10.776889
 const STORE_LON = 106.700806
@@ -26,41 +25,59 @@ interface ToastData {
   variant: ToastVariant
 }
 
+function cleanAddress(addr: string): string {
+  if (!addr) return ''
+  const cleaned = addr
+    .split(',')
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0 && !/^\d+$/.test(part))
+    .join(', ')
+
+  return cleaned
+}
+
 async function reverseGeocode(lat: number, lng: number): Promise<string> {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=vi`
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=vi`
     )
+
     const data = await res.json()
-    if (data?.display_name) return data.display_name as string
-  } catch {
-    // fallback below
+    const addr = data.address ?? {}
+
+    const parts: string[] = []
+
+    if (addr.house_number) {
+      parts.push(addr.house_number)
+    }
+
+    if (addr.road) {
+      if (addr.house_number) {
+        parts[parts.length - 1] += ` ${addr.road}`
+      } else {
+        parts.push(addr.road)
+      }
+    }
+
+    if (addr.suburb) {
+      parts.push(addr.suburb)
+    } else if (addr.city_district) {
+      parts.push(addr.city_district)
+    } else if (addr.quarter) {
+      parts.push(addr.quarter)
+    }
+
+    parts.push('Thành phố Hồ Chí Minh')
+
+    parts.push('Việt Nam')
+
+    return parts.join(', ')
+  } catch (e) {
+    console.error(e)
+    return `${lat.toFixed(6)}, ${lng.toFixed(6)}`
   }
-  return `${lat.toFixed(6)}, ${lng.toFixed(6)}`
 }
 
-// Tính khoảng cách (km) giữa 2 toạ độ theo công thức Haversine
-function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const toRad = (value: number) => (value * Math.PI) / 180
-  const R = 6371
-  const dLat = toRad(lat2 - lat1)
-  const dLon = toRad(lon2 - lon1)
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-}
-
-// Tìm rule phù hợp với khoảng cách — null nếu ngoài vùng phủ
-function findMatchingRule(rules: ShippingRule[], distanceKm: number): ShippingRule | null {
-  return (
-    rules.find((r) => distanceKm >= r.minDistance && distanceKm < r.maxDistance) ?? null
-  )
-}
-
-// Ép .leaflet-container luôn bám 100% kích thước của div bọc ngoài và kế thừa
-// border-radius của nó — không để Leaflet tự set width/height/shape riêng,
-// đây chính là nguyên nhân khiến map "tràn" ra ngoài khung bo góc.
 const LEAFLET_OVERRIDE_STYLES = `
   .pb-map-wrapper {
     position: relative !important;
@@ -90,7 +107,7 @@ function Toast({ toast, onClose }: { toast: ToastData | null; onClose: () => voi
     <div className='fixed top-20 left-1/2 z-[100] -translate-x-1/2 px-4'>
       <div
         className={`flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white shadow-lg ${
-          isSuccess ? 'bg-green-600' : 'bg-destructive'
+          isSuccess ? 'bg-success' : 'bg-destructive'
         }`}
       >
         <MaterialIcon name={isSuccess ? 'check_circle' : 'location_off'} className='text-[20px]' />
@@ -101,6 +118,7 @@ function Toast({ toast, onClose }: { toast: ToastData | null; onClose: () => voi
 }
 
 export function AddressPickerPage() {
+  const { t } = useTranslation('products')
   const navigate = useNavigate()
 
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -114,18 +132,16 @@ export function AddressPickerPage() {
   const [searchError, setSearchError] = useState('')
   const [selectedAddress, setSelectedAddress] = useState('')
   const [toast, setToast] = useState<ToastData | null>(null)
+  const [isLocationValid, setIsLocationValid] = useState(true)
   const [currentCoords, setCurrentCoords] = useState<{ lat: number; lng: number }>({
     lat: STORE_LAT,
-    lng: STORE_LON,
+    lng: STORE_LON
   })
-  const [shippingRules, setShippingRules] = useState<ShippingRule[]>([])
-  const [isLoadingRules, setIsLoadingRules] = useState(true)
 
   function showToast(message: string, variant: ToastVariant = 'success') {
     setToast({ message, variant })
   }
 
-  // Restore previous selection
   useEffect(() => {
     const savedAddress = sessionStorage.getItem(SESSION_KEY_ADDRESS) ?? ''
     if (savedAddress) {
@@ -142,19 +158,6 @@ export function AddressPickerPage() {
     }
   }, [])
 
-  // Fetch shipping rules từ admin config
-  useEffect(() => {
-    fetchAllShippingRulesApi()
-      .then((res) => {
-        if (res?.data) setShippingRules(res.data)
-      })
-      .catch(() => {
-        // rules rỗng → handleConfirm sẽ block và hiện lỗi
-      })
-      .finally(() => setIsLoadingRules(false))
-  }, [])
-
-  // Load Leaflet dynamically
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -169,8 +172,6 @@ export function AddressPickerPage() {
     const checkBothLoaded = () => {
       if (cssLoaded && jsLoaded) setIsLeafletLoaded(true)
     }
-
-    // Tránh chèn lại link/script nhiều lần khi component remount (StrictMode/HMR)
     let link = document.querySelector<HTMLLinkElement>('link[data-leaflet]')
     if (!link) {
       link = document.createElement('link')
@@ -205,14 +206,11 @@ export function AddressPickerPage() {
     checkBothLoaded()
   }, [])
 
-  // Initialize Map
   useEffect(() => {
     if (!isLeafletLoaded || !mapContainerRef.current || typeof window === 'undefined') return
 
     const L = (window as any).L
     if (!L || mapInstanceRef.current) return
-
-    // Clean up previous leaflet instance if any (StrictMode/HMR)
     const container: any = mapContainerRef.current
     if (container._leaflet_id) {
       container._leaflet_id = null
@@ -221,15 +219,8 @@ export function AddressPickerPage() {
     const map = L.map(mapContainerRef.current, {
       center: [currentCoords.lat, currentCoords.lng],
       zoom: 13,
-      scrollWheelZoom: true,
+      scrollWheelZoom: true
     })
-
-    // Ép cứng các thuộc tính box-model quan trọng bằng inline style !important
-    // ngay trên node mà Leaflet quản lý (.leaflet-container). Inline !important
-    // luôn thắng mọi CSS global khác (ví dụ 1 rule .leaflet-container { position:
-    // fixed; width: 100vw } dùng cho trang bản đồ full-screen nào đó trong app
-    // mà vô tình áp luôn vào đây) — đây là nguyên nhân khiến map "tràn" khỏi
-    // khung bo viền và đè lên header.
     const leafletEl = map.getContainer()
     const forcedStyles: Record<string, string> = {
       position: 'relative',
@@ -242,14 +233,14 @@ export function AddressPickerPage() {
       height: '100%',
       'max-width': '100%',
       'max-height': '100%',
-      'z-index': '0',
+      'z-index': '0'
     }
     Object.entries(forcedStyles).forEach(([prop, value]) => {
       leafletEl.style.setProperty(prop, value, 'important')
     })
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
+      attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map)
 
     const DefaultIcon = L.icon({
@@ -258,12 +249,12 @@ export function AddressPickerPage() {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
       popupAnchor: [1, -34],
-      shadowSize: [41, 41],
+      shadowSize: [41, 41]
     })
 
     const marker = L.marker([currentCoords.lat, currentCoords.lng], {
       draggable: true,
-      icon: DefaultIcon,
+      icon: DefaultIcon
     }).addTo(map)
 
     marker.on('dragend', async () => {
@@ -277,7 +268,7 @@ export function AddressPickerPage() {
 
     mapInstanceRef.current = map
     markerRef.current = marker
-    
+
     const resizeObserver = new ResizeObserver(() => {
       map.invalidateSize()
     })
@@ -290,10 +281,18 @@ export function AddressPickerPage() {
         mapInstanceRef.current = null
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLeafletLoaded])
 
   async function updateLocation(lat: number, lng: number, reverseGeocode_: boolean) {
+    try {
+      await calculateShippingFeeApi(lat, lng)
+    } catch (err: any) {
+      showToast(err?.message ?? t('addressPicker.errors.invalidLocationDefault'), 'error')
+      setIsLocationValid(false)
+      return
+    }
+
+    setIsLocationValid(true)
     setCurrentCoords({ lat, lng })
     if (markerRef.current) markerRef.current.setLatLng([lat, lng])
     if (mapInstanceRef.current)
@@ -307,7 +306,7 @@ export function AddressPickerPage() {
 
   function handleGetMyLocation() {
     if (!navigator.geolocation) {
-      setSearchError('Trình duyệt của bạn không hỗ trợ định vị GPS.')
+      setSearchError(t('addressPicker.errors.geoUnsupported'))
       return
     }
     navigator.geolocation.getCurrentPosition(
@@ -317,7 +316,7 @@ export function AddressPickerPage() {
         setSearchError('')
       },
       () => {
-        setSearchError('Không thể lấy vị trí. Hãy kiểm tra quyền truy cập vị trí.')
+        setSearchError(t('addressPicker.errors.geoFailed'))
       }
     )
   }
@@ -325,52 +324,84 @@ export function AddressPickerPage() {
   async function handleSearchAddress(e: React.FormEvent) {
     e.preventDefault()
     if (!searchQuery.trim()) return
-
     setIsSearching(true)
     setSearchError('')
+
     try {
+      const query = `${searchQuery}, Thành phố Hồ Chí Minh, Việt Nam`
+
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=1&accept-language=vi`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&accept-language=vi`
       )
+
       const data = await res.json()
+
       if (data && data.length > 0) {
         const lat = parseFloat(data[0].lat)
         const lng = parseFloat(data[0].lon)
-        await updateLocation(lat, lng, false)
-        setSelectedAddress(data[0].display_name ?? searchQuery)
+        await updateLocation(lat, lng, true)
         setSearchError('')
       } else {
-        setSearchError('Không tìm thấy địa chỉ này. Hãy thử nhập chi tiết hơn.')
+        setSearchError(t('addressPicker.errors.addressNotFound'))
       }
     } catch {
-      setSearchError('Lỗi kết nối khi tìm kiếm địa chỉ.')
+      setSearchError(t('addressPicker.errors.searchConnectionError'))
     } finally {
       setIsSearching(false)
     }
   }
 
+  const [hcmBoundary, setHcmBoundary] = useState<any>(null)
+  useEffect(() => {
+    fetch('/hcm_boundary.geojson')
+      .then((res) => res.json())
+      .then((data) => {
+        setHcmBoundary(data)
+      })
+      .catch((err) => {
+        console.error('Load boundary failed', err)
+      })
+  }, [])
+
+  function isInHoChiMinhCity(lat: number, lng: number): boolean {
+    if (!hcmBoundary) {
+      return false
+    }
+
+    const p = point([lng, lat])
+
+    return hcmBoundary.features.some((feature: any) => booleanPointInPolygon(p, feature))
+  }
   async function handleConfirm() {
-    const distanceFromStore = getDistanceKm(
-      STORE_LAT,
-      STORE_LON,
-      currentCoords.lat,
-      currentCoords.lng
-    )
-
-    const matchedRule = findMatchingRule(shippingRules, distanceFromStore)
-
-    if (!matchedRule) {
-      showToast('Địa chỉ này nằm ngoài khu vực giao hàng', 'error')
+    if (!hcmBoundary) {
+      showToast(t('addressPicker.loadingBoundary'), 'error')
       return
     }
 
-    const inHCMC = await isInHoChiMinhCity(currentCoords.lat, currentCoords.lng)
-      if (!inHCMC) {
-        showToast('Chỉ giao hàng trong phạm vi TP. Hồ Chí Minh', 'error')
-        return
-      }
+    const inHCMC = isInHoChiMinhCity(currentCoords.lat, currentCoords.lng)
+    if (!inHCMC) {
+      showToast(t('addressPicker.errors.outsideHcmc'), 'error')
+      return
+    }
 
     setIsConfirming(true)
+
+    let shippingData
+    try {
+      const response = await calculateShippingFeeApi(currentCoords.lat, currentCoords.lng)
+      shippingData = response?.data
+    } catch (err: any) {
+      showToast(err?.message ?? t('addressPicker.errors.invalidLocationDefault'), 'error')
+      setIsConfirming(false)
+      return
+    }
+
+    if (!shippingData) {
+      showToast(t('addressPicker.errors.feeCalculationFailed'), 'error')
+      setIsConfirming(false)
+      return
+    }
+
     const addressToSave =
       selectedAddress ||
       searchQuery ||
@@ -379,58 +410,13 @@ export function AddressPickerPage() {
     sessionStorage.setItem(SESSION_KEY_ADDRESS, addressToSave)
     sessionStorage.setItem(SESSION_KEY_LAT, String(currentCoords.lat))
     sessionStorage.setItem(SESSION_KEY_LNG, String(currentCoords.lng))
+    sessionStorage.setItem(SESSION_KEY_SHIPPING_FEE, String(shippingData.shippingFee))
+    sessionStorage.setItem(SESSION_KEY_IS_FREE_SHIPPING, String(shippingData.freeShipping))
+    sessionStorage.setItem(SESSION_KEY_DISTANCE_KM, String(shippingData.distanceKm))
 
-    try {
-      const response = await calculateShippingFeeApi(currentCoords.lat, currentCoords.lng)
-      if (response?.data) {
-        const { shippingFee, freeShipping, distanceKm } = response.data
-        sessionStorage.setItem(SESSION_KEY_SHIPPING_FEE, String(shippingFee))
-        sessionStorage.setItem(SESSION_KEY_IS_FREE_SHIPPING, String(freeShipping))
-        sessionStorage.setItem(SESSION_KEY_DISTANCE_KM, String(distanceKm))
-      }
-    } catch {
-      sessionStorage.setItem(SESSION_KEY_SHIPPING_FEE, String(matchedRule.fee))
-      sessionStorage.setItem(SESSION_KEY_IS_FREE_SHIPPING, String(matchedRule.fee === 0))
-      sessionStorage.setItem(SESSION_KEY_DISTANCE_KM, String(distanceFromStore))
-    } finally {
-      setIsConfirming(false)
-    }
-
+    setIsConfirming(false)
     navigate('/order')
   }
-
-  async function isInHoChiMinhCity(lat: number, lng: number): Promise<boolean> {
-  try {
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=vi`
-    )
-    const data = await res.json()
-    const addr = data?.address ?? {}
-    const fields = [
-      addr.city,
-      addr.state,
-      addr.province,
-      addr.county,
-      addr.municipality,
-    ]
-      .filter(Boolean)
-      .map((s: string) => s.toLowerCase())
-
-    const hcmcKeywords = [
-      'hồ chí minh',
-      'ho chi minh',
-      'thành phố hồ chí minh',
-      'tp. hồ chí minh',
-      'tp hcm',
-    ]
-
-    return fields.some((field) =>
-      hcmcKeywords.some((kw) => field.includes(kw))
-    )
-  } catch {
-    return true
-  }
-}
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
@@ -444,22 +430,20 @@ export function AddressPickerPage() {
           className='mb-6 flex items-center gap-2 text-sm font-medium text-primary hover:opacity-80 transition-opacity'
         >
           <MaterialIcon name='arrow_back' className='text-[20px]' />
-          Quay lại
+          {t('addressPicker.backButton')}
         </button>
 
         <h1 className='mb-2 font-display text-2xl font-bold text-foreground md:text-3xl'>
-          Chọn địa chỉ giao hàng
+          {t('addressPicker.title')}
         </h1>
-        <p className='mb-6 text-sm text-muted-foreground'>
-          Nhập địa chỉ vào ô tìm kiếm hoặc nhấn vào bản đồ để chọn vị trí giao hàng.
-        </p>
+        <p className='mb-6 text-sm text-muted-foreground'>{t('addressPicker.subtitle')}</p>
 
         {/* Search bar */}
         <div className='mb-4 rounded-2xl border border-border/60 bg-card p-4 shadow-sm'>
           <div className='mb-3 flex items-center justify-between'>
             <span className='flex items-center gap-1.5 text-sm font-semibold text-foreground'>
               <MaterialIcon name='search' className='text-primary text-[18px]' />
-              Tìm kiếm địa chỉ
+              {t('addressPicker.searchTitle')}
             </span>
             <button
               type='button'
@@ -467,7 +451,7 @@ export function AddressPickerPage() {
               className='flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground'
             >
               <MaterialIcon name='my_location' className='text-[15px]' />
-              Vị trí của tôi
+              {t('addressPicker.myLocation')}
             </button>
           </div>
 
@@ -482,7 +466,7 @@ export function AddressPickerPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className='w-full rounded-xl border border-border bg-background py-3 pl-9 pr-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
-                placeholder='Nhập địa chỉ, tên đường để tìm trên bản đồ...'
+                placeholder={t('addressPicker.searchPlaceholder')}
               />
             </div>
             <button
@@ -495,7 +479,7 @@ export function AddressPickerPage() {
               ) : (
                 <>
                   <MaterialIcon name='search' className='text-[18px]' />
-                  Tìm kiếm
+                  {t('addressPicker.searchButton')}
                 </>
               )}
             </button>
@@ -515,23 +499,23 @@ export function AddressPickerPage() {
           {!isLeafletLoaded && (
             <div className='absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-card text-muted-foreground'>
               <MaterialIcon name='map' className='text-[48px] animate-bounce text-primary' />
-              <span className='text-sm animate-pulse'>Đang tải bản đồ...</span>
+              <span className='text-sm animate-pulse'>{t('addressPicker.mapLoading')}</span>
             </div>
           )}
           <div ref={mapContainerRef} className='h-full w-full max-w-full' />
         </div>
 
-        <p className='mt-2 text-center text-[11px] text-muted-foreground'>
-          Nhấn vào bản đồ hoặc kéo thả ghim để chọn vị trí chính xác
-        </p>
+        <p className='mt-2 text-center text-[11px] text-muted-foreground'>{t('addressPicker.mapHint')}</p>
 
         {/* Selected address preview */}
         {selectedAddress && (
           <div className='mt-4 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3'>
             <MaterialIcon name='location_on' className='mt-0.5 shrink-0 text-primary text-[20px]' />
             <div className='flex-1'>
-              <p className='text-xs font-semibold text-muted-foreground'>Địa chỉ đã chọn</p>
-              <p className='text-sm font-medium text-foreground'>{selectedAddress}</p>
+              <p className='text-xs font-semibold text-muted-foreground'>
+                {t('addressPicker.selectedAddressLabel')}
+              </p>
+              <p className='text-sm font-medium text-foreground'>{cleanAddress(selectedAddress)}</p>
             </div>
           </div>
         )}
@@ -540,23 +524,18 @@ export function AddressPickerPage() {
         <button
           type='button'
           onClick={handleConfirm}
-          disabled={isConfirming || isLoadingRules}
+          disabled={isConfirming || !isLocationValid}
           className='mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 text-base font-bold text-primary-foreground shadow-lg transition-all hover:opacity-90 active:scale-95 disabled:opacity-60'
         >
-          {isLoadingRules ? (
+          {isConfirming ? (
             <>
               <div className='h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent' />
-              Đang tải cấu hình...
-            </>
-          ) : isConfirming ? (
-            <>
-              <div className='h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent' />
-              Đang tính phí vận chuyển...
+              {t('addressPicker.calculatingFee')}
             </>
           ) : (
             <>
               <MaterialIcon name='check_circle' className='text-[20px]' />
-              Xác nhận địa chỉ
+              {t('addressPicker.confirmButton')}
             </>
           )}
         </button>

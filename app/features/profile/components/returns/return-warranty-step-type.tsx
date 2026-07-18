@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
+import type { ReturnType } from '~/shared/lib/returns'
 
 export interface ReturnWarrantyStepTypeProps {
-  requestType: 'exchange' | 'warranty'
-  onChange: (type: 'exchange' | 'warranty') => void
+  requestType: ReturnType
+  onChange: (type: ReturnType) => void
 }
 
 export function ReturnWarrantyStepType({ requestType, onChange }: ReturnWarrantyStepTypeProps) {
@@ -20,40 +21,42 @@ export function ReturnWarrantyStepType({ requestType, onChange }: ReturnWarranty
       </div>
 
       <div className='flex flex-col gap-4 sm:flex-row'>
+        {/* RETURN */}
         <label
-          onClick={() => onChange('exchange')}
+          onClick={() => onChange('RETURN')}
           className={cn(
             'flex flex-1 cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-border bg-card p-4 transition-all hover:bg-muted',
-            requestType === 'exchange' && 'border-primary bg-primary/5 text-primary'
+            requestType === 'RETURN' && 'border-primary bg-primary/5 text-primary'
           )}
         >
           <input
             type='radio'
             name='request_type'
-            checked={requestType === 'exchange'}
-            onChange={() => onChange('exchange')}
+            checked={requestType === 'RETURN'}
+            onChange={() => onChange('RETURN')}
+            className='sr-only'
+          />
+          <MaterialIcon name='keyboard_return' className='text-3xl' />
+          <span className='text-sm font-bold'>Trả hàng hoàn tiền</span>
+        </label>
+
+        {/* EXCHANGE */}
+        <label
+          onClick={() => onChange('EXCHANGE')}
+          className={cn(
+            'flex flex-1 cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-border bg-card p-4 transition-all hover:bg-muted',
+            requestType === 'EXCHANGE' && 'border-primary bg-primary/5 text-primary'
+          )}
+        >
+          <input
+            type='radio'
+            name='request_type'
+            checked={requestType === 'EXCHANGE'}
+            onChange={() => onChange('EXCHANGE')}
             className='sr-only'
           />
           <MaterialIcon name='swap_horiz' className='text-3xl' />
-          <span className='text-sm font-bold'>{t('returnWarranty.type.exchange')}</span>
-        </label>
-
-        <label
-          onClick={() => onChange('warranty')}
-          className={cn(
-            'flex flex-1 cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-border bg-card p-4 transition-all hover:bg-muted',
-            requestType === 'warranty' && 'border-primary bg-primary/5 text-primary'
-          )}
-        >
-          <input
-            type='radio'
-            name='request_type'
-            checked={requestType === 'warranty'}
-            onChange={() => onChange('warranty')}
-            className='sr-only'
-          />
-          <MaterialIcon name='verified_user' className='text-3xl' />
-          <span className='text-sm font-bold'>{t('returnWarranty.type.warranty')}</span>
+          <span className='text-sm font-bold'>Đổi hàng</span>
         </label>
       </div>
     </div>

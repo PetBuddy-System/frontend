@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/**
- * Products feature — products API service.
- * Chứa tất cả product-related API functions cho customer-facing pages.
- */
-
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type {
@@ -41,6 +35,20 @@ export async function fetchProductsApi(
 export async function fetchProductByIdApi(productId: string): Promise<ProductDetailResponse> {
   return customFetch<ProductDetailResponse>({
     url: `${PRODUCTS_BASE_URL}/${productId}`,
+    method: 'GET'
+  })
+}
+
+export async function fetchProductVideoApi(productId: string): Promise<any> {
+  return customFetch<any>({
+    url: `${PRODUCTS_BASE_URL}/${productId}/video`,
+    method: 'GET'
+  })
+}
+
+export async function fetchProductImagesApi(productId: string): Promise<any> {
+  return customFetch<any>({
+    url: `${PRODUCTS_BASE_URL}/${productId}/images`,
     method: 'GET'
   })
 }

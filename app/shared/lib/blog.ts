@@ -3,6 +3,16 @@
  * API functions nằm trong features/services/.
  */
 
+export interface MediaFile {
+  mediaFileId: number
+  fileKey: string
+  fileUrl: string
+  fileType: string
+  fileSize: number
+  mediaPurpose: string
+  mediaStatus: string
+}
+
 export interface BlogResponse {
   blogId: string
   userId?: string
@@ -10,7 +20,7 @@ export interface BlogResponse {
   content: string
   snippet: string
   label: string
-  imageUrls: string[]
+  mediaFiles: MediaFile[]
   createdAt: string
 }
 

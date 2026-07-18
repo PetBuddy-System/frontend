@@ -7,6 +7,10 @@
   "loading": "Đang tải...",
   "errors": {
     "unknown": "Đã xảy ra lỗi không xác định.",
-    "notFound": "Không tìm thấy trang yêu cầu."
+    "notFound": "Không tìm thấy trang yêu cầu.",
+    "unauthenticated": "Email hoặc mật khẩu không đúng. Vui lòng thử lại.",
+    "locationOutsideHcm": "Vị trí bạn chọn nằm ngoài khu vực giao hàng (TP.HCM), vui lòng chọn địa chỉ khác.",
+    "locationOnWater": "Vị trí bạn chọn nằm trên sông/hồ/biển, vui lòng chọn địa chỉ khác.",
+    "voucherNotApplicableWithPromotion": "Không thể áp dụng voucher khi có sản phẩm đang trong chương trình giảm giá."
   }
 }

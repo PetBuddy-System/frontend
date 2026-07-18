@@ -6,13 +6,13 @@ const SERVICES = [
   {
     key: 'bath',
     imageUrl:
-      'https://lh3.googleusercontent.com/aida/ADBb0uh52RpcFbu1XGzWt7elY-_58td2OhVfTmJh7LrRteHmc7uwKetPvOEQYDoS7OwztP6YTZtCOVikIAiZ74QZc4aYbjnup-Jb7Z0ot7BHxKGOm2JLSNN73tAEWmsmSPeEOIHsM1-cGQWU2BnDqCvDSzw9BY2EvQ-A0dX0wdhSX1Pf3atW3rlDz5lNfQDa4MqtC9Qbw_FOgzvcFChIHhtQax0MnmPcHQLb0wadnEtWz1AblgvqLJo5Es2CFis',
+      'https://doraemonpet.com/wp-content/uploads/2022/06/ky-nang-tam-cho-thu-cung.jpg',
     icon: 'check_circle'
   },
   {
     key: 'grooming',
     imageUrl:
-      'https://lh3.googleusercontent.com/aida/ADBb0uh3wgasCrbK6RWyyFdBl3Vk9NGk2259m89iqpjaYeqV50wwuRrd5JcRRDYIPAu_CqNSIy4Lu92ruyLpc_qsIXKIEdsrPGz6JeOkSDgEh9NYDzhAWfFotrBDyhIdtKBxNchthaY5oubrsZtfsh0rL2XDT3LlbH9aVASGBDlXewJiduCKzOO6LkXKDBkJ9303qpl-LS4NSsSftWNa6J-tXxz9pUc2aS2X1m2Y02VBgdrF-kCqH7MtnD1Gcoc',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE_KwfRak8vRXOov9hzKdGncHAqdcEf215L8zcIfo-7ofKzuTbBWvhZok&s=10',
     icon: 'check_circle'
   }
 ] as const

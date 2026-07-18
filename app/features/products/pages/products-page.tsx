@@ -9,9 +9,8 @@ import { ProductsHero } from '../components/listing/products-hero'
 import { ProductsGallery } from '../components/listing/products-gallery'
 import { ProductsSidebarFilters } from '../components/listing/products-sidebar-filters'
 import { ProductsPagination } from '../components/listing/products-pagination'
-import { fetchProductsApi, fetchCategoriesApi } from '../services/products'
+import { fetchProductsApi, fetchCategoriesApi } from '../services'
 import type { ProductResponse, CategoryData } from '~/shared/lib/product'
-import { cn } from '~/shared/lib/cn'
 
 const SORT_OPTIONS = ['popular', 'priceLow', 'priceHigh', 'newest'] as const
 
@@ -32,15 +31,13 @@ const BRAND_MAP: Record<string, string> = {
 export function ProductsPage() {
   const { t } = useTranslation('products')
 
-  // Search, filter and page state variables
   const [searchInput, setSearchInput] = useState('')
-  const [keyword, setKeyword] = useState('')
+  const [keyword, setKeyword] = useState('')  // ⭐ Thêm keyword state
   const [category, setCategory] = useState<string | number>('all')
   const [brandName, setBrandName] = useState('')
   const [sort, setSort] = useState('popular')
   const [page, setPage] = useState(0)
 
-  // API data states
   const [products, setProducts] = useState<ProductResponse[]>([])
   const [categories, setCategories] = useState<CategoryData[]>([])
   const [totalElements, setTotalElements] = useState(0)
@@ -48,7 +45,7 @@ export function ProductsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch categories on mount
+  // Load categories
   useEffect(() => {
     let active = true
     async function loadCategories() {
@@ -67,7 +64,7 @@ export function ProductsPage() {
     }
   }, [])
 
-  // Search input debouncer
+  // ⭐ Debounce search input
   useEffect(() => {
     const handler = setTimeout(() => {
       setKeyword(searchInput)
@@ -76,7 +73,7 @@ export function ProductsPage() {
     return () => clearTimeout(handler)
   }, [searchInput])
 
-  // Fetch products upon filter changes
+  // Fetch products
   useEffect(() => {
     let active = true
 
@@ -84,7 +81,7 @@ export function ProductsPage() {
       setIsLoading(true)
       try {
         const response = await fetchProductsApi({
-          keyword,
+          keyword,  // ⭐ Dùng keyword thay vì searchInput
           page,
           size: 12,
           categoryId: category !== 'all' ? Number(category) : undefined,
@@ -113,14 +110,14 @@ export function ProductsPage() {
     return () => {
       active = false
     }
-  }, [keyword, category, brandName, sort, page])
+  }, [keyword, category, brandName, sort, page])  // ⭐ Dùng keyword thay vì searchInput
 
   const resultsFrom = totalElements > 0 ? page * 12 + 1 : 0
   const resultsTo = Math.min((page + 1) * 12, totalElements)
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
-      <SiteHeader />
+      <SiteHeader activeItem='products' />
       <main className='flex-1'>
         <ProductsHero />
 
@@ -187,46 +184,6 @@ export function ProductsPage() {
                     ))}
                   </select>
                 </div>
-              </div>
-
-              <div className='mb-4 flex gap-3 overflow-x-auto pb-4'>
-                <button
-                  type='button'
-                  onClick={() => {
-                    setCategory('all')
-                    setPage(0)
-                  }}
-                  className={cn(
-                    'whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-all active:scale-[0.98]',
-                    category === 'all'
-                      ? 'bg-secondary text-secondary-foreground shadow-sm'
-                      : 'border border-border bg-card text-muted-foreground hover:bg-muted hover:text-primary'
-                  )}
-                >
-                  {t('chips.all')}
-                </button>
-
-                {categories.map((cat) => {
-                  const isSelected = category === cat.categoryId
-                  return (
-                    <button
-                      key={cat.categoryId}
-                      type='button'
-                      onClick={() => {
-                        setCategory(cat.categoryId)
-                        setPage(0)
-                      }}
-                      className={cn(
-                        'whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold transition-all active:scale-[0.98]',
-                        isSelected
-                          ? 'bg-secondary text-secondary-foreground shadow-sm'
-                          : 'border border-border bg-card text-muted-foreground hover:bg-muted hover:text-primary'
-                      )}
-                    >
-                      {cat.name}
-                    </button>
-                  )
-                })}
               </div>
 
               {error && (

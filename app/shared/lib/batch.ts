@@ -10,6 +10,7 @@ export interface ProductBatchItem {
     productCode: string
     productName: string
     stockQuantity: number
+    basePrice?: number
     expiryDate: string
     status: 'ACTIVE' | 'INACTIVE' | 'DELETED'
     deletedAt: string | null
@@ -69,22 +70,25 @@ export interface FetchProductBatchesParams {
 }
 
 export interface CreateBatchPayload {
-  stockQuantity: number
-  expiryDate: string
+    stockQuantity: number
+    expiryDate: string
 }
 
 export interface CreateBatchResponse {
-  code: number
-  message: string
-  success: boolean
-  data: ProductBatchItem
-  timestamp: string
+    code: number
+    message: string
+    success: boolean
+    data: ProductBatchItem
+    timestamp: string
 }
 
 export interface UpdateBatchPayload {
     stockQuantity?: number
+    basePrice?: number
     expiryDate?: string
     status?: 'ACTIVE' | 'INACTIVE' | 'DELETED'
+    reason?: string
+    note?: string
 }
 
 export interface UpdateBatchResponse {

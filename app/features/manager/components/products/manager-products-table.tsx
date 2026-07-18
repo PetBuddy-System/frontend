@@ -1,3 +1,5 @@
+// app/features/manager/components/products/manager-products-table.tsx
+
 import { useTranslation } from 'react-i18next'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
@@ -45,9 +47,7 @@ export function ManagerProductsTable({
     }
   }
 
-  // ✅ Hàm lấy trạng thái dựa trên cả status và totalStock
   const getProductStatus = (product: ProductManagementItem) => {
-    // Ưu tiên: DELETED
     if (product.status === 'DELETED') {
       return {
         label: 'Đã xóa',
@@ -55,7 +55,6 @@ export function ManagerProductsTable({
       }
     }
 
-    // ACTIVE - xét tồn kho
     if (product.status === 'ACTIVE') {
       if (product.totalStock === 0) {
         return {
@@ -75,7 +74,6 @@ export function ManagerProductsTable({
       }
     }
 
-    // INACTIVE
     return {
       label: 'Ngừng bán',
       className: 'bg-muted-foreground/15 text-muted-foreground'
@@ -90,6 +88,7 @@ export function ManagerProductsTable({
             <thead>
               <tr className='border-b border-border bg-muted/50 text-xs font-bold uppercase tracking-wide text-muted-foreground'>
                 <th className='px-4 py-3'>{t('productManagement.table.columns.name', 'Sản phẩm')}</th>
+                <th className='px-4 py-3'>{t('productManagement.table.columns.code', 'Mã SP')}</th>
                 <th className='px-4 py-3'>{t('productManagement.table.columns.brand', 'Thương hiệu')}</th>
                 <th className='px-4 py-3'>{t('productManagement.table.columns.price', 'Đơn giá')}</th>
                 <th className='px-4 py-3 text-center'>{t('productManagement.table.columns.stock', 'Tồn kho')}</th>
@@ -106,10 +105,10 @@ export function ManagerProductsTable({
                       <div className='h-14 w-14 shrink-0 rounded-xl bg-muted' />
                       <div className='flex flex-1 flex-col gap-2'>
                         <div className='h-4 w-40 bg-muted rounded' />
-                        <div className='h-3 w-20 bg-muted rounded' />
                       </div>
                     </div>
                   </td>
+                  <td className='px-4 py-4'><div className='h-4 w-20 bg-muted rounded' /></td>
                   <td className='px-4 py-4'><div className='h-6 w-20 bg-muted rounded' /></td>
                   <td className='px-4 py-4'><div className='h-6 w-16 bg-muted rounded' /></td>
                   <td className='px-4 py-4'><div className='h-6 w-10 bg-muted rounded mx-auto' /></td>
@@ -150,10 +149,11 @@ export function ManagerProductsTable({
   return (
     <section className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm'>
       <div className='overflow-x-auto'>
-        <table className='w-full min-w-[960px] border-collapse text-left'>
+        <table className='w-full min-w-[1100px] border-collapse text-left'>
           <thead>
             <tr className='border-b border-border bg-muted/50 text-xs font-bold uppercase tracking-wide text-muted-foreground'>
               <th className='px-4 py-3'>{t('productManagement.table.columns.name', 'Sản phẩm')}</th>
+              <th className='px-4 py-3'>{t('productManagement.table.columns.code', 'Mã SP')}</th>
               <th className='px-4 py-3'>{t('productManagement.table.columns.brand', 'Thương hiệu')}</th>
               <th className='px-4 py-3'>{t('productManagement.table.columns.price', 'Đơn giá')}</th>
               <th className='px-4 py-3 text-center'>{t('productManagement.table.columns.stock', 'Tồn kho')}</th>
@@ -164,7 +164,7 @@ export function ManagerProductsTable({
           </thead>
           <tbody className='divide-y divide-border'>
             {products.map((product) => {
-              const thumbnail = product.imageUrls?.[0] || 'https://placehold.co/100'
+              const thumbnail = product.thumbnailUrl || 'https://placehold.co/100'
               const status = getProductStatus(product)
               const isDeleted = product.status === 'DELETED'
 
@@ -181,18 +181,23 @@ export function ManagerProductsTable({
                         <p className='font-bold text-card-foreground line-clamp-1'>
                           {product.name}
                         </p>
-                        <p className='text-xs text-muted-foreground'>
-                          Code: {product.productCode || 'N/A'}
-                        </p>
                       </div>
                     </div>
+                  </td>
+                  {/* ⭐ Cột Mã sản phẩm */}
+                  <td className='px-4 py-4'>
+                    <span className='font-mono text-base font-bold text-foreground'>
+                      {product.productCode || 'N/A'}
+                    </span>
                   </td>
                   <td className='px-4 py-4'>
                     <span className='inline-flex rounded-full bg-secondary px-3 py-1 text-xs font-bold text-secondary-foreground'>
                       {product.brandName || 'N/A'}
                     </span>
                   </td>
-                  <td className='px-4 py-4 font-bold text-primary'>{formatPrice(product.price)}</td>
+                  <td className='px-4 py-4 font-bold text-primary'>
+                    {formatPrice(product.salePrice || 0)}
+                  </td>
                   <td className='px-4 py-4 text-center'>
                     <div className='flex flex-col items-center'>
                       <span className={product.totalStock === 0 ? 'font-bold text-destructive' : 'font-semibold text-foreground'}>
@@ -210,7 +215,7 @@ export function ManagerProductsTable({
                       )}
                     </div>
                   </td>
-                  <td className='px-4 py-4'>
+                  <td className='px-4 py-4 text-center'>
                     <span className={cn(
                       'inline-flex rounded-full px-2.5 py-1 text-xs font-bold',
                       status.className
@@ -221,7 +226,6 @@ export function ManagerProductsTable({
                   <td className='px-4 py-4 text-sm text-muted-foreground'>{formatDate(product.updatedAt)}</td>
                   <td className='px-4 py-4'>
                     <div className='flex justify-end gap-2'>
-                      {/* ✅ Luôn hiển thị nút View */}
                       {onViewClick && (
                         <button
                           type='button'
@@ -233,7 +237,6 @@ export function ManagerProductsTable({
                         </button>
                       )}
 
-                      {/* ✅ Chỉ hiển thị Edit và Delete nếu chưa bị xóa */}
                       {!isDeleted && (
                         <>
                           {onEditClick && (

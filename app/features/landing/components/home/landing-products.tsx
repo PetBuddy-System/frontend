@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 
 import { fetchProductsApi } from '~/features/products/services/products'
 import { addToCartApi } from '~/features/products/services/cart'
+import { useCart } from '~/providers/cart-provider'
 import { MaterialIcon } from '~/shared/ui'
 import type { ProductResponse } from '~/shared/lib/product'
 
@@ -11,12 +12,14 @@ const PRODUCT_LIMIT = 4
 
 export function LandingProducts() {
   const { t } = useTranslation('landing')
+  const { refreshCart } = useCart()
 
   const [products, setProducts] = useState<ProductResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [addingMap, setAddingMap] = useState<Record<string, boolean>>({})
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
 
   useEffect(() => {
     let active = true
@@ -43,8 +46,13 @@ export function LandingProducts() {
     }
   }, [])
 
-  const formatPrice = (price: number) => {
-    return price.toLocaleString('vi-VN') + 'đ'
+  // Sửa hàm formatPrice để xử lý undefined/null
+  const formatPrice = (price: number | undefined | null) => {
+    const numPrice = Number(price)
+    if (isNaN(numPrice) || numPrice === 0) {
+      return '0đ'
+    }
+    return numPrice.toLocaleString('vi-VN') + 'đ'
   }
 
   const handleAddToCart = async (product: ProductResponse) => {
@@ -58,9 +66,11 @@ export function LandingProducts() {
         productId: product.productId,
         quantity: 1,
         productName: product.name,
-        price: product.price,
-        imageUrl: product.imageUrls?.[0] || product.thumbnail
+        price: product.salePrice ?? product.price ?? 0,
+        salePrice: product.hasActivePromotion ? product.promotionPrice ?? null : null,
+        imageUrl: product.imageUrls?.[0] || product.thumbnailUrl || product.thumbnail,
       })
+      await refreshCart()
       setShowSuccessToast(true)
       setTimeout(() => setShowSuccessToast(false), 3000)
     } catch (err: unknown) {
@@ -121,7 +131,7 @@ export function LandingProducts() {
                 </Link>
                 <div className='mt-auto pt-3'>
                   <div className='text-base font-bold text-primary font-display'>
-                    {formatPrice(product.price)}
+                    {formatPrice(product.salePrice ?? product.price ?? 0)} {/* Sửa ở đây */}
                   </div>
                   <button
                     type='button'

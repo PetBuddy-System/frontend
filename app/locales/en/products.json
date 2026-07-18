@@ -107,6 +107,34 @@
           "badge": "New"
         }
       }
+    },
+    "reviews": {
+      "title": "Customer Reviews",
+      "averageRating": "Average Rating",
+      "stars": "stars",
+      "all": "All",
+      "write": "Write a Review",
+      "submit": "Submit Review",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "anonymous": "Anonymous",
+      "anonymousUser": "Anonymous User",
+      "contentPlaceholder": "Write your review content here (minimum 10 characters)...",
+      "anonymousHint": "Post anonymously (hides your real name and avatar)",
+      "ratingRequired": "Please select a rating",
+      "contentRequired": "Please enter your review content",
+      "empty": "No reviews yet for this product.",
+      "loginRequired": "You need to log in to write a review.",
+      "yourReview": "Your Review",
+      "confirmDelete": "Are you sure you want to delete this review?",
+      "editTitle": "Edit your review",
+      "createTitle": "Write a new review",
+      "sortBy": "Sort by:",
+      "newest": "Newest",
+      "highestRating": "Highest Rating",
+      "lowestRating": "Lowest Rating",
+      "verified": "Verified Purchase"
     }
   },
   "cart": {
@@ -135,8 +163,7 @@
       "title": "Order summary",
       "products": "Products ({{count}})",
       "total": "Total",
-      "checkout": "Checkout now",
-      "securePayment": "Safe and secure payment"
+      "checkout": "Checkout now"
     },
     "support": {
       "title": "Need support?",
@@ -168,6 +195,8 @@
   },
   "checkout": {
     "title": "Checkout",
+    "backToCart": "Back to cart",
+    "momoUrlMissing": "MoMo payment link not found.",
     "shipping": {
       "title": "Shipping information",
       "fullName": "Full name",
@@ -205,13 +234,21 @@
       "title": "Payment method",
       "methods": {
         "cod": "Cash on delivery (COD)",
+        "codDesc": "Pay on delivery",
         "bank": "Bank transfer",
-        "momo": "MoMo wallet",
+        "card": "Credit / Debit Card",
+        "cardDesc": "Visa, Mastercard, JCB — pay via Stripe",
+        "momo": "MoMo Wallet",
+        "momoDesc": "Pay via MoMo e-wallet application",
         "zaloPay": "ZaloPay wallet"
       },
       "alt": {
         "momo": "MoMo logo",
         "zaloPay": "ZaloPay logo"
+      },
+      "warning": {
+        "title": "Overdue Payment Warning",
+        "description": "Your account has had {{streak}} overdue payments. Please complete the transaction before it expires."
       }
     },
     "note": {
@@ -227,6 +264,7 @@
       "discount": "Discount",
       "total": "Total",
       "placeOrder": "Place order",
+      "payNow": "Pay now",
       "items": {
         "oliveShampoo": {
           "title": "Olive Essence shampoo",
@@ -236,17 +274,39 @@
           "title": "Royal Canin dry food",
           "imageAlt": "Royal Canin Poodle Adult dry food bag"
         }
-      },
-      "trust": {
-        "secure": "Secure payment",
-        "returns": "7-day returns",
-        "authentic": "Authentic products guaranteed"
       }
     },
     "coupon": {
       "title": "Discount code / Voucher",
       "placeholder": "Enter code...",
       "apply": "Apply"
+    },
+    "voucherNoLongerValid": "This voucher is no longer available. Please choose another one."
+  },
+  "voucherPicker": {
+    "back": "Back",
+    "title": "Select Voucher",
+    "eligibleCount": "{{count}} eligible vouchers",
+    "loadError": "Could not load vouchers. Please try again.",
+    "discountBadgePercent": "Save {{percent}}%",
+    "discountBadgeFixed": "Save {{value}}",
+    "minOrder": "Min order {{min}}",
+    "maxDiscount": "Max discount {{max}}",
+    "expiredAt": "Expires: {{date}}",
+    "savings": "Savings: {{savings}}",
+    "ineligibleSection": "Ineligible",
+    "hasNoVouchers": "No vouchers available",
+    "selectedLabel": "Selected:",
+    "noSelectedLabel": "No voucher selected",
+    "unselect": "Unselect",
+    "confirm": "Confirm",
+    "noMoreVouchers": "No more vouchers available",
+    "reasons": {
+      "hasPromotion": "Cart contains promotional products",
+      "inactive": "Voucher is inactive",
+      "limitExceeded": "Voucher limit exceeded",
+      "minOrderMissing": "{{missing}} short of min order",
+      "ineligible": "Not eligible"
     }
   },
   "orderSuccess": {
@@ -450,5 +510,78 @@
     "phone": "1900 1234",
     "zaloSupport": "Zalo support",
     "copyright": "© 2023 Pet Store. Caring for your pets every day."
+  },
+  "outOfStockModal": {
+    "title": "Product Out of Stock",
+    "description": "We are sorry! This product was just bought by someone else. The product has been automatically removed from your cart.",
+    "gotIt": "Got it"
+  },
+  "addressPicker": {
+    "backButton": "Back",
+    "title": "Choose delivery address",
+    "subtitle": "Type an address in the search box or tap the map to choose a delivery location.",
+    "searchTitle": "Search address",
+    "myLocation": "My location",
+    "searchPlaceholder": "Enter an address or street name to search on the map...",
+    "searchButton": "Search",
+    "mapLoading": "Loading map...",
+    "mapHint": "Tap the map or drag the pin to choose the exact location",
+    "selectedAddressLabel": "Selected address",
+    "loadingBoundary": "Loading map data",
+    "loadingRules": "Loading configuration...",
+    "calculatingFee": "Calculating shipping fee...",
+    "confirmButton": "Confirm address",
+    "errors": {
+      "geoUnsupported": "Your browser does not support GPS location.",
+      "geoFailed": "Could not get your location. Please check location permissions.",
+      "addressNotFound": "Address not found. Please try a more specific search.",
+      "searchConnectionError": "Connection error while searching for the address.",
+      "invalidLocationDefault": "Invalid location, please choose a different one.",
+      "outsideHcmc": "Delivery is only available within Ho Chi Minh City",
+      "feeCalculationFailed": "Could not calculate the shipping fee, please try again."
+    }
+  },
+  "unit": {
+    "PIECE": "Piece",
+    "BAG": "Bag",
+    "BOX": "Box",
+    "PACK": "Pack",
+    "BOTTLE": "Bottle",
+    "CAN": "Can",
+    "TUBE": "Tube",
+    "SET": "Set"
+  },
+  "status": {
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+    "DELETED": "Deleted"
+  },
+  "import": {
+    "error": {
+      "PRODUCT_NAME_REQUIRED": "Product name is required",
+      "PRODUCT_NAME_TOO_LONG": "Product name is too long",
+      "PRODUCT_PRICE_INVALID": "Product price is invalid",
+      "PRODUCT_PRICE_TOO_HIGH": "Product price is too high",
+      "CATEGORY_NAME_REQUIRED": "Category name is required",
+      "CATEGORY_NAME_TOO_LONG": "Category name is too long",
+      "CATEGORY_NOT_FOUND": "Category not found",
+      "STOCK_QUANTITY_INVALID": "Stock quantity is invalid",
+      "STOCK_QUANTITY_TOO_HIGH": "Stock quantity is too high",
+      "PRODUCT_UNIT_REQUIRED": "Product unit is required",
+      "PRODUCT_UNIT_INVALID": "Product unit is invalid",
+      "DESCRIPTION_TOO_LONG": "Description is too long",
+      "BRAND_NAME_TOO_LONG": "Brand name is too long",
+      "INGREDIENTS_TOO_LONG": "Ingredients is too long",
+      "USAGE_INSTRUCTIONS_TOO_LONG": "Usage instructions is too long",
+      "EXPIRY_DATE_INVALID": "Expiry date is invalid",
+      "BASE_PRICE_INVALID": "Base price is invalid",
+      "BASE_PRICE_MUST_BE_LESS_THAN_SALE_PRICE": "Base price must be less than sale price",
+      "PRODUCT_INACTIVE": "Product is inactive",
+      "INVALID_EXCEL_TEMPLATE": "Invalid Excel template"
+    }
+  },
+  "momoReturn": {
+    "confirming": "Confirming your payment, please wait...",
+    "paymentNotCompleted": "Payment was not completed, please try again."
   }
 }

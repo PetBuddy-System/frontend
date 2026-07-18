@@ -7,7 +7,7 @@ import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/compone
 export function LandingPage() {
   return (
     <div className='min-h-screen bg-background text-foreground'>
-      <SiteHeader />
+      <SiteHeader activeItem='store' />
       <main className='flex flex-col pb-24 md:pb-0'>
         <LandingHero />
         <LandingServices />

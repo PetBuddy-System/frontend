@@ -1,20 +1,80 @@
+import { type FormEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { cn } from '~/shared/lib/cn'
-import { MaterialIcon } from '~/shared/ui'
+import { Button, MaterialIcon } from '~/shared/ui'
+import {
+  DURATION_CONFIG_WEIGHT_RANGES,
+  SURCHARGE_WEIGHT_RANGES,
+  serializeDurationConfig,
+  serializeSurchargeConfig
+} from '~/shared/lib/catalog-pricing'
+
+import { CATALOG_STATUSES, CATALOG_TYPES, PET_SPECIES, type CatalogRequest } from '../../lib/catalog-management'
 
 export interface AdminCreateServiceModalProps {
   isOpen: boolean
+  isSaving?: boolean
   onClose: () => void
+  onSubmit: (payload: CatalogRequest) => void | Promise<void>
 }
 
-const WEIGHT_TIERS = ['under5', 'from5To10', 'from10To20', 'over20'] as const
-
-export function AdminCreateServiceModal({ isOpen, onClose }: AdminCreateServiceModalProps) {
+export function AdminCreateServiceModal({ isOpen, isSaving = false, onClose, onSubmit }: AdminCreateServiceModalProps) {
   const { t } = useTranslation('admin')
 
   if (!isOpen) {
     return null
+  }
+
+  const catalogTypeLabels: Record<string, string> = {
+    AT_STORE: t('serviceManagement.catalogTypes.AT_STORE'),
+    AT_HOME: t('serviceManagement.catalogTypes.AT_HOME')
+  }
+
+  const petSpeciesLabels: Record<string, string> = {
+    DOG: 'Chó',
+    CAT: 'Mèo',
+    ALL: 'Tất cả loài'
+  }
+
+  const statusLabels: Record<string, string> = {
+    AVAILABLE: t('serviceManagement.catalogStatus.AVAILABLE'),
+    UNAVAILABLE: t('serviceManagement.catalogStatus.UNAVAILABLE')
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+
+    void onSubmit({
+      catalogName: String(formData.get('catalogName') ?? '').trim(),
+      description: String(formData.get('description') ?? '').trim(),
+      catalogType: String(formData.get('catalogType') ?? 'AT_STORE') as CatalogRequest['catalogType'],
+      petSpecies: String(formData.get('petSpecies') ?? 'ALL') as CatalogRequest['petSpecies'],
+      price: Number(formData.get('price') ?? 0),
+      durationMinute: Number(formData.get('durationMinute') ?? 0),
+      bufferTime: Number(formData.get('bufferTime') ?? 0),
+      status: String(formData.get('status') ?? 'AVAILABLE') as CatalogRequest['status'],
+      surchargeConfig: serializeSurchargeConfig({
+        MEDIUM: Number(formData.get('surcharge_MEDIUM') ?? 0),
+        LARGE: Number(formData.get('surcharge_LARGE') ?? 0),
+        EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_LARGE') ?? 0),
+        EXTRA_EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_EXTRA_LARGE') ?? 0)
+      }),
+      durationConfig: serializeDurationConfig({
+        MEDIUM: Number(formData.get('durationExtra_MEDIUM') ?? 0)
+          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_MEDIUM') ?? 0)
+          : 0,
+        LARGE: Number(formData.get('durationExtra_LARGE') ?? 0)
+          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_LARGE') ?? 0)
+          : 0,
+        EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0)
+          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0)
+          : 0,
+        EXTRA_EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
+          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
+          : 0
+      })
+    })
   }
 
   return (
@@ -26,11 +86,11 @@ export function AdminCreateServiceModal({ isOpen, onClose }: AdminCreateServiceM
         onClick={onClose}
       />
 
-      <section className='relative flex max-h-[calc(100vh-2rem)] w-full max-w-6xl flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-2xl'>
+      <section className='relative flex max-h-[calc(100vh-2rem)] w-full max-w-5xl flex-col overflow-hidden rounded-xl border border-border bg-card shadow-xl'>
         <header className='flex flex-col gap-4 border-b border-border px-5 py-5 lg:flex-row lg:items-end lg:justify-between'>
           <div>
-            <p className='text-xs font-bold uppercase tracking-[0.25em] text-primary'>PetBuddy Ops</p>
-            <h2 className='mt-2 font-display text-2xl font-extrabold text-card-foreground md:text-3xl'>
+            <p className='text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>PetBuddy Ops</p>
+            <h2 className='mt-2 font-display text-2xl font-bold text-card-foreground md:text-3xl'>
               {t('serviceManagement.create.title')}
             </h2>
             <p className='mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground'>
@@ -39,162 +99,294 @@ export function AdminCreateServiceModal({ isOpen, onClose }: AdminCreateServiceM
           </div>
 
           <div className='flex flex-wrap gap-3'>
-            <button
-              type='button'
-              onClick={onClose}
-              className='inline-flex h-11 items-center justify-center rounded-full border border-border bg-card px-5 text-sm font-bold text-card-foreground transition-colors hover:bg-muted'
-            >
+            <Button type='button' variant='outline' onClick={onClose}>
               {t('serviceManagement.create.cancel')}
-            </button>
-            <button
-              type='submit'
-              form='new-service-form'
-              className='inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring'
-            >
+            </Button>
+            <Button type='submit' form='new-service-form' disabled={isSaving}>
               <MaterialIcon name='save' className='text-lg' />
-              {t('serviceManagement.create.save')}
-            </button>
+              {isSaving ? t('serviceManagement.feedback.saving') : t('serviceManagement.create.save')}
+            </Button>
           </div>
         </header>
 
         <div className='min-h-0 flex-1 overflow-y-auto px-5 py-6'>
-          <div className='grid grid-cols-1 gap-6 lg:grid-cols-[1.1fr_0.9fr]'>
-            <article className='rounded-3xl border border-border bg-muted/40 p-6 shadow-sm'>
-              <form id='new-service-form' className='space-y-6' onSubmit={(event) => event.preventDefault()}>
-                <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-                  <label className='space-y-2'>
-                    <span className='text-sm font-semibold text-card-foreground'>
-                      {t('serviceManagement.create.fields.name')}
-                    </span>
-                    <input
-                      type='text'
-                      placeholder={t('serviceManagement.create.placeholders.name')}
-                      className='h-12 w-full rounded-2xl border border-border bg-card px-4 text-sm text-card-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-ring'
-                    />
-                  </label>
+          <div className='grid grid-cols-1 gap-6 lg:grid-cols-[1fr_20rem]'>
+            <form
+              id='new-service-form'
+              className='grid grid-cols-1 gap-5 rounded-xl border border-border bg-muted/40 p-5 md:grid-cols-2'
+              onSubmit={handleSubmit}
+            >
+              {/* Tên dịch vụ — full width */}
+              <label className='space-y-2 md:col-span-2'>
+                <span className='text-sm font-semibold text-card-foreground'>
+                  {t('serviceManagement.create.fields.name')}
+                </span>
+                <input
+                  name='catalogName'
+                  type='text'
+                  placeholder={t('serviceManagement.create.placeholders.name')}
+                  required
+                  className='h-11 w-full rounded-lg border border-input bg-card px-4 text-sm text-card-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-ring'
+                />
+              </label>
 
-                  <label className='space-y-2'>
-                    <span className='text-sm font-semibold text-card-foreground'>
-                      {t('serviceManagement.create.fields.category')}
-                    </span>
-                    <select className='h-12 w-full rounded-2xl border border-border bg-card px-4 text-sm text-card-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-ring'>
-                      <option>{t('serviceManagement.create.categories.grooming')}</option>
-                      <option>{t('serviceManagement.create.categories.hotel')}</option>
-                      <option>{t('serviceManagement.create.categories.vet')}</option>
-                    </select>
-                  </label>
-                </div>
+              {/* Hình thức & Loài thú cưng */}
+              <SelectField
+                name='catalogType'
+                label={t('serviceManagement.create.fields.catalogType')}
+                options={[...CATALOG_TYPES]}
+                optionLabels={catalogTypeLabels}
+              />
+              <SelectField
+                name='petSpecies'
+                label={t('serviceManagement.create.fields.petSpecies')}
+                options={[...PET_SPECIES]}
+                optionLabels={petSpeciesLabels}
+              />
 
-                <label className='space-y-2'>
-                  <span className='text-sm font-semibold text-card-foreground'>
-                    {t('serviceManagement.create.fields.description')}
-                  </span>
-                  <textarea
-                    rows={4}
-                    placeholder={t('serviceManagement.create.placeholders.description')}
-                    className='w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm text-card-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-ring'
-                  />
-                </label>
+              {/* Trạng thái & Giá cơ bản */}
+              <SelectField
+                name='status'
+                label={t('serviceManagement.create.fields.status')}
+                options={[...CATALOG_STATUSES]}
+                optionLabels={statusLabels}
+              />
+              <CurrencyField name='price' label={t('serviceManagement.create.fields.price')} defaultValue={250000} />
 
-                <section className='rounded-3xl border border-border bg-card p-5'>
-                  <div className='mb-4 flex items-center justify-between'>
-                    <div>
-                      <h3 className='text-lg font-extrabold text-card-foreground'>
-                        {t('serviceManagement.create.pricing.title')}
-                      </h3>
-                      <p className='text-sm text-muted-foreground'>{t('serviceManagement.create.pricing.subtitle')}</p>
-                    </div>
-                    <span className='rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-primary'>
-                      {t('serviceManagement.create.pricing.badge')}
-                    </span>
-                  </div>
+              {/* Phụ thu theo cân nặng — full width */}
+              <SurchargeFields title={t('serviceManagement.surcharge.title')} />
+              <DurationConfigFields title={t('serviceManagement.durationConfig.title')} />
 
-                  <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-                    {WEIGHT_TIERS.map((tier, index) => (
-                      <label key={tier} className='rounded-2xl border border-border bg-muted/50 p-4'>
-                        <span className='mb-2 block text-xs font-bold uppercase tracking-wide text-muted-foreground'>
-                          {t(`serviceManagement.create.pricing.tiers.${tier}`)}
-                        </span>
-                        <span className='relative block'>
-                          <input
-                            type='number'
-                            defaultValue={index === 0 ? 250000 : 350000 + index * 50000}
-                            className='h-12 w-full rounded-xl border border-border bg-card px-4 pr-14 text-base font-semibold text-card-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring'
-                          />
-                          <span className='absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground'>
-                            {t('serviceManagement.create.pricing.currency')}
-                          </span>
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                </section>
+              {/* Thời lượng & Thời gian đệm */}
+              <NumberField
+                name='durationMinute'
+                label={t('serviceManagement.create.fields.durationMinute')}
+                defaultValue={60}
+                unit='phút'
+              />
+              <NumberField
+                name='bufferTime'
+                label={t('serviceManagement.create.fields.bufferTime')}
+                defaultValue={15}
+                unit='phút'
+              />
 
-                <label className='flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4'>
-                  <span className='text-sm font-semibold text-card-foreground'>
-                    {t('serviceManagement.create.fields.status')}
-                  </span>
-                  <input
-                    type='checkbox'
-                    defaultChecked
-                    className='h-5 w-5 rounded border-border text-primary focus:ring-primary'
-                  />
-                </label>
-              </form>
-            </article>
+              {/* Mô tả — full width */}
+              <label className='space-y-2 md:col-span-2'>
+                <span className='text-sm font-semibold text-card-foreground'>
+                  {t('serviceManagement.create.fields.description')}
+                </span>
+                <textarea
+                  name='description'
+                  rows={4}
+                  placeholder={t('serviceManagement.create.placeholders.description')}
+                  className='w-full rounded-lg border border-input bg-card px-4 py-3 text-sm text-card-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-ring'
+                />
+              </label>
+            </form>
 
-            <aside className='space-y-6'>
-              <section className='rounded-3xl border border-border bg-card p-6 shadow-sm'>
-                <h3 className='text-base font-extrabold text-card-foreground'>
-                  {t('serviceManagement.create.media.title')}
-                </h3>
-                <p className='mt-1 text-sm text-muted-foreground'>{t('serviceManagement.create.media.subtitle')}</p>
-                <button
-                  type='button'
-                  className='mt-5 flex aspect-square w-full flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-muted/70 text-center transition hover:border-primary hover:bg-primary/5'
-                >
-                  <MaterialIcon name='add_photo_alternate' className='text-4xl text-primary' />
-                  <span className='mt-3 text-sm font-semibold text-card-foreground'>
-                    {t('serviceManagement.create.media.uploadLabel')}
-                  </span>
-                  <span className='mt-1 text-xs uppercase tracking-[0.2em] text-muted-foreground'>
-                    {t('serviceManagement.create.media.hint')}
-                  </span>
-                </button>
-              </section>
-
-              <section className='rounded-3xl bg-primary p-6 text-primary-foreground shadow-sm'>
-                <MaterialIcon name='lightbulb' className='text-2xl' />
-                <h3 className='mt-3 text-base font-extrabold'>{t('serviceManagement.create.tip.title')}</h3>
-                <p className='mt-2 text-sm leading-relaxed text-primary-foreground/90'>
-                  {t('serviceManagement.create.tip.text')}
-                </p>
-              </section>
-
-              <section className='rounded-3xl border border-border bg-card p-6 shadow-sm'>
+            <aside className='space-y-4'>
+              {/* Hướng dẫn cấu hình */}
+              <section className='rounded-xl border border-border bg-card p-5 shadow-sm'>
                 <div className='flex items-center gap-3'>
-                  <div
-                    className={cn(
-                      'flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary text-secondary-foreground'
-                    )}
-                  >
-                    <MaterialIcon name='pets' className='text-2xl' />
+                  <div className='flex h-11 w-11 items-center justify-center rounded-xl bg-secondary text-secondary-foreground'>
+                    <MaterialIcon name='auto_stories' className='text-2xl' />
                   </div>
                   <div>
                     <p className='text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>
-                      {t('serviceManagement.create.accent.label')}
+                      {t('serviceManagement.create.dto.label')}
                     </p>
-                    <h3 className='text-lg font-extrabold text-card-foreground'>
-                      {t('serviceManagement.create.accent.title')}
-                    </h3>
+                    <h3 className='font-bold text-card-foreground'>{t('serviceManagement.create.dto.title')}</h3>
                   </div>
                 </div>
-                <p className='mt-4 text-sm text-muted-foreground'>{t('serviceManagement.create.accent.text')}</p>
+                <div className='mt-4 space-y-2 whitespace-pre-line text-sm leading-relaxed text-muted-foreground'>
+                  {t('serviceManagement.create.dto.text')}
+                </div>
+              </section>
+
+              {/* Gợi ý thu hút khách hàng */}
+              <section className='rounded-xl border border-warning/30 bg-warning/5 p-5 shadow-sm'>
+                <div className='flex items-center gap-2 text-warning'>
+                  <MaterialIcon name='lightbulb' className='text-2xl' />
+                  <h3 className='font-bold'>{t('serviceManagement.create.tip.title')}</h3>
+                </div>
+                <div className='mt-3 space-y-1.5 whitespace-pre-line text-sm leading-relaxed text-card-foreground/90'>
+                  {t('serviceManagement.create.tip.text')}
+                </div>
               </section>
             </aside>
           </div>
         </div>
       </section>
+    </div>
+  )
+}
+
+// ─── Sub-components ──────────────────────────────────────────────────────────
+
+function SelectField({
+  label,
+  name,
+  options,
+  optionLabels
+}: {
+  label: string
+  name: string
+  options: string[]
+  optionLabels?: Record<string, string>
+}) {
+  return (
+    <label className='space-y-2'>
+      <span className='text-sm font-semibold text-card-foreground'>{label}</span>
+      <select
+        name={name}
+        className='h-11 w-full rounded-lg border border-input bg-card px-4 text-sm text-card-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-ring'
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {optionLabels?.[option] ?? option}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
+function SurchargeFields({ title }: { title: string }) {
+  const { t } = useTranslation('admin')
+
+  return (
+    <fieldset className='space-y-3 rounded-lg border border-border bg-card p-4 md:col-span-2'>
+      <legend className='px-1 text-sm font-semibold text-card-foreground'>{title}</legend>
+      <p className='text-xs leading-relaxed text-muted-foreground'>{t('serviceManagement.surcharge.help')}</p>
+      {/* grid-cols-3 cố định để 3 cột luôn ngang hàng */}
+      <div className='grid grid-cols-2 items-end gap-3 lg:grid-cols-4'>
+        {SURCHARGE_WEIGHT_RANGES.map((range) => (
+          <CurrencyField
+            key={range}
+            name={`surcharge_${range}`}
+            label={t(`serviceManagement.surcharge.ranges.${range}`)}
+            defaultValue={0}
+            required={false}
+          />
+        ))}
+      </div>
+    </fieldset>
+  )
+}
+
+function DurationConfigFields({ title }: { title: string }) {
+  const { t } = useTranslation('admin')
+
+  return (
+    <fieldset className='space-y-3 rounded-lg border border-border bg-card p-4 md:col-span-2'>
+      <legend className='px-1 text-sm font-semibold text-card-foreground'>{title}</legend>
+      <p className='text-xs leading-relaxed text-muted-foreground'>{t('serviceManagement.durationConfig.help')}</p>
+      <div className='grid grid-cols-2 items-end gap-3 lg:grid-cols-4'>
+        {DURATION_CONFIG_WEIGHT_RANGES.map((range) => (
+          <NumberField
+            key={range}
+            name={`durationExtra_${range}`}
+            label={t(`serviceManagement.durationConfig.ranges.${range}`)}
+            defaultValue={0}
+            required={false}
+            unit={t('serviceManagement.durationConfig.unit')}
+          />
+        ))}
+      </div>
+    </fieldset>
+  )
+}
+
+function NumberField({
+  label,
+  name,
+  defaultValue,
+  required = true,
+  readOnly = false,
+  unit
+}: {
+  label: string
+  name: string
+  defaultValue: number
+  required?: boolean
+  readOnly?: boolean
+  unit?: string
+}) {
+  return (
+    <div className='flex flex-col gap-2'>
+      <span className='text-sm font-semibold text-card-foreground'>{label}</span>
+      <div className='flex h-11 overflow-hidden rounded-lg border border-input bg-card transition focus-within:border-primary focus-within:ring-2 focus-within:ring-ring'>
+        <input
+          name={name}
+          type='number'
+          min={0}
+          defaultValue={defaultValue}
+          required={required}
+          readOnly={readOnly}
+          className='min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-card-foreground outline-none'
+        />
+        {unit && (
+          <span className='flex shrink-0 items-center border-l border-input bg-muted px-3 text-xs font-semibold text-muted-foreground'>
+            {unit}
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * CurrencyField — input tiền tệ có format dấu phẩy (200,000)
+ * Dùng controlled text input + hidden number input để form submit đúng số
+ */
+function CurrencyField({
+  label,
+  name,
+  defaultValue,
+  required = true
+}: {
+  label: string
+  name: string
+  defaultValue: number
+  required?: boolean
+}) {
+  function format(n: number) {
+    return n.toLocaleString('vi-VN')
+  }
+
+  const [displayValue, setDisplayValue] = useState(() => format(defaultValue))
+  const [rawValue, setRawValue] = useState(defaultValue)
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const stripped = e.target.value.replace(/\D/g, '')
+    const numeric = stripped === '' ? 0 : parseInt(stripped, 10)
+    setRawValue(numeric)
+    setDisplayValue(stripped === '' ? '' : format(numeric))
+  }
+
+  function handleBlur() {
+    setDisplayValue(format(rawValue))
+  }
+
+  return (
+    <div className='flex flex-col gap-2'>
+      <span className='text-sm font-semibold text-card-foreground'>{label}</span>
+      <div className='flex h-11 overflow-hidden rounded-lg border border-input bg-card transition focus-within:border-primary focus-within:ring-2 focus-within:ring-ring'>
+        <input
+          type='text'
+          inputMode='numeric'
+          value={displayValue}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          required={required}
+          className='min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-card-foreground outline-none'
+        />
+        <input type='hidden' name={name} value={rawValue} />
+        <span className='flex shrink-0 items-center border-l border-input bg-muted px-3 text-xs font-semibold text-muted-foreground'>
+          VNĐ
+        </span>
+      </div>
     </div>
   )
 }

@@ -1,11 +1,7 @@
-/**
- * Products feature — shipping API service (customer-facing).
- * Chứa shipping-related API functions cho customer-facing pages.
- */
-
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type {
+  ShippingRule,
   ShippingFeeResponse,
   ApiResponse
 } from '~/shared/lib/shipping'
@@ -17,5 +13,12 @@ export async function calculateShippingFeeApi(latitude: number, longitude: numbe
     url: `${SHIPPING_BASE_URL}/fee`,
     method: 'GET',
     params: { latitude, longitude }
+  })
+}
+
+export async function fetchShippingRulesApi(): Promise<ApiResponse<ShippingRule[]>> {
+  return customFetch<ApiResponse<ShippingRule[]>>({
+    url: SHIPPING_BASE_URL,
+    method: 'GET'
   })
 }

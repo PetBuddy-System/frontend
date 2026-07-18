@@ -2,7 +2,6 @@
   "dashboard": {
     "export": "Xuất lịch sử",
     "print": "In",
-    "subtitle": "Lịch sử nhập/xuất kho chi tiết - Quận 1",
     "title": "Lịch sử giao dịch tồn kho"
   },
   "managerDashboard": {
@@ -143,13 +142,28 @@
     "roleTitle": "Quản lý cửa hàng",
     "nav": {
       "dashboard": "Tổng quan vận hành",
-      "inventory": "Kiểm soát kho",
       "products": "Quản lý sản phẩm",
-      "staff": "Điều phối nhân sự",
+      "services": "Quản lý dịch vụ",
+      "serviceBookings": "Lịch đặt dịch vụ",
+      "staff": "Quản lý lịch làm việc",
       "returnRequests": "Duyệt đổi trả",
-      "disposalApprovals": "Duyệt hủy hàng"
+      "restock": "Nhập hàng trả về",
+      "disposalApprovals": "Duyệt hủy hàng",
+      "promotions": "Chương trình khuyến mãi",
+      "vouchers": "Quản lý Voucher",
+      "storeLocations": "Địa chỉ chi nhánh",
+      "reviews": "Quản lý đánh giá",
+      "shipperAssignment": "Phân công Shipper"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
+  },
+  "serviceManagement": {
+    "title": "Quản lý dịch vụ",
+    "subtitle": "Cấu hình và cập nhật các gói dịch vụ chăm sóc thú cưng."
+  },
+  "serviceBookings": {
+    "title": "Quản lý lịch đặt",
+    "subtitle": "Theo dõi lịch đã thanh toán, điều phối vận hành và cập nhật trạng thái dịch vụ."
   },
   "stats": {
     "discrepancies": {
@@ -202,11 +216,11 @@
           "role": "Nhân viên hỗ trợ"
         }
       },
-      "title": "Phân công nhân viên cho {{bookingCode}}"
+      "title": "Chọn nhân viên cho lịch làm việc"
     },
     "bookingList": {
       "filter": "Lọc",
-      "title": "Danh sách đặt chỗ chờ điều phối",
+      "title": "Danh sách lịch làm việc",
       "today": "Hôm nay"
     },
     "categories": {
@@ -215,14 +229,14 @@
       "vet": "Thú y"
     },
     "pagination": {
-      "showing": "Hiển thị 3 trên 12 đơn đặt chỗ"
+      "showing": "Hiển thị lịch làm việc"
     },
     "quickTip": {
-      "description": "Đơn hàng có trạng thái Chờ phân công cần được ưu tiên điều phối nhân sự để đảm bảo tiến độ phục vụ khách hàng.",
+      "description": "Lịch làm việc giúp staff biết ca, giờ bắt đầu, giờ kết thúc và trách nhiệm trong ngày.",
       "title": "Mẹo nhanh"
     },
     "quickTipTitle": "Mẹo nhanh",
-    "searchPlaceholder": "Tìm đơn đặt chỗ...",
+    "searchPlaceholder": "Tìm lịch làm việc...",
     "staffStatus": {
       "groups": {
         "grooming": {
@@ -251,14 +265,14 @@
       "viewAll": "Xem tất cả nhân sự"
     },
     "status": {
-      "pending": "Chờ phân công",
-      "scheduled": "Lên lịch trước"
+      "pending": "Chưa có staff",
+      "scheduled": "Đã lên lịch"
     },
-    "subtitle": "Giao việc cho nhân viên dựa trên các lịch đặt chỗ chờ xử lý.",
+    "subtitle": "Tạo, cập nhật và quản lý lịch làm việc để staff theo dõi ca làm của mình.",
     "table": {
       "columns": {
         "actions": "Thao tác",
-        "code": "Mã đơn",
+        "code": "Lịch",
         "customerPet": "Khách hàng & thú cưng",
         "service": "Dịch vụ",
         "status": "Trạng thái",
@@ -291,7 +305,185 @@
         }
       }
     },
-    "title": "Điều phối nhân sự"
+    "title": "Quản lý lịch làm việc",
+    "create": {
+      "title": "Tạo lịch làm việc",
+      "subtitle": "Thiết lập ngày, ca làm và chọn staff cho lịch làm việc mới."
+    },
+    "detailPage": {
+      "title": "Chi tiết lịch làm việc",
+      "subtitle": "Xem thông tin lịch làm việc và danh sách staff đã được phân công."
+    },
+    "editPage": {
+      "title": "Cập nhật lịch làm việc",
+      "subtitle": "Cập nhật thông tin ca, thêm staff hoặc đổi staff trong lịch làm việc."
+    },
+    "staffPage": {
+      "title": "Staff trong lịch làm việc",
+      "subtitle": "Xem và xử lý danh sách staff đã được phân công cho lịch làm việc."
+    },
+    "workSchedules": {
+      "actions": {
+        "assign": "Thêm staff",
+        "backToDetail": "Quay lại chi tiết",
+        "backToList": "Quay lại danh sách",
+        "cancel": "Hủy",
+        "cancelEdit": "Hủy sửa",
+        "clearFilters": "Xóa lọc",
+        "create": "Tạo lịch làm việc",
+        "edit": "Cập nhật lịch",
+        "refresh": "Tải lại",
+        "reassign": "Đổi staff",
+        "remove": "Xóa khỏi lịch",
+        "update": "Cập nhật",
+        "viewDetails": "Xem chi tiết",
+        "viewStaffs": "Xem staff trong lịch"
+      },
+      "detail": {
+        "assignedAt": "Phân công",
+        "assignedStaffs": "Staff trong lịch",
+        "attendanceStatus": "Trạng thái chấm công",
+        "checkIn": "Check-in",
+        "checkOut": "Check-out",
+        "createdAt": "Ngày tạo",
+        "date": "Ngày làm",
+        "empty": "Chọn một lịch để xem chi tiết và quản lý staff.",
+        "loading": "Đang tải chi tiết lịch làm việc...",
+        "noStaffs": "Chưa có staff nào được phân công vào lịch này.",
+        "noNote": "Không có ghi chú.",
+        "note": "Ghi chú",
+        "scheduleId": "Lịch làm việc",
+        "shift": "Ca",
+        "staffCount": "Số staff",
+        "staffCountText": "{{count}} staff đang trong lịch",
+        "staffScheduleId": "Phân công",
+        "time": "Thời gian",
+        "title": "Chi tiết lịch",
+        "updatedAt": "Cập nhật"
+      },
+      "empty": "Không tìm thấy lịch làm việc phù hợp.",
+      "filters": {
+        "fromDate": "Từ ngày",
+        "pageSize": "Số dòng",
+        "shiftType": "Ca làm",
+        "toDate": "Đến ngày"
+      },
+      "form": {
+        "createTitle": "Tạo lịch làm việc",
+        "editTitle": "Cập nhật lịch làm việc",
+        "endTime": "Giờ kết thúc",
+        "note": "Ghi chú",
+        "shiftType": "Ca làm",
+        "staffIds": "Staff",
+        "staffIdsPlaceholder": "Chọn staff cho lịch làm việc",
+        "staffs": "Chọn staff",
+        "startTime": "Giờ bắt đầu",
+        "subtitle": "Tạo lịch mới hoặc cập nhật lịch đã chọn.",
+        "workDate": "Ngày làm việc"
+      },
+      "list": {
+        "showing": "Hiển thị {{from}}-{{to}} trong {{total}} lịch",
+        "title": "Tổng quan lịch làm việc"
+      },
+      "messages": {
+        "assignFailed": "Thêm staff vào lịch thất bại.",
+        "assigned": "Đã thêm staff vào lịch làm việc.",
+        "createFailed": "Tạo lịch làm việc thất bại.",
+        "created": "Tạo lịch làm việc thành công.",
+        "loadDetailFailed": "Không thể tải chi tiết lịch làm việc.",
+        "loadListFailed": "Không thể tải danh sách lịch làm việc.",
+        "loadStaffsFailed": "Không thể tải danh sách staff.",
+        "reassignFailed": "Đổi staff thất bại.",
+        "reassignRequired": "Vui lòng chọn phân công hiện tại và staff thay thế.",
+        "reassigned": "Đổi staff thành công.",
+        "removeFailed": "Xóa staff khỏi lịch thất bại.",
+        "removed": "Đã xóa staff khỏi lịch làm việc.",
+        "staffIdsRequired": "Vui lòng chọn ít nhất một staff.",
+        "updateFailed": "Cập nhật lịch làm việc thất bại.",
+        "updated": "Cập nhật lịch làm việc thành công."
+      },
+      "errors": {
+        "badRequest": "Thông tin lịch làm việc chưa hợp lệ. Vui lòng kiểm tra lại ngày, giờ và staff đã chọn.",
+        "duplicateSchedule": "Lịch làm việc này đã tồn tại trong cùng ngày và khung giờ.",
+        "duplicateStaff": "Staff thay thế đang trùng với staff hiện tại. Vui lòng chọn staff khác.",
+        "forbidden": "Bạn không có quyền thực hiện thao tác này.",
+        "invalidDateRange": "Khoảng thời gian không hợp lệ. Ngày kết thúc không được trước ngày bắt đầu.",
+        "invalidRemoveStatus": "Chỉ có thể xóa staff khỏi lịch khi phân công vẫn đang ở trạng thái đã lên lịch.",
+        "invalidTime": "Giờ kết thúc không được trước giờ bắt đầu.",
+        "network": "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối và thử lại.",
+        "notFound": "Lịch làm việc không tồn tại hoặc đã bị xóa.",
+        "server": "Máy chủ đang gặp sự cố. Vui lòng thử lại sau.",
+        "staffConflict": "Staff này đã có lịch làm việc trong cùng ngày và khung giờ.",
+        "updateLocked": "Không thể cập nhật lịch làm việc đã tới ngày làm hoặc đã bắt đầu."
+      },
+      "pagination": {
+        "next": "Trang sau",
+        "page": "Trang {{page}} / {{totalPages}}",
+        "previous": "Trang trước"
+      },
+      "reassign": {
+        "chooseCurrent": "Chọn staff đang trong lịch",
+        "chooseNew": "Chọn staff thay thế",
+        "currentStaff": "Staff hiện tại",
+        "newStaff": "Staff mới",
+        "reason": "Lý do",
+        "title": "Đổi staff trong lịch"
+      },
+      "assign": {
+        "title": "Thêm staff vào lịch"
+      },
+      "shiftTypes": {
+        "AFTERNOON": "Ca chiều",
+        "ALL": "Tất cả",
+        "CUSTOM": "Tùy chỉnh",
+        "EVENING": "Ca tối",
+        "FULL_DAY": "Cả ngày",
+        "MORNING": "Ca sáng"
+      },
+      "attendanceStatuses": {
+        "ABSENT": "Vắng mặt",
+        "LEAVE": "Nghỉ phép",
+        "LATE": "Trễ giờ",
+        "ON_TIME": "Đúng giờ"
+      },
+      "stats": {
+        "assigned": "Staff đã phân công trên trang",
+        "page": "Trang hiện tại",
+        "total": "Tổng lịch"
+      },
+      "staffSelect": {
+        "empty": "Không có staff nào để chọn.",
+        "placeholder": "Chọn staff cho lịch làm việc",
+        "selected": "Đã chọn {{count}} staff"
+      },
+      "staffTasks": {
+        "COORDINATOR": "Điều phối viên",
+        "GROOMER": "Thợ chăm sóc",
+        "SHIPPER": "Shipper"
+      },
+      "statuses": {
+        "CANCELLED": "Đã hủy",
+        "COMPLETED": "Hoàn thành",
+        "SCHEDULED": "Đã lên lịch",
+        "WORKING": "Đang làm"
+      },
+      "table": {
+        "actions": "Thao tác",
+        "date": "Ngày",
+        "note": "Ghi chú",
+        "shift": "Ca làm",
+        "staffs": "Staff",
+        "time": "Thời gian"
+      }
+    }
+  },
+  "restock": {
+    "title": "Nhập hàng trả về",
+    "subtitle": "Xác nhận nhập kho các sản phẩm đã được khách hàng hoàn trả.",
+    "breadcrumb": {
+      "ops": "Kho vận",
+      "current": "Nhập hàng trả về"
+    }
   },
   "table": {
     "columns": {
@@ -549,6 +741,175 @@
       "loading": "Đang tải thông tin sản phẩm...",
       "success": "Cập nhật sản phẩm thành công",
       "error": "Cập nhật sản phẩm thất bại"
+    }
+  },
+  "unit": {
+    "PIECE": "cái",
+    "BAG": "túi",
+    "BOX": "hộp",
+    "PACK": "gói",
+    "BOTTLE": "chai",
+    "CAN": "lon",
+    "TUBE": "tuýp",
+    "SET": "bộ"
+  },
+  "promotions": {
+    "title": "Quản lý Khuyến mãi",
+    "subtitle": "Quản lý các chương trình giảm giá và chiến dịch quảng bá.",
+    "searchPlaceholder": "Tìm kiếm khuyến mãi...",
+    "actions": {
+      "add": "Thêm khuyến mãi mới",
+      "edit": "Chỉnh sửa khuyến mãi",
+      "delete": "Xóa khuyến mãi",
+      "view": "Xem chi tiết"
+    },
+    "stats": {
+      "total": "TỔNG CHƯƠNG TRÌNH",
+      "active": "ĐANG HOẠT ĐỘNG",
+      "draft": "BẢN NHÁP",
+      "expired": "ĐÃ HẾT HẠN"
+    },
+    "table": {
+      "columns": {
+        "code": "Mã SP",
+        "name": "Tên khuyến mãi",
+        "description": "Mô tả",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "noPromotions": "Không có chương trình khuyến mãi nào",
+      "noPromotionsDesc": "Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm"
+    },
+    "editModal": {
+      "title": "Chỉnh sửa khuyến mãi",
+      "createTitle": "Thêm khuyến mãi mới",
+      "name": "Tên khuyến mãi",
+      "description": "Mô tả",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "status": "Trạng thái",
+      "reason": "Lý do thay đổi",
+      "note": "Ghi chú",
+      "save": "Lưu thay đổi",
+      "cancel": "Hủy",
+      "success": "Cập nhật khuyến mãi thành công",
+      "createSuccess": "Tạo chương trình khuyến mãi thành công",
+      "error": "Thao tác thất bại"
+    }
+  },
+  "storeLocations": {
+    "title": "Quản lý địa chỉ cửa hàng",
+    "subtitle": "Cấu hình địa chỉ chính thức của cửa hàng PetBuddy.",
+    "currentLocation": "Vị trí cửa hàng hiện tại",
+    "history": "Lịch sử vị trí cửa hàng",
+    "address": "Địa chỉ",
+    "latitude": "Vĩ độ",
+    "longitude": "Kinh độ",
+    "save": "Lưu địa chỉ cửa hàng",
+    "saving": "Đang lưu...",
+    "status": "Trạng thái",
+    "active": "Đang hoạt động",
+    "inactive": "Ngừng hoạt động",
+    "createdAt": "Ngày tạo",
+    "success": "Cập nhật địa chỉ cửa hàng thành công",
+    "error": "Lỗi cập nhật địa chỉ cửa hàng",
+    "searchPlaceholder": "Tìm kiếm vị trí...",
+    "searchButton": "Tìm",
+    "myLocation": "Vị trí của tôi",
+    "mapLoading": "Đang tải bản đồ...",
+    "mapHint": "Click trên bản đồ hoặc kéo marker để chọn vị trí.",
+    "errors": {
+      "outsideHcmc": "Vị trí cửa hàng phải nằm trong Thành phố Hồ Chí Minh.",
+      "invalidLocation": "Không thể định vị tọa độ này.",
+      "emptyAddress": "Vui lòng nhập địa chỉ cửa hàng.",
+      "boundaryLoading": "Đang tải ranh giới thành phố..."
+    }
+  },
+  "reviews": {
+    "title": "Quản lý đánh giá",
+    "subtitle": "Xem, kiểm duyệt và quản lý các đánh giá sản phẩm từ người dùng."
+  },
+  "auditLogs": {
+    "title": "Lịch sử hệ thống",
+    "subtitle": "Theo dõi lịch sử thay đổi thông tin thanh toán, voucher và lượt dùng voucher.",
+    "retry": "Thử lại",
+    "filter": {
+      "all": "Tất cả",
+      "entityType": "Loại đối tượng",
+      "action": "Hành động",
+      "entityCode": "Mã đối tượng",
+      "entityCodePlaceholder": "VD: ORD-0001...",
+      "performedBy": "Người thực hiện",
+      "performedByPlaceholder": "Email...",
+      "reset": "Đặt lại"
+    },
+    "table": {
+      "time": "Thời gian",
+      "user": "Người thực hiện",
+      "action": "Hành động",
+      "entityType": "Loại",
+      "entityCode": "Mã đối tượng",
+      "reason": "Lý do",
+      "viewDetail": "Chi tiết",
+      "empty": "Không tìm thấy dữ liệu audit log nào"
+    },
+    "pagination": {
+      "showing": "Hiển thị",
+      "of": "trong"
+    },
+    "actions": {
+      "CREATE": "Tạo mới",
+      "UPDATE": "Cập nhật",
+      "DELETE": "Xóa",
+      "PAY": "Thanh toán",
+      "REFUND": "Hoàn tiền",
+      "USE": "Sử dụng"
+    },
+    "entityTypes": {
+      "PAYMENT": "Thanh toán",
+      "VOUCHER": "Khuyến mãi",
+      "VOUCHER_USAGE": "Lượt dùng Voucher"
+    },
+    "reasonMap": {
+      "PAYMENT_SUCCEEDED": "Thanh toán đơn hàng thành công",
+      "FULL_REFUND": "Hoàn tiền toàn phần",
+      "PARTIAL_REFUND": "Hoàn tiền một phần",
+      "CREATE_VOUCHER": "Tạo voucher mới",
+      "VOUCHER_APPLIED": "Khách hàng áp dụng mã voucher"
+    },
+    "detail": {
+      "title": "Chi tiết Audit Log",
+      "back": "Quay lại danh sách",
+      "reason": "Lý do",
+      "note": "Ghi chú",
+      "changes": "Các thay đổi chi tiết",
+      "notFound": "Không tìm thấy thông tin audit log này"
+    },
+    "error": {
+      "loadFailed": "Tải dữ liệu audit logs thất bại."
+    },
+    "fields": {
+      "status": "Trạng thái",
+      "orderCode": "Mã đơn hàng",
+      "amount": "Số tiền",
+      "paymentMethod": "Phương thức thanh toán",
+      "refundAmount": "Số tiền hoàn lại",
+      "totalRefundedAmount": "Tổng tiền đã hoàn",
+      "voucherCode": "Mã voucher",
+      "voucherName": "Tên voucher",
+      "discountType": "Loại chiết khấu",
+      "discountValue": "Giá trị giảm",
+      "maxDiscount": "Giảm tối đa",
+      "minOrderValue": "Đơn tối thiểu",
+      "applyScope": "Phạm vi áp dụng",
+      "usageLimit": "Giới hạn sử dụng",
+      "perUserLimit": "Giới hạn mỗi user",
+      "startAt": "Ngày bắt đầu",
+      "expiredAt": "Ngày hết hạn",
+      "userEmail": "Email khách hàng",
+      "usedAt": "Thời gian dùng"
     }
   }
 }

@@ -1,3 +1,5 @@
+// app/features/manager/services/batch.ts
+
 /**
  * Manager feature — batch API service.
  */
@@ -50,7 +52,7 @@ export async function createBatchesApi(
   return customFetch<CreateBatchResponse>({
     url: `${PRODUCTS_BASE_URL}/${productId}/batches`,
     method: 'POST',
-    data: payload
+    data: { batches: payload }
   })
 }
 
