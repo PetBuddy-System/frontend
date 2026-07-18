@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { LanguageSwitcher, ThemeToggle } from '~/shared/components'
 import { useAuth } from '~/providers/auth-provider'
+import { useSidebar } from '~/providers/sidebar-provider'
 
 const STAFF_AVATAR_URL =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuBuAh0OLqjDAwBT92pgm1m0PQuCq-4lY3Roo0v-PfbrMF5S_5kJNBDrTmyHdsaWPvZcMnGLotDJRDzKnOYRUj8XbJTH_PVyBktsYpg9OU1q__0JsjIC2Agz8SEHro0U3BJ9d6Wf0xLH_tlBMRNhNdGZjbuUPEgFsdsU9a_B_cUvs-JX7Y_Th7tMwz_bvAcafcswIIvRBc3Z4CFF70SllZQR3JXuad6nmKqAF1D8weMPDYZd3y119IBLx1gtAPypuzHVlAUZlI1mF4Y'
@@ -15,6 +16,7 @@ export interface StaffTopNavProps {
 export function StaffTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashboard.subtitle' }: StaffTopNavProps) {
   const { t } = useTranslation('staff')
   const { user } = useAuth()
+  const { openMobileSidebar } = useSidebar()
 
   return (
     <header className='flex h-20 shrink-0 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:px-8'>
@@ -22,6 +24,7 @@ export function StaffTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashb
         <button
           type='button'
           aria-label={t('topNav.menu')}
+          onClick={openMobileSidebar}
           className='rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-primary md:hidden'
         >
           <MaterialIcon name='menu' />

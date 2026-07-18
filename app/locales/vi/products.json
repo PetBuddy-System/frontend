@@ -143,6 +143,11 @@
     "continueShopping": "Tiếp tục mua sắm",
     "categoryLabel": "Danh mục: {{category}}",
     "remove": "Xóa sản phẩm",
+    "sanpham": "Sản phẩm",
+    "dongia": "Đơn giá",
+    "soluong": "Số lượng",
+    "thanhtien": "Thành tiền",
+    "thaotac": "Thao tác",
     "quantity": {
       "decrease": "Giảm số lượng",
       "increase": "Tăng số lượng"

@@ -143,6 +143,11 @@
     "continueShopping": "Continue shopping",
     "categoryLabel": "Category: {{category}}",
     "remove": "Remove item",
+    "sanpham": "Product",
+    "dongia": "Unit price",
+    "soluong": "Quantity",
+    "thanhtien": "Subtotal",
+    "thaotac": "Actions",
     "quantity": {
       "decrease": "Decrease quantity",
       "increase": "Increase quantity"

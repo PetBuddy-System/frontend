@@ -49,6 +49,7 @@
   },
   "sidebar": {
     "avatarAlt": "Ảnh đại diện nhân viên",
+    "close": "Đóng menu",
     "logoAlt": "Logo PetBuddy",
     "logout": "Đăng xuất",
     "nav": {

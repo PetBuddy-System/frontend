@@ -9,6 +9,7 @@
     "avatarAlt": "Ảnh đại diện của Nguyễn Văn An"
   },
   "sidebar": {
+    "close": "Đóng menu",
     "nav": {
       "profile": "Thông tin cá nhân",
       "pets": "Hồ sơ thú cưng",

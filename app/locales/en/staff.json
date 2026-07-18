@@ -49,6 +49,7 @@
   },
   "sidebar": {
     "avatarAlt": "Staff avatar",
+    "close": "Close menu",
     "logoAlt": "PetBuddy logo",
     "logout": "Log out",
     "nav": {

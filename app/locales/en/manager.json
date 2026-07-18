@@ -138,6 +138,7 @@
   "sidebar": {
     "branch": "District 1 Branch",
     "brand": "Store Ops",
+    "close": "Close menu",
     "logoAlt": "PetBuddy logo",
     "logout": "Logout",
     "roleTitle": "Store Manager",
