@@ -137,14 +137,6 @@ export function CartItemsList({
           </table>
         </div>
       </div>
-
-      <a
-        className="inline-flex items-center text-primary font-semibold hover:underline gap-2 mt-4"
-        href="/products"
-      >
-        <MaterialIcon name="arrow_back" className="text-[18px]" />
-        {t('cart.continueShopping', 'Tiếp tục mua sắm')}
-      </a>
     </div>
   )
 }

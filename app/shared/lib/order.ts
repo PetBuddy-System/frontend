@@ -1,5 +1,6 @@
 import type { PaymentResponse } from './payment'
 import type { VoucherResponse } from './voucher'
+import type { MediaFileResponse } from '../../features/admin/services/booking-management/booking-management-api'
 
 export type OrderStatus =
   | 'PENDING'
@@ -111,6 +112,8 @@ export interface OrderDetailFull {
   voucherCode?: string
   voucher?: VoucherResponse
   shippingFee?: number
+  mediaFiles?: MediaFileResponse[]
+  cancelReason?: string
 }
 
 export interface OrderResponse {
@@ -130,6 +133,8 @@ export interface OrderResponse {
   payment?: PaymentResponse
   voucher?: VoucherResponse
   shippingFee?: number
+  mediaFiles?: MediaFileResponse[]
+  cancelReason?: string
 }
 
 export interface DeliveryStopResponse {

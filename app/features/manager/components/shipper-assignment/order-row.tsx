@@ -10,7 +10,7 @@ interface OrderRowProps {
 }
 
 export function OrderRow({ order, onAssignSuccess }: OrderRowProps) {
-  const { t } = useTranslation('manager')
+  const { t } = useTranslation('staff')
   const [isExpanded, setIsExpanded] = useState(false)
 
   function formatPrice(value: number) {

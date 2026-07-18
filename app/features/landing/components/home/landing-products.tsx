@@ -66,8 +66,9 @@ export function LandingProducts() {
         productId: product.productId,
         quantity: 1,
         productName: product.name,
-        price: product.salePrice ?? product.price ?? 0, // Sửa ở đây
-        imageUrl: product.imageUrls?.[0] || product.thumbnail
+        price: product.salePrice ?? product.price ?? 0,
+        salePrice: product.hasActivePromotion ? product.promotionPrice ?? null : null,
+        imageUrl: product.imageUrls?.[0] || product.thumbnailUrl || product.thumbnail,
       })
       await refreshCart()
       setShowSuccessToast(true)

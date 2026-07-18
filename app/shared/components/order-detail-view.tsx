@@ -22,6 +22,7 @@ import {formatDateOnly, formatTimeOnly } from '~/shared/lib/date'
 interface OrderDetailViewProps {
   orderId: number
   isStaff: boolean
+  isAdmin?: boolean
 }
 
 function formatPrice(value: number) {
@@ -43,7 +44,7 @@ function formatCountdown(totalSeconds: number): string {
   return [h, m, s].map((v) => String(v).padStart(2, '0')).join(':')
 }
 
-export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
+export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDetailViewProps) {
   const { t } = useTranslation('profile')
   const [order, setOrder] = useState<OrderDetailFull | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -67,6 +68,12 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
     Boolean(order?.paymentExpiredAt)
 
   const isRefundPending = order?.status === 'CANCEL_REQUESTED'
+
+  // Ảnh xác nhận giao hàng được BE gắn mediaPurpose = 'SHIPPING'.
+  // Chỉ lấy các file còn active (phòng trường hợp BE soft-delete).
+  const deliveryProofUrl = order?.mediaFiles?.find(
+    (m) => m.mediaPurpose === 'SHIPPING' && m.mediaStatus !== 'DELETED'
+  )?.fileUrl
 
   const loadDetail = useCallback(async () => {
     setIsLoading(true)
@@ -105,6 +112,12 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
 
 
   async function handleCancelOrder() {
+    // Staff redirects to a cancel reason page that directly cancels (no refund flow)
+    if (isStaff) {
+      navigate(`/staff/orders/${orderId}/cancel`)
+      return
+    }
+
     if (!isStaff && (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO')) {
       navigate(`/profile/orders/${orderId}/cancel`)
       return
@@ -232,15 +245,15 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           <div className="flex items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-50 dark:bg-amber-950/20 px-5 py-4 text-amber-700 dark:text-amber-400">
             <MaterialIcon name="hourglass_top" className="text-[22px] shrink-0 animate-pulse" />
             <div>
-              <p className="font-bold text-base">Yêu cầu hoàn tiền đang chờ xác nhận</p>
+              <p className="font-bold text-base">{t('orderDetail.refundPendingTitle', 'Yêu cầu hoàn tiền đang chờ xác nhận')}</p>
               {isStaff ? (
                 <p className="text-sm font-medium opacity-90 mt-1.5">
-                  <span className="font-semibold">Lý do khách hủy:</span>{' '}
-                  {order.payment?.cancelReason || 'Khách hàng không cung cấp lý do'}
+                  <span className="font-semibold">{t('orderDetail.cancelReasonLabel', 'Lý do khách hủy:')}</span>{' '}
+                  {order.payment?.cancelReason || t('orderDetail.noCancelReason', 'Khách hàng không cung cấp lý do')}
                 </p>
               ) : (
                 <p className="text-sm font-medium opacity-80 mt-1">
-                  Nhân viên sẽ xem xét và xác nhận hoàn tiền cho bạn sớm nhất có thể.
+                  {t('orderDetail.refundPendingDesc', 'Nhân viên sẽ xem xét và xác nhận hoàn tiền cho bạn sớm nhất có thể.')}
                 </p>
               )}
             </div>
@@ -250,7 +263,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
         <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
           <div className="flex items-center justify-between">
             <button
-              onClick={() => navigate(isStaff ? '/staff/orders' : '/profile/orders')}
+              onClick={() => navigate(isAdmin ? '/admin/orders' : isStaff ? '/staff/orders' : '/profile/orders')}
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group"
             >
               <MaterialIcon name="chevron_left" className="text-[20px]" />
@@ -275,7 +288,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                   {isExpired && order.status === 'PENDING'
                     ? t('orderDetail.status.expired', 'Hết hạn')
                     : isRefundPending
-                      ? 'Chờ hoàn tiền'
+                      ? t('orderDetail.status.cancel_requested', 'Chờ hoàn tiền')
                       : getStatusLabel(order.status)}
                 </span>
               )}
@@ -319,7 +332,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           <>
             <OrderShippingInfo order={order} />
 
-            <OrderProductList order={order} formatPrice={formatPrice} />
+            <OrderProductList order={order} formatPrice={formatPrice} isShipper={isShipper} />
 
             <OrderPaymentDetail
               order={order}
@@ -327,9 +340,30 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
               subtotal={subtotal}
               shippingFee={shippingFee}
               discount={discount}
+              isShipper={isShipper}
             />
 
-            {(isStaff || showCancelButton || canRetryPayment) && (
+            {/* Delivery Proof Image — only visible to staff/admin (customer never receives it from BE) */}
+            {(isStaff || isAdmin) && deliveryProofUrl && (
+              <div className='rounded-xl border border-border bg-card p-5 shadow-sm'>
+                <div className='flex items-center gap-2 mb-4 border-b border-border pb-3'>
+                  <div className='w-8 h-8 rounded-full bg-success/10 flex items-center justify-center shrink-0'>
+                    <MaterialIcon name='photo_camera' className='text-success text-[18px]' />
+                  </div>
+                  <h2 className='font-bold text-base text-foreground'>{t('orderDetail.deliveryProofImage', 'Ảnh xác nhận giao hàng')}</h2>
+                </div>
+                <div className='w-full max-w-md max-h-96 rounded-xl border border-border overflow-hidden'>
+                  <img
+                    src={deliveryProofUrl}
+                    alt={t('orderDetail.deliveryProofImage', 'Ảnh xác nhận giao hàng')}
+                    className='w-full h-full object-contain'
+                    onError={(e) => { e.currentTarget.parentElement?.style.setProperty('display', 'none') }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {(isStaff || showCancelButton || canRetryPayment) && !isAdmin && (
               <OrderActionButtons
                 order={order}
                 isStaff={isStaff}

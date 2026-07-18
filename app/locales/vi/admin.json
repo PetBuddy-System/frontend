@@ -355,6 +355,7 @@
       "employees": "Người dùng",
       "inventory": "Sản phẩm",
       "reports": "Báo cáo",
+      "orders": "Quản lý đơn hàng",
       "serviceBookings": "Lịch đặt dịch vụ",
       "services": "Dịch vụ",
       "users": "Nhân viên",
@@ -1197,14 +1198,19 @@
       "DELETE": "Xóa",
       "ADDED": "Đã thêm",
       "REMOVED": "Đã xóa",
-      "UPDATED": "Cập nhật"
+      "UPDATED": "Cập nhật",
+      "PAY": "Thanh toán",
+      "REFUND": "Hoàn tiền",
+      "USE": "Sử dụng"
     },
     "entityTypes": {
       "PRODUCT": "Sản phẩm",
       "PROMOTION": "Khuyến mãi",
       "BATCH": "Lô hàng",
       "ORDER": "Đơn hàng",
-      "USER": "Người dùng"
+      "USER": "Người dùng",
+      "PAYMENT": "Thanh toán",
+      "VOUCHER_USAGE": "Sử dụng Voucher"
     },
     "fields": {
       "name": "Tên",
@@ -1230,7 +1236,8 @@
       "usageInstructions": "Hướng dẫn sử dụng",
       "createdAt": "Ngày tạo",
       "updatedAt": "Ngày cập nhật",
-      "deletedAt": "Ngày xóa"
+      "deletedAt": "Ngày xóa",
+      "refundAmount": "Số tiền hoàn"
     },
     "reasonMap": {
       "CREATE_PRODUCT": "Tạo mới sản phẩm",
@@ -1240,7 +1247,12 @@
       "UPDATE_PROMOTION": "Cập nhật chương trình khuyến mãi",
       "CREATE_BATCH": "Tạo mới lô hàng",
       "CREATE_BATCH_IMPORT": "Tạo mới lô hàng từ import",
-      "UPDATE_BATCH": "Cập nhật lô hàng"
+      "UPDATE_BATCH": "Cập nhật lô hàng",
+      "PAYMENT_SUCCESS": "Thanh toán thành công",
+      "PAYMENT_BY_MOMO": "Thanh toán MoMo",
+      "PAYMENT_BY_CARD": "Thanh toán bằng thẻ",
+      "CREATE_VOUCHER": "Tạo voucher",
+      "VOUCHER_USED": "Sử dụng voucher"
     },
     "pagination": {
       "showing": "Hiển thị",
@@ -1266,6 +1278,7 @@
   "voucherModal": {
     "createTitle": "Tạo Voucher mới",
     "editTitle": "Chỉnh sửa Voucher",
+    "detailTitle": "Chi tiết Voucher",
     "code": "Mã Voucher",
     "codeRequired": "Mã voucher tối đa 20 ký tự",
     "codeDisabledHint": "Không thể thay đổi mã voucher.",
@@ -1300,6 +1313,7 @@
     "inactiveDescription": "Voucher đang tạm dừng, khách hàng không thể sử dụng.",
     "upcomingDescription": "Ngày bắt đầu chưa tới — voucher sẽ tự động kích hoạt đúng hẹn.",
     "cancel": "Hủy",
+    "close": "Đóng",
     "save": "Lưu thay đổi",
     "create": "Tạo Voucher",
     "saving": "Đang lưu...",
@@ -1312,5 +1326,40 @@
     "version": "PETBUDDY ADMIN v2.4.0",
     "privacy": "Chính sách bảo mật",
     "terms": "Điều khoản dịch vụ"
+  },
+  "orderManagement": {
+    "title": "Quản lý đơn hàng",
+    "subtitle": "Xem và quản lý tất cả các đơn hàng mua sản phẩm trong hệ thống"
+  },
+  "orders": {
+    "stats": {
+      "total": "Tổng đơn",
+      "processing": "Đang xử lý",
+      "completed": "Đã hoàn thành",
+      "cancelled": "Đã hủy"
+    },
+    "listTitle": "Danh sách tất cả đơn hàng",
+    "searchPlaceholder": "Tìm mã đơn, tên, SĐT...",
+    "loadError": "Không thể tải danh sách đơn hàng.",
+    "empty": "Không có đơn hàng nào",
+    "table": {
+      "orderCode": "Mã đơn",
+      "customer": "Khách hàng",
+      "paymentMethod": "Phương thức TT",
+      "totalAmount": "Tổng tiền",
+      "createdAt": "Ngày tạo",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "actions": {
+      "viewDetail": "Xem chi tiết"
+    },
+    "loading": "Đang tải...",
+    "totalCount": "Tổng {{count}} đơn hàng",
+    "paymentMethod": {
+      "card": "Thẻ",
+      "momo": "MoMo",
+      "cash": "Tiền mặt"
+    }
   }
 }

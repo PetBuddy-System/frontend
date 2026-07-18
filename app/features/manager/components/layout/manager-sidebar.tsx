@@ -17,9 +17,9 @@ const MANAGER_NAV_ITEMS = [
   { icon: 'inventory_2', key: 'restock', href: '/manager/restock' },
   { icon: 'delete_sweep', key: 'disposalApprovals', href: '/manager/disposal-approvals' },
   { icon: 'local_offer', key: 'promotions', href: '/manager/promotions' },
+  { icon: 'confirmation_number', key: 'vouchers', href: '/manager/vouchers' },
   { icon: 'storefront', key: 'storeLocations', href: '/manager/store-locations' },
-  { icon: 'rate_review', key: 'reviews', href: '/manager/reviews' },
-  { icon: 'receipt_long', key: 'auditLogs', href: '/manager/audit-logs' }
+  { icon: 'rate_review', key: 'reviews', href: '/manager/reviews' }
 ] as const
 
 export type ManagerNavKey = (typeof MANAGER_NAV_ITEMS)[number]['key']

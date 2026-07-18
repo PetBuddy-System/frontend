@@ -83,7 +83,14 @@ export function ProductDetailInfo({
     setIsAdding(true)
     setAddError(null)
     try {
-      await addToCartApi({ productId, quantity, productName: name, price: displayPrice, imageUrl })
+      await addToCartApi({
+      productId,
+      quantity,
+      productName: name,
+      price: originalPrice,
+      salePrice: isPromoted ? promotionPrice ?? null : null,   
+      imageUrl,
+    })
       await refreshCart()
       setShowSuccessToast(true)
       setTimeout(() => setShowSuccessToast(false), 3000)
@@ -98,7 +105,14 @@ export function ProductDetailInfo({
     if (isAdding) return
     setIsAdding(true)
     try {
-      await addToCartApi({ productId, quantity, productName: name, price: displayPrice, imageUrl })
+      await addToCartApi({
+      productId,
+      quantity,
+      productName: name,
+      price: originalPrice,
+      salePrice: isPromoted ? promotionPrice ?? null : null,   
+      imageUrl,
+    })
       navigate('/checkout')
     } catch (err) {
       setAddError(err instanceof Error ? err.message : 'Lỗi mua ngay')

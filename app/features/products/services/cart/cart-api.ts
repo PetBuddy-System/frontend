@@ -45,6 +45,7 @@ export async function addToCartApi(
       productId: request.productId,
       quantity: request.quantity,
       productName: request.productName,
+      salePrice: request.salePrice,
       price: request.price,
       imageUrl: request.imageUrl ?? '',
     })

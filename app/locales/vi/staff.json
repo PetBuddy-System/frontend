@@ -84,6 +84,9 @@
     "unknownDistance": "Khoảng cách: N/A",
     "currentLoadLabel": "Tải trọng:",
     "assignBtn": "Phân công",
+    "confirmAssignBtn": "Xác nhận phân công",
+    "recommendedShipper": "Shipper quản lý khu vực (Đề xuất)",
+    "ordersToDeliver": "{{count}} đơn hàng cần giao",
     "stats": {
       "pendingPickup": "Đơn hàng chờ giao",
       "areas": "Khu vực hoạt động"
@@ -662,6 +665,44 @@
       "successComplete": "Đã hoàn thành yêu cầu đổi trả",
       "errorUpdate": "Cập nhật trạng thái thất bại",
       "requiredNote": "Vui lòng nhập ghi chú khi từ chối yêu cầu."
+    }
+  },
+  "orderCancel": {
+    "title": "Hủy đơn hàng",
+    "subtitle": "Xác nhận lý do và hủy đơn ngay lập tức",
+    "warningTitle": "Hành động không thể hoàn tác",
+    "warningDesc": "Đơn hàng sẽ được hủy ngay lập tức (không cần chờ xác nhận). Vui lòng chọn đúng lý do.",
+    "selectReasonLabel": "Lý do hủy đơn",
+    "selectReasonPlaceholder": "-- Vui lòng chọn lý do hủy --",
+    "customReasonPlaceholder": "Nhập lý do cụ thể...",
+    "summaryTitle": "Tóm tắt đơn hàng",
+    "totalAmount": "Tổng tiền",
+    "paymentMethod": "Phương thức TT",
+    "paymentMethodCard": "Thẻ ngân hàng",
+    "paymentMethodMomo": "Ví MoMo",
+    "paymentMethodCOD": "Tiền mặt (COD)",
+    "confirmCancelBtn": "Xác nhận hủy đơn",
+    "processing": "Đang hủy...",
+    "backBtn": "Quay lại",
+    "validationError": "Vui lòng chọn hoặc nhập lý do hủy đơn hàng",
+    "successMessage": "Đơn hàng #{{code}} đã được hủy thành công.\nLý do: {{reason}}",
+    "submitError": "Không thể hủy đơn hàng.",
+    "unexpectedError": "Có lỗi xảy ra khi hủy đơn.",
+    "loadError": "Không thể tải chi tiết đơn hàng.",
+    "loadingTitle": "Hủy đơn hàng",
+    "loadingSubtitle": "Chọn lý do hủy đơn",
+    "loadingText": "Đang tải chi tiết đơn hàng...",
+    "notFound": "Không tìm thấy đơn hàng.",
+    "backToOrders": "Quay lại danh sách đơn hàng",
+    "productInfo": "Sản phẩm trong đơn",
+    "reasons": {
+      "customerRequest": "Khách hàng yêu cầu hủy",
+      "invalidAddress": "Địa chỉ giao hàng không hợp lệ",
+      "noContact": "Không liên lạc được với khách hàng",
+      "outOfStock": "Sản phẩm hết hàng / lỗi",
+      "duplicateOrder": "Đơn hàng trùng lặp",
+      "policyViolation": "Vi phạm chính sách cửa hàng",
+      "other": "Khác"
     }
   }
 }

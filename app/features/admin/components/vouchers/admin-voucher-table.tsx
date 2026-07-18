@@ -2,11 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
-import {
-  fetchAllVouchersApi,
-  updateVoucherApi,
-} from '../../services/voucher'
-import type { VoucherResponse } from '~/shared/lib/voucher'
+import {type VoucherResponse} from '~/shared/lib/voucher'
+import { fetchAllVouchersApi } from '../../services/voucher'
 import { VoucherModal } from './voucher-modal'
 
 const PAGE_SIZE = 10
@@ -53,11 +50,7 @@ function getStatusLabel(status: string) {
   return 'Tạm dừng'
 }
 
-export interface AdminVoucherTableProps {
-  onOpenCreate: () => void
-}
-
-export function AdminVoucherTable({ onOpenCreate }: AdminVoucherTableProps) {
+export function AdminVoucherTable() {
   const [vouchers, setVouchers] = useState<VoucherResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -91,30 +84,7 @@ export function AdminVoucherTable({ onOpenCreate }: AdminVoucherTableProps) {
     void loadVouchers(currentPage)
   }, [currentPage, loadVouchers])
 
-  async function handleToggleStatus(voucher: VoucherResponse) {
-    const newStatus = voucher.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
-    try {
-      await updateVoucherApi(voucher.voucherId, {
-        voucherCode: voucher.voucherCode,
-        voucherName: voucher.voucherName,
-        discountType: voucher.discountType,
-        discountValue: voucher.discountValue,
-        maxDiscount: voucher.maxDiscount,
-        minOrderValue: voucher.minOrderValue,
-        applyScope: voucher.applyScope,
-        usageLimit: voucher.usageLimit,
-        perUserLimit: voucher.perUserLimit,
-        startAt: voucher.startAt,
-        expiredAt: voucher.expiredAt,
-        status: newStatus,
-      })
-      setVouchers((prev) =>
-        prev.map((v) => (v.voucherId === voucher.voucherId ? { ...v, status: newStatus } : v))
-      )
-    } catch {
-      setError('Không thể cập nhật trạng thái voucher.')
-    }
-  }
+  // Toggle status removed for admin view-only mode
 
   function handleEdit(voucher: VoucherResponse) {
     setEditingVoucher(voucher)
@@ -217,14 +187,6 @@ export function AdminVoucherTable({ onOpenCreate }: AdminVoucherTableProps) {
                         className='mx-auto mb-2 text-[36px] text-muted-foreground/50'
                       />
                       <p className='mb-3'>Không tìm thấy voucher nào</p>
-                      <button
-                        type='button'
-                        onClick={onOpenCreate}
-                        className='inline-flex h-9 items-center justify-center gap-1 rounded-xl bg-primary/10 px-4 text-xs font-bold text-primary transition hover:bg-primary/20'
-                      >
-                        <MaterialIcon name='add' className='text-sm' />
-                        Tạo voucher
-                      </button>
                     </td>
                   </tr>
                 ) : (
@@ -289,33 +251,20 @@ export function AdminVoucherTable({ onOpenCreate }: AdminVoucherTableProps) {
                           )}
                         </td>
 
-                        {/* Status toggle */}
+                        {/* Status badge */}
                         <td className='px-4 py-4'>
-                          <div className='flex items-center gap-2'>
-                            <button
-                              type='button'
-                              onClick={() => void handleToggleStatus(voucher)}
-                              disabled={voucher.status === 'EXPIRED'}
-                              aria-pressed={isActive}
-                              className={cn(
-                                'flex h-6 w-11 rounded-full p-0.5 transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
-                                isActive
-                                  ? 'justify-end bg-success'
-                                  : 'justify-start bg-muted-foreground',
-                                voucher.status === 'EXPIRED' && 'cursor-not-allowed opacity-50'
-                              )}
-                            >
-                              <span className='h-5 w-5 rounded-full bg-card shadow-sm transition-transform' />
-                            </button>
-                            <span
-                              className={cn(
-                                'text-xs font-semibold',
-                                getStatusColor(voucher.status)
-                              )}
-                            >
-                              {getStatusLabel(voucher.status)}
-                            </span>
-                          </div>
+                          <span className={cn(
+                            'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold',
+                            voucher.status === 'ACTIVE' ? 'bg-success/15 text-success' :
+                            voucher.status === 'EXPIRED' ? 'bg-destructive/15 text-destructive' : 'bg-muted text-muted-foreground'
+                          )}>
+                            <span className={cn(
+                              'h-1.5 w-1.5 rounded-full',
+                              voucher.status === 'ACTIVE' ? 'bg-success' :
+                              voucher.status === 'EXPIRED' ? 'bg-destructive' : 'bg-muted-foreground'
+                            )} />
+                            {getStatusLabel(voucher.status)}
+                          </span>
                         </td>
 
                         {/* Actions */}
@@ -324,10 +273,10 @@ export function AdminVoucherTable({ onOpenCreate }: AdminVoucherTableProps) {
                             <button
                               type='button'
                               onClick={() => handleEdit(voucher)}
-                              aria-label='Sửa voucher'
+                              aria-label='Xem chi tiết voucher'
                               className='flex h-9 w-9 items-center justify-center rounded-lg text-primary transition-colors hover:bg-primary/10'
                             >
-                              <MaterialIcon name='edit' className='text-lg' />
+                              <MaterialIcon name='visibility' className='text-lg' />
                             </button>
                           </div>
                         </td>

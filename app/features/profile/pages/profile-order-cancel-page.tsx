@@ -16,6 +16,7 @@ function formatPrice(value: number) {
 
 export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps) {
   const navigate = useNavigate()
+  const { t } = useTranslation('profile')
 
   const [order, setOrder] = useState<OrderDetailFull | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -32,10 +33,10 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
         if (res.success && res.data) {
           setOrder(res.data)
         } else {
-          setError(res.message || 'Không thể tải chi tiết đơn hàng.')
+          setError(res.message || t('orderCancel.loadError', 'Không thể tải chi tiết đơn hàng.'))
         }
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Đã có lỗi xảy ra.')
+        setError(err instanceof Error ? err.message : t('orderCancel.unexpectedError', 'Có lỗi xảy ra khi hủy đơn.'))
       } finally {
         setIsLoading(false)
       }
@@ -49,7 +50,7 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
 
     const finalReason = cancelReason === 'Khác' ? customReason.trim() : cancelReason
     if (!finalReason) {
-      alert('Vui lòng chọn hoặc nhập lý do hủy đơn hàng')
+      alert(t('orderCancel.validationError', 'Vui lòng chọn hoặc nhập lý do hủy đơn hàng'))
       return
     }
 
@@ -62,17 +63,17 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
       if (res.success) {
         if (isPaidByCard) {
           alert(
-            'Yêu cầu hủy & hoàn tiền đã được ghi nhận! Nhân viên sẽ xem xét và xác nhận hoàn tiền sớm nhất có thể.'
+            t('orderCancel.successMessagePaid', 'Yêu cầu hủy & hoàn tiền đã được ghi nhận! Nhân viên sẽ xem xét và xác nhận hoàn tiền sớm nhất có thể.')
           )
         } else {
-          alert('Đơn hàng đã được hủy thành công.')
+          alert(t('orderCancel.successMessageCOD', 'Đơn hàng đã được hủy thành công.'))
         }
         navigate(`/profile/orders/${orderId}`)
       } else {
-        alert(res.message || 'Không thể gửi yêu cầu hủy đơn.')
+        alert(res.message || t('orderCancel.submitError', 'Không thể gửi yêu cầu hủy đơn.'))
       }
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Có lỗi xảy ra khi hủy đơn.')
+      alert(err instanceof Error ? err.message : t('orderCancel.unexpectedError', 'Có lỗi xảy ra khi hủy đơn.'))
     } finally {
       setIsSubmitting(false)
     }
@@ -85,7 +86,7 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
         <main className="flex-1 flex items-center justify-center p-6">
           <div className="flex flex-col items-center gap-3">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            <p className="text-sm text-muted-foreground">Đang tải thông tin đơn hàng...</p>
+            <p className="text-sm text-muted-foreground">{t('orderCancel.loading', 'Đang tải thông tin đơn hàng...')}</p>
           </div>
         </main>
         <SiteFooter />
@@ -101,12 +102,12 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
         <main className="flex-1 flex items-center justify-center p-6">
           <div className="flex flex-col items-center gap-3 text-center">
             <MaterialIcon name="error" className="text-[48px] text-destructive" />
-            <p className="text-sm text-muted-foreground">{error || 'Không tìm thấy đơn hàng.'}</p>
+            <p className="text-sm text-muted-foreground">{error || t('orderCancel.notFound', 'Không tìm thấy đơn hàng.')}</p>
             <button
               onClick={() => navigate('/profile/orders')}
               className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-bold text-sm"
             >
-              Quay lại danh sách đơn hàng
+              {t('orderCancel.backToOrders', 'Quay lại danh sách đơn hàng')}
             </button>
           </div>
         </main>
@@ -130,10 +131,10 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
           <div className="flex items-center justify-between">
             <h1 className="font-display text-2xl font-bold text-foreground flex items-center gap-2 md:text-3xl">
               <MaterialIcon name="cancel" className="text-destructive text-[28px]" />
-              Yêu cầu hủy đơn
+              {t('orderCancel.title', 'Yêu cầu hủy đơn')}
             </h1>
             <div className="bg-card px-4 py-1.5 rounded-full text-muted-foreground font-semibold text-xs border border-border">
-              Mã đơn: #{order.orderCode}
+              {t('orderCancel.orderCode', { code: order.orderCode, defaultValue: `Mã đơn: #${order.orderCode}` })}
             </div>
           </div>
 
@@ -146,7 +147,7 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
               <section className="bg-card border border-border/60 rounded-xl p-6 shadow-sm">
                 <h2 className="text-foreground font-semibold text-lg mb-4 flex items-center gap-2">
                   <MaterialIcon name="inventory_2" className="text-primary text-[20px]" />
-                  Thông tin sản phẩm
+                  {t('orderCancel.productInfo', 'Thông tin sản phẩm')}
                 </h2>
 
                 <div className="flex flex-col gap-4">
@@ -167,12 +168,12 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
                             {item.productName}
                           </h3>
                           <div className="flex items-center gap-3 mt-1 text-muted-foreground text-xs font-medium">
-                            <span>Số lượng: <span className="font-semibold text-foreground">x{item.quantity}</span></span>
+                            <span>{t('orderCancel.quantity', { count: item.quantity, defaultValue: `Số lượng: x${item.quantity}` })}</span>
                           </div>
                         </div>
                         <div className="flex justify-between items-end mt-2">
                           <div className="text-primary font-bold text-xs bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
-                            Chờ xử lý
+                            {t('orderCancel.statusPending', 'Chờ xử lý')}
                           </div>
                           <div className="text-right font-semibold text-sm md:text-base text-foreground">
                             {formatPrice(item.totalPrice)}
@@ -187,7 +188,7 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
               <section className="bg-card border border-border/60 rounded-xl overflow-hidden shadow-sm">
                 <div className="p-6 border-b border-border/50 flex flex-col gap-3">
                   <label htmlFor="select-reason" className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
-                    Lý do hủy đơn <span className="text-destructive">*</span>
+                    {t('orderCancel.cancelReasonLabel', 'Lý do hủy đơn')} <span className="text-destructive">*</span>
                   </label>
                   <select
                     id="select-reason"
@@ -196,19 +197,19 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
                     onChange={(e) => setCancelReason(e.target.value)}
                     className="w-full rounded-xl border border-border bg-background p-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                   >
-                    <option value="">-- Vui lòng chọn lý do hủy đơn --</option>
-                    <option value="Tôi không có nhu cầu mua nữa">Tôi không có nhu cầu mua nữa</option>
-                    <option value="Tôi muốn thay đổi địa chỉ nhận hàng">Tôi muốn thay đổi địa chỉ nhận hàng</option>
-                    <option value="Tôi muốn đổi phương thức thanh toán">Tôi muốn đổi phương thức thanh toán</option>
-                    <option value="Tìm thấy giá rẻ hơn ở nơi khác">Tìm thấy giá rẻ hơn ở nơi khác</option>
-                    <option value="Khác">Lý do khác</option>
+                    <option value="">{t('orderCancel.selectReasonPlaceholder', '-- Vui lòng chọn lý do hủy đơn --')}</option>
+                    <option value="Tôi không có nhu cầu mua nữa">{t('orderCancel.reasonNoNeed', 'Tôi không có nhu cầu mua nữa')}</option>
+                    <option value="Tôi muốn thay đổi địa chỉ nhận hàng">{t('orderCancel.reasonChangeAddress', 'Tôi muốn thay đổi địa chỉ nhận hàng')}</option>
+                    <option value="Tôi muốn đổi phương thức thanh toán">{t('orderCancel.reasonChangePayment', 'Tôi muốn đổi phương thức thanh toán')}</option>
+                    <option value="Tìm thấy giá rẻ hơn ở nơi khác">{t('orderCancel.reasonCheaperPrice', 'Tìm thấy giá rẻ hơn ở nơi khác')}</option>
+                    <option value="Khác">{t('orderCancel.reasonOther', 'Lý do khác')}</option>
                   </select>
 
                   {cancelReason === 'Khác' && (
                     <div className="mt-2">
                       <textarea
                         required
-                        placeholder="Vui lòng nhập lý do cụ thể..."
+                        placeholder={t('orderCancel.customReasonPlaceholder', 'Vui lòng nhập lý do cụ thể...')}
                         value={customReason}
                         onChange={(e) => setCustomReason(e.target.value)}
                         className="w-full rounded-xl border border-border bg-background p-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
@@ -223,9 +224,9 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
             <div className="lg:col-span-5 flex flex-col gap-6">
               <section className="bg-card border border-border/60 rounded-xl p-6 shadow-sm flex flex-col">
                 <div className="flex items-center justify-between w-full mb-6">
-                  <h2 className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">Số tiền hoàn lại</h2>
+                  <h2 className="text-muted-foreground font-semibold text-xs uppercase tracking-wider">{t('orderCancel.refundAmountLabel', 'Số tiền hoàn lại')}</h2>
                   <div className="text-foreground font-bold text-lg md:text-xl">
-                    {isCardPayment ? formatPrice(order.finalAmount) : 'Không hoàn tiền'}
+                    {isCardPayment ? formatPrice(order.finalAmount) : t('orderCancel.noRefund', 'Không hoàn tiền')}
                   </div>
                 </div>
 
@@ -234,8 +235,8 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
                     <MaterialIcon name="info" className="text-primary mt-0.5 shrink-0" />
                     <p className="text-muted-foreground text-xs leading-relaxed">
                       {isCardPayment
-                        ? 'Yêu cầu hủy & hoàn tiền của bạn sẽ được chuyển đến nhân viên. Sau khi nhân viên xác nhận, tiền sẽ được hoàn về thẻ theo chính sách.'
-                        : 'Bạn đã chọn thanh toán khi nhận hàng (COD). Chúng tôi sẽ tiến hành hủy đơn hàng và không phát sinh giao dịch hoàn tiền trực tiếp.'}
+                        ? t('orderCancel.refundNotePaid', 'Yêu cầu hủy & hoàn tiền của bạn sẽ được chuyển đến nhân viên. Sau khi nhân viên xác nhận, tiền sẽ được hoàn về thẻ theo chính sách.')
+                        : t('orderCancel.refundNoteCOD', 'Bạn đã chọn thanh toán khi nhận hàng (COD). Chúng tôi sẽ tiến hành hủy đơn hàng và không phát sinh giao dịch hoàn tiền trực tiếp.')}
                     </p>
                   </div>
                 </div>
@@ -244,7 +245,7 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
                   <div className="flex gap-3 items-start p-3 bg-destructive/5 border border-destructive/10 rounded-lg">
                     <MaterialIcon name="warning" className="text-destructive shrink-0 text-[18px]" />
                     <p className="text-muted-foreground text-[11px] leading-snug italic font-medium">
-                      Sau khi nhấn &quot;Gửi yêu cầu&quot;, Shop sẽ liên hệ đơn vị vận chuyển yêu cầu dừng giao đơn hàng này.
+                      {t('orderCancel.warningNotice', 'Sau khi nhấn "Gửi yêu cầu", Shop sẽ liên hệ đơn vị vận chuyển yêu cầu dừng giao đơn hàng này.')}
                     </p>
                   </div>
 
@@ -256,11 +257,11 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
                     {isSubmitting ? (
                       <>
                         <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                        <span>Đang xử lý...</span>
+                        <span>{t('orderCancel.processing', 'Đang xử lý...')}</span>
                       </>
                     ) : (
                       <>
-                        <span>Gửi yêu cầu</span>
+                        <span>{t('orderCancel.submitBtn', 'Gửi yêu cầu')}</span>
                         <MaterialIcon name="send" />
                       </>
                     )}
@@ -271,7 +272,7 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
                     onClick={() => navigate(-1)}
                     className="w-full border border-border text-muted-foreground hover:bg-muted font-bold py-3 rounded-xl transition-all text-sm"
                   >
-                    Quay lại
+                    {t('orderCancel.backBtn', 'Quay lại')}
                   </button>
                 </div>
               </section>

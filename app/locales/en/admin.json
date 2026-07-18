@@ -355,6 +355,7 @@
       "employees": "Users",
       "inventory": "Products",
       "reports": "Reports",
+      "orders": "Order Management",
       "serviceBookings": "Service Bookings",
       "services": "Services",
       "users": "Employees",
@@ -1197,14 +1198,19 @@
       "DELETE": "Delete",
       "ADDED": "Added",
       "REMOVED": "Removed",
-      "UPDATED": "Updated"
+      "UPDATED": "Updated",
+      "PAY": "Pay",
+      "REFUND": "Refund",
+      "USE": "Use"
     },
     "entityTypes": {
       "PRODUCT": "Product",
       "PROMOTION": "Promotion",
       "BATCH": "Batch",
       "ORDER": "Order",
-      "USER": "User"
+      "USER": "User",
+      "PAYMENT": "Payment",
+      "VOUCHER_USAGE": "Voucher Usage"
     },
     "fields": {
       "name": "Name",
@@ -1230,7 +1236,8 @@
       "usageInstructions": "Usage Instructions",
       "createdAt": "Created At",
       "updatedAt": "Updated At",
-      "deletedAt": "Deleted At"
+      "deletedAt": "Deleted At",
+      "refundAmount": "Refund amount"
     },
     "reasonMap": {
       "CREATE_PRODUCT": "Create new product",
@@ -1240,7 +1247,12 @@
       "UPDATE_PROMOTION": "Update promotion",
       "CREATE_BATCH": "Create new batch",
       "CREATE_BATCH_IMPORT": "Create new batch from import",
-      "UPDATE_BATCH": "Update batch"
+      "UPDATE_BATCH": "Update batch",
+      "PAYMENT_SUCCESS": "Payment success",
+      "PAYMENT_BY_MOMO": "Payment by MoMo",
+      "PAYMENT_BY_CARD": "Payment by Card",
+      "CREATE_VOUCHER": "Create new voucher",
+      "VOUCHER_USED": "Voucher used"
     },
     "pagination": {
       "showing": "Showing",
@@ -1266,6 +1278,7 @@
   "voucherModal": {
     "createTitle": "Create New Voucher",
     "editTitle": "Edit Voucher",
+    "detailTitle": "Voucher Details",
     "code": "Voucher Code",
     "codeRequired": "Voucher code must be at most 20 characters",
     "codeDisabledHint": "Voucher code cannot be changed.",
@@ -1300,6 +1313,7 @@
     "inactiveDescription": "Voucher is inactive, customers cannot use it.",
     "upcomingDescription": "Start date has not arrived yet — voucher will activate automatically on time.",
     "cancel": "Cancel",
+    "close": "Close",
     "save": "Save Changes",
     "create": "Create Voucher",
     "saving": "Saving...",
@@ -1312,5 +1326,40 @@
     "version": "PETBUDDY ADMIN v2.4.0",
     "privacy": "Privacy policy",
     "terms": "Terms of service"
+  },
+  "orderManagement": {
+    "title": "Order Management",
+    "subtitle": "View and manage all product purchase orders in the system"
+  },
+  "orders": {
+    "stats": {
+      "total": "Total Orders",
+      "processing": "Processing",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "listTitle": "All Orders List",
+    "searchPlaceholder": "Search order code, name, phone...",
+    "loadError": "Failed to load order list.",
+    "empty": "No orders found",
+    "table": {
+      "orderCode": "Order Code",
+      "customer": "Customer",
+      "paymentMethod": "Payment Method",
+      "totalAmount": "Total Amount",
+      "createdAt": "Created At",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "viewDetail": "View details"
+    },
+    "loading": "Loading...",
+    "totalCount": "Total {{count}} order(s)",
+    "paymentMethod": {
+      "card": "Card",
+      "momo": "MoMo",
+      "cash": "Cash"
+    }
   }
 }

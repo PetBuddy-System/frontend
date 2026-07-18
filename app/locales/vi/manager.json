@@ -150,10 +150,10 @@
       "restock": "Nhập hàng trả về",
       "disposalApprovals": "Duyệt hủy hàng",
       "promotions": "Chương trình khuyến mãi",
+      "vouchers": "Quản lý Voucher",
       "storeLocations": "Địa chỉ chi nhánh",
       "reviews": "Quản lý đánh giá",
-      "shipperAssignment": "Phân công Shipper",
-      "auditLogs": "Lịch sử hệ thống"
+      "shipperAssignment": "Phân công Shipper"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
   },

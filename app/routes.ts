@@ -56,6 +56,7 @@ export default [
     route('staff/add-product', 'routes/staff-add-product.tsx'),
     route('staff/orders', 'routes/staff-orders.tsx'),
     route('staff/orders/:orderId', 'routes/staff-order-detail.tsx'),
+    route('staff/orders/:orderId/cancel', 'routes/staff-order-cancel.tsx'),
     route('staff/returns', 'routes/staff-returns.tsx'),
     route('staff/shipper-assignment', 'routes/staff-shipper-assignment.tsx')
   ]),
@@ -76,6 +77,8 @@ export default [
     route('admin/users/:userId/edit', 'routes/admin-user-edit.tsx'),
     route('admin/users/:userId', 'routes/admin-user-detail.tsx'),
     route('admin/vouchers', 'routes/admin-vouchers.tsx'),
+    route('admin/orders', 'routes/admin-orders.tsx'),
+    route('admin/orders/:orderId', 'routes/admin-order-detail.tsx'),
     route('admin/shipping', 'routes/admin-shipping.tsx'),
     route('admin/audit-logs', 'routes/admin-audit-logs.tsx'),
     route('admin/audit-logs/:auditLogId', 'routes/admin-audit-detail.tsx')
@@ -102,7 +105,6 @@ export default [
     route('manager/promotions/:promotionId/edit', 'routes/manager-promotion-edit.tsx'),
     route('manager/store-locations', 'routes/manager-store-locations.tsx'),
     route('manager/reviews', 'routes/manager-reviews.tsx'),
-    route('manager/audit-logs', 'routes/manager-audit-logs.tsx'),
-    route('manager/audit-logs/:auditLogId', 'routes/manager-audit-detail.tsx')
+    route('manager/vouchers', 'routes/manager-vouchers.tsx')
   ])
 ] satisfies RouteConfig

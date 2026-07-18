@@ -13,7 +13,6 @@ function formatNumber(value: number) {
 }
 
 export function AdminVouchersPage() {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [activeCount, setActiveCount] = useState(0)
   const [totalUsedCount, setTotalUsedCount] = useState(0)
   const [isStatsLoading, setIsStatsLoading] = useState(true)
@@ -39,12 +38,6 @@ export function AdminVouchersPage() {
     void loadStats()
   }, [tableKey])
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function handleCreateSuccess(_voucher: VoucherResponse) {
-    setTableKey((k) => k + 1)
-    setIsCreateModalOpen(false)
-  }
-
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
       <AdminSidebar activeItem='vouchers' />
@@ -54,7 +47,7 @@ export function AdminVouchersPage() {
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
 
-            {/* Header + Create button */}
+            {/* Header */}
             <section className='flex flex-col gap-4 md:flex-row md:items-end md:justify-between'>
               <div>
                 <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
@@ -64,14 +57,6 @@ export function AdminVouchersPage() {
                   Theo dõi hiệu quả sử dụng mã giảm giá theo thời gian.
                 </p>
               </div>
-              <button
-                type='button'
-                onClick={() => setIsCreateModalOpen(true)}
-                className='inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:opacity-90 hover:shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-ring'
-              >
-                <MaterialIcon name='add_circle' className='text-lg' />
-                Tạo voucher mới
-              </button>
             </section>
 
             {/* Stats Cards */}
@@ -128,18 +113,10 @@ export function AdminVouchersPage() {
             </div>
 
             {/* Voucher Table — full width */}
-            <AdminVoucherTable key={tableKey} onOpenCreate={() => setIsCreateModalOpen(true)} />
+            <AdminVoucherTable key={tableKey} />
           </div>
         </main>
       </div>
-
-      {/* Create modal */}
-      <VoucherModal
-        isOpen={isCreateModalOpen}
-        editingVoucher={null}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSuccess={handleCreateSuccess}
-      />
     </div>
   )
 }

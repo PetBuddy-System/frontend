@@ -30,7 +30,6 @@ export interface MergeCartRequest {
   items: AddToCartRequest[]
 }
 
-// ─── Guest Cart (localStorage, unauthenticated users) ──────────────────────────
 
 const GUEST_CART_KEY = 'petbuddy_guest_cart'
 
@@ -55,26 +54,38 @@ export const guestCart = {
   },
 
   add(
-    request: AddToCartRequest & { productName: string; price: number; imageUrl: string }
+    request: AddToCartRequest & {
+      productName: string
+      price: number
+      salePrice?: number | null
+      imageUrl: string
+    }
   ): CartItemResponse[] {
     const items = _readGuestCart()
     const existing = items.find((i) => i.productId === request.productId)
 
+    const effectivePrice =
+      request.salePrice != null && request.salePrice < request.price
+        ? request.salePrice
+        : request.price
+
     if (existing) {
       existing.quantity += request.quantity
       existing.price = request.price
+      existing.salePrice = request.salePrice ?? null
       existing.imageUrl = request.imageUrl
       existing.productName = request.productName
-      existing.subtotal = existing.price * existing.quantity
+      existing.subtotal = effectivePrice * existing.quantity
     } else {
       items.push({
         cartItemId: request.productId,
         productId: request.productId,
         productName: request.productName,
         price: request.price,
+        salePrice: request.salePrice ?? null,
         quantity: request.quantity,
         imageUrl: request.imageUrl,
-        subtotal: request.price * request.quantity,
+        subtotal: effectivePrice * request.quantity,
       })
     }
 
@@ -83,11 +94,12 @@ export const guestCart = {
   },
 
   update(cartItemId: string, request: UpdateCartItemRequest): CartItemResponse[] {
-    const items = _readGuestCart().map((item) =>
-      item.cartItemId === cartItemId
-        ? { ...item, quantity: request.quantity, subtotal: item.price * request.quantity }
-        : item
-    )
+    const items = _readGuestCart().map((item) => {
+      if (item.cartItemId !== cartItemId) return item
+      const effectivePrice =
+        item.salePrice != null && item.salePrice < item.price ? item.salePrice : item.price
+      return { ...item, quantity: request.quantity, subtotal: effectivePrice * request.quantity }
+    })
     _writeGuestCart(items)
     return items
   },

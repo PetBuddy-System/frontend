@@ -10,6 +10,7 @@ const ADMIN_NAV_ITEMS = [
   { icon: 'assessment', key: 'reports', href: '/admin/dashboard' },
   { icon: 'badge', key: 'employees', href: '/admin/employees' },
   { icon: 'group', key: 'users', href: '/admin/users' },
+  { icon: 'shopping_bag', key: 'orders', href: '/admin/orders' },
   { icon: 'confirmation_number', key: 'vouchers', href: '/admin/vouchers' },
   { icon: 'article', key: 'blog', href: '/admin/blog' },
   { icon: 'local_shipping', key: 'shipping', href: '/admin/shipping' },

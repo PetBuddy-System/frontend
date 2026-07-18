@@ -84,6 +84,9 @@
     "unknownDistance": "Distance: N/A",
     "currentLoadLabel": "Current Load:",
     "assignBtn": "Assign",
+    "confirmAssignBtn": "Confirm Assignment",
+    "recommendedShipper": "Area Shipper (Recommended)",
+    "ordersToDeliver": "{{count}} order(s) to deliver",
     "stats": {
       "pendingPickup": "Orders to Deliver",
       "areas": "Active Areas"
@@ -661,6 +664,44 @@
       "successComplete": "Return request completed successfully",
       "errorUpdate": "Failed to update status",
       "requiredNote": "Please enter a staff note when rejecting the request."
+    }
+  },
+  "orderCancel": {
+    "title": "Cancel Order",
+    "subtitle": "Confirm the reason and cancel the order immediately",
+    "warningTitle": "This action cannot be undone",
+    "warningDesc": "The order will be cancelled immediately (no confirmation needed). Please choose the correct reason.",
+    "selectReasonLabel": "Reason for cancellation",
+    "selectReasonPlaceholder": "-- Please select a cancellation reason --",
+    "customReasonPlaceholder": "Enter specific reason...",
+    "summaryTitle": "Order Summary",
+    "totalAmount": "Total amount",
+    "paymentMethod": "Payment method",
+    "paymentMethodCard": "Bank Card",
+    "paymentMethodMomo": "MoMo Wallet",
+    "paymentMethodCOD": "Cash on Delivery (COD)",
+    "confirmCancelBtn": "Confirm Cancel Order",
+    "processing": "Cancelling...",
+    "backBtn": "Go Back",
+    "validationError": "Please select or enter a cancellation reason",
+    "successMessage": "Order #{{code}} has been successfully cancelled.\nReason: {{reason}}",
+    "submitError": "Failed to cancel order.",
+    "unexpectedError": "An error occurred while cancelling the order.",
+    "loadError": "Failed to load order details.",
+    "loadingTitle": "Cancel Order",
+    "loadingSubtitle": "Choose cancellation reason",
+    "loadingText": "Loading order details...",
+    "notFound": "Order not found.",
+    "backToOrders": "Back to orders list",
+    "productInfo": "Products in order",
+    "reasons": {
+      "customerRequest": "Customer requested cancellation",
+      "invalidAddress": "Invalid delivery address",
+      "noContact": "Unable to contact customer",
+      "outOfStock": "Product out of stock / defective",
+      "duplicateOrder": "Duplicate order",
+      "policyViolation": "Store policy violation",
+      "other": "Other"
     }
   }
 }

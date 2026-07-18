@@ -49,7 +49,8 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
         quantity: 1,
         productName: product.name,
         price: product.salePrice ?? product.price ?? 0,
-        imageUrl: product.imageUrls?.[0] || product.thumbnail,
+        salePrice: product.hasActivePromotion ? product.promotionPrice ?? null : null,
+        imageUrl: product.imageUrls?.[0] || product.thumbnailUrl || product.thumbnail,   // 👈 thêm thumbnailUrl
       })
       await refreshCart()
       setShowSuccessToast(true)

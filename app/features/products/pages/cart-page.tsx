@@ -47,7 +47,7 @@ export function CartPage() {
           productName: i.productName,
           description: undefined,
           price: i.price,
-          salePrice: null,
+          salePrice: i.salePrice ?? null, 
           quantity: i.quantity,
           imageUrl: i.imageUrl,
           subtotal: i.subtotal,
@@ -189,7 +189,13 @@ export function CartPage() {
           {t('cart.title')}
         </h1>
 
-
+        <a
+          className="inline-flex items-center text-primary font-semibold hover:underline gap-2 mt-4"
+          href="/products"
+        >
+          <MaterialIcon name="arrow_back" className="text-[18px]" />
+          {t('cart.continueShopping', 'Tiếp tục mua sắm')}
+        </a>
         {error && (
           <div className='mb-6 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
             {error}

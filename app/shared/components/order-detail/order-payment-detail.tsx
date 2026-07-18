@@ -9,6 +9,7 @@ interface OrderPaymentDetailProps {
   subtotal: number
   shippingFee: number
   discount: number
+  isShipper?: boolean
 }
 
 export function OrderPaymentDetail({
@@ -17,8 +18,14 @@ export function OrderPaymentDetail({
   subtotal,
   shippingFee,
   discount,
+  isShipper = false,
 }: OrderPaymentDetailProps) {
   const { t } = useTranslation('profile')
+
+  // Shipper cannot see prices for prepaid (CARD/MOMO) orders
+  const isOnlinePayment = order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO'
+  const hidePrice = isShipper && isOnlinePayment
+  const displayPrice = hidePrice ? () => '0đ' : formatPrice
 
   return (
     <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
@@ -100,18 +107,18 @@ export function OrderPaymentDetail({
           </div>
         </div>
 
-        <div className="bg-muted/40 p-4 rounded-xl border border-border/40 flex flex-col gap-2">
+          <div className="bg-muted/40 p-4 rounded-xl border border-border/40 flex flex-col gap-2">
           <div className="flex justify-between items-center text-xs">
             <span className="text-muted-foreground">
               {t('orderDetail.subtotal', 'Tổng giá trị sản phẩm')}
             </span>
-            <span className="font-semibold text-foreground">{formatPrice(subtotal)}</span>
+            <span className="font-semibold text-foreground">{displayPrice(subtotal)}</span>
           </div>
           <div className="flex justify-between items-center text-xs">
             <span className="text-muted-foreground">
               {t('orderDetail.shippingFee', 'Phí giao hàng')}
             </span>
-            <span className="font-semibold text-foreground">{formatPrice(shippingFee)}</span>
+            <span className="font-semibold text-foreground">{displayPrice(shippingFee)}</span>
           </div>
           {discount > 0 && (
             <div className="flex justify-between items-center text-xs">
@@ -125,7 +132,7 @@ export function OrderPaymentDetail({
                   </span>
                 )}
               </div>
-              <span className="text-destructive font-bold">-{formatPrice(discount)}</span>
+              <span className="text-destructive font-bold">-{hidePrice ? '0đ' : formatPrice(discount)}</span>
             </div>
           )}
           <div className="h-px bg-border my-1" />
@@ -133,7 +140,7 @@ export function OrderPaymentDetail({
             <span className="font-bold text-sm">
               {t('orderDetail.totalOrder', 'Tổng đơn hàng')}
             </span>
-            <span className="text-lg font-black text-primary">{formatPrice(order.finalAmount)}</span>
+            <span className="text-lg font-black text-primary">{displayPrice(order.finalAmount)}</span>
           </div>
         </div>
       </div>

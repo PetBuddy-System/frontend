@@ -41,42 +41,47 @@ const getReasonText = (reason: string | null, t: (key: string) => string): strin
         'UPDATE_PROMOTION': t('audit.reasonMap.UPDATE_PROMOTION'),
         'CREATE_BATCH': t('audit.reasonMap.CREATE_BATCH'),
         'CREATE_BATCH_IMPORT': t('audit.reasonMap.CREATE_BATCH_IMPORT'),
-        'UPDATE_BATCH': t('audit.reasonMap.UPDATE_BATCH')
+        'UPDATE_BATCH': t('audit.reasonMap.UPDATE_BATCH'),
+        'PAYMENT_SUCCESS': t('audit.reasonMap.PAYMENT_SUCCESS'),
+        'PAYMENT_BY_MOMO': t('audit.reasonMap.PAYMENT_BY_MOMO'),
+        'PAYMENT_BY_CARD': t('audit.reasonMap.PAYMENT_BY_CARD'),
+        'CREATE_VOUCHER': t('audit.reasonMap.CREATE_VOUCHER'),
+        'VOUCHER_USED': t('audit.reasonMap.VOUCHER_USED'),
     }
     return reasonMap[reason] || reason
 }
 
-// ⭐ Map action sang tiếng Việt (không icon)
 const getActionLabel = (action: string, t: (key: string) => string) => {
     const map: Record<string, string> = {
         'CREATE': t('audit.actions.CREATE'),
         'UPDATE': t('audit.actions.UPDATE'),
-        'DELETE': t('audit.actions.DELETE')
+        'DELETE': t('audit.actions.DELETE'),
+        'PAY': t('audit.actions.PAY'),
+        'REFUND': t('audit.actions.REFUND'),
+        'USE': t('audit.actions.USE')
     }
     return map[action] || action
 }
-
-// ============================================================
-// CONSTANTS
-// ============================================================
 
 const ENTITY_TYPE_OPTIONS = [
     { value: '', labelKey: 'audit.filter.all' },
     { value: 'PRODUCT', labelKey: 'audit.entityTypes.PRODUCT' },
     { value: 'PROMOTION', labelKey: 'audit.entityTypes.PROMOTION' },
-    { value: 'BATCH', labelKey: 'audit.entityTypes.BATCH' }
+    { value: 'BATCH', labelKey: 'audit.entityTypes.BATCH' },
+    { value: 'PAYMENT', labelKey: 'audit.entityTypes.PAYMENT' },
+    { value: 'VOUCHER_USAGE', labelKey: 'audit.entityTypes.VOUCHER_USAGE' }
 ]
 
 const ACTION_OPTIONS = [
     { value: '', labelKey: 'audit.filter.all' },
     { value: 'CREATE', labelKey: 'audit.actions.CREATE' },
     { value: 'UPDATE', labelKey: 'audit.actions.UPDATE' },
-    { value: 'DELETE', labelKey: 'audit.actions.DELETE' }
+    { value: 'DELETE', labelKey: 'audit.actions.DELETE' },
+    { value: 'PAY', labelKey: 'audit.actions.PAY' },
+    { value: 'REFUND', labelKey: 'audit.actions.REFUND' },
+    { value: 'USE', labelKey: 'audit.actions.USE' }
 ]
 
-// ============================================================
-// COMPONENT
-// ============================================================
 
 export function AdminAuditPage() {
     const { t } = useTranslation('admin')
@@ -125,7 +130,7 @@ export function AdminAuditPage() {
         setFilter({ page: 0, size: 20 })
     }
 
-    const getActionColor = (action: AuditAction) => {
+    const getActionColor = (action: string) => {
         switch (action) {
             case 'CREATE':
                 return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
@@ -133,12 +138,18 @@ export function AdminAuditPage() {
                 return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
             case 'DELETE':
                 return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+            case 'PAY':
+                return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400'
+            case 'REFUND':
+                return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
+            case 'USE':
+                return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
             default:
                 return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
         }
     }
 
-    const getEntityColor = (entityType: AuditEntityType) => {
+    const getEntityColor = (entityType: string) => {
         switch (entityType) {
             case 'PRODUCT':
                 return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
@@ -146,6 +157,10 @@ export function AdminAuditPage() {
                 return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
             case 'BATCH':
                 return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+            case 'PAYMENT':
+                return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400'
+            case 'VOUCHER_USAGE':
+                return 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-400'
             default:
                 return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
         }

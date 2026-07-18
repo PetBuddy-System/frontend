@@ -5,11 +5,15 @@ import type { OrderDetailFull } from '~/shared/lib/order'
 interface OrderProductListProps {
   order: OrderDetailFull
   formatPrice: (value: number) => string
+  isShipper?: boolean
 }
 
-export function OrderProductList({ order, formatPrice }: OrderProductListProps) {
+export function OrderProductList({ order, formatPrice, isShipper = false }: OrderProductListProps) {
   const { t } = useTranslation('profile')
   const navigate = useNavigate()
+
+  const isOnlinePayment = order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO'
+  const hidePrice = isShipper && isOnlinePayment
 
   return (
     <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
@@ -59,7 +63,7 @@ export function OrderProductList({ order, formatPrice }: OrderProductListProps) 
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {t('orderDetail.unitPrice', 'Đơn giá')}:{' '}
-                  {detail.salePrice != null && detail.salePrice < detail.unitPrice ? (
+                  {!hidePrice && detail.salePrice != null && detail.salePrice < detail.unitPrice ? (
                     <>
                       <span className="line-through mr-1 text-[11px] text-muted-foreground">
                         {formatPrice(detail.unitPrice)}
@@ -69,12 +73,12 @@ export function OrderProductList({ order, formatPrice }: OrderProductListProps) 
                       </span>
                     </>
                   ) : (
-                    formatPrice(detail.unitPrice)
+                    hidePrice ? '0đ' : formatPrice(detail.unitPrice)
                   )}
                 </p>
               </div>
               <div className="text-right flex-shrink-0">
-                <p className="text-base font-bold text-primary">{formatPrice(detail.totalPrice)}</p>
+                <p className="text-base font-bold text-primary">{hidePrice ? '0đ' : formatPrice(detail.totalPrice)}</p>
               </div>
             </div>
           ))

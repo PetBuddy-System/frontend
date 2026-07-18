@@ -12,11 +12,6 @@ import { cn } from '~/shared/lib/cn'
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
 
-// ============================================================
-// HELPERS
-// ============================================================
-
-// ⭐ Format date đẹp
 const formatDateDisplay = (dateStr: string) => {
     if (!dateStr) return ''
     try {
@@ -40,7 +35,6 @@ const formatDateDisplay = (dateStr: string) => {
     }
 }
 
-// ⭐ Map reason key sang text
 const getReasonText = (reason: string | null, t: (key: string) => string): string => {
     if (!reason) return t('audit.reason.default')
 
@@ -52,7 +46,12 @@ const getReasonText = (reason: string | null, t: (key: string) => string): strin
         'UPDATE_PROMOTION': t('audit.reasonMap.UPDATE_PROMOTION'),
         'CREATE_BATCH': t('audit.reasonMap.CREATE_BATCH'),
         'CREATE_BATCH_IMPORT': t('audit.reasonMap.CREATE_BATCH_IMPORT'),
-        'UPDATE_BATCH': t('audit.reasonMap.UPDATE_BATCH')
+        'UPDATE_BATCH': t('audit.reasonMap.UPDATE_BATCH'),
+        'PAYMENT_SUCCESS': t('audit.reasonMap.PAYMENT_SUCCESS'),
+        'PAYMENT_BY_MOMO': t('audit.reasonMap.PAYMENT_BY_MOMO'),
+        'PAYMENT_BY_CARD': t('audit.reasonMap.PAYMENT_BY_CARD'),
+        'CREATE_VOUCHER': t('audit.reasonMap.CREATE_VOUCHER'),
+        'VOUCHER_USED': t('audit.reasonMap.VOUCHER_USED'),
     }
     return reasonMap[reason] || reason
 }
@@ -61,7 +60,10 @@ const getActionLabel = (action: string, t: (key: string) => string) => {
     const map: Record<string, string> = {
         'CREATE': t('audit.actions.CREATE'),
         'UPDATE': t('audit.actions.UPDATE'),
-        'DELETE': t('audit.actions.DELETE')
+        'DELETE': t('audit.actions.DELETE'),
+        'PAY': t('audit.actions.PAY'),
+        'REFUND': t('audit.actions.REFUND'),
+        'USE': t('audit.actions.USE')
     }
     return map[action] || action
 }
@@ -92,6 +94,12 @@ const getActionColor = (action: string) => {
             return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
         case 'DELETE':
             return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+        case 'PAY':
+            return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400'
+        case 'REFUND':
+            return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
+        case 'USE':
+            return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
         default:
             return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
     }
@@ -105,6 +113,10 @@ const getEntityColor = (entityType: string) => {
             return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
         case 'BATCH':
             return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+        case 'PAYMENT':
+            return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400'
+        case 'VOUCHER_USAGE':
+            return 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-400'
         default:
             return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
     }
@@ -253,9 +265,9 @@ export function AdminAuditDetailPage() {
             try {
                 const res = await fetchAuditLogByIdApi(auditLogId)
                 if (res.success && res.data) {
-                    // Lọc bỏ các field không mong muốn (deletedAt, updatedAt, createdAt)
+                    const HIDDEN_FIELDS = ['deletedAt', 'updatedAt', 'createdAt', 'totalRefundedAmount', 'stripeRefundId']
                     const filteredChanges = res.data.changes?.filter(
-                        change => change.field !== 'deletedAt' && change.field !== 'updatedAt' && change.field !== 'createdAt'
+                        change => !HIDDEN_FIELDS.includes(change.field)
                     ) || []
 
                     setLog({

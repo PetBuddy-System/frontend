@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
+import { cn } from '~/shared/lib/cn'
 import { getShipperSuggestionsApi, assignShipperApi } from '../../services/shipper-assignment/shipper-assignment-api'
 import type { ShipperSuggestionResponse } from '~/shared/lib/order'
 
@@ -10,7 +11,7 @@ interface ShipperSuggestionListProps {
 }
 
 export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSuggestionListProps) {
-  const { t } = useTranslation('manager')
+  const { t } = useTranslation('staff')
   const [suggestions, setSuggestions] = useState<ShipperSuggestionResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [assigningId, setAssigningId] = useState<string | null>(null)
@@ -92,15 +93,25 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
         </div>
       )}
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-        {suggestions.map((shipper) => {
+        {suggestions.map((shipper, index) => {
+          const isFirst = index === 0
           const loadPercentage = Math.min(100, (shipper.currentLoad / shipper.maxCapacity) * 100)
           const isFull = shipper.currentLoad >= shipper.maxCapacity
 
           return (
             <div
               key={shipper.staffId}
-              className='flex flex-col justify-between border border-border/70 rounded-2xl p-4 bg-background shadow-sm hover:shadow-md transition-shadow'
+              className={cn(
+                'relative flex flex-col justify-between rounded-2xl p-4 bg-background shadow-sm hover:shadow-md transition-all duration-200',
+                isFirst ? 'border-2 border-primary ring-2 ring-primary/10 mt-2' : 'border border-border/70'
+              )}
             >
+              {isFirst && (
+                <div className='absolute -top-3.5 left-4 inline-flex items-center gap-1 bg-primary px-2.5 py-0.5 rounded-full text-[10px] font-bold text-primary-foreground shadow-sm uppercase tracking-wider'>
+                  <MaterialIcon name='stars' className='text-[12px] shrink-0' />
+                  {t('shipperAssignment.recommendedShipper', 'Shipper quản lý khu vực (Đề xuất)')}
+                </div>
+              )}
               <div className='space-y-3'>
                 <div className='flex items-start justify-between'>
                   <div>
@@ -154,7 +165,7 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
                 ) : (
                   <MaterialIcon name='assignment_ind' className='text-[16px]' />
                 )}
-                <span>{t('shipperAssignment.assignBtn', 'Phân công')}</span>
+                <span>{isFirst ? t('shipperAssignment.confirmAssignBtn', 'Xác nhận phân công') : t('shipperAssignment.assignBtn', 'Phân công')}</span>
               </button>
             </div>
           )
