@@ -30,13 +30,16 @@
       "dogFood": "Dog food"
     },
     "product": {
-      "title": "Royal Canin Poodle Adult dry food 1.5kg",
-      "shortTitle": "Royal Canin Poodle Adult",
-      "imageAlt": "Royal Canin Poodle Adult dry food 1.5kg",
-      "ratingLabel": "Rated 4.5 out of 5 stars",
-      "reviews": "(45 reviews)",
-      "price": "429,000 VND",
-      "summary": "Breed-specific food for Poodles over 10 months old. Helps maintain coat health and supports oral health."
+      "brand": "Brand",
+      "inStock": "In Stock:",
+      "outOfStock": "Out of Stock",
+      "stockCount": "{{count}} products",
+      "unit": "Unit",
+      "reviews": "Reviews"
+    },
+    "promotion": {
+      "active": "Promotion Applied",
+      "deadline": "Deadline"
     },
     "gallery": {
       "front": "View front packaging",
@@ -50,22 +53,27 @@
       "increase": "Increase quantity"
     },
     "actions": {
-      "addToCart": "Add to cart",
-      "buyNow": "Buy now"
+      "quantity": "Quantity",
+      "addToCart": "Add to Cart",
+      "buyNow": "Buy Now"
     },
     "tabs": {
       "description": "Product description"
     },
     "description": {
-      "highlightsTitle": "Highlights",
-      "highlights": {
-        "kibble": "Special kibble shape designed for the Poodle jaw.",
-        "coat": "Helps maintain the health of the breed's unique curly coat.",
-        "dental": "Supports oral health and helps reduce tartar formation."
+      "title": "Product Description",
+      "tabs": {
+        "description": "Description",
+        "instructions": "Usage Instructions",
+        "ingredients": "Ingredients"
       },
-      "benefitsTitle": "Health benefits",
-      "benefits": "This breed-specific formula helps maintain the health of Poodles. Omega 3 EPA and DHA, plus borage oil, nourish the curly coat and support continuous hair growth with an adapted protein level.",
-      "specsTitle": "Product information"
+      "brand": "Brand",
+      "category": "Category",
+      "empty": {
+        "description": "No description available for this product",
+        "instructions": "No usage instructions available",
+        "ingredients": "No ingredient information available"
+      }
     },
     "specs": {
       "brand": {

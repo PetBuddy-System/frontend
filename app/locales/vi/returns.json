@@ -38,7 +38,8 @@
         "processedBy": "Người xử lý:",
         "processedAt": "Thời gian xử lý:",
         "completedAt": "Thời gian hoàn thành:",
-        "staffNote": "Ghi chú:"
+        "staffNote": "Ghi chú:",
+        "addressLabel": "Địa chỉ lấy / giao hàng"
       },
       "actions": {
         "cancel": "Hủy yêu cầu đổi trả"

@@ -1,6 +1,7 @@
 // app/features/manager/components/products/manager-product-batch-list.tsx
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { fetchProductBatchesApi, updateBatchApi } from '../../services/batch'
 import { ManagerProductBatchToolbar } from './manager-product-batch-toolbar'
 import { ManagerProductBatchTable } from './manager-product-batch-table'
@@ -26,6 +27,7 @@ export function ManagerProductBatchList({
   getDaysRemaining,
   onExpiringSoonCountChange
 }: ManagerProductBatchListProps) {
+  const { t } = useTranslation('manager')
   // ─── State ──────────────────────────────────────────────
   const [batches, setBatches] = useState<ProductBatchItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -132,10 +134,10 @@ export function ManagerProductBatchList({
         setLocalRefreshKey(prev => prev + 1)
         onBatchChange()
       } else {
-        setEditError(response.message || 'Không thể cập nhật lô hàng')
+        setEditError(response.message || t('productManagement.batch.errors.updateFailed'))
       }
     } catch (err) {
-      setEditError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi cập nhật lô hàng')
+      setEditError(err instanceof Error ? err.message : t('productManagement.batch.errors.updateFailed'))
     } finally {
       setIsSavingEdit(false)
     }
@@ -166,10 +168,10 @@ export function ManagerProductBatchList({
         setLocalRefreshKey(prev => prev + 1)
         onBatchChange()
       } else {
-        setDeleteError(response.message || 'Không thể xóa lô hàng')
+        setDeleteError(response.message || t('productManagement.batch.errors.deleteFailed'))
       }
     } catch (err) {
-      setDeleteError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi xóa lô hàng')
+      setDeleteError(err instanceof Error ? err.message : t('productManagement.batch.errors.deleteFailed'))
     } finally {
       setIsDeleting(false)
     }
@@ -185,7 +187,9 @@ export function ManagerProductBatchList({
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
-        <h4 className='font-bold text-base text-foreground'>Danh sách lô hàng ({totalElements})</h4>
+        <h4 className='font-bold text-base text-foreground'>
+          {t('productManagement.batch.batchList', { count: totalElements })}
+        </h4>
       </div>
 
       <ManagerProductBatchToolbar

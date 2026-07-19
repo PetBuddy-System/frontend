@@ -30,13 +30,16 @@
       "dogFood": "Thức ăn cho chó"
     },
     "product": {
-      "title": "Thức ăn hạt Royal Canin Poodle Adult 1.5kg",
-      "shortTitle": "Royal Canin Poodle Adult",
-      "imageAlt": "Thức ăn hạt Royal Canin Poodle Adult 1.5kg",
-      "ratingLabel": "Đánh giá 4.5 trên 5 sao",
-      "reviews": "(45 đánh giá)",
-      "price": "429.000đ",
-      "summary": "Thức ăn dành riêng cho giống chó Poodle trên 10 tháng tuổi. Giúp duy trì sức khỏe của bộ lông và hỗ trợ sức khỏe răng miệng."
+      "brand": "Thương hiệu",
+      "inStock": "Còn hàng:",
+      "outOfStock": "Hết hàng",
+      "stockCount": "{{count}} sản phẩm",
+      "unit": "Đơn vị",
+      "reviews": "Đánh giá"
+    },
+    "promotion": {
+      "active": "Ưu đãi đang áp dụng",
+      "deadline": "Hạn chót"
     },
     "gallery": {
       "front": "Xem mặt trước bao bì",
@@ -50,6 +53,7 @@
       "increase": "Tăng số lượng"
     },
     "actions": {
+      "quantity": "Số lượng",
       "addToCart": "Thêm vào giỏ hàng",
       "buyNow": "Mua ngay"
     },
@@ -57,15 +61,19 @@
       "description": "Mô tả sản phẩm"
     },
     "description": {
-      "highlightsTitle": "Đặc điểm nổi bật",
-      "highlights": {
-        "kibble": "Thiết kế hạt đặc biệt phù hợp với hàm răng của Poodle.",
-        "coat": "Giúp duy trì sức khỏe bộ lông xoăn độc đáo.",
-        "dental": "Hỗ trợ sức khỏe răng miệng, giảm hình thành cao răng."
+      "title": "Mô tả sản phẩm",
+      "tabs": {
+        "description": "Mô tả",
+        "instructions": "Hướng dẫn sử dụng",
+        "ingredients": "Thành phần"
       },
-      "benefitsTitle": "Lợi ích sức khỏe",
-      "benefits": "Công thức đặc biệt giúp duy trì sức khỏe của giống chó Poodle. Omega 3 EPA và DHA cùng dầu lưu ly giúp nuôi dưỡng bộ lông xoăn, hỗ trợ lông mọc liên tục với mức protein phù hợp.",
-      "specsTitle": "Thông tin sản phẩm"
+      "brand": "Thương hiệu",
+      "category": "Danh mục",
+      "empty": {
+        "description": "Chưa có mô tả cho sản phẩm này",
+        "instructions": "Chưa có hướng dẫn sử dụng",
+        "ingredients": "Chưa có thông tin thành phần"
+      }
     },
     "specs": {
       "brand": {

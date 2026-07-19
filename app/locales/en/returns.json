@@ -38,7 +38,8 @@
         "processedBy": "Processed by:",
         "processedAt": "Processed at:",
         "completedAt": "Completed at:",
-        "staffNote": "Note:"
+        "staffNote": "Note:",
+        "addressLabel": "Shipping / return address"
       },
       "actions": {
         "cancel": "Cancel request"

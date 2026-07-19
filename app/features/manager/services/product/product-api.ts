@@ -118,7 +118,6 @@ export async function updateProductImagesApi(
 ): Promise<UpdateProductImagesResponse> {
   const formData = new FormData()
 
-
   if (images !== undefined) {
     if (images.length === 0) {
       // Xóa hết ảnh - gửi file rỗng
