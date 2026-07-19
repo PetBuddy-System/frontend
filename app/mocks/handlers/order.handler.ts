@@ -26,6 +26,7 @@ export interface MockOrder {
   items: MockOrderItem[]
   paymentMethod?: string
   paymentStatus?: string
+  deliveryFailCount?: number
 }
 
 const INITIAL_ORDERS: MockOrder[] = [
@@ -403,6 +404,7 @@ export const orderHandlers = [
         estimatedDeliveryAt: ['SHIPPING', 'PICKED', 'CONFIRMED'].includes(order.status)
           ? estimatedDelivery.toISOString()
           : undefined,
+        deliveryFailCount: order.deliveryFailCount ?? 0,
         // shipping / recipient info (extra fields not in Java DTO but needed for UI)
         userName: order.userName,
         recipientName: order.userName,
@@ -641,6 +643,7 @@ export const orderHandlers = [
         paymentStatus: order.paymentStatus || 'PENDING',
         estimatedDeliveryAt: estimatedAt.toISOString(),
         distanceFromPreviousKm: idx === 0 ? 0 : parseFloat((1.5 + Math.random() * 3).toFixed(1)),
+        deliveryFailCount: order.deliveryFailCount ?? 0,
         orderDetails: order.items.map((item, detailIdx) => ({
           orderDetailId: order.orderId * 100 + detailIdx,
           productId: item.productId,
@@ -661,10 +664,39 @@ export const orderHandlers = [
       code: 200,
       message: 'Lấy lộ trình giao hàng thành công',
       success: true,
+      data: stops,
+      timestamp: new Date().toISOString()
+    })
+  }),
+
+  // POST /api/orders/:id/delivery-failed
+  http.post(`${BASE}/api/orders/:id/delivery-failed`, async ({ params }) => {
+    const orderId = Number(params.id)
+    const orders = getStoredOrders()
+    const orderIndex = orders.findIndex((o) => o.orderId === orderId)
+
+    if (orderIndex === -1) {
+      return HttpResponse.json({
+        code: 404,
+        message: 'Không tìm thấy đơn hàng',
+        success: false,
+        data: null,
+        timestamp: new Date().toISOString()
+      }, { status: 404 })
+    }
+
+    const currentCount = orders[orderIndex].deliveryFailCount ?? 0
+    const newCount = currentCount + 1
+    orders[orderIndex].deliveryFailCount = newCount
+
+    saveOrders(orders)
+
+    return HttpResponse.json({
+      code: 200,
+      message: 'Báo cáo giao hàng thất bại thành công',
+      success: true,
       data: {
-        stops,
-        totalDistanceKm: parseFloat(totalDistance.toFixed(1)),
-        estimatedDurationMinutes: Math.round(totalDistance * 6 + stops.length * 5)
+        deliveryFailCount: newCount
       },
       timestamp: new Date().toISOString()
     })

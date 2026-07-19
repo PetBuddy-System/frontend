@@ -47,8 +47,12 @@ interface StaffOrdersTableProps {
     isLoading: boolean
     searchQuery: string
     statusFilter: string
+    dateFrom: string
+    dateTo: string
     onSearchChange: (query: string) => void
     onStatusFilterChange: (status: string) => void
+    onDateFromChange: (value: string) => void
+    onDateToChange: (value: string) => void
     onViewDetail: (order: OrderResponse) => void
     onTransition: (orderId: number, nextStatus: OrderStatus) => void
     onOpenPicking: (order: OrderResponse) => void
@@ -63,8 +67,12 @@ export function StaffOrdersTable({
     isLoading,
     searchQuery,
     statusFilter,
+    dateFrom,
+    dateTo,
     onSearchChange,
     onStatusFilterChange,
+    onDateFromChange,
+    onDateToChange,
     onViewDetail,
     onTransition,
     onOpenPicking,
@@ -149,11 +157,30 @@ export function StaffOrdersTable({
                             className='w-full rounded-xl border border-border bg-background py-2 pl-9 pr-4 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-ring'
                         />
                     </div>
-                    {(statusFilter !== 'ALL' || searchQuery) && (
+
+                    <div className='flex items-center gap-2'>
+                        <input
+                            type='date'
+                            value={dateFrom}
+                            onChange={(e) => onDateFromChange(e.target.value)}
+                            className='rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-ring'
+                        />
+                        <span className='text-sm text-muted-foreground'>—</span>
+                        <input
+                            type='date'
+                            value={dateTo}
+                            onChange={(e) => onDateToChange(e.target.value)}
+                            className='rounded-xl border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-ring'
+                        />
+                    </div>
+
+                    {(statusFilter !== 'ALL' || searchQuery || dateFrom || dateTo) && (
                         <button
                             onClick={() => {
                                 onStatusFilterChange('ALL')
                                 onSearchChange('')
+                                onDateFromChange('')
+                                onDateToChange('')
                             }}
                             className='flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-sm font-semibold hover:bg-muted'
                         >
@@ -309,25 +336,6 @@ export function StaffOrdersTable({
                                                     {t('staffOrdersTable.actions.pickItems')}
                                                 </button>
                                             )}
-
-                                            {order.status === 'SHIPPING' && isShipper && (
-                                                <button
-                                                    onClick={() => onTransitionToShipped(order.orderId)}
-                                                    className='rounded-xl bg-purple-600 hover:bg-purple-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
-                                                >
-                                                    {t('staffOrdersTable.actions.delivered')}
-                                                </button>
-                                            )}
-
-                                            {order.status === 'SHIPPING' && isShipper && (
-                                                <button
-                                                    onClick={() => onDeliveryFailed(order)}
-                                                    className='rounded-xl bg-rose-600 hover:bg-rose-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
-                                                >
-                                                    {t('staffOrdersTable.actions.deliveryFailed')}
-                                                </button>
-                                            )}
-
                                             {order.status === 'BOMBED' && isCoordinator && (
                                                 <button
                                                     onClick={() => onConfirmReturnedWarehouse(order)}

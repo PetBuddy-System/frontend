@@ -62,7 +62,8 @@
       "disposalRequest": "Disposal request",
       "inventory": "Inventory management",
       "returns": "Manage Returns",
-      "shipperAssignment": "Shipper Assignment"
+      "shipperAssignment": "Shipper Assignment",
+      "deliveryHistory": "Delivery History"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Store Staff",
@@ -119,14 +120,14 @@
     },
     "timeline": {
       "title": "Today's Delivery Sequence",
-      "optimizeBtn": "View Optimized Route",
       "statusDelivering": "DELIVERING",
       "statusPending": "PENDING",
       "customer": "Customer",
       "address": "Delivery Address",
       "deliveredBtn": "Mark as Delivered",
+      "failedBtn": "Delivery Failed",
+      "bombedBtn": "Bombed",
       "callBtn": "Call Customer",
-      "paymentCash": "Cash",
       "paymentCard": "Card (Paid)"
     },
     "map": {
@@ -153,6 +154,28 @@
     "errors": {
       "loadFailed": "Failed to load delivery route.",
       "updateFailed": "Failed to update delivery status."
+    }
+  },
+  "deliveryHistory": {
+    "title": "Delivery History",
+    "subtitle": "View completed and failed delivery orders list",
+    "topNav": {
+      "title": "Delivery History",
+      "subtitle": "Completed and failed deliveries"
+    },
+    "heading": "Delivery History",
+    "subheading": "All your completed and failed delivery orders",
+    "loading": "Loading delivery history...",
+    "retry": "Retry",
+    "emptyTitle": "No history found",
+    "emptyDesc": "There are no completed or failed delivery orders found in this filter.",
+    "deliveryDateLabel": "Est. Delivery Date:",
+    "viewDetails": "View Details",
+    "filter": {
+      "all": "All",
+      "completed": "Completed",
+      "failed": "Failed",
+      "dateLabel": "Delivery Date:"
     }
   },
   "groomerBookings": {
@@ -445,9 +468,11 @@
   },
   "welcome": {
     "checkIn": "Check in now",
+    "deliveryHistory": "View delivery history",
     "kicker": "Today's shift",
     "subtitle": "Wishing you an energetic workday at PetBuddy.",
-    "title": "Good morning, Nguyen Van An"
+    "title": "Good morning, Nguyen Van An",
+    "titleDynamic": "Good morning, {{name}}"
   },
   "attendance": {
     "pageTitle": "Attendance History",

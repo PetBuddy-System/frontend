@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 
 import { StaffSidebar } from '../components/layout/staff-sidebar'
 import { StaffTopNav } from '../components/layout/staff-top-nav'
-import { fetchDeliveryRouteApi, type DeliveryStop} from '../services/order/delivery-route-api'
+import { fetchDeliveryRouteApi, type DeliveryStop } from '../services/order/delivery-route-api'
 import { updateOrderStatusApi } from '../services/order/order-api'
+import { DeliveryFailedDialog } from '../components/orders/delivery-failed-dialog'
 import { useAuth } from '~/providers/auth-provider'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
@@ -121,10 +123,12 @@ interface StopCardProps {
   stop: DeliveryStop
   isActive: boolean
   onMarkDelivered: (stop: DeliveryStop) => void
+  onMarkFailed: (stop: DeliveryStop) => void
 }
 
-function StopCard({ stop, isActive, onMarkDelivered }: StopCardProps) {
+function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardProps) {
   const { t } = useTranslation('staff')
+  const navigate = useNavigate()
   const isDelivered = stop.status === 'DELIVERED'
   const isPaidByCard = stop.paymentMethod === 'CARD' && stop.paymentStatus === 'PAID'
 
@@ -143,14 +147,14 @@ function StopCard({ stop, isActive, onMarkDelivered }: StopCardProps) {
       >
         {isDelivered ? <MaterialIcon name='check' className='text-[18px]' /> : stop.sequence}
       </div>
-
       <div
         className={cn(
-          'ml-5 flex-1 rounded-2xl border p-5 transition-shadow',
+          'ml-5 flex-1 rounded-2xl border p-5 transition-shadow hover:shadow-md cursor-pointer',
           isActive
             ? 'border-primary/30 bg-primary/5 shadow-md'
-            : 'border-border bg-card shadow-sm'
+            : 'border-border bg-card shadow-sm hover:border-primary/20'
         )}
+        onClick={() => navigate(`/staff/orders/${stop.orderId}`)}
       >
         <div className='flex flex-wrap items-start justify-between gap-2 mb-3'>
           <div>
@@ -162,9 +166,16 @@ function StopCard({ stop, isActive, onMarkDelivered }: StopCardProps) {
             >
               {isActive ? t('deliveryRoute.timeline.statusDelivering') : t('deliveryRoute.timeline.statusPending')}
             </span>
-            <h4 className={cn('mt-1.5 font-bold', isActive ? 'text-primary' : 'text-foreground')}>
+            <button
+              type='button'
+              onClick={(e) => {
+                e.stopPropagation()
+                navigate(`/staff/orders/${stop.orderId}`)
+              }}
+              className={cn('block mt-1.5 font-bold hover:text-primary transition-colors text-left outline-none')}
+            >
               {stop.orderCode}
-            </h4>
+            </button>
           </div>
           <div className='text-right'>
             <p className='font-bold text-foreground'>{formatCurrency(stop.finalAmount)}</p>
@@ -195,23 +206,30 @@ function StopCard({ stop, isActive, onMarkDelivered }: StopCardProps) {
         </div>
 
         {isActive && !isDelivered && (
-          <div className='mt-4 flex gap-3'>
+          <div className='mt-4 flex flex-wrap gap-3' onClick={(e) => e.stopPropagation()}>
             <button
               id={`delivered-btn-${stop.orderId}`}
               type='button'
               onClick={() => onMarkDelivered(stop)}
-              className='flex-1 rounded-xl bg-success py-2.5 text-sm font-bold text-success-foreground transition-opacity hover:opacity-90'
+              className='flex-1 min-w-[120px] rounded-xl bg-success py-2.5 text-sm font-bold text-success-foreground transition-opacity hover:opacity-90'
             >
               {t('deliveryRoute.timeline.deliveredBtn')}
             </button>
-            <a
-              id={`call-btn-${stop.orderId}`}
-              href={`tel:${stop.phoneNumber}`}
-              className='flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted'
+            <button
+              id={`failed-btn-${stop.orderId}`}
+              type='button'
+              onClick={() => onMarkFailed(stop)}
+              className={cn(
+                'flex-1 min-w-[120px] rounded-xl py-2.5 text-sm font-bold transition-opacity hover:opacity-90',
+                (stop.deliveryFailCount ?? 0) >= 3
+                  ? 'bg-destructive text-white'
+                  : 'bg-rose-600 text-white'
+              )}
             >
-              <MaterialIcon name='call' className='text-[18px] text-primary' />
-              {t('deliveryRoute.timeline.callBtn')}
-            </a>
+              {(stop.deliveryFailCount ?? 0) >= 3
+                ? t('deliveryRoute.timeline.bombedBtn', 'Bom hàng')
+                : t('deliveryRoute.timeline.failedBtn', 'Giao hàng thất bại')}
+            </button>
           </div>
         )}
       </div>
@@ -230,23 +248,25 @@ export function StaffDeliveryRoutePage() {
   const [proofTarget, setProofTarget] = useState<DeliveryStop | null>(null)
   const [isSubmittingProof, setIsSubmittingProof] = useState(false)
 
+  const [failedTarget, setFailedTarget] = useState<DeliveryStop | null>(null)
+
   async function loadRoute() {
-  if (!user?.userId) return
-  setIsLoading(true)
-  setError('')
-  try {
-    const res = await fetchDeliveryRouteApi(user.userId)
-    if (res.success && res.data) {
-      setStops(res.data)          // res.data giờ LÀ mảng, không có .stops
-    } else {
+    if (!user?.userId) return
+    setIsLoading(true)
+    setError('')
+    try {
+      const res = await fetchDeliveryRouteApi(user.userId)
+      if (res.success && res.data) {
+        setStops(res.data)
+      } else {
+        setError(t('deliveryRoute.errors.loadFailed'))
+      }
+    } catch {
       setError(t('deliveryRoute.errors.loadFailed'))
+    } finally {
+      setIsLoading(false)
     }
-  } catch {
-    setError(t('deliveryRoute.errors.loadFailed'))
-  } finally {
-    setIsLoading(false)
   }
-}
 
   useEffect(() => { void loadRoute() }, [user?.userId])
 
@@ -263,9 +283,24 @@ export function StaffDeliveryRoutePage() {
     }
   }
 
+  async function handleMarkFailed(stop: DeliveryStop) {
+    if ((stop.deliveryFailCount ?? 0) >= 3) {
+      // Transition directly to BOMBED
+      setIsSubmittingProof(true)
+      try {
+        await updateOrderStatusApi(stop.orderId, 'BOMBED')
+        await loadRoute()
+      } catch {
+      } finally {
+        setIsSubmittingProof(false)
+      }
+    } else {
+      setFailedTarget(stop)
+    }
+  }
+
   const activeStop = stops.find((s) => s.status === 'SHIPPING') ?? stops[0]
   const nextStop = stops.find((s, i) => i > 0 && s.status !== 'DELIVERED')
-  const completedCount = stops.filter((s) => s.status === 'DELIVERED').length
 
   const totalDistanceKm = stops.reduce((sum, s) => sum + (s.distanceFromPreviousKm ?? 0), 0)
   const totalDistanceLabel = totalDistanceKm > 0 ? `${totalDistanceKm.toFixed(1)} km` : '—'
@@ -316,7 +351,7 @@ export function StaffDeliveryRoutePage() {
 
             {!isLoading && !error && stops.length > 0 && (
               <>
-                <div className='mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3'>
+                <div className='mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2'>
                   <div className='flex items-center justify-between rounded-2xl bg-primary p-5 text-primary-foreground shadow-lg shadow-primary/20'>
                     <div>
                       <p className='text-sm opacity-80'>{t('deliveryRoute.stats.currentStop')}</p>
@@ -339,18 +374,6 @@ export function StaffDeliveryRoutePage() {
                       <MaterialIcon name='skip_next' className='text-[24px] text-muted-foreground' />
                     </div>
                   </div>
-
-                  <div className='flex items-center justify-between rounded-2xl border border-border bg-card p-5 shadow-sm'>
-                    <div>
-                      <p className='text-sm text-muted-foreground'>{t('deliveryRoute.stats.completed')}</p>
-                      <h3 className='mt-0.5 text-2xl font-bold text-foreground'>
-                        {t('deliveryRoute.stats.completedCount', { done: completedCount, total: stops.length })}
-                      </h3>
-                    </div>
-                    <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-success/15'>
-                      <MaterialIcon name='check_circle' className='text-[24px] text-success' />
-                    </div>
-                  </div>
                 </div>
 
                 <div className='flex flex-col gap-6 lg:flex-row'>
@@ -358,16 +381,6 @@ export function StaffDeliveryRoutePage() {
                     <div className='rounded-2xl border border-border bg-card shadow-sm p-6'>
                       <div className='mb-6 flex items-center justify-between'>
                         <h2 className='font-bold text-lg text-foreground'>{t('deliveryRoute.timeline.title')}</h2>
-                        <a
-                          id='optimize-route-btn'
-                          href={googleMapsUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90'
-                        >
-                          <MaterialIcon name='map' className='text-[18px]' />
-                          {t('deliveryRoute.timeline.optimizeBtn')}
-                        </a>
                       </div>
 
                       <div>
@@ -377,6 +390,7 @@ export function StaffDeliveryRoutePage() {
                             stop={stop}
                             isActive={stop.orderId === activeStop?.orderId && stop.status !== 'DELIVERED'}
                             onMarkDelivered={setProofTarget}
+                            onMarkFailed={handleMarkFailed}
                           />
                         ))}
                       </div>
@@ -450,6 +464,15 @@ export function StaffDeliveryRoutePage() {
           onConfirm={handleConfirmDelivered}
           onCancel={() => setProofTarget(null)}
           isSubmitting={isSubmittingProof}
+        />
+      )}
+
+      {failedTarget && (
+        <DeliveryFailedDialog
+          isOpen={true}
+          order={failedTarget as unknown as any}
+          onClose={() => setFailedTarget(null)}
+          onSuccess={loadRoute}
         />
       )}
     </div>

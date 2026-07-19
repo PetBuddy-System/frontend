@@ -15,6 +15,7 @@ export interface DeliveryStop {
   paymentMethod: 'CASH' | 'CARD' | 'MOMO' | null
   paymentStatus: 'PENDING' | 'PAID' | 'FAILED' | (string & {}) | null
   estimatedDeliveryAt?: string
+  deliveryFailCount?: number
 }
 
 export async function fetchDeliveryRouteApi(

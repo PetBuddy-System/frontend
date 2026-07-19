@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
 import { StaffSidebar } from '../components/layout/staff-sidebar'
@@ -19,6 +19,8 @@ import { ConfirmReturnedWarehouseDialog } from '../components/orders/confirm-ret
 
 const PAGE_SIZE = 6
 
+const HISTORY_STATUSES = ['DELIVERED', 'COMPLETED', 'BOMBED', 'CANCELLED', 'RETURNED_TO_WAREHOUSE']
+
 export function StaffOrdersPage() {
     const { t } = useTranslation('staff')
     const navigate = useNavigate()
@@ -26,22 +28,34 @@ export function StaffOrdersPage() {
     const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
     const [isRouteOpen, setIsRouteOpen] = useState(false)
 
-    // Toàn bộ đơn hàng tải 1 lần, lọc/phân trang xử lý ở client
+    const [searchParams] = useSearchParams()
+    const isHistoryView = searchParams.get('view') === 'history'
+
     const [allOrders, setAllOrders] = useState<OrderResponse[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(0)
 
-    // Filters
     const [searchQuery, setSearchQuery] = useState('')
     const [statusFilter, setStatusFilter] = useState<string>('ALL')
 
-    // Picking Modal state
     const [selectedOrderForPicking, setSelectedOrderForPicking] = useState<OrderResponse | null>(null)
     const [selectedOrderForProof, setSelectedOrderForProof] = useState<OrderResponse | null>(null)
     const [selectedOrderForFail, setSelectedOrderForFail] = useState<OrderResponse | null>(null)
     const [selectedOrderForWarehouse, setSelectedOrderForWarehouse] = useState<OrderResponse | null>(null)
 
-    // Reset về trang đầu mỗi khi đổi filter
+    const [dateFrom, setDateFrom] = useState<string>('')
+    const [dateTo, setDateTo] = useState<string>('')
+
+    function handleDateFromChange(value: string) {
+        setDateFrom(value)
+        setCurrentPage(0)
+    }
+
+    function handleDateToChange(value: string) {
+        setDateTo(value)
+        setCurrentPage(0)
+    }
+
     function handleStatusFilterChange(status: string) {
         setStatusFilter(status)
         setCurrentPage(0)
@@ -55,10 +69,12 @@ export function StaffOrdersPage() {
     async function loadData() {
         setIsLoading(true)
         try {
-            // Backend chưa hỗ trợ lọc status/keyword nên luôn tải toàn bộ, lọc ở client
             const res = await fetchAllOrdersApi({ page: 0, size: 1000, sort: 'createdAt,desc' })
             if (res.success && res.data) {
-                setAllOrders(res.data.content)
+                const content = isHistoryView
+                    ? res.data.content.filter((o) => HISTORY_STATUSES.includes(o.status))
+                    : res.data.content
+                setAllOrders(content)
             }
         } catch (err) {
             console.error('Failed to load orders', err)
@@ -85,7 +101,6 @@ export function StaffOrdersPage() {
         bombed: allOrders.filter((o) => o.status === 'BOMBED').length,
     }), [allOrders])
 
-    // Áp dụng status filter + search
     const filteredOrders = useMemo(() => {
         let result = allOrders
 
@@ -106,13 +121,22 @@ export function StaffOrdersPage() {
             )
         }
 
+        if (dateFrom) {
+            const from = new Date(dateFrom).setHours(0, 0, 0, 0)
+            result = result.filter((o) => new Date(o.createdAt).getTime() >= from)
+        }
+
+        if (dateTo) {
+            const to = new Date(dateTo).setHours(23, 59, 59, 999)
+            result = result.filter((o) => new Date(o.createdAt).getTime() <= to)
+        }
+
         return result
-    }, [allOrders, statusFilter, searchQuery])
+    }, [allOrders, statusFilter, searchQuery, dateFrom, dateTo])
 
     const totalElements = filteredOrders.length
     const totalPages = Math.max(1, Math.ceil(totalElements / PAGE_SIZE))
 
-    // Đảm bảo currentPage không vượt quá tổng số trang sau khi lọc
     useEffect(() => {
         if (currentPage > 0 && currentPage >= totalPages) {
             setCurrentPage(0)
@@ -149,50 +173,38 @@ export function StaffOrdersPage() {
 
             <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
                 <StaffTopNav
-                    titleKey='staffOrdersPage.topNav.title'
-                    subtitleKey='staffOrdersPage.topNav.subtitle'
+                    titleKey={isHistoryView ? 'deliveryHistory.topNav.title' : 'staffOrdersPage.topNav.title'}
+                    subtitleKey={isHistoryView ? 'deliveryHistory.topNav.subtitle' : 'staffOrdersPage.topNav.subtitle'}
                 />
 
                 <main className='flex-1 overflow-y-auto p-4 md:p-6 pb-20'>
                     <div className='mx-auto flex max-w-7xl flex-col gap-6'>
-                        <div className='flex justify-between items-end gap-4'>
-                            <div>
-                                <h2 className='font-display text-2xl font-bold text-foreground mb-1'>
-                                    {t('staffOrdersPage.heading')}
-                                </h2>
-                                <p className='text-sm text-muted-foreground'>{t('staffOrdersPage.subheading')}</p>
-                            </div>
-                            {isShipper && (
-                                <button
-                                    onClick={() => setIsRouteOpen(true)}
-                                    className='flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-95 transition-all shadow-md active:scale-95'
-                                >
-                                    <MaterialIcon name='alt_route' className='text-[18px]' />
-                                    <span>{t('staffOrdersPage.suggestRoute')}</span>
-                                </button>
-                            )}
-                        </div>
-
-                        <StaffOrdersStats
-                            stats={stats}
-                            statusFilter={statusFilter}
-                            onStatusFilterChange={handleStatusFilterChange}
-                        />
+                        {!isHistoryView && (
+                            <StaffOrdersStats
+                                stats={stats}
+                                statusFilter={statusFilter}
+                                onStatusFilterChange={handleStatusFilterChange}
+                            />
+                        )}
 
                         <StaffOrdersTable
                             orders={pagedOrders}
                             isLoading={isLoading}
                             searchQuery={searchQuery}
                             statusFilter={statusFilter}
+                            dateFrom={dateFrom}
+                            dateTo={dateTo}
                             onSearchChange={handleSearchChange}
                             onStatusFilterChange={handleStatusFilterChange}
                             onViewDetail={(order) => navigate(`/staff/orders/${order.orderId}`)}
+                            onDateFromChange={handleDateFromChange}
+                            onDateToChange={handleDateToChange}
                             onTransition={handleTransition}
                             onOpenPicking={handleOpenPicking}
                             onTransitionToShipped={(orderId) => {
-                                 const o = allOrders.find(x => x.orderId === orderId)
-                                 if (o) setSelectedOrderForProof(o)
-                             }}
+                                const o = allOrders.find(x => x.orderId === orderId)
+                                if (o) setSelectedOrderForProof(o)
+                            }}
                             onRefresh={() => void loadData()}
                             onDeliveryFailed={(order) => setSelectedOrderForFail(order)}
                             onConfirmReturnedWarehouse={(order) => setSelectedOrderForWarehouse(order)}

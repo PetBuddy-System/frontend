@@ -62,7 +62,8 @@
       "disposalRequest": "Tạo yêu cầu hủy hàng",
       "inventory": "Quản lý kho hàng",
       "returns": "Quản lý đổi trả",
-      "shipperAssignment": "Giao việc cho shipper"
+      "shipperAssignment": "Giao việc cho shipper",
+      "deliveryHistory": "Lịch sử giao hàng"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Nhân viên cửa hàng",
@@ -120,14 +121,14 @@
     },
     "timeline": {
       "title": "Trình tự giao hàng hôm nay",
-      "optimizeBtn": "Xem lộ trình tối ưu",
       "statusDelivering": "ĐANG GIAO",
       "statusPending": "CHỜ GIAO",
       "customer": "Khách hàng",
       "address": "Địa chỉ giao hàng",
       "deliveredBtn": "Đã giao xong",
+      "failedBtn": "Giao thất bại",
+      "bombedBtn": "Bom hàng",
       "callBtn": "Gọi khách",
-      "paymentCash": "Tiền mặt",
       "paymentCard": "Thẻ (Đã trả)"
     },
     "map": {
@@ -154,6 +155,28 @@
     "errors": {
       "loadFailed": "Không thể tải lộ trình giao hàng.",
       "updateFailed": "Không thể cập nhật trạng thái giao hàng."
+    }
+  },
+  "deliveryHistory": {
+    "title": "Lịch sử giao hàng",
+    "subtitle": "Xem danh sách các đơn hàng đã hoàn thành và giao thất bại",
+    "topNav": {
+      "title": "Lịch sử giao hàng",
+      "subtitle": "Đơn đã hoàn thành và giao thất bại"
+    },
+    "heading": "Lịch sử giao hàng",
+    "subheading": "Tất cả đơn hoàn thành và giao thất bại của bạn",
+    "loading": "Đang tải lịch sử giao hàng...",
+    "retry": "Thử lại",
+    "emptyTitle": "Không tìm thấy lịch sử",
+    "emptyDesc": "Chưa có đơn hàng giao hàng nào hoàn thành hoặc giao thất bại trong bộ lọc này.",
+    "deliveryDateLabel": "Ngày dự kiến giao:",
+    "viewDetails": "Xem chi tiết",
+    "filter": {
+      "all": "Tất cả",
+      "completed": "Đã hoàn thành",
+      "failed": "Giao thất bại",
+      "dateLabel": "Ngày giao:"
     }
   },
   "groomerBookings": {
@@ -446,9 +469,11 @@
   },
   "welcome": {
     "checkIn": "Chấm công ngay",
+    "deliveryHistory": "Xem lịch sử giao",
     "kicker": "Ca làm hôm nay",
     "subtitle": "Chúc bạn một ngày làm việc tràn đầy năng lượng tại PetBuddy.",
-    "title": "Chào buổi sáng, Nguyễn Văn An"
+    "title": "Chào buổi sáng, Nguyễn Văn An",
+    "titleDynamic": "Chào buổi sáng, {{name}}"
   },
   "attendance": {
     "pageTitle": "Lịch sử chấm công",

@@ -41,7 +41,13 @@ const STAFF_NAV_ITEMS = [
     allowedTasks: ['COORDINATOR'] as AllowedTasks
   },
   { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule', allowedTasks: null as AllowedTasks },
-  { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance', allowedTasks: null as AllowedTasks }
+  { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance', allowedTasks: null as AllowedTasks },
+{
+  icon: 'history',
+  key: 'deliveryHistory',
+  href: '/staff/orders',
+  allowedTasks: ['SHIPPER'] as AllowedTasks
+},
 ] as const
 
 export type StaffNavKey = (typeof STAFF_NAV_ITEMS)[number]['key']
