@@ -10,24 +10,9 @@ export interface ManagerProductsToolbarProps {
   onStatusSelect: (status: string) => void
   selectedSort: string
   onSortSelect: (sort: string) => void
-  // ⭐ Thêm search props
   searchValue: string
   onSearchChange: (value: string) => void
 }
-
-const SORT_OPTIONS = [
-  { value: 'date_desc', label: 'Mới nhất' },
-  { value: 'date_asc', label: 'Cũ nhất' },
-  { value: 'price_desc', label: 'Giá cao → thấp' },
-  { value: 'price_asc', label: 'Giá thấp → cao' },
-]
-
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'Tất cả trạng thái' },
-  { value: 'ACTIVE', label: 'Đang bán' },
-  { value: 'INACTIVE', label: 'Ngừng bán' },
-  { value: 'DELETED', label: 'Đã xóa' },
-]
 
 export function ManagerProductsToolbar({
   categories = [],
@@ -42,9 +27,24 @@ export function ManagerProductsToolbar({
 }: ManagerProductsToolbarProps) {
   const { t } = useTranslation('manager')
 
+  // Lấy options từ translation
+  const SORT_OPTIONS = [
+    { value: 'date_desc', label: t('productManagement.toolbar.sortNewest') },
+    { value: 'date_asc', label: t('productManagement.toolbar.sortOldest') },
+    { value: 'price_desc', label: t('productManagement.toolbar.sortPriceHigh') },
+    { value: 'price_asc', label: t('productManagement.toolbar.sortPriceLow') },
+  ]
+
+  const STATUS_OPTIONS = [
+    { value: 'all', label: t('productManagement.toolbar.statusAll') },
+    { value: 'ACTIVE', label: t('productManagement.toolbar.statusActive') },
+    { value: 'INACTIVE', label: t('productManagement.toolbar.statusInactive') },
+    { value: 'DELETED', label: t('productManagement.toolbar.statusDeleted') },
+  ]
+
   return (
     <div className='flex flex-col gap-3'>
-      {/* ⭐ Hàng 1: Search */}
+      {/* Hàng 1: Search */}
       <div className='relative w-full'>
         <MaterialIcon
           name='search'
@@ -54,17 +54,17 @@ export function ManagerProductsToolbar({
           type='search'
           value={searchValue}
           onChange={(e) => onSearchChange(e.target.value)}
-          placeholder='Tìm kiếm theo tên hoặc mã sản phẩm...'
+          placeholder={t('productManagement.toolbar.searchPlaceholder')}
           className='h-11 w-full rounded-xl border border-input bg-card pl-10 pr-4 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-ring'
         />
       </div>
 
-      {/* ⭐ Hàng 2: Category (dropdown) + Status + Sort */}
+      {/* Hàng 2: Category + Status + Sort */}
       <div className='flex flex-wrap items-center gap-3'>
         {/* Category Dropdown */}
         <div className='flex items-center gap-2'>
           <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground shrink-0'>
-            Danh mục
+            {t('productManagement.toolbar.categoryLabel')}
           </span>
           <div className='relative'>
             <select
@@ -72,7 +72,7 @@ export function ManagerProductsToolbar({
               onChange={(e) => onCategorySelect(e.target.value)}
               className='h-9 min-w-[160px] appearance-none rounded-lg border border-input bg-card pl-3 pr-8 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring cursor-pointer'
             >
-              <option value='all'>Tất cả</option>
+              <option value='all'>{t('productManagement.toolbar.categoryAll')}</option>
               {categories.map((cat) => (
                 <option key={cat.categoryId} value={cat.categoryId}>
                   {cat.name}
@@ -89,7 +89,7 @@ export function ManagerProductsToolbar({
         {/* Status Dropdown */}
         <div className='flex items-center gap-2'>
           <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground shrink-0'>
-            Trạng thái
+            {t('productManagement.toolbar.statusLabel')}
           </span>
           <div className='relative'>
             <select
@@ -113,7 +113,7 @@ export function ManagerProductsToolbar({
         {/* Sort Dropdown */}
         <div className='flex items-center gap-2 ml-auto'>
           <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground shrink-0'>
-            Sắp xếp
+            {t('productManagement.toolbar.sortLabel')}
           </span>
           <div className='relative'>
             <select

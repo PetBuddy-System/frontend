@@ -1,6 +1,7 @@
 // app/features/manager/components/products/manager-product-batch-table.tsx
 
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import type { ProductBatchItem } from '~/shared/lib/batch'
 
@@ -25,11 +26,13 @@ export function ManagerProductBatchTable({
     onEdit,
     onDelete
 }: ManagerProductBatchTableProps) {
+    const { t } = useTranslation('manager')
+
     if (batches.length === 0) {
         return (
             <div className='text-center py-12 border border-border border-dashed rounded-xl bg-muted/10'>
                 <MaterialIcon name='inbox' className='text-4xl text-muted-foreground/60 mb-2' />
-                <p className='text-muted-foreground text-sm font-medium'>Không tìm thấy lô hàng nào</p>
+                <p className='text-muted-foreground text-sm font-medium'>{t('productManagement.batch.noBatches')}</p>
             </div>
         )
     }
@@ -40,14 +43,30 @@ export function ManagerProductBatchTable({
                 <table className='w-full text-sm border-collapse text-left'>
                     <thead>
                         <tr className='bg-muted/40 border-b border-border'>
-                            <th className='w-16 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>STT</th>
-                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Mã lô hàng</th>
-                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Tồn kho</th>
-                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Giá nhập</th>
-                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Ngày hết hạn</th>
-                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Số ngày còn lại</th>
-                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>Trạng thái</th>
-                            <th className='w-32 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>Thao tác</th>
+                            <th className='w-16 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                                {t('productManagement.batch.stt')}
+                            </th>
+                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                                {t('productManagement.batch.batchCode')}
+                            </th>
+                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                                {t('productManagement.batch.quantity')}
+                            </th>
+                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                                {t('productManagement.batch.basePrice')}
+                            </th>
+                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                                {t('productManagement.batch.expiryDate')}
+                            </th>
+                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                                {t('productManagement.batch.daysRemaining')}
+                            </th>
+                            <th className='px-4 py-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                                {t('productManagement.batch.status')}
+                            </th>
+                            <th className='w-32 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                                {t('productManagement.batch.actions')}
+                            </th>
                         </tr>
                     </thead>
                     <tbody className='divide-y divide-border'>
@@ -80,15 +99,17 @@ export function ManagerProductBatchTable({
                                         </td>
                                         <td className='px-4 py-3.5'>
                                             {isExpired ? (
-                                                <span className='text-destructive font-bold text-sm'>Đã hết hạn</span>
+                                                <span className='text-destructive font-bold text-sm'>
+                                                    {t('productManagement.batch.expired')}
+                                                </span>
                                             ) : isExpiringSoon ? (
                                                 <span className='text-destructive font-bold text-sm inline-flex items-center gap-1'>
                                                     <MaterialIcon name='warning' className='text-base' />
-                                                    ▲ {daysRemaining} ngày
+                                                    ▲ {t('productManagement.batch.daysCount', { count: daysRemaining })}
                                                 </span>
                                             ) : (
                                                 <span className='text-foreground font-medium text-sm'>
-                                                    {daysRemaining} ngày
+                                                    {t('productManagement.batch.daysCount', { count: daysRemaining })}
                                                 </span>
                                             )}
                                         </td>
@@ -99,7 +120,11 @@ export function ManagerProductBatchTable({
                                                     ? 'bg-destructive/15 text-destructive'
                                                     : 'bg-muted-foreground/15 text-muted-foreground'
                                                 }`}>
-                                                {batch.status}
+                                                {batch.status === 'ACTIVE'
+                                                    ? t('productManagement.batch.statusActive')
+                                                    : batch.status === 'DELETED'
+                                                        ? t('productManagement.batch.statusDeleted')
+                                                        : t('productManagement.batch.statusInactive')}
                                             </span>
                                         </td>
                                         <td className='px-4 py-3.5 text-center'>
@@ -108,14 +133,14 @@ export function ManagerProductBatchTable({
                                                     onClick={() => onToggleExpand(batch.batchId)}
                                                     className={`p-1.5 rounded-lg transition-colors ${isExpanded ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                                         }`}
-                                                    title='Chi tiết'
+                                                    title={t('productManagement.batch.viewDetail')}
                                                 >
                                                     <MaterialIcon name='visibility' className='text-lg' />
                                                 </button>
                                                 <button
                                                     onClick={() => onEdit(batch)}
                                                     className='p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors'
-                                                    title='Chỉnh sửa'
+                                                    title={t('productManagement.batch.edit')}
                                                 >
                                                     <MaterialIcon name='edit' className='text-lg' />
                                                 </button>
@@ -123,7 +148,7 @@ export function ManagerProductBatchTable({
                                                     onClick={() => onDelete(batch.batchId, batch.batchCode)}
                                                     disabled={batch.status === 'DELETED'}
                                                     className='p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed'
-                                                    title='Xóa'
+                                                    title={t('productManagement.batch.delete')}
                                                 >
                                                     <MaterialIcon name='delete' className='text-lg' />
                                                 </button>
@@ -137,17 +162,23 @@ export function ManagerProductBatchTable({
                                                 <div className='flex flex-wrap gap-x-8 gap-y-2 text-xs'>
                                                     <div className='flex items-center gap-2 text-muted-foreground'>
                                                         <MaterialIcon name='calendar_month' className='text-sm' />
-                                                        <span className='font-bold uppercase tracking-wide'>Ngày tạo:</span>
+                                                        <span className='font-bold uppercase tracking-wide'>
+                                                            {t('productManagement.batch.createdAt')}:
+                                                        </span>
                                                         <span className='font-semibold text-foreground'>{formatDate(batch.createdAt)}</span>
                                                     </div>
                                                     <div className='flex items-center gap-2 text-muted-foreground'>
                                                         <MaterialIcon name='history' className='text-sm' />
-                                                        <span className='font-bold uppercase tracking-wide'>Cập nhật:</span>
+                                                        <span className='font-bold uppercase tracking-wide'>
+                                                            {t('productManagement.batch.updatedAt')}:
+                                                        </span>
                                                         <span className='font-semibold text-foreground'>{formatDate(batch.updatedAt)}</span>
                                                     </div>
                                                     <div className='flex items-center gap-2 text-muted-foreground'>
                                                         <MaterialIcon name='delete_outline' className='text-sm' />
-                                                        <span className='font-bold uppercase tracking-wide'>Ngày xóa:</span>
+                                                        <span className='font-bold uppercase tracking-wide'>
+                                                            {t('productManagement.batch.deletedAt')}:
+                                                        </span>
                                                         <span className={`font-semibold ${batch.deletedAt ? 'text-destructive' : 'text-foreground'}`}>
                                                             {batch.deletedAt ? formatDate(batch.deletedAt) : '—'}
                                                         </span>

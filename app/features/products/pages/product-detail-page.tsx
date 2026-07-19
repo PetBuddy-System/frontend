@@ -205,7 +205,11 @@ export function ProductDetailPage() {
           <ProductReviews productId={product.productId} />
         </div>
 
-        <RelatedProducts />
+        <RelatedProducts
+          productId={product.productId}
+          categoryId={product.categoryId}
+          limit={4}
+        />
       </main>
       <SiteFooter />
       <ProductsBottomNav />

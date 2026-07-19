@@ -50,7 +50,7 @@ export function ManagerProductsTable({
   const getProductStatus = (product: ProductManagementItem) => {
     if (product.status === 'DELETED') {
       return {
-        label: 'Đã xóa',
+        label: t('productManagement.status.deleted'),
         className: 'bg-destructive/15 text-destructive'
       }
     }
@@ -58,24 +58,24 @@ export function ManagerProductsTable({
     if (product.status === 'ACTIVE') {
       if (product.totalStock === 0) {
         return {
-          label: 'Hết hàng',
+          label: t('productManagement.status.outOfStock', 'Hết hàng'),
           className: 'bg-destructive/15 text-destructive'
         }
       }
       if (product.totalStock <= 5) {
         return {
-          label: 'Sắp hết hàng',
+          label: t('productManagement.status.lowStock', 'Sắp hết hàng'),
           className: 'bg-warning/15 text-warning'
         }
       }
       return {
-        label: 'Đang bán',
+        label: t('productManagement.status.active'),
         className: 'bg-success/15 text-success'
       }
     }
 
     return {
-      label: 'Ngừng bán',
+      label: t('productManagement.status.inactive'),
       className: 'bg-muted-foreground/15 text-muted-foreground'
     }
   }
@@ -87,14 +87,14 @@ export function ManagerProductsTable({
           <table className='w-full min-w-[960px] border-collapse text-left'>
             <thead>
               <tr className='border-b border-border bg-muted/50 text-xs font-bold uppercase tracking-wide text-muted-foreground'>
-                <th className='px-4 py-3'>{t('productManagement.table.columns.name', 'Sản phẩm')}</th>
-                <th className='px-4 py-3'>{t('productManagement.table.columns.code', 'Mã SP')}</th>
-                <th className='px-4 py-3'>{t('productManagement.table.columns.brand', 'Thương hiệu')}</th>
-                <th className='px-4 py-3'>{t('productManagement.table.columns.price', 'Đơn giá')}</th>
-                <th className='px-4 py-3 text-center'>{t('productManagement.table.columns.stock', 'Tồn kho')}</th>
-                <th className='px-4 py-3'>{t('productManagement.table.columns.status', 'Trạng thái')}</th>
-                <th className='px-4 py-3'>{t('productManagement.table.columns.updatedAt', 'Ngày cập nhật')}</th>
-                <th className='px-4 py-3 text-right'>{t('productManagement.table.columns.actions', 'Hành động')}</th>
+                <th className='px-4 py-3'>{t('productManagement.table.columns.name')}</th>
+                <th className='px-4 py-3'>{t('productManagement.table.columns.code')}</th>
+                <th className='px-4 py-3'>{t('productManagement.table.columns.brand')}</th>
+                <th className='px-4 py-3'>{t('productManagement.table.columns.price')}</th>
+                <th className='px-4 py-3 text-center'>{t('productManagement.table.columns.stock')}</th>
+                <th className='px-4 py-3'>{t('productManagement.table.columns.status')}</th>
+                <th className='px-4 py-3'>{t('productManagement.table.columns.updatedAt')}</th>
+                <th className='px-4 py-3 text-right'>{t('productManagement.table.columns.actions')}</th>
               </tr>
             </thead>
             <tbody className='divide-y divide-border'>
@@ -129,10 +129,10 @@ export function ManagerProductsTable({
       <section className='overflow-hidden rounded-2xl border border-border bg-card p-12 text-center shadow-sm'>
         <MaterialIcon name='inventory_2' className='text-5xl text-muted-foreground' />
         <p className='mt-4 text-lg font-semibold text-foreground font-display'>
-          {t('productManagement.table.noProducts', 'Không có sản phẩm nào')}
+          {t('productManagement.table.noProducts')}
         </p>
         <p className='text-sm text-muted-foreground mt-1'>
-          {t('productManagement.table.noProductsDesc', 'Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm')}
+          {t('productManagement.table.noProductsDesc')}
         </p>
       </section>
     )
@@ -152,14 +152,14 @@ export function ManagerProductsTable({
         <table className='w-full min-w-[1100px] border-collapse text-left'>
           <thead>
             <tr className='border-b border-border bg-muted/50 text-xs font-bold uppercase tracking-wide text-muted-foreground'>
-              <th className='px-4 py-3'>{t('productManagement.table.columns.name', 'Sản phẩm')}</th>
-              <th className='px-4 py-3'>{t('productManagement.table.columns.code', 'Mã SP')}</th>
-              <th className='px-4 py-3'>{t('productManagement.table.columns.brand', 'Thương hiệu')}</th>
-              <th className='px-4 py-3'>{t('productManagement.table.columns.price', 'Đơn giá')}</th>
-              <th className='px-4 py-3 text-center'>{t('productManagement.table.columns.stock', 'Tồn kho')}</th>
-              <th className='px-4 py-3'>{t('productManagement.table.columns.status', 'Trạng thái')}</th>
-              <th className='px-4 py-3'>{t('productManagement.table.columns.updatedAt', 'Ngày cập nhật')}</th>
-              <th className='px-4 py-3 text-right'>{t('productManagement.table.columns.actions', 'Hành động')}</th>
+              <th className='px-4 py-3'>{t('productManagement.table.columns.name')}</th>
+              <th className='px-4 py-3'>{t('productManagement.table.columns.code')}</th>
+              <th className='px-4 py-3'>{t('productManagement.table.columns.brand')}</th>
+              <th className='px-4 py-3'>{t('productManagement.table.columns.price')}</th>
+              <th className='px-4 py-3 text-center'>{t('productManagement.table.columns.stock')}</th>
+              <th className='px-4 py-3'>{t('productManagement.table.columns.status')}</th>
+              <th className='px-4 py-3'>{t('productManagement.table.columns.updatedAt')}</th>
+              <th className='px-4 py-3 text-right'>{t('productManagement.table.columns.actions')}</th>
             </tr>
           </thead>
           <tbody className='divide-y divide-border'>
@@ -184,7 +184,6 @@ export function ManagerProductsTable({
                       </div>
                     </div>
                   </td>
-                  {/* ⭐ Cột Mã sản phẩm */}
                   <td className='px-4 py-4'>
                     <span className='font-mono text-base font-bold text-foreground'>
                       {product.productCode || 'N/A'}
@@ -205,12 +204,12 @@ export function ManagerProductsTable({
                       </span>
                       {product.totalStock === 0 && (
                         <span className='text-[10px] font-bold uppercase tracking-wide text-destructive'>
-                          Hết hàng
+                          {t('productManagement.stock.outOfStock', 'Hết hàng')}
                         </span>
                       )}
                       {product.totalStock > 0 && product.totalStock <= 5 && (
                         <span className='text-[10px] font-bold uppercase tracking-wide text-warning'>
-                          Sắp hết
+                          {t('productManagement.stock.low')}
                         </span>
                       )}
                     </div>

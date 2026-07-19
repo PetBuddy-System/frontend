@@ -1,6 +1,7 @@
 // app/features/manager/components/products/manager-product-batch-section.tsx
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { ManagerProductBatchIntake } from './manager-product-batch-intake'
 import { ManagerProductBatchList } from './manager-product-batch-list'
@@ -14,6 +15,7 @@ export function ManagerProductBatchSection({
     productId,
     isDeleted = false
 }: ManagerProductBatchSectionProps) {
+    const { t } = useTranslation('manager')
     const [refreshKey, setRefreshKey] = useState(0)
     const [expiringSoonCount, setExpiringSoonCount] = useState(0)
 
@@ -45,11 +47,11 @@ export function ManagerProductBatchSection({
             <div className='border-b border-border bg-card px-6 py-4 flex items-center gap-2.5'>
                 <MaterialIcon name='inventory_2' className='text-primary text-xl' />
                 <span className='font-bold text-foreground font-display text-sm tracking-wide uppercase'>
-                    Lô hàng sản phẩm
+                    {t('productManagement.batch.title')}
                 </span>
                 {expiringSoonCount > 0 && (
                     <span className='ml-auto text-xs font-semibold text-warning bg-warning/10 px-2.5 py-1 rounded-full'>
-                        {expiringSoonCount} lô sắp hết hạn
+                        {t('productManagement.batch.expiringSoon', { count: expiringSoonCount })}
                     </span>
                 )}
             </div>

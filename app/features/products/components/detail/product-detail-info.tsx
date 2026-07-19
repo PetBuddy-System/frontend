@@ -14,7 +14,7 @@ export interface ProductDetailInfoProps {
   salePrice: number
   brandName: string
   totalStock: number
-  unit?: string  // ⭐ Thêm unit
+  unit?: string
   discountAmount?: number | null
   discountValue?: number | null
   hasActivePromotion?: boolean
@@ -33,7 +33,7 @@ export function ProductDetailInfo({
   salePrice,
   brandName,
   totalStock,
-  unit,  // ⭐ Nhận unit
+  unit,
   discountAmount,
   discountValue,
   hasActivePromotion,
@@ -58,7 +58,6 @@ export function ProductDetailInfo({
   const safeTotalStock = totalStock || 0
   const isPromoted = Boolean(hasActivePromotion || promotionPrice || promotionName)
 
-  // ⭐ Lấy unit label từ translation
   const unitLabel = unit ? t(`unit.${unit}`, unit.toLowerCase()) : ''
 
   const formatPrice = (value: number) => `${value.toLocaleString('vi-VN')}đ`
@@ -84,18 +83,18 @@ export function ProductDetailInfo({
     setAddError(null)
     try {
       await addToCartApi({
-      productId,
-      quantity,
-      productName: name,
-      price: originalPrice,
-      salePrice: isPromoted ? promotionPrice ?? null : null,   
-      imageUrl,
-    })
+        productId,
+        quantity,
+        productName: name,
+        price: originalPrice,
+        salePrice: isPromoted ? promotionPrice ?? null : null,
+        imageUrl,
+      })
       await refreshCart()
       setShowSuccessToast(true)
       setTimeout(() => setShowSuccessToast(false), 3000)
     } catch (err) {
-      setAddError(err instanceof Error ? err.message : 'Lỗi thêm vào giỏ')
+      setAddError(err instanceof Error ? err.message : t('detail.errors.addToCartFailed'))
     } finally {
       setIsAdding(false)
     }
@@ -106,16 +105,16 @@ export function ProductDetailInfo({
     setIsAdding(true)
     try {
       await addToCartApi({
-      productId,
-      quantity,
-      productName: name,
-      price: originalPrice,
-      salePrice: isPromoted ? promotionPrice ?? null : null,   
-      imageUrl,
-    })
+        productId,
+        quantity,
+        productName: name,
+        price: originalPrice,
+        salePrice: isPromoted ? promotionPrice ?? null : null,
+        imageUrl,
+      })
       navigate('/checkout')
     } catch (err) {
-      setAddError(err instanceof Error ? err.message : 'Lỗi mua ngay')
+      setAddError(err instanceof Error ? err.message : t('detail.errors.buyNowFailed'))
       setIsAdding(false)
     }
   }
@@ -125,17 +124,6 @@ export function ProductDetailInfo({
       <h1 className='font-display text-3xl font-black tracking-tight text-foreground md:text-5xl'>
         {name}
       </h1>
-
-      {/* <div className='mt-4 flex flex-wrap items-center gap-3'>
-        <div className='flex items-center gap-1 text-warning'>
-          {['star', 'star', 'star', 'star', 'star_half'].map((icon, i) => (
-            <MaterialIcon key={i} name={icon} filled className='text-[24px]' />
-          ))}
-        </div>
-        <span className='rounded-full bg-muted px-3 py-1 text-sm font-semibold text-muted-foreground'>
-          {t('detail.product.reviews')}
-        </span>
-      </div> */}
 
       {/* Phần hiển thị giá */}
       {isPromoted ? (
@@ -147,7 +135,7 @@ export function ProductDetailInfo({
               </span>
               <div>
                 <p className='text-sm font-semibold text-foreground'>
-                  {promotionName || 'Ưu đãi đang áp dụng'}
+                  {promotionName || t('detail.promotion.active')}
                 </p>
               </div>
             </div>
@@ -172,7 +160,9 @@ export function ProductDetailInfo({
             {promotionDescription && <p className='mt-2 text-sm text-muted-foreground'>{promotionDescription}</p>}
             {promotionEndDate && (
               <div className='mt-3 rounded-2xl border border-border/70 bg-card/80 px-4 py-3'>
-                <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>Hạn chót</p>
+                <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>
+                  {t('detail.promotion.deadline')}
+                </p>
                 <p className='mt-1 text-base font-semibold text-foreground'>{formatDate(promotionEndDate)}</p>
               </div>
             )}
@@ -190,17 +180,29 @@ export function ProductDetailInfo({
 
       <div className='mt-5 space-y-3'>
         <div>
-          <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>Thương hiệu</p>
+          <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>
+            {t('detail.product.brand')}
+          </p>
           <p className='mt-1 text-base font-semibold text-foreground'>{brandName || 'N/A'}</p>
         </div>
         <div>
           <p className={cn('text-base font-semibold', safeTotalStock > 0 ? 'text-success' : 'text-destructive')}>
-            {safeTotalStock > 0 ? 'Còn hàng:' : 'Hết hàng'}
+            {safeTotalStock > 0 ? t('detail.product.inStock') : t('detail.product.outOfStock')}
           </p>
           {safeTotalStock > 0 && (
-            <p className='mt-1 text-sm font-medium text-muted-foreground'>{`${safeTotalStock} sản phẩm`}</p>
+            <p className='mt-1 text-sm font-medium text-muted-foreground'>
+              {t('detail.product.stockCount', { count: safeTotalStock })}
+            </p>
           )}
         </div>
+        {unitLabel && (
+          <div>
+            <p className='text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground'>
+              {t('detail.product.unit')}
+            </p>
+            <p className='mt-1 text-base font-semibold text-foreground'>{unitLabel}</p>
+          </div>
+        )}
       </div>
 
       {addError && (
@@ -211,7 +213,9 @@ export function ProductDetailInfo({
       )}
 
       <div className='mt-8 flex flex-col gap-3'>
-        <label className='text-sm font-semibold text-foreground' htmlFor='quantity'>Số lượng</label>
+        <label className='text-sm font-semibold text-foreground' htmlFor='quantity'>
+          {t('detail.actions.quantity')}
+        </label>
         <div className='flex w-fit items-center overflow-hidden rounded-2xl border border-border bg-card p-1 shadow-sm'>
           <button
             type='button'
@@ -266,7 +270,7 @@ export function ProductDetailInfo({
       {showSuccessToast && (
         <div className='fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-2xl bg-success px-4 py-3 text-success-foreground shadow-lg animate-in fade-in slide-in-from-bottom-4'>
           <MaterialIcon name='check_circle' className='text-[20px]' />
-          <p className='text-sm font-bold'>{t('cart.addedToCart', 'Đã thêm vào giỏ hàng!')}</p>
+          <p className='text-sm font-bold'>{t('cart.addedToCart')}</p>
         </div>
       )}
     </section>

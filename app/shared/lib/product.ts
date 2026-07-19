@@ -23,6 +23,7 @@ export const ProductUnitLabels: Record<ProductUnit, string> = {
   'TUBE': 'Tuýp',
   'SET': 'Bộ'
 }
+
 export interface ProductResponse {
   productId: string
   name: string
@@ -38,8 +39,9 @@ export interface ProductResponse {
   hasActivePromotion?: boolean
   promotionName?: string
   promotionType?: 'PERCENTAGE' | 'FIXED_AMOUNT' | string
-  unit?: ProductUnit  // ✅ Sử dụng ProductUnit
+  unit?: ProductUnit
   promotionPrice?: number
+  weight?: number
 }
 
 export interface PagedProductResponse {
@@ -89,7 +91,7 @@ export interface ProductDetailData {
   unit?: ProductUnit
   ingredients?: string
   usageInstructions?: string
-  // Các field có thể không có
+  weight?: number
   price?: number
   productCode?: string
   status?: string
@@ -142,6 +144,7 @@ export interface ProductManagementItem {
   updatedAt: string
   unit?: ProductUnit
   hasActivePromotion?: boolean
+  weight?: number  // ✅ Thêm weight
 }
 
 export interface PagedProductManagementResponse {
@@ -175,7 +178,7 @@ export interface FetchProductsManagementParams {
 
 export interface UpdateProductPayload {
   name: string
-  salePrice: number  // 👈 Đổi từ price thành salePrice
+  salePrice: number
   brandName: string
   status: 'ACTIVE' | 'INACTIVE' | 'DELETED'
   categoryId?: number
@@ -184,6 +187,7 @@ export interface UpdateProductPayload {
   usageInstructions?: string
   unit?: ProductUnit
   thumbnailMediaId?: number
+  weight?: number  // ✅ Thêm weight
   reason?: string
   note?: string
 }
@@ -205,7 +209,8 @@ export interface CreateProductPayload {
   description?: string
   ingredients?: string
   usageInstructions?: string
-  unit?: ProductUnit  // ✅ Sử dụng ProductUnit
+  unit?: ProductUnit
+  weight: number  // ✅ Thêm weight (bắt buộc)
 }
 
 export interface CreateProductResponse {
@@ -281,6 +286,7 @@ export interface ProductImagesResponse {
   data: ProductImageItem[]
   timestamp: string
 }
+
 export interface UpdateProductImagesPayload {
   images?: File[]  // Danh sách ảnh mới (null: giữ nguyên, []: xóa hết)
   keepImageIds?: number[]  // Danh sách ID ảnh cũ muốn giữ lại
