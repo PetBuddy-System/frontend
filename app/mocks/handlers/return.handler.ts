@@ -23,11 +23,28 @@ export interface MockReturnRequest {
   createdAt: string
   returnItems: {
     returnItemId: number
+    orderDetailId?: number
     productName: string
+    productImage?: string | null
     quantity: number
     refundAmount: number
   }[]
-  mediaFiles: string[]
+  mediaFiles: any[]
+  requestedBy?: any
+  processedBy?: any
+  coordinator?: any
+  shipper?: any
+  processedAt?: string | null
+  approvedAt?: string | null
+  pickedUpAt?: string | null
+  returnedToStoreAt: string | null
+  completedAt: string | null
+  restockedAt: string | null
+  staffNote: string | null
+  address?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  updatedAt?: string
 }
 
 const INITIAL_RETURNS: MockReturnRequest[] = [
@@ -50,6 +67,9 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
       email: 'user@gmail.com'
     },
     processedBy: null,
+    address: '123 Đường Sư Vạn Hạnh, Phường 12, Quận 10, TP.HCM',
+    latitude: 10.7769,
+    longitude: 106.7009,
     returnItems: [
       {
         returnItemId: 1,
@@ -100,6 +120,9 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
     },
     processedAt: '2026-07-10T11:20:00.000Z',
     staffNote: 'Đã duyệt yêu cầu và chuẩn bị gửi hàng đổi mới',
+    address: '789 Đường Lê Lợi, Quận 1, TP.HCM',
+    latitude: 10.7725,
+    longitude: 106.6983,
     returnItems: [
       {
         returnItemId: 3,
@@ -138,6 +161,10 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
     processedAt: '2026-07-09T09:00:00.000Z',
     completedAt: '2026-07-09T10:00:00.000Z',
     staffNote: 'Nhận bảo hành, đã kiểm tra lỗi bo mạch và hoàn tất hoàn tiền',
+    returnedToStoreAt: '2023-11-04T16:00:00.000Z',
+    address: '456 Phố Vọng, Hai Bà Trưng, Hà Nội',
+    latitude: 21.0031,
+    longitude: 105.8458,
     returnItems: [
       {
         returnItemId: 4,

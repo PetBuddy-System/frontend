@@ -87,7 +87,7 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
             defaultValue: `Đơn hàng #${order.orderCode} đã được hủy thành công.\nLý do: ${finalReason}`,
           }
         )
-      )        
+      )
       navigate('/staff/orders')
       } else {
         alert(res.message || t('orderCancel.submitError', 'Không thể hủy đơn hàng.'))

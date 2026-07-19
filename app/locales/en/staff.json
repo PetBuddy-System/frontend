@@ -49,6 +49,7 @@
   },
   "sidebar": {
     "avatarAlt": "Staff avatar",
+    "close": "Close menu",
     "logoAlt": "PetBuddy logo",
     "logout": "Log out",
     "nav": {
@@ -649,8 +650,34 @@
       "rejected": "Rejected",
       "completed": "Completed",
       "cancelled": "Cancelled",
-      "pickedUp": "Picked Up",
-      "deliveryFailed": "Delivery Failed"
+      "pickingUp": "Picking up",
+      "pickedUp": "Picked up",
+      "returnedToStore": "Returned to store",
+      "readyToDeliver": "Ready to deliver",
+      "delivering": "Delivering",
+      "deliveryFailed": "Delivery failed"
+    },
+    "type": {
+      "RETURN": "Return & Refund",
+      "EXCHANGE": "Exchange"
+    },
+    "reason": {
+      "DAMAGED": "Product was severely damaged upon delivery",
+      "WRONG_PRODUCT": "Wrong product delivered",
+      "MISSING_ITEM": "Missing product",
+      "EXPIRED": "Product expired",
+      "CUSTOMER_CHANGED_MIND": "Customer changed mind",
+      "OTHER": "Other reason"
+    },
+    "refundStatus": {
+      "NOT_REQUIRED": "No refund required",
+      "PENDING": "Refund pending",
+      "SUCCESS": "Refunded",
+      "FAILED": "Refund failed"
+    },
+    "refundMethod": {
+      "STRIPE_PAYMENT": "Original payment account",
+      "BANK_TRANSFER": "Bank transfer"
     },
     "filters": {
       "status": "Status",
@@ -687,10 +714,15 @@
       "type": "Request Type",
       "createdAt": "Time Submitted",
       "status": "Status",
+      "requestStatus": "Request Status",
       "customerInfo": "Customer Information",
       "customerName": "Full Name",
       "customerEmail": "Email",
+      "recipientName": "Recipient Name",
+      "phoneNumber": "Phone Number",
+      "address": "Pickup / Delivery Address",
       "reason": "Reason for Return",
+      "specificReason": "Specific reason:",
       "description": "Customer Description",
       "refundInfo": "Refund Information",
       "refundMethod": "Refund Method",
@@ -702,13 +734,25 @@
       "media": "Attached Photos/Videos",
       "mediaEmpty": "No attachments",
       "items": "Items to Return",
+      "quantity": "Qty:",
+      "refundBack": "Refund:",
+      "additionalInfo": "Additional Information",
+      "updatedAt": "Last Updated",
       "processInfo": "Processing Information",
+      "coordinator": "Coordinator",
+      "shipper": "Shipper",
       "processedBy": "Processed By",
       "processedAt": "Processed Time",
+      "approvedAt": "Approved Date",
+      "pickedUpAt": "Picked Up Date",
+      "returnedToStoreAt": "Returned to Store Date",
+      "restockedAt": "Restocked Date",
       "completedAt": "Completed Time",
+      "staffNoteLabel": "Reason / Note:",
       "staffNote": "Staff Note",
       "actionTitle": "Process Request",
       "notePlaceholder": "Enter reason for approval/rejection or additional notes...",
+      "noteRequired": "* (required when rejecting or failing delivery)",
       "btnApprove": "Approve Request",
       "btnReject": "Reject",
       "btnComplete": "Complete",
@@ -716,7 +760,24 @@
       "successReject": "Request rejected successfully",
       "successComplete": "Return request completed successfully",
       "errorUpdate": "Failed to update status",
-      "requiredNote": "Please enter a staff note when rejecting the request."
+      "requiredNote": "Please enter a staff note when rejecting the request.",
+      "close": "Close",
+      "assignShipperTitle": "Assign Delivery Staff",
+      "loadingShippers": "Loading...",
+      "noShippers": "No shippers available",
+      "activeOrders": "Active returns: {{count}}",
+      "cancelBtn": "Cancel",
+      "confirmAssign": "Confirm Assignment",
+      "saving": "Saving...",
+      "assignShipper": "Assign Shipper",
+      "btnPickingUp": "Start Pickup",
+      "btnPickedUp": "Picked Up",
+      "btnReturnedToStore": "Returned to Store",
+      "btnReadyToDeliver": "Ready to Deliver",
+      "btnDelivering": "Start Delivery",
+      "btnDelivered": "Delivery Successful",
+      "errorAssign": "Failed to assign delivery staff",
+      "errorLoadShippers": "Failed to load shippers"
     }
   },
   "orderCancel": {

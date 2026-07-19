@@ -48,7 +48,11 @@
   "status": {
     "PENDING": "Pending",
     "APPROVED": "Approved",
+    "PICKING_UP": "Picking up",
     "PICKED_UP": "Picked up",
+    "RETURNED_TO_STORE": "Returned to store",
+    "READY_TO_DELIVER": "Ready to deliver",
+    "DELIVERING": "Delivering",
     "REJECTED": "Rejected",
     "CANCELLED": "Cancelled",
     "COMPLETED": "Completed",

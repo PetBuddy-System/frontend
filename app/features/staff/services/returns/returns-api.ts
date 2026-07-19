@@ -39,14 +39,44 @@ export async function fetchReturnDetailApi(
   })
 }
 
-export async function updateReturnStatusApi(
+export async function updateCoordinatorReturnStatusApi(
   returnId: number,
   status: string,
-  staffNote: string
+  staffNote?: string
 ): Promise<ApiResponse<ManagementReturnResponse>> {
   return customFetch<ApiResponse<ManagementReturnResponse>>({
     url: `${RETURNS_MANAGEMENT_URL}/${returnId}/status`,
     method: 'PATCH',
     data: { status, staffNote }
+  })
+}
+
+export async function updateShipperReturnStatusApi(
+  returnId: number,
+  status: string,
+  staffNote?: string
+): Promise<ApiResponse<ManagementReturnResponse>> {
+  return customFetch<ApiResponse<ManagementReturnResponse>>({
+    url: `${env.API_URL}/api/shipper/returns/${returnId}/status`,
+    method: 'PATCH',
+    data: { status, staffNote }
+  })
+}
+
+export async function fetchAvailableShippersApi(): Promise<ApiResponse<import('~/shared/lib/returns').ReturnShipperResponse[]>> {
+  return customFetch<ApiResponse<import('~/shared/lib/returns').ReturnShipperResponse[]>>({
+    url: `${env.API_URL}/api/shipper-assignment/available-shippers`,
+    method: 'GET'
+  })
+}
+
+export async function assignShipperApi(
+  returnRequestId: number,
+  shipperId: string
+): Promise<ApiResponse<void>> {
+  return customFetch<ApiResponse<void>>({
+    url: `${env.API_URL}/api/shipper-assignment/${returnRequestId}/assign-shipper`,
+    method: 'PATCH',
+    data: { shipperId }
   })
 }

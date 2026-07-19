@@ -348,6 +348,7 @@
   "sidebar": {
     "branch": "Chi nhánh chính",
     "brand": "PawAdmin",
+    "close": "Đóng menu",
     "logoAlt": "Logo PetBuddy",
     "logout": "Đăng xuất",
     "nav": {

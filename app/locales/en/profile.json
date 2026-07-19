@@ -9,6 +9,7 @@
     "avatarAlt": "Profile photo of Nguyen Van An"
   },
   "sidebar": {
+    "close": "Close menu",
     "nav": {
       "profile": "Personal information",
       "pets": "Pet profiles",

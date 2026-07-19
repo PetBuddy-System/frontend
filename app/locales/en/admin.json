@@ -348,6 +348,7 @@
   "sidebar": {
     "branch": "Main Branch",
     "brand": "PawAdmin",
+    "close": "Close menu",
     "logoAlt": "PetBuddy logo",
     "logout": "Logout",
     "nav": {
