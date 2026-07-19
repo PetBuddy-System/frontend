@@ -79,9 +79,18 @@ export interface ReturnRequestResponse {
   returnItems: ReturnItemResponse[]
   mediaFiles: string[] | ReturnMediaFile[]
   processedBy?: ReturnProcessedStaff | null
+  coordinator?: ReturnProcessedStaff | null
+  shipper?: ReturnProcessedStaff | null
   processedAt?: string | null
+  approvedAt?: string | null
+  pickedUpAt?: string | null
+  returnedToStoreAt?: string | null
   completedAt?: string | null
+  restockedAt?: string | null
   staffNote?: string | null
+  address?: string | null
+  latitude?: number | null
+  longitude?: number | null
   updatedAt?: string
 }
 
@@ -124,6 +133,8 @@ export interface ManagementReturnResponse {
   orderCode: string
   requestedBy: ReturnUser
   processedBy: ReturnProcessedStaff | null
+  coordinator?: ReturnProcessedStaff | null
+  shipper?: ReturnProcessedStaff | null
   type: ReturnType
   reason: ReturnReason
   description?: string | null
@@ -137,8 +148,24 @@ export interface ManagementReturnResponse {
   bankAccountHolder?: string | null
   createdAt: string
   processedAt?: string | null
+  approvedAt?: string | null
+  pickedUpAt?: string | null
+  returnedToStoreAt?: string | null
   completedAt?: string | null
+  restockedAt?: string | null
+  address?: string | null
+  recipientName?: string | null
+  phoneNumber?: string | null
+  latitude?: number | null
+  longitude?: number | null
   updatedAt: string
   returnItems: ReturnItemDetailResponse[]
   mediaFiles: ReturnMediaFile[]
+}
+
+export interface ReturnShipperResponse {
+  staffId: string
+  staffName: string
+  staffEmail: string
+  activeReturnCount: number
 }
