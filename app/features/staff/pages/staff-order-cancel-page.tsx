@@ -76,11 +76,19 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
 
     setIsSubmitting(true)
     try {
-      // Staff directly cancels — no CANCEL_REQUESTED intermediate state
       const res = await updateOrderStatusApi(orderId, 'CANCELLED')
       if (res.success) {
-        alert(t('orderCancel.successMessage', { code: order.orderCode, reason: finalReason }, `Đơn hàng #${order.orderCode} đã được hủy thành công.\nLý do: ${finalReason}`))
-        navigate('/staff/orders')
+      alert(
+        t(
+          'orderCancel.successMessage',
+          {
+            code: order.orderCode,
+            reason: finalReason,
+            defaultValue: `Đơn hàng #${order.orderCode} đã được hủy thành công.\nLý do: ${finalReason}`,
+          }
+        )
+      )        
+      navigate('/staff/orders')
       } else {
         alert(res.message || t('orderCancel.submitError', 'Không thể hủy đơn hàng.'))
       }

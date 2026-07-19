@@ -337,9 +337,7 @@
       "address": "123 Đường Lê Lợi, Phường Bến Thành, Quận 1, TP. Hồ Chí Minh"
     },
     "method": {
-      "title": "Phương thức vận chuyển và thanh toán",
-      "shippingLabel": "Vận chuyển",
-      "shipping": "Giao hàng nhanh (2-3 ngày)",
+      "title": "Phương thức thanh toán",
       "paymentLabel": "Thanh toán",
       "payment": "Thẻ tín dụng (Visa **** 4455)"
     },

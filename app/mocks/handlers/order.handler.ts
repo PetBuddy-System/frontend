@@ -376,6 +376,19 @@ export const orderHandlers = [
       }, { status: 404 })
     }
 
+    const MOCK_WEIGHTS_BY_PRODUCT: Record<string, number> = {
+      'prod-1': 320,
+      'prod-2': 850,
+      'prod-3': 1200,
+      'prod-4': 150,
+      'prod-5': 90,
+      'prod-6': 280,
+      'prod-7': 300
+    }
+
+    const estimatedDelivery = new Date(order.createdAt)
+    estimatedDelivery.setDate(estimatedDelivery.getDate() + 3)
+
     return HttpResponse.json({
       code: 200,
       message: 'Lấy chi tiết đơn hàng thành công',
@@ -387,6 +400,9 @@ export const orderHandlers = [
         finalAmount: order.finalAmount,
         createdAt: order.createdAt,
         updatedAt: order.createdAt,
+        estimatedDeliveryAt: ['SHIPPING', 'PICKED', 'CONFIRMED'].includes(order.status)
+          ? estimatedDelivery.toISOString()
+          : undefined,
         // shipping / recipient info (extra fields not in Java DTO but needed for UI)
         userName: order.userName,
         recipientName: order.userName,
@@ -404,6 +420,7 @@ export const orderHandlers = [
           productImage: item.imageUrl,
           unitPrice: item.price,
           quantity: item.quantity,
+          weight: MOCK_WEIGHTS_BY_PRODUCT[item.productId] ?? 500,
           totalPrice: item.price * item.quantity,
           createdAt: order.createdAt
         }))
@@ -574,6 +591,81 @@ export const orderHandlers = [
       message: 'Lấy sản phẩm cần lấy thành công',
       success: true,
       data: pickingList,
+      timestamp: new Date().toISOString()
+    })
+  }),
+
+  http.get(`${BASE}/api/shipper-assignment/:staffId/delivery-route`, () => {
+    const orders = getStoredOrders()
+
+    const shippingOrders = orders.filter((o) => o.status === 'SHIPPING')
+
+    if (shippingOrders.length === 0) {
+      return HttpResponse.json({
+        code: 200,
+        message: 'Lấy lộ trình giao hàng thành công',
+        success: true,
+        data: {
+          stops: [],
+          totalDistanceKm: 0,
+          estimatedDurationMinutes: 0
+        },
+        timestamp: new Date().toISOString()
+      })
+    }
+
+    const MOCK_WEIGHTS_BY_PRODUCT: Record<string, number> = {
+      'prod-1': 320,
+      'prod-2': 850,
+      'prod-3': 1200,
+      'prod-4': 150,
+      'prod-5': 90,
+      'prod-6': 280,
+      'prod-7': 300
+    }
+
+    const stops = shippingOrders.map((order, idx) => {
+      const estimatedAt = new Date()
+      estimatedAt.setHours(10 + idx * 2, 0, 0, 0)
+
+      return {
+        orderId: order.orderId,
+        orderCode: order.orderCode,
+        sequence: idx + 1,
+        status: idx === 0 ? 'SHIPPING' : 'PICKED',
+        recipientName: order.userName,
+        phoneNumber: order.phoneNumber,
+        address: order.address,
+        finalAmount: order.finalAmount,
+        paymentMethod: order.paymentMethod || 'CASH',
+        paymentStatus: order.paymentStatus || 'PENDING',
+        estimatedDeliveryAt: estimatedAt.toISOString(),
+        distanceFromPreviousKm: idx === 0 ? 0 : parseFloat((1.5 + Math.random() * 3).toFixed(1)),
+        orderDetails: order.items.map((item, detailIdx) => ({
+          orderDetailId: order.orderId * 100 + detailIdx,
+          productId: item.productId,
+          productName: item.name,
+          productImage: item.imageUrl,
+          unitPrice: item.price,
+          quantity: item.quantity,
+          weight: MOCK_WEIGHTS_BY_PRODUCT[item.productId] ?? 500,
+          totalPrice: item.price * item.quantity,
+          createdAt: order.createdAt
+        }))
+      }
+    })
+
+    const totalDistance = stops.reduce((sum, s) => sum + (s.distanceFromPreviousKm ?? 0), 0)
+
+    return HttpResponse.json({
+      code: 200,
+      message: 'Lấy lộ trình giao hàng thành công',
+      success: true,
+      data: {
+        stops,
+        totalDistanceKm: parseFloat(totalDistance.toFixed(1)),
+        estimatedDurationMinutes: Math.round(totalDistance * 6 + stops.length * 5)
+      },
       timestamp: new Date().toISOString()
     })
   })

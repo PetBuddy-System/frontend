@@ -55,6 +55,7 @@
       "groomerBookings": "Công việc của tôi",
       "coordinatorBookings": "Phân công booking",
       "orders": "Quản lý đơn hàng",
+      "deliveryRoute": "Quản lý lộ trình",
       "attendanceHistory": "Lịch sử chấm công",
       "weeklySchedule": "Ca làm việc trong tuần",
       "disposalRequest": "Tạo yêu cầu hủy hàng",
@@ -101,6 +102,58 @@
 
   "staff": {
     "name": "Nguyễn Văn An"
+  },
+  "deliveryRoute": {
+    "title": "Lộ trình giao hàng",
+    "subtitle": "Theo dõi thứ tự và bản đồ giao nhận trong ngày",
+    "topNav": {
+      "title": "deliveryRoute.title",
+      "subtitle": "deliveryRoute.subtitle"
+    },
+    "stats": {
+      "currentStop": "Đang thực hiện",
+      "sequence": "Thứ tự: {{seq}}",
+      "nextStop": "Điểm tiếp theo",
+      "completed": "Đã hoàn thành",
+      "completedCount": "{{done}} / {{total}}"
+    },
+    "timeline": {
+      "title": "Trình tự giao hàng hôm nay",
+      "optimizeBtn": "Xem lộ trình tối ưu",
+      "statusDelivering": "ĐANG GIAO",
+      "statusPending": "CHỜ GIAO",
+      "customer": "Khách hàng",
+      "address": "Địa chỉ giao hàng",
+      "deliveredBtn": "Đã giao xong",
+      "callBtn": "Gọi khách",
+      "paymentCash": "Tiền mặt",
+      "paymentCard": "Thẻ (Đã trả)"
+    },
+    "map": {
+      "title": "Bản đồ di chuyển",
+      "overview": "TỔNG QUAN LỘ TRÌNH",
+      "totalDistance": "Tổng quãng đường",
+      "estimatedTime": "Thời gian dự kiến",
+      "openMaps": "Mở Google Maps",
+      "currentLocation": "Vị trí hiện tại",
+      "distanceToNext": "{{dist}}km tới điểm tiếp theo",
+      "noRouteTitle": "Chưa có đơn hàng được phân công",
+      "noRouteDesc": "Bạn chưa có đơn hàng giao hàng nào được phân công hôm nay."
+    },
+    "proof": {
+      "title": "Xác nhận đã giao hàng",
+      "desc": "Vui lòng chụp và tải lên hình ảnh xác nhận đã giao hàng thành công để hoàn tất đơn hàng.",
+      "upload": "Tải ảnh lên",
+      "uploadNote": "PNG, JPG hoặc JPEG",
+      "uploadError": "Vui lòng chọn ảnh chụp bằng chứng giao hàng.",
+      "uploadTypeError": "Vui lòng chọn file hình ảnh.",
+      "confirm": "Xác nhận đã giao",
+      "cancel": "Hủy"
+    },
+    "errors": {
+      "loadFailed": "Không thể tải lộ trình giao hàng.",
+      "updateFailed": "Không thể cập nhật trạng thái giao hàng."
+    }
   },
   "groomerBookings": {
     "title": "Công việc của tôi",
@@ -704,5 +757,147 @@
       "policyViolation": "Vi phạm chính sách cửa hàng",
       "other": "Khác"
     }
+  },
+    "staffOrdersTable": {
+    "heading": "Chi tiết đơn hàng",
+    "searchPlaceholder": "Tìm kiếm mã, tên...",
+    "clearFilters": "Xóa bộ lọc",
+    "columns": {
+      "orderCode": "Mã đơn hàng",
+      "customer": "Khách hàng",
+      "orderDate": "Ngày đặt",
+      "totalAmount": "Tổng tiền",
+      "payment": "Thanh toán",
+      "status": "Trạng thái đơn",
+      "actions": "Thao tác"
+    },
+    "loading": "Đang tải danh sách đơn hàng...",
+    "empty": "Không có đơn hàng nào khớp với điều kiện lọc.",
+    "customerFallback": "KH",
+    "paymentMethods": {
+      "CARD": "Thẻ",
+      "MOMO": "MoMo",
+      "COD": "Tiền mặt"
+    },
+    "paymentStatuses": {
+      "PAID": "Đã thanh toán",
+      "FAILED": "Thất bại",
+      "CANCELLED": "Đã hủy",
+      "PROCESSING": "Đang xử lý",
+      "REFUNDED": "Đã hoàn tiền",
+      "UNPAID": "Chưa thanh toán"
+    },
+    "statuses": {
+      "PENDING": "Đang xử lý",
+      "CONFIRMED": "Đã xác nhận",
+      "PICKING": "Đang lấy hàng",
+      "PICKED": "Đã chuẩn bị xong",
+      "SHIPPING": "Đang giao hàng",
+      "DELIVERED": "Đã giao (Chờ nhận)",
+      "COMPLETED": "Hoàn thành",
+      "CANCELLED": "Đã hủy",
+      "CANCEL_REQUESTED": "Chờ hoàn tiền",
+      "BOMBED": "Khách bom hàng",
+      "RETURNED_TO_WAREHOUSE": "Đã trả về kho"
+    },
+    "actions": {
+      "view": "Xem",
+      "confirmRefund": "Xác nhận hoàn tiền",
+      "approve": "Duyệt",
+      "cancel": "Hủy",
+      "startPicking": "Bắt đầu lấy hàng",
+      "pickItems": "Lấy hàng",
+      "delivered": "Đã giao",
+      "deliveryFailed": "Giao thất bại",
+      "confirmReturnedWarehouse": "Xác nhận trả về kho"
+    },
+    "confirm": {
+      "refundPrompt": "Xác nhận hoàn tiền cho đơn #{{code}}?"
+    },
+    "errors": {
+      "refundFailed": "Không thể xác nhận hoàn tiền",
+      "generic": "Có lỗi xảy ra"
+    }
+  },
+    "staffOrdersPage": {
+    "topNav": {
+      "title": "Mục đơn hàng",
+      "subtitle": "Theo dõi và xử lý các đơn hàng trong ngày"
+    },
+    "heading": "Danh sách đơn hàng",
+    "subheading": "Theo dõi và xử lý các đơn hàng của hệ thống.",
+    "suggestRoute": "Gợi ý tuyến đường",
+    "pagination": {
+      "showing": "Hiển thị {{from}}-{{to}} của {{total}} đơn hàng"
+    },
+    "errors": {
+      "updateStatusFailed": "Cập nhật trạng thái thất bại",
+      "updateStatusError": "Có lỗi xảy ra khi cập nhật trạng thái"
+    }
+  },
+    "staffOrdersStats": {
+    "pending": {
+      "badge": "Chờ xử lý",
+      "label": "Đơn hàng mới"
+    },
+    "confirmed": {
+      "badge": "Đã xác nhận",
+      "label": "Đang soạn kho"
+    },
+    "picking": {
+      "badge": "Đang lấy hàng",
+      "label": "Chờ lấy hàng"
+    },
+    "shippingDelivered": {
+      "badge": "Đang giao",
+      "label": "Trên đường giao"
+    },
+    "completed": {
+      "badge": "Hoàn thành",
+      "label": "Đã hoàn tất"
+    },
+    "cancelled": {
+      "badge": "Đã hủy",
+      "label": "Đã hủy"
+    },
+    "refundPending": {
+      "badge": "Chờ hoàn tiền",
+      "label": "Cần xác nhận"
+    },
+    "bombed": {
+      "badge": "Bom hàng",
+      "label": "Khách không nhận hàng"
+    }
+  },
+    "staffOrderDetailPage": {
+    "topNav": {
+      "title": "Chi tiết đơn hàng",
+      "subtitle": "Xem chi tiết và xử lý đơn hàng"
+    }
+  },
+  "deliveryFailedDialog": {
+    "title": "Báo cáo giao hàng thất bại",
+    "orderCode": "Đơn hàng #{{code}}",
+    "failCountLabel": "Lần giao thứ {{current}} / {{max}}",
+    "willBeBombed": "Đây là lần cuối. Sau khi xác nhận, đơn hàng sẽ bị đánh dấu \"Khách bom hàng\" và tiến hành hoàn tiền (nếu đã thanh toán online).",
+    "reasonLabel": "Lý do không giao được hàng",
+    "reasonPlaceholder": "Ví dụ: Khách không nghe máy, địa chỉ sai, không có người ở nhà...",
+    "reasonRequired": "Vui lòng nhập lý do.",
+    "submit": "Báo cáo & Trả về kho",
+    "submitBombed": "Xác nhận khách bom hàng",
+    "submitting": "Đang xử lý...",
+    "cancel": "Hủy",
+    "submitError": "Không thể báo cáo giao hàng thất bại."
+  },
+  "confirmReturnedWarehouseDialog": {
+    "title": "Xác nhận hàng đã trả về kho",
+    "orderCode": "Đơn hàng #{{code}}",
+    "infoTitle": "Tồn kho sẽ được cộng lại",
+    "infoDesc": "Xác nhận hành động này sẽ cộng lại số lượng tồn kho cho tất cả sản phẩm trong đơn và đánh dấu đã hoàn kho.",
+    "bombedReason": "Lý do bom hàng",
+    "submit": "Xác nhận đã trả kho",
+    "submitting": "Đang xác nhận...",
+    "cancel": "Hủy",
+    "submitError": "Không thể xác nhận trả về kho."
   }
 }

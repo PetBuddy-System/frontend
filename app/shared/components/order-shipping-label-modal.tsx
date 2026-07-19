@@ -49,7 +49,7 @@ export function OrderShippingLabelModal({ order, onClose }: OrderShippingLabelMo
   }, [])
 
   const totalQuantity = order.orderDetails?.reduce((sum, item) => sum + item.quantity, 0) ?? 0
-  const totalWeight = order.orderDetails?.reduce((sum, item) => sum + item.quantity * 600, 0) || 600
+  const totalWeight = order.orderDetails?.reduce((sum, item) => sum + item.quantity * (item.weight ?? 0), 0) || 0
   const isPaidOnline = order.payment?.paymentMethod === 'CARD' && order.payment?.status === 'PAID'
   const codAmount = isPaidOnline ? 0 : order.finalAmount
 

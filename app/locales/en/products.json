@@ -337,9 +337,7 @@
       "address": "123 Le Loi Street, Ben Thanh Ward, District 1, Ho Chi Minh City"
     },
     "method": {
-      "title": "Shipping & payment method",
-      "shippingLabel": "Shipping",
-      "shipping": "Express delivery (2-3 days)",
+      "title": "Payment method",
       "paymentLabel": "Payment",
       "payment": "Credit card (Visa **** 4455)"
     },
