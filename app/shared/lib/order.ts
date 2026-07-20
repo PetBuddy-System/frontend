@@ -13,6 +13,8 @@ export type OrderStatus =
   | 'CANCELLED'
   | 'EXPIRED'
   | 'CANCEL_REQUESTED'
+  | 'BOMBED'
+  | 'RETURNED_TO_WAREHOUSE'
   | (string & {})
 
 export interface ShipperSuggestionResponse {
@@ -89,6 +91,7 @@ export interface OrderDetailResponse {
   unitPrice: number
   salePrice?: number | null
   quantity: number
+  weight?: number
   totalPrice: number
   createdAt: string
 }
@@ -106,6 +109,9 @@ export interface OrderDetailFull {
   clientSecret?: string
   createdAt: string
   updatedAt?: string
+  shippedAt?: string
+  cancelledAt?: string
+  estimatedDeliveryAt?: string
   paymentExpiredAt?: string
   orderDetails: OrderDetailResponse[]
   payment?: PaymentResponse  
@@ -114,6 +120,9 @@ export interface OrderDetailFull {
   shippingFee?: number
   mediaFiles?: MediaFileResponse[]
   cancelReason?: string
+  deliveryFailCount?: number
+  latitude?: number
+  longitude?: number
 }
 
 export interface OrderResponse {
@@ -128,6 +137,9 @@ export interface OrderResponse {
   clientSecret?: string
   createdAt: string
   updatedAt?: string
+  shippedAt?: string
+  cancelledAt?: string
+  estimatedDeliveryAt?: string
   paymentExpiredAt?: string
   orderDetails?: OrderDetailResponse[]
   payment?: PaymentResponse
@@ -135,6 +147,9 @@ export interface OrderResponse {
   shippingFee?: number
   mediaFiles?: MediaFileResponse[]
   cancelReason?: string
+  deliveryFailCount?: number
+  latitude?: number
+  longitude?: number
 }
 
 export interface DeliveryStopResponse {
