@@ -402,14 +402,14 @@
   "bookingFlow": {
     "eyebrow": "Thanh toán & đặt lịch",
     "title": "Đặt lịch spa và grooming",
-    "subtitle": "Chọn dịch vụ, chọn khung giờ, bổ sung thông tin thú cưng và thanh toán cọc 20%.",
+    "subtitle": "Nhập thông tin, chọn dịch vụ, chọn khung giờ rồi thanh toán cọc 20%.",
     "steps": {
       "step": "Bước {{step}}",
       "items": {
-        "1": "Dịch vụ",
-        "2": "Ngày & giờ",
-        "3": "Thú cưng & thông tin",
-        "4": "Tổng hợp"
+        "1": "Thông tin & thú cưng",
+        "2": "Dịch vụ",
+        "3": "Ngày & giờ",
+        "4": "Checkout"
       }
     },
     "capacity": {
@@ -440,8 +440,8 @@
       "empty": "Không có khung giờ đang hoạt động cho dịch vụ này vào ngày đã chọn."
     },
     "review": {
-      "title": "Tổng hợp và thanh toán",
-      "subtitle": "Vui lòng soát lại thông tin chi tiết trước khi tiến hành đặt cọc.",
+      "title": "Checkout đặt lịch",
+      "subtitle": "Vui lòng kiểm tra lại thông tin trước khi chuyển sang bước thanh toán cọc.",
       "customerSection": "Khách hàng",
       "serviceSection": "Lịch dịch vụ",
       "created": "Lịch đặt {{code}} đã sẵn sàng thanh toán.",
@@ -457,9 +457,29 @@
       "deposit": "Cọc 20%",
       "remaining": "Còn lại",
       "priceByPet": "Giá theo cân nặng từng thú cưng",
-      "priceWithSurcharge": "{{total}} (gồm phụ thu {{surcharge}})",
+      "priceWithExtraDuration": "{{total}} (thêm {{minutes}} phút: {{fee}})",
+      "groomer": "Nhân viên phụ trách",
       "empty": "Chưa chọn",
       "depositNote": "Lịch hẹn áp dụng chung cho tất cả thú cưng được chọn. Dịch vụ tại nhà sẽ được phục vụ theo địa chỉ bạn cung cấp."
+    },
+    "assignment": {
+      "title": "Chọn nhân viên groomer",
+      "subtitle": "Bạn có thể để PetBuddy tự sắp xếp hoặc chọn nhân viên còn lịch trống trong khung giờ này.",
+      "auto": {
+        "title": "PetBuddy tự sắp xếp",
+        "description": "Hệ thống sẽ chọn nhân viên phù hợp còn trống cho lịch hẹn của bạn."
+      },
+      "selected": {
+        "title": "Tự chọn nhân viên",
+        "description": "Chọn một groomer bạn muốn đồng hành trong buổi chăm sóc này."
+      },
+      "loading": "Đang tìm nhân viên phù hợp...",
+      "empty": "Chưa có nhân viên trống trong khung giờ này. Bạn vẫn có thể để PetBuddy tự sắp xếp.",
+      "shift": "Ca {{start}} - {{end}}",
+      "experience": "{{years}} năm kinh nghiệm",
+      "noExperience": "Kinh nghiệm đang cập nhật",
+      "autoSummary": "PetBuddy tự sắp xếp",
+      "selectedSummary": "{{name}}"
     },
     "weightRanges": {
       "EXTRA_SMALL": "Dưới 5kg",
@@ -473,7 +493,7 @@
       "back": "Quay lại",
       "next": "Tiếp tục",
       "reset": "Đặt lại form",
-      "checkout": "Thanh toán",
+      "checkout": "Tiếp tục thanh toán",
       "submit": "Tạo đặt lịch",
       "submitting": "Đang tạo đặt lịch..."
     },
@@ -486,12 +506,14 @@
       "selectService": "Vui lòng chọn dịch vụ trước.",
       "selectPet": "Vui lòng chọn ít nhất một thú cưng.",
       "selectTime": "Vui lòng chọn ngày hẹn và khung giờ.",
+      "selectGroomer": "Vui lòng chọn nhân viên bạn muốn đặt lịch, hoặc chuyển sang để PetBuddy tự sắp xếp nhé.",
       "customerMissing": "Vui lòng nhập tên khách hàng và số điện thoại.",
       "addressMissing": "Vui lòng nhập địa chỉ sử dụng dịch vụ tại nhà.",
       "slotLimit": "Số thú cưng đã đạt sức chứa của khung giờ này.",
       "resetSuccess": "Đã đặt lại thông tin đặt lịch.",
       "paymentSecretMissing": "Lịch đặt đã được tạo nhưng backend chưa trả Stripe payment secret.",
       "retryPaymentFailed": "Không thể tạo lượt thanh toán mới.",
+      "groomerLoadError": "Chưa tải được danh sách nhân viên trống. Bạn vẫn có thể để PetBuddy tự sắp xếp nhé.",
       "cardElementMissing": "Không thể tải ô nhập thẻ.",
       "cardholderMissing": "Vui lòng nhập tên chủ thẻ.",
       "paymentFailed": "Thanh toán thất bại. Vui lòng thử lại.",
@@ -534,12 +556,14 @@
         "READY_FOR_PICKUP": "Sẵn sàng đón",
         "COMPLETED": "Hoàn tất",
         "CANCELLED": "Đã hủy",
+        "WAITING_STAFF": "Đang chờ nhân viên",
         "unknown": "Đang cập nhật"
       }
     },
     "bookingTypes": {
       "AT_STORE": "Tại tiệm",
-      "AT_HOME": "Tại nhà"
+      "AT_HOME": "Tại nhà",
+      "paused": "tạm khóa"
     },
     "customer": {
       "title": "Thông tin khách hàng",

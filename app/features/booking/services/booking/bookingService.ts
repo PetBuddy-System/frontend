@@ -12,8 +12,11 @@ export enum BookingStatus {
   READY_FOR_PICKUP = 'READY_FOR_PICKUP',
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
-  FAILED = 'FAILED'
+  FAILED = 'FAILED',
+  WAITING_STAFF = 'WAITING_STAFF'
 }
+
+export type StaffAssignmentMode = 'AUTO' | 'SELECTED'
 
 export interface BookingCreationRequest {
   customerName: string
@@ -22,6 +25,8 @@ export interface BookingCreationRequest {
   note?: string
   bookingType: string
   scheduledAt: string
+  assignmentMode?: StaffAssignmentMode
+  requestedStaffId?: string
   bookingDetails: BookingDetailCreationRequest[]
 }
 
@@ -51,22 +56,33 @@ export interface BookingResponse {
   bookingStatus: string
   cancelReason: string
   paymentDeadlineAt: string
-  staffId: string
-  staffName: string
+  estimatedEndAt?: string
+  stripeClientSecret?: string
+  assignmentMode?: StaffAssignmentMode
+  staffId?: string
+  staffName?: string
   bookingDetails: BookingDetailResponse[]
-  payments: PaymentResponse[]
+  payments?: PaymentResponse[]
 }
 
 export interface BookingDetailResponse {
   bookingDetailId: number
   petId: string
   petName: string
+  petImage?: string
   catalogId: number
   catalogName: string
+  catalogImage?: string
   timeSlotId: number
   timeSlot: string
-  unitPrice: number
-  durationMinute: number
+  weightRange?: string
+  baseDurationMinute?: number
+  additionalDurationMinute?: number
+  totalDurationMinute?: number
+  basePrice?: number
+  additionalPrice?: number
+  unitPrice?: number
+  durationMinute?: number
   totalPrice: number
   mediaFiles: MediaFileResponse[]
 }
@@ -82,7 +98,12 @@ export interface PaymentResponse {
 export interface MediaFileResponse {
   mediaFileId: number
   fileUrl: string
+  fileKey?: string
+  fileSize?: number
   fileType: string
+  mediaPurpose?: string
+  mediaStatus?: string
+  bookingMediaType?: string
   createdAt: string
 }
 
@@ -97,8 +118,10 @@ export interface CatalogResponse {
   durationMinute: number
   bufferTime: number
   status: string
-  surchargeConfig?: string | null
   durationConfig?: string | null
+  additionalDurationConfig?: string | null
+  additionalPricePerMinute?: number | null
+  imageUrl?: string | null
 }
 
 export interface PetProfileResponse {
@@ -130,6 +153,22 @@ export interface TimeSlotResponse {
   maxPets?: number | null
 }
 
+export interface AvailableGroomerRequest {
+  scheduledAt: string
+  bookingDetails: BookingDetailCreationRequest[]
+}
+
+export interface AvailableGroomerResponse {
+  staffId: string
+  fullName: string
+  specialization?: string
+  introduction?: string
+  yearsOfExperience?: number
+  avatar?: string
+  shiftStart: string
+  shiftEnd: string
+}
+
 export interface BookingListParams {
   status?: BookingStatus
   fromDate?: string
@@ -140,7 +179,8 @@ interface ApiResponse<T> {
   code?: number | string
   message?: string
   success?: boolean
-  data: T
+  data?: T
+  result?: T
   timestamp?: string
 }
 
@@ -155,8 +195,14 @@ function getAuthorizationHeaders(): Record<string, string> {
 }
 
 function unwrapResponse<T>(payload: ApiResponse<T> | T): T {
-  if (payload && typeof payload === 'object' && 'data' in payload) {
-    return (payload as ApiResponse<T>).data
+  if (payload && typeof payload === 'object') {
+    const apiPayload = payload as ApiResponse<T>
+    if (apiPayload.data !== undefined) {
+      return apiPayload.data
+    }
+    if (apiPayload.result !== undefined) {
+      return apiPayload.result
+    }
   }
 
   return payload as T
@@ -200,9 +246,23 @@ export function getCatalogs(): Promise<CatalogResponse[]> {
   })
 }
 
+export function getCatalogDetail(catalogId: number | string): Promise<CatalogResponse> {
+  return request<CatalogResponse>({
+    url: `${CATALOGS_URL}/${catalogId}`,
+    method: 'GET'
+  })
+}
+
 export function getPets(): Promise<PetProfileResponse[]> {
   return request<PetProfileResponse[]>({
     url: PETS_URL,
+    method: 'GET'
+  })
+}
+
+export function getPetDetail(petId: number | string): Promise<PetProfileResponse> {
+  return request<PetProfileResponse>({
+    url: `${PETS_URL}/${petId}`,
     method: 'GET'
   })
 }
@@ -252,6 +312,14 @@ export function createBooking(payload: BookingCreationRequest): Promise<BookingR
   })
 }
 
+export function getAvailableGroomers(payload: AvailableGroomerRequest): Promise<AvailableGroomerResponse[]> {
+  return request<AvailableGroomerResponse[]>({
+    url: `${BOOKINGS_URL}/available-groomers`,
+    method: 'POST',
+    data: payload
+  })
+}
+
 export function getMyBookings(): Promise<BookingResponse[]> {
   return request<BookingResponse[]>({
     url: `${BOOKINGS_URL}/my-bookings`,
@@ -285,8 +353,8 @@ export function updateBookingStatus(
   })
 }
 
-export function retryBookingPayment(bookingId: number | string): Promise<BookingResponse> {
-  return request<BookingResponse>({
+export function retryBookingPayment(bookingId: number | string): Promise<BookingResponse | PaymentResponse> {
+  return request<BookingResponse | PaymentResponse>({
     url: `${BOOKINGS_URL}/${bookingId}/retry-payment`,
     method: 'POST'
   })

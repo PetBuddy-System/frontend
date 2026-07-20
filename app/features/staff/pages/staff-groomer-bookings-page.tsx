@@ -105,7 +105,7 @@ export function StaffGroomerBookingsPage() {
     () => bookings.filter((booking) => booking.bookingType === 'AT_STORE' && booking.bookingStatus === activeStatus),
     [activeStatus, bookings]
   )
-  const selectedBooking = bookings.find((booking) => booking.bookingId === selectedBookingId) ?? filteredBookings[0]
+  const selectedBooking = bookings.find((booking) => booking.bookingId === selectedBookingId) ?? null
   const nextStatus = selectedBooking ? getNextStatus(selectedBooking.bookingStatus as GroomerBookingStatus) : null
   const isNextAllowed = selectedBooking ? canMoveToNextStatus(selectedBooking, nextStatus) : false
 
@@ -121,13 +121,17 @@ export function StaffGroomerBookingsPage() {
         const lists = await Promise.all(STATUS_TABS.map((status) => fetchStaffBookings({ status })))
         const nextBookings = lists.flat().filter((booking) => booking.bookingType === 'AT_STORE')
         setBookings(nextBookings)
+        setSelectedBookingId((currentId) => {
+          if (currentId && nextBookings.some((booking) => booking.bookingId === currentId)) {
+            return currentId
+          }
 
-        const preferredBooking =
-          nextBookings.find((booking) => booking.bookingStatus === preferredStatus) ??
-          nextBookings.find((booking) => booking.bookingStatus === activeStatus) ??
-          nextBookings[0]
+          if (preferredStatus !== activeStatus) {
+            return nextBookings.find((booking) => booking.bookingStatus === preferredStatus)?.bookingId ?? null
+          }
 
-        setSelectedBookingId(preferredBooking?.bookingId ?? null)
+          return null
+        })
       } catch (error) {
         showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.loadFailed'))
       } finally {
@@ -147,6 +151,20 @@ export function StaffGroomerBookingsPage() {
     setBookings((current) => replaceBooking(current, detail))
     setSelectedBookingId(detail.bookingId)
     return detail
+  }
+
+  async function handleSelectBooking(bookingId: number) {
+    setSelectedBookingId(bookingId)
+    setIsLoading(true)
+
+    try {
+      const detail = await fetchStaffBookingDetail(bookingId)
+      setBookings((current) => replaceBooking(current, detail))
+    } catch (error) {
+      showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.loadDetailFailed'))
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   async function updateBookingStatus(status: GroomerBookingStatus, reason?: string) {
@@ -277,9 +295,7 @@ export function StaffGroomerBookingsPage() {
                     type='button'
                     onClick={() => {
                       setActiveStatus(status)
-                      setSelectedBookingId(
-                        bookings.find((booking) => booking.bookingStatus === status)?.bookingId ?? null
-                      )
+                      setSelectedBookingId(null)
                     }}
                     className={cn(
                       'rounded-2xl border border-border bg-card p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md',
@@ -295,7 +311,12 @@ export function StaffGroomerBookingsPage() {
               })}
             </section>
 
-            <section className='grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)]'>
+            <section
+              className={cn(
+                'grid grid-cols-1 gap-6',
+                selectedBooking && 'xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)]'
+              )}
+            >
               <div className='flex flex-col gap-4'>
                 {isLoading && bookings.length === 0 && (
                   <div className='rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-sm'>
@@ -312,8 +333,17 @@ export function StaffGroomerBookingsPage() {
                 {filteredBookings.map((booking) => (
                   <article
                     key={booking.bookingId}
+                    role='button'
+                    tabIndex={0}
+                    onClick={() => void handleSelectBooking(booking.bookingId)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault()
+                        void handleSelectBooking(booking.bookingId)
+                      }
+                    }}
                     className={cn(
-                      'rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:shadow-md',
+                      'cursor-pointer rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring',
                       selectedBooking?.bookingId === booking.bookingId && 'border-primary ring-2 ring-primary/20'
                     )}
                   >
@@ -356,17 +386,9 @@ export function StaffGroomerBookingsPage() {
                     <Button
                       className='mt-4 w-full'
                       variant='outline'
-                      onClick={async () => {
-                        setSelectedBookingId(booking.bookingId)
-                        try {
-                          const detail = await fetchStaffBookingDetail(booking.bookingId)
-                          setBookings((current) => replaceBooking(current, detail))
-                        } catch (error) {
-                          showMessage(
-                            'error',
-                            error instanceof Error ? error.message : t('groomerBookings.messages.loadDetailFailed')
-                          )
-                        }
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        void handleSelectBooking(booking.bookingId)
                       }}
                     >
                       <MaterialIcon name='visibility' className='text-[18px]' />

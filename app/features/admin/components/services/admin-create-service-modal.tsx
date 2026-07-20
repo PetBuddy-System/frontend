@@ -1,13 +1,8 @@
-import { type FormEvent, useState } from 'react'
+import { type ChangeEvent, type FormEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button, MaterialIcon } from '~/shared/ui'
-import {
-  DURATION_CONFIG_WEIGHT_RANGES,
-  SURCHARGE_WEIGHT_RANGES,
-  serializeDurationConfig,
-  serializeSurchargeConfig
-} from '~/shared/lib/catalog-pricing'
+import { DURATION_CONFIG_WEIGHT_RANGES, serializeDurationConfig } from '~/shared/lib/catalog-pricing'
 
 import { CATALOG_STATUSES, CATALOG_TYPES, PET_SPECIES, type CatalogRequest } from '../../lib/catalog-management'
 
@@ -15,11 +10,13 @@ export interface AdminCreateServiceModalProps {
   isOpen: boolean
   isSaving?: boolean
   onClose: () => void
-  onSubmit: (payload: CatalogRequest) => void | Promise<void>
+  onSubmit: (payload: CatalogRequest, imageFile?: File) => void | Promise<void>
 }
 
 export function AdminCreateServiceModal({ isOpen, isSaving = false, onClose, onSubmit }: AdminCreateServiceModalProps) {
   const { t } = useTranslation('admin')
+  const [imageFile, setImageFile] = useState<File | undefined>()
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null)
 
   if (!isOpen) {
     return null
@@ -45,36 +42,32 @@ export function AdminCreateServiceModal({ isOpen, isSaving = false, onClose, onS
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
 
-    void onSubmit({
-      catalogName: String(formData.get('catalogName') ?? '').trim(),
-      description: String(formData.get('description') ?? '').trim(),
-      catalogType: String(formData.get('catalogType') ?? 'AT_STORE') as CatalogRequest['catalogType'],
-      petSpecies: String(formData.get('petSpecies') ?? 'ALL') as CatalogRequest['petSpecies'],
-      price: Number(formData.get('price') ?? 0),
-      durationMinute: Number(formData.get('durationMinute') ?? 0),
-      bufferTime: Number(formData.get('bufferTime') ?? 0),
-      status: String(formData.get('status') ?? 'AVAILABLE') as CatalogRequest['status'],
-      surchargeConfig: serializeSurchargeConfig({
-        MEDIUM: Number(formData.get('surcharge_MEDIUM') ?? 0),
-        LARGE: Number(formData.get('surcharge_LARGE') ?? 0),
-        EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_LARGE') ?? 0),
-        EXTRA_EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_EXTRA_LARGE') ?? 0)
-      }),
-      durationConfig: serializeDurationConfig({
-        MEDIUM: Number(formData.get('durationExtra_MEDIUM') ?? 0)
-          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_MEDIUM') ?? 0)
-          : 0,
-        LARGE: Number(formData.get('durationExtra_LARGE') ?? 0)
-          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_LARGE') ?? 0)
-          : 0,
-        EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0)
-          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0)
-          : 0,
-        EXTRA_EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
-          ? Number(formData.get('durationMinute') ?? 0) + Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
-          : 0
-      })
-    })
+    void onSubmit(
+      {
+        catalogName: String(formData.get('catalogName') ?? '').trim(),
+        description: String(formData.get('description') ?? '').trim(),
+        catalogType: String(formData.get('catalogType') ?? 'AT_STORE') as CatalogRequest['catalogType'],
+        petSpecies: String(formData.get('petSpecies') ?? 'ALL') as CatalogRequest['petSpecies'],
+        price: Number(formData.get('price') ?? 0),
+        durationMinute: Number(formData.get('durationMinute') ?? 0),
+        bufferTime: Number(formData.get('bufferTime') ?? 0),
+        status: String(formData.get('status') ?? 'AVAILABLE') as CatalogRequest['status'],
+        additionalPricePerMinute: Number(formData.get('additionalPricePerMinute') ?? 0),
+        additionalDurationConfig: serializeDurationConfig({
+          MEDIUM: Number(formData.get('durationExtra_MEDIUM') ?? 0),
+          LARGE: Number(formData.get('durationExtra_LARGE') ?? 0),
+          EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0),
+          EXTRA_EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
+        })
+      },
+      imageFile
+    )
+  }
+
+  function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    setImageFile(file)
+    setImagePreviewUrl(file ? URL.createObjectURL(file) : null)
   }
 
   return (
@@ -152,9 +145,14 @@ export function AdminCreateServiceModal({ isOpen, isSaving = false, onClose, onS
                 optionLabels={statusLabels}
               />
               <CurrencyField name='price' label={t('serviceManagement.create.fields.price')} defaultValue={250000} />
+              <CurrencyField
+                name='additionalPricePerMinute'
+                label={t('serviceManagement.create.fields.additionalPricePerMinute')}
+                defaultValue={0}
+                required={false}
+              />
 
-              {/* Phụ thu theo cân nặng — full width */}
-              <SurchargeFields title={t('serviceManagement.surcharge.title')} />
+              {/* Thời lượng phát sinh theo cân nặng — full width */}
               <DurationConfigFields title={t('serviceManagement.durationConfig.title')} />
 
               {/* Thời lượng & Thời gian đệm */}
@@ -172,6 +170,26 @@ export function AdminCreateServiceModal({ isOpen, isSaving = false, onClose, onS
               />
 
               {/* Mô tả — full width */}
+              <label className='space-y-2 md:col-span-2'>
+                <span className='text-sm font-semibold text-card-foreground'>
+                  {t('serviceManagement.create.fields.image')}
+                </span>
+                <input
+                  name='imageFile'
+                  type='file'
+                  accept='image/*'
+                  onChange={handleImageChange}
+                  className='w-full rounded-lg border border-input bg-card px-4 py-3 text-sm text-card-foreground outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-bold file:text-primary-foreground focus:border-primary focus:ring-2 focus:ring-ring'
+                />
+                {imagePreviewUrl ? (
+                  <img
+                    src={imagePreviewUrl}
+                    alt={t('serviceManagement.create.fields.imagePreview')}
+                    className='h-32 w-full rounded-lg border border-border object-cover'
+                  />
+                ) : null}
+              </label>
+
               <label className='space-y-2 md:col-span-2'>
                 <span className='text-sm font-semibold text-card-foreground'>
                   {t('serviceManagement.create.fields.description')}
@@ -252,29 +270,6 @@ function SelectField({
   )
 }
 
-function SurchargeFields({ title }: { title: string }) {
-  const { t } = useTranslation('admin')
-
-  return (
-    <fieldset className='space-y-3 rounded-lg border border-border bg-card p-4 md:col-span-2'>
-      <legend className='px-1 text-sm font-semibold text-card-foreground'>{title}</legend>
-      <p className='text-xs leading-relaxed text-muted-foreground'>{t('serviceManagement.surcharge.help')}</p>
-      {/* grid-cols-3 cố định để 3 cột luôn ngang hàng */}
-      <div className='grid grid-cols-2 items-end gap-3 lg:grid-cols-4'>
-        {SURCHARGE_WEIGHT_RANGES.map((range) => (
-          <CurrencyField
-            key={range}
-            name={`surcharge_${range}`}
-            label={t(`serviceManagement.surcharge.ranges.${range}`)}
-            defaultValue={0}
-            required={false}
-          />
-        ))}
-      </div>
-    </fieldset>
-  )
-}
-
 function DurationConfigFields({ title }: { title: string }) {
   const { t } = useTranslation('admin')
 
@@ -282,7 +277,7 @@ function DurationConfigFields({ title }: { title: string }) {
     <fieldset className='space-y-3 rounded-lg border border-border bg-card p-4 md:col-span-2'>
       <legend className='px-1 text-sm font-semibold text-card-foreground'>{title}</legend>
       <p className='text-xs leading-relaxed text-muted-foreground'>{t('serviceManagement.durationConfig.help')}</p>
-      <div className='grid grid-cols-2 items-end gap-3 lg:grid-cols-4'>
+      <div className='grid grid-cols-1 items-end gap-3 sm:grid-cols-2 xl:grid-cols-4'>
         {DURATION_CONFIG_WEIGHT_RANGES.map((range) => (
           <NumberField
             key={range}
@@ -316,7 +311,7 @@ function NumberField({
   return (
     <div className='flex flex-col gap-2'>
       <span className='text-sm font-semibold text-card-foreground'>{label}</span>
-      <div className='flex h-11 overflow-hidden rounded-lg border border-input bg-card transition focus-within:border-primary focus-within:ring-2 focus-within:ring-ring'>
+      <div className='grid h-11 grid-cols-[minmax(5.5rem,1fr)_auto] overflow-hidden rounded-lg border border-input bg-card transition focus-within:border-primary focus-within:ring-2 focus-within:ring-ring'>
         <input
           name={name}
           type='number'
@@ -324,7 +319,7 @@ function NumberField({
           defaultValue={defaultValue}
           required={required}
           readOnly={readOnly}
-          className='min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-card-foreground outline-none'
+          className='min-w-0 bg-transparent px-4 text-sm font-semibold text-card-foreground outline-none'
         />
         {unit && (
           <span className='flex shrink-0 items-center border-l border-input bg-muted px-3 text-xs font-semibold text-muted-foreground'>
@@ -358,7 +353,7 @@ function CurrencyField({
   const [displayValue, setDisplayValue] = useState(() => format(defaultValue))
   const [rawValue, setRawValue] = useState(defaultValue)
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const stripped = e.target.value.replace(/\D/g, '')
     const numeric = stripped === '' ? 0 : parseInt(stripped, 10)
     setRawValue(numeric)

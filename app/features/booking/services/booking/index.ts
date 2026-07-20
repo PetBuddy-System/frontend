@@ -1,12 +1,15 @@
 export {
   createBooking,
+  getAvailableGroomers,
   getAvailableCatalogTimeSlots,
   getBookingDetail,
+  getCatalogDetail,
   getBookings,
   getCatalogs,
   getCatalogTimeSlots,
   getCatalogTimeSlotsByCatalog,
   getMyBookings,
+  getPetDetail,
   getPets,
   retryBookingPayment,
   toggleCatalogTimeSlot,
@@ -14,6 +17,8 @@ export {
   updateCatalogStatus,
   uploadBookingDetailMedia,
   BookingStatus,
+  type AvailableGroomerRequest,
+  type AvailableGroomerResponse,
   type BookingCreationRequest,
   type BookingDetailCreationRequest,
   type BookingDetailResponse,
@@ -24,5 +29,6 @@ export {
   type MediaFileResponse,
   type PaymentResponse,
   type PetProfileResponse,
+  type StaffAssignmentMode,
   type TimeSlotResponse
 } from './bookingService'

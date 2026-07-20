@@ -1,4 +1,4 @@
-import { DURATION_CONFIG_WEIGHT_RANGES, SURCHARGE_WEIGHT_RANGES, type WeightRange } from '~/shared/lib/catalog-pricing'
+import { DURATION_CONFIG_WEIGHT_RANGES, type WeightRange } from '~/shared/lib/catalog-pricing'
 
 export const CATALOG_TYPES = ['AT_STORE', 'AT_HOME'] as const
 export const PET_SPECIES = ['DOG', 'CAT', 'ALL'] as const
@@ -6,7 +6,7 @@ export const PET_SPECIES = ['DOG', 'CAT', 'ALL'] as const
 export const WEIGHT_RANGES = [
   'EXTRA_SMALL',
   'SMALL',
-  ...SURCHARGE_WEIGHT_RANGES
+  ...DURATION_CONFIG_WEIGHT_RANGES
 ] as const satisfies readonly WeightRange[]
 export const CATALOG_STATUSES = ['AVAILABLE', 'UNAVAILABLE'] as const
 export const WEEK_DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as const
@@ -35,8 +35,10 @@ export interface CatalogResponse {
   durationMinute: number
   bufferTime: number
   status: CatalogStatus | string
-  surchargeConfig?: string | null
   durationConfig?: string | null
+  additionalDurationConfig?: string | null
+  additionalPricePerMinute?: number | null
+  imageUrl?: string | null
   createdAt?: string | null
   updatedAt?: string | null
 }
@@ -47,11 +49,13 @@ export type CatalogRequest = {
   catalogType: CatalogType
   petSpecies: PetSpecies
   price: number
+  weightRange?: WeightRange
   durationMinute: number
   bufferTime: number
   status: CatalogStatus
-  surchargeConfig?: string
-  durationConfig?: string
+  additionalDurationConfig?: string
+  additionalPricePerMinute?: number
+  imageUrl?: string
 }
 
 export interface TimeSlotResponse {
@@ -134,11 +138,16 @@ export function mapCatalogResponseToAdminCatalog(catalog: CatalogResponse): Admi
     catalogType,
     petSpecies: coercePetSpecies(catalog.petSpecies),
     price: Number(catalog.price ?? 0),
+    weightRange:
+      catalog.weightRange && WEIGHT_RANGES.includes(catalog.weightRange as WeightRange)
+        ? (catalog.weightRange as WeightRange)
+        : undefined,
     durationMinute: Number(catalog.durationMinute ?? 0),
     bufferTime: Number(catalog.bufferTime ?? 0),
     status: coerceCatalogStatus(catalog.status),
-    surchargeConfig: catalog.surchargeConfig ?? undefined,
-    durationConfig: catalog.durationConfig ?? undefined,
+    additionalDurationConfig: catalog.additionalDurationConfig ?? catalog.durationConfig ?? undefined,
+    additionalPricePerMinute: Number(catalog.additionalPricePerMinute ?? 0),
+    imageUrl: catalog.imageUrl ?? undefined,
     updatedAt: formatUpdatedAt(catalog.updatedAt ?? catalog.createdAt),
     icon: ICON_BY_CATALOG_TYPE[catalogType]
   }
@@ -162,12 +171,14 @@ export function mapAdminCatalogToCatalogRequest(catalog: AdminCatalog): CatalogR
     catalogType: catalog.catalogType,
     petSpecies: catalog.petSpecies,
     price: catalog.price,
+    weightRange: catalog.weightRange as WeightRange | undefined,
     durationMinute: catalog.durationMinute,
     bufferTime: catalog.bufferTime,
     status: catalog.status,
-    surchargeConfig: catalog.surchargeConfig,
-    durationConfig: catalog.durationConfig
+    additionalDurationConfig: catalog.additionalDurationConfig,
+    additionalPricePerMinute: catalog.additionalPricePerMinute,
+    imageUrl: catalog.imageUrl
   }
 }
 
-export { DURATION_CONFIG_WEIGHT_RANGES, SURCHARGE_WEIGHT_RANGES }
+export { DURATION_CONFIG_WEIGHT_RANGES }

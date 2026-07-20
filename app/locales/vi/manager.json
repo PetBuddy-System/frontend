@@ -847,10 +847,13 @@
     "status": {
       "active": "Đang hoạt động",
       "inactive": "Ngừng kinh doanh",
-      "deleted": "Đã xóa"
+      "deleted": "Đã xóa",
+      "outOfStock": "Hết hàng",
+      "lowStock": "Sắp hết hàng"
     },
     "stock": {
-      "low": "Sắp hết"
+      "low": "Sắp hết",
+      "outOfStock": "Hết hàng"
     },
     "table": {
       "columns": {

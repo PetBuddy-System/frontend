@@ -278,7 +278,8 @@
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Sẵn sàng đón",
       "COMPLETED": "Hoàn tất",
-      "CANCELLED": "Đã hủy"
+      "CANCELLED": "Đã hủy",
+      "WAITING_STAFF": "Đang chờ nhân viên"
     },
     "status": {
       "PENDING_PAYMENT": "Chờ thanh toán",
@@ -288,7 +289,8 @@
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Sẵn sàng đón",
       "COMPLETED": "Hoàn tất",
-      "CANCELLED": "Đã hủy"
+      "CANCELLED": "Đã hủy",
+      "WAITING_STAFF": "Đang chờ nhân viên"
     },
     "bookingTypes": {
       "AT_HOME": "Tại nhà",
@@ -320,7 +322,11 @@
       "beforeMedia": "Ảnh trước khi thực hiện",
       "afterMedia": "Ảnh sau khi thực hiện",
       "noMedia": "Chưa có ảnh được nhân viên tải lên.",
-      "paymentTitle": "Tóm tắt thanh toán"
+      "paymentTitle": "Tóm tắt thanh toán",
+      "basePrice": "Giá dịch vụ",
+      "extraPrice": "Phụ phí",
+      "extraPriceWithDuration": "Phụ phí thêm {{minutes}} phút",
+      "pickupPayment": "Thanh toán khi nhận thú"
     },
     "payment": {
       "title": "Hoàn tất thanh toán đặt cọc",
@@ -330,6 +336,8 @@
       "pay": "Thanh toán {{amount}}",
       "processing": "Đang xử lý thanh toán...",
       "success": "Thanh toán thành công. Lịch của bạn đang chờ nhân viên xác nhận.",
+      "syncing": "Thanh toán thành công. PetBuddy đang cập nhật trạng thái lịch của bạn...",
+      "pendingSync": "Thanh toán đã thành công, hệ thống cần thêm chút thời gian để cập nhật trạng thái lịch.",
       "failed": "Thanh toán thất bại. Vui lòng kiểm tra thẻ và thử lại.",
       "stripeMissing": "Thiếu Stripe publishable key. Vui lòng cấu hình VITE_STRIPE_PK.",
       "cardElementMissing": "Không thể tải ô nhập thẻ. Vui lòng tải lại và thử lại.",
