@@ -301,10 +301,12 @@ export function StaffScheduleDetailPage() {
                   </div>
 
                   <div className='mt-5 grid gap-3'>
-                    <Button type='button' disabled={isSubmitting} onClick={() => void handleCheckIn()}>
-                      <MaterialIcon name='login' className='text-lg' />
-                      {t('staffSchedule.actions.checkIn')}
-                    </Button>
+                    {!schedule.checkInAt ? (
+                      <Button type='button' disabled={isSubmitting} onClick={() => void handleCheckIn()}>
+                        <MaterialIcon name='login' className='text-lg' />
+                        {t('staffSchedule.actions.checkIn')}
+                      </Button>
+                    ) : null}
                     <Button
                       type='button'
                       variant='outline'

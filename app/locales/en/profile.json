@@ -278,7 +278,8 @@
       "IN_PROGRESS": "In progress",
       "READY_FOR_PICKUP": "Ready for pickup",
       "COMPLETED": "Completed",
-      "CANCELLED": "Cancelled"
+      "CANCELLED": "Cancelled",
+      "WAITING_STAFF": "Waiting for staff"
     },
     "status": {
       "PENDING_PAYMENT": "Pending payment",
@@ -288,7 +289,8 @@
       "IN_PROGRESS": "In progress",
       "READY_FOR_PICKUP": "Ready for pickup",
       "COMPLETED": "Completed",
-      "CANCELLED": "Cancelled"
+      "CANCELLED": "Cancelled",
+      "WAITING_STAFF": "Waiting for staff"
     },
     "bookingTypes": {
       "AT_HOME": "At home",
@@ -320,7 +322,11 @@
       "beforeMedia": "Before-service photos",
       "afterMedia": "After-service photos",
       "noMedia": "No photos have been uploaded by staff yet.",
-      "paymentTitle": "Payment summary"
+      "paymentTitle": "Payment summary",
+      "basePrice": "Service price",
+      "extraPrice": "Extra fee",
+      "extraPriceWithDuration": "Extra fee for {{minutes}} more minutes",
+      "pickupPayment": "Paid at pickup"
     },
     "payment": {
       "title": "Complete deposit payment",
@@ -330,6 +336,8 @@
       "pay": "Pay {{amount}}",
       "processing": "Processing payment...",
       "success": "Payment successful. Your booking is now waiting for staff confirmation.",
+      "syncing": "Payment successful. PetBuddy is updating your booking status...",
+      "pendingSync": "Payment succeeded, and the system needs a little more time to update your booking status.",
       "failed": "Payment failed. Please check your card and try again.",
       "stripeMissing": "Stripe publishable key is missing. Please configure VITE_STRIPE_PK.",
       "cardElementMissing": "Could not load the card input. Please refresh and try again.",

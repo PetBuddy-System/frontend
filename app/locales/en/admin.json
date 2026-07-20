@@ -556,9 +556,12 @@
         "catalogType": "Catalog type",
         "petSpecies": "Pet species",
         "price": "Base price",
+        "additionalPricePerMinute": "Extra fee per additional minute",
         "weightRange": "Weight range",
         "durationMinute": "Duration minute",
-        "bufferTime": "Buffer time"
+        "bufferTime": "Buffer time",
+        "image": "Catalog image",
+        "imagePreview": "Catalog image preview"
       },
       "media": {
         "hint": "PNG, JPG up to 10MB",
@@ -592,7 +595,7 @@
       "dto": {
         "label": "CONFIGURATION GUIDE",
         "title": "Notes on setting up service",
-        "text": "1. Service Type: Choose 'At store' if customers bring pets in, choose 'At home' if a staff member goes to their place.\n2. Base price applies to EXTRA_SMALL, SMALL, and MEDIUM pets.\n3. Add surcharges only for LARGE, EXTRA_LARGE, and EXTRA_EXTRA_LARGE pets.\n4. Buffer time is the cleaning/prep slot between appointments."
+        "text": "1. Service type: Choose 'At store' when customers bring pets in, or 'At home' when a staff member visits them.\n2. Base price is the standard service price before any extra time is added.\n3. For larger pets, enter the extra minutes needed. The system will calculate the extra fee from the price per minute.\n4. Buffer time is the cleanup and preparation time between appointments."
       }
     },
     "categories": {
@@ -624,7 +627,7 @@
       "saving": "Saving..."
     },
     "pagination": {
-      "showing": "Showing {{shown}} of {{total}} services",
+      "showing": "Showing {{from}} - {{to}} of {{total}} services",
       "previous": "Previous page",
       "next": "Next page"
     },
@@ -671,7 +674,7 @@
       "currency": "VND",
       "editDetails": "Edit details",
       "save": "Update pricing",
-      "serviceId": "Service ID: {{id}}",
+      "serviceId": "Service code: {{id}}",
       "subtitle": "Configure flexible pricing for spa and grooming services. Prices are grouped by body weight to keep operations fair and professional.",
       "title": "Service Pricing Management",
       "weightTiers": {
@@ -703,19 +706,9 @@
       "EXTRA_LARGE": "18kg to 25kg",
       "EXTRA_EXTRA_LARGE": "Over 25kg"
     },
-    "surcharge": {
-      "title": "Weight surcharges",
-      "help": "Leave a surcharge empty or 0 to omit it from surchargeConfig. Base price applies to EXTRA_SMALL and SMALL pets.",
-      "ranges": {
-        "MEDIUM": "MEDIUM (8kg - 12kg)",
-        "LARGE": "LARGE (12kg - 18kg)",
-        "EXTRA_LARGE": "EXTRA_LARGE (18kg - 25kg)",
-        "EXTRA_EXTRA_LARGE": "EXTRA_EXTRA_LARGE (Above 25kg)"
-      }
-    },
     "durationConfig": {
       "title": "Duration by weight",
-      "help": "Enter extra minutes on top of the base duration. The system sends durationConfig as the final duration minutes for each weight range.",
+      "help": "Enter the extra minutes needed on top of the base duration. Leave a field empty or enter 0 when that weight group does not need extra time.",
       "unit": "extra min",
       "ranges": {
         "MEDIUM": "Medium",
@@ -724,7 +717,7 @@
         "EXTRA_EXTRA_LARGE": "Extra extra large"
       }
     },
-    "searchPlaceholder": "Search service name or catalog ID...",
+    "searchPlaceholder": "Search service name or service code...",
     "catalogTypes": {
       "AT_STORE": "At store",
       "AT_HOME": "At home"
@@ -746,10 +739,15 @@
         "petSpecies": "Pet species",
         "weightRange": "Weight range",
         "price": "Base price",
+        "additionalPricePerMinute": "Extra fee per additional minute",
         "durationMinute": "Duration minute",
         "bufferTime": "Buffer time",
         "status": "Status",
-        "description": "Description"
+        "description": "Description",
+        "image": "Catalog image",
+        "imageUrl": "Image URL",
+        "noImage": "No image uploaded",
+        "deleteImage": "Delete current image"
       }
     },
     "schedule": {

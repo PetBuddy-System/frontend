@@ -556,9 +556,12 @@
         "catalogType": "Hình thức cung ứng",
         "petSpecies": "Loài thú cưng áp dụng",
         "price": "Giá cơ bản (VNĐ)",
+        "additionalPricePerMinute": "Phí mỗi phút phát sinh",
         "weightRange": "Khoảng cân nặng",
         "durationMinute": "Thời lượng thực hiện",
-        "bufferTime": "Thời gian dọn dẹp giữa các ca"
+        "bufferTime": "Thời gian dọn dẹp giữa các ca",
+        "image": "Ảnh dịch vụ",
+        "imagePreview": "Xem trước ảnh dịch vụ"
       },
       "media": {
         "hint": "PNG, JPG tối đa 10MB",
@@ -592,7 +595,7 @@
       "dto": {
         "label": "HƯỚNG DẪN CẤU HÌNH",
         "title": "Lưu ý khi thiết lập dịch vụ",
-        "text": "1. Hình thức dịch vụ: Chọn 'Tại tiệm' nếu khách mang thú cưng đến cửa hàng, chọn 'Tại nhà' nếu cử nhân viên đến tận nơi.\n2. Giá gốc áp dụng cho thú cưng dưới 12kg (nhỏ & vừa).\n3. Phụ thu theo cân nặng chỉ điền khi dịch vụ áp dụng cho thú cưng trên 12kg.\n4. Thời gian đệm là khoảng dọn dẹp, chuẩn bị dụng cụ giữa các ca."
+        "text": "1. Hình thức dịch vụ: Chọn 'Tại tiệm' nếu khách mang thú cưng đến cửa hàng, chọn 'Tại nhà' nếu cần nhân viên đến tận nơi.\n2. Giá cơ bản là mức giá tiêu chuẩn cho dịch vụ trước khi cộng thêm thời gian phát sinh.\n3. Với thú cưng lớn hơn, hãy nhập số phút cần cộng thêm. Hệ thống sẽ tự tính phần phí phát sinh theo mức phí mỗi phút.\n4. Thời gian đệm là khoảng dọn dẹp và chuẩn bị dụng cụ giữa các ca."
       }
     },
     "categories": {
@@ -624,7 +627,7 @@
       "saving": "Đang lưu..."
     },
     "pagination": {
-      "showing": "Hiển thị {{shown}} trên {{total}} dịch vụ",
+      "showing": "Hiển thị {{from}} - {{to}} trong số {{total}} dịch vụ",
       "previous": "Trang trước",
       "next": "Trang sau"
     },
@@ -671,7 +674,7 @@
       "currency": "đ",
       "editDetails": "Chỉnh sửa chi tiết",
       "save": "Cập nhật bảng giá",
-      "serviceId": "Service ID: {{id}}",
+      "serviceId": "Mã dịch vụ: {{id}}",
       "subtitle": "Cấu hình biểu phí linh hoạt cho Spa & Grooming. Mức giá được phân loại theo trọng lượng cơ thể để đảm bảo tính công bằng và chuyên nghiệp trong vận hành.",
       "title": "Quản lý bảng giá dịch vụ",
       "weightTiers": {
@@ -703,20 +706,10 @@
       "EXTRA_LARGE": "Từ 18kg đến 25kg",
       "EXTRA_EXTRA_LARGE": "Trên 25kg"
     },
-    "surcharge": {
-      "title": "Phụ thu theo cân nặng",
-      "help": "Để trống hoặc nhập 0 nếu không áp dụng phụ thu. Giá gốc áp dụng cho EXTRA_SMALL và SMALL.",
-      "ranges": {
-        "MEDIUM": "Cỡ vừa (8kg - 12kg)",
-        "LARGE": "Cỡ lớn (12kg – 18kg)",
-        "EXTRA_LARGE": "Cỡ rất lớn (18kg – 25kg)",
-        "EXTRA_EXTRA_LARGE": "Cỡ siêu lớn (trên 25kg)"
-      }
-    },
     "durationConfig": {
       "title": "Thời lượng theo cân nặng",
-      "help": "Nhập số phút cộng thêm so với thời lượng gốc. Hệ thống sẽ gửi durationConfig là tổng thời lượng cuối cùng theo từng hạng cân.",
-      "unit": "phút thêm",
+      "help": "Nhập số phút cần cộng thêm so với thời lượng gốc. Có thể để trống hoặc nhập 0 nếu hạng cân đó không cần thêm thời gian.",
+      "unit": "phút",
       "ranges": {
         "MEDIUM": "Cỡ vừa",
         "LARGE": "Cỡ lớn",
@@ -724,7 +717,7 @@
         "EXTRA_EXTRA_LARGE": "Cỡ siêu lớn"
       }
     },
-    "searchPlaceholder": "Tìm tên dịch vụ hoặc mã catalog...",
+    "searchPlaceholder": "Tìm tên dịch vụ hoặc mã dịch vụ...",
     "catalogTypes": {
       "AT_STORE": "Tại tiệm",
       "AT_HOME": "Tại nhà"
@@ -746,10 +739,15 @@
         "petSpecies": "Loại áp dụng",
         "weightRange": "Khoảng cân nặng",
         "price": "Giá gốc",
+        "additionalPricePerMinute": "Phí mỗi phút phát sinh",
         "durationMinute": "Thời lượng phút",
         "bufferTime": "Thời gian đệm",
         "status": "Trạng thái",
-        "description": "Mô tả"
+        "description": "Mô tả",
+        "image": "Ảnh dịch vụ",
+        "imageUrl": "Đường dẫn ảnh",
+        "noImage": "Chưa có ảnh",
+        "deleteImage": "Xóa ảnh hiện tại"
       }
     },
     "schedule": {

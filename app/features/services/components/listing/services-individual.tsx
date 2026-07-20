@@ -97,7 +97,7 @@ export function ServicesIndividual({ catalogs, errorMessage, isLoading = false }
         <p className='mt-2 text-base text-muted-foreground'>{t('individual.subtitle')}</p>
       </div>
 
-      <div className={cn('relative', isLoading && 'h-[29rem] md:h-[31rem]')}>
+      <div className={cn('relative', isLoading && 'h-[35rem] md:h-[37rem]')}>
         {isLoading &&
           Array.from({ length: 3 }).map((_, index) => {
             const offset = index - 1
@@ -106,7 +106,7 @@ export function ServicesIndividual({ catalogs, errorMessage, isLoading = false }
               <div
                 key={index}
                 className={cn(
-                  'absolute left-1/2 top-0 flex h-[27rem] w-[82%] -translate-x-1/2 animate-pulse flex-col rounded-2xl border border-border bg-card p-6 shadow-sm sm:w-[58%] lg:w-[38%]',
+                  'absolute left-1/2 top-0 flex h-[33rem] w-[82%] -translate-x-1/2 animate-pulse flex-col rounded-2xl border border-border bg-card p-6 shadow-sm sm:w-[58%] lg:w-[38%]',
                   offset !== 0 && 'hidden md:flex'
                 )}
                 style={{
@@ -114,7 +114,7 @@ export function ServicesIndividual({ catalogs, errorMessage, isLoading = false }
                   zIndex: 10 - Math.abs(offset)
                 }}
               >
-                <div className='mb-6 h-12 w-12 rounded-2xl bg-muted' />
+                <div className='mb-5 h-36 rounded-xl bg-muted' />
                 <div className='h-7 w-3/4 rounded-lg bg-muted' />
                 <div className='mt-4 h-20 rounded-lg bg-muted' />
                 <div className='mt-auto h-7 w-24 rounded-lg bg-muted' />
@@ -140,13 +140,13 @@ export function ServicesIndividual({ catalogs, errorMessage, isLoading = false }
 
         {!isLoading && !errorMessage && catalogs.length > 0 && (
           <div
-            className='relative h-[29rem] touch-pan-y overflow-hidden md:h-[31rem]'
+            className='relative h-[35rem] touch-pan-y overflow-hidden md:h-[37rem]'
             onPointerCancel={() => setSwipeStartX(null)}
             onPointerDown={(event) => setSwipeStartX(event.clientX)}
             onPointerLeave={() => setSwipeStartX(null)}
             onPointerUp={(event) => handlePointerUp(event.clientX)}
           >
-            <div className='absolute inset-x-0 top-0 h-[27.5rem] [perspective:1400px] md:h-[29.5rem]'>
+            <div className='absolute inset-x-0 top-0 h-[33.5rem] [perspective:1400px] md:h-[35.5rem]'>
               {coverflowItems.map(({ catalog, icon, offset }) => {
                 const distance = Math.abs(offset)
                 const isActive = offset === 0
@@ -156,7 +156,7 @@ export function ServicesIndividual({ catalogs, errorMessage, isLoading = false }
                   <article
                     key={catalog.catalogId}
                     className={cn(
-                      'absolute left-1/2 top-0 flex h-[27rem] w-[82%] -translate-x-1/2 select-none flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-500 ease-out sm:w-[58%] lg:w-[38%]',
+                      'absolute left-1/2 top-0 flex h-[33rem] w-[82%] -translate-x-1/2 select-none flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-500 ease-out sm:w-[58%] lg:w-[38%]',
                       isActive && 'shadow-2xl ring-1 ring-primary/25',
                       !isActive && 'bg-card/90 shadow-md',
                       !isVisible && 'pointer-events-none opacity-0'
@@ -167,11 +167,23 @@ export function ServicesIndividual({ catalogs, errorMessage, isLoading = false }
                     }}
                     aria-hidden={!isVisible}
                   >
-                    <div className='mb-5 flex items-start justify-between gap-4'>
-                      <span className='inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary'>
-                        <MaterialIcon name={icon} filled className='text-[26px]' />
+                    <div className='relative mb-5 h-36 overflow-hidden rounded-xl border border-border bg-muted'>
+                      {catalog.imageUrl ? (
+                        <img
+                          src={catalog.imageUrl}
+                          alt={catalog.catalogName}
+                          className='h-full w-full object-cover'
+                          draggable={false}
+                        />
+                      ) : (
+                        <div className='flex h-full w-full items-center justify-center text-primary'>
+                          <MaterialIcon name={icon} filled className='text-[44px]' />
+                        </div>
+                      )}
+                      <span className='absolute left-3 top-3 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-card/90 text-primary shadow-sm backdrop-blur'>
+                        <MaterialIcon name={icon} filled className='text-[24px]' />
                       </span>
-                      <span className='rounded-full bg-muted px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground'>
+                      <span className='absolute right-3 top-3 rounded-full bg-card/90 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground shadow-sm backdrop-blur'>
                         {getCatalogTypeLabel(catalog.catalogType, t)}
                       </span>
                     </div>

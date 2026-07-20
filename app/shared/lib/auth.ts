@@ -5,18 +5,33 @@
 
 export type UserStatus = 'PENDING' | 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | 'DELETED'
 
+export interface MediaFileResponse {
+  mediaFileId: number
+  fileUrl: string
+  fileKey: string
+  fileSize: number
+  fileType: string
+  mediaPurpose: string
+  mediaStatus: string
+  bookingMediaType?: string
+}
+
 export interface UserResponse {
   userId: string
   email: string
   fullName: string
-  gender: string
-  dateOfBirth: string
+  gender?: string
+  dateOfBirth?: string
   role: string
   staffTask?: 'GROOMER' | 'SHIPPER' | 'COORDINATOR'
-  status: UserStatus
+  specialization?: string
+  introduction?: string
+  yearsOfExperience?: number
+  status: UserStatus | string
+  paymentFailStreak?: number
   createdAt: string
   updatedAt: string
-  paymentFailStreak?: number
+  mediaFiles?: MediaFileResponse[]
 }
 
 export interface AuthenticationRequest {
@@ -32,11 +47,12 @@ export interface AuthenticationResponse {
 }
 
 export interface ApiResponse<T> {
-  code: number
-  message: string
-  success: boolean
+  code?: number
+  message?: string
+  success?: boolean
   data: T
-  timestamp: string
+  result?: T
+  timestamp?: string
 }
 
 export interface LogoutRequest {
