@@ -985,5 +985,30 @@
     "submitting": "Đang xác nhận...",
     "cancel": "Hủy",
     "submitError": "Không thể xác nhận trả về kho."
+  },
+  "shippingLabel": {
+    "storeAddressError": "Chưa cấu hình vị trí cửa hàng",
+    "storeAddressLoadError": "Không thể tải vị trí cửa hàng",
+    "loadingStoreAddress": "Đang tải địa chỉ...",
+    "previewTitle": "Xem trước đơn hàng",
+    "orderCodeLabel": "Mã vận đơn:",
+    "close": "Đóng",
+    "print": "In đơn hàng",
+    "storeName": "PetBuddy Store",
+    "senderLabel": "Từ (Sender):",
+    "recipientLabel": "Đến (Recipient):",
+    "notProvided": "Chưa cung cấp",
+    "itemsLabel": "Hàng hóa (Items):",
+    "totalQuantity": "(Tổng SL: {{count}})",
+    "weightLabel": "Khối lượng:",
+    "gramUnit": "gram",
+    "noteLabel": "Ghi chú:",
+    "noNote": "Không có ghi chú",
+    "codLabel": "Tiền thu người nhận (COD):",
+    "currencyUnit": "VNĐ",
+    "paidOnline": "(Đã thanh toán trực tuyến)",
+    "signatureTitle": "Chữ ký người nhận",
+    "signatureConfirm": "Xác nhận hàng nguyên vẹn, không móp vỡ",
+    "footerText": "© {{year}} PetBuddy Logistics - Hệ thống vận hành bưu cục thông minh"
   }
 }

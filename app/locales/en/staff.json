@@ -984,5 +984,30 @@
     "submitting": "Confirming...",
     "cancel": "Cancel",
     "submitError": "Failed to confirm return to warehouse."
+  },
+  "shippingLabel": {
+    "storeAddressError": "Store location not configured",
+    "storeAddressLoadError": "Failed to load store location",
+    "loadingStoreAddress": "Loading address...",
+    "previewTitle": "Order Preview",
+    "orderCodeLabel": "Tracking code:",
+    "close": "Close",
+    "print": "Print label",
+    "storeName": "PetBuddy Store",
+    "senderLabel": "From (Sender):",
+    "recipientLabel": "To (Recipient):",
+    "notProvided": "Not provided",
+    "itemsLabel": "Items:",
+    "totalQuantity": "(Total qty: {{count}})",
+    "weightLabel": "Weight:",
+    "gramUnit": "g",
+    "noteLabel": "Note:",
+    "noNote": "No note",
+    "codLabel": "Cash on delivery (COD):",
+    "currencyUnit": "VND",
+    "paidOnline": "(Paid online)",
+    "signatureTitle": "Recipient signature",
+    "signatureConfirm": "Confirms item received intact, no damage",
+    "footerText": "© {{year}} PetBuddy Logistics - Smart logistics operating system"
   }
 }
