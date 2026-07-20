@@ -847,10 +847,13 @@
     "status": {
       "active": "Active",
       "inactive": "Inactive",
-      "deleted": "Deleted"
+      "deleted": "Deleted",
+      "outOfStock": "Out of Stock",
+      "lowStock": "Low Stock"
     },
     "stock": {
-      "low": "Low stock"
+      "low": "Low stock",
+      "outOfStock": "Out of Stock"
     },
     "table": {
       "columns": {

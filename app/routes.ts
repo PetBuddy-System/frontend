@@ -58,7 +58,8 @@ export default [
     route('staff/orders/:orderId', 'routes/staff-order-detail.tsx'),
     route('staff/orders/:orderId/cancel', 'routes/staff-order-cancel.tsx'),
     route('staff/returns', 'routes/staff-returns.tsx'),
-    route('staff/shipper-assignment', 'routes/staff-shipper-assignment.tsx')
+    route('staff/shipper-assignment', 'routes/staff-shipper-assignment.tsx'),
+    route('staff/delivery-route', 'routes/staff-delivery-route.tsx')
   ]),
 
   // ─── Admin Only Routes ────────────────────────────────────────────────────

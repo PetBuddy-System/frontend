@@ -13,7 +13,12 @@ export function OrderProductList({ order, formatPrice, isShipper = false }: Orde
   const navigate = useNavigate()
 
   const isOnlinePayment = order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO'
-  const hidePrice = isShipper && isOnlinePayment
+  // Không còn che giá từng sản phẩm nữa — giá luôn hiển thị bình thường.
+  const showPaidSummary = isShipper && isOnlinePayment
+
+  const shippingFee = order.shippingFee ?? 0
+  const orderTotal = order.finalAmount
+  const subtotal = orderTotal - shippingFee
 
   return (
     <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
@@ -63,7 +68,7 @@ export function OrderProductList({ order, formatPrice, isShipper = false }: Orde
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {t('orderDetail.unitPrice', 'Đơn giá')}:{' '}
-                  {!hidePrice && detail.salePrice != null && detail.salePrice < detail.unitPrice ? (
+                  {detail.salePrice != null && detail.salePrice < detail.unitPrice ? (
                     <>
                       <span className="line-through mr-1 text-[11px] text-muted-foreground">
                         {formatPrice(detail.unitPrice)}
@@ -73,12 +78,12 @@ export function OrderProductList({ order, formatPrice, isShipper = false }: Orde
                       </span>
                     </>
                   ) : (
-                    hidePrice ? '0đ' : formatPrice(detail.unitPrice)
+                    formatPrice(detail.unitPrice)
                   )}
                 </p>
               </div>
               <div className="text-right flex-shrink-0">
-                <p className="text-base font-bold text-primary">{hidePrice ? '0đ' : formatPrice(detail.totalPrice)}</p>
+                <p className="text-base font-bold text-primary">{formatPrice(detail.totalPrice)}</p>
               </div>
             </div>
           ))

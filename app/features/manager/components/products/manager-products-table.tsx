@@ -58,13 +58,13 @@ export function ManagerProductsTable({
     if (product.status === 'ACTIVE') {
       if (product.totalStock === 0) {
         return {
-          label: t('productManagement.status.outOfStock', 'Hết hàng'),
+          label: t('productManagement.status.outOfStock'),
           className: 'bg-destructive/15 text-destructive'
         }
       }
       if (product.totalStock <= 5) {
         return {
-          label: t('productManagement.status.lowStock', 'Sắp hết hàng'),
+          label: t('productManagement.status.lowStock'),
           className: 'bg-warning/15 text-warning'
         }
       }
@@ -204,7 +204,7 @@ export function ManagerProductsTable({
                       </span>
                       {product.totalStock === 0 && (
                         <span className='text-[10px] font-bold uppercase tracking-wide text-destructive'>
-                          {t('productManagement.stock.outOfStock', 'Hết hàng')}
+                          {t('productManagement.stock.outOfStock')}
                         </span>
                       )}
                       {product.totalStock > 0 && product.totalStock <= 5 && (

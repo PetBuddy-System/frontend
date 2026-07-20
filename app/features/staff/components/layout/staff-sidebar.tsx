@@ -16,6 +16,12 @@ const STAFF_NAV_ITEMS = [
   { icon: 'assignment_ind', key: 'coordinatorBookings', href: '/staff/coordinator-bookings', roles: ['COORDINATOR'] },
   { icon: 'shopping_cart', key: 'orders', href: '/staff/orders', allowedTasks: null as AllowedTasks },
   {
+    icon: 'route',
+    key: 'deliveryRoute',
+    href: '/staff/delivery-route',
+    allowedTasks: ['SHIPPER'] as AllowedTasks
+  },
+  {
     icon: 'delete_sweep',
     key: 'disposalRequest',
     href: '/staff/disposal-request',
@@ -35,7 +41,13 @@ const STAFF_NAV_ITEMS = [
     allowedTasks: ['COORDINATOR'] as AllowedTasks
   },
   { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule', allowedTasks: null as AllowedTasks },
-  { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance', allowedTasks: null as AllowedTasks }
+  { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance', allowedTasks: null as AllowedTasks },
+{
+  icon: 'history',
+  key: 'deliveryHistory',
+  href: '/staff/orders',
+  allowedTasks: ['SHIPPER'] as AllowedTasks
+},
 ] as const
 
 export type StaffNavKey = (typeof STAFF_NAV_ITEMS)[number]['key']
@@ -57,6 +69,15 @@ export function StaffSidebar({ activeItem }: StaffSidebarProps) {
 
     if (staffTask === 'GROOMER' && ['orders', 'disposalRequest', 'returns', 'inventory'].includes(item.key)) {
       return false
+    }
+
+    // For SHIPPER: hide 'orders' (they use deliveryRoute instead)
+    if (staffTask === 'SHIPPER' && item.key === 'orders') {
+      return false
+    }
+
+    if ('allowedTasks' in item && item.allowedTasks && !(item.allowedTasks as readonly string[]).includes(staffTask ?? '')) {
+    return false
     }
 
     return true
