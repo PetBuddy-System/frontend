@@ -1103,5 +1103,63 @@
       "userEmail": "Email khách hàng",
       "usedAt": "Thời gian dùng"
     }
+  },
+  "vouchers": {
+    "title": "Quản lý Voucher",
+    "subtitle": "Tạo và quản lý mã giảm giá cho khách hàng.",
+    "actions": {
+      "create": "Tạo voucher mới",
+      "edit": "Sửa voucher"
+    },
+    "stats": {
+      "active": "Voucher đang hoạt động",
+      "totalUsed": "Tổng lượt sử dụng"
+    },
+    "list": {
+      "title": "Danh sách voucher"
+    },
+    "search": {
+      "placeholder": "Tìm kiếm mã voucher..."
+    },
+    "table": {
+      "columns": {
+        "code": "Mã voucher",
+        "discount": "Loại giảm giá",
+        "expiry": "Hết hạn",
+        "usage": "Lượt dùng",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "maxDiscount": "Tối đa {{value}}",
+      "minOrder": "Đơn tối thiểu: {{value}}"
+    },
+    "expiry": {
+      "expired": "Đã hết hạn",
+      "daysLeft": "Còn {{count}} ngày",
+      "noExpiry": "Vô thời hạn"
+    },
+    "usage": {
+      "count": "{{used}} lượt",
+      "countWithLimit": "{{used}}/{{limit}} lượt"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "paused": "Tạm dừng",
+      "expired": "Hết hạn"
+    },
+    "empty": {
+      "title": "Không tìm thấy voucher nào",
+      "create": "Tạo voucher"
+    },
+    "pagination": {
+      "loading": "Đang tải...",
+      "showing": "{{count}} / {{total}} voucher",
+      "previous": "Trang trước",
+      "next": "Trang sau"
+    },
+    "errors": {
+      "loadFailed": "Không thể tải danh sách voucher.",
+      "updateFailed": "Không thể cập nhật trạng thái voucher."
+    }
   }
 }

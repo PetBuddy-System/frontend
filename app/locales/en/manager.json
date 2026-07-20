@@ -1103,5 +1103,63 @@
       "userEmail": "Customer Email",
       "usedAt": "Used Time"
     }
+  },
+   "vouchers": {
+    "title": "Voucher Management",
+    "subtitle": "Create and manage discount vouchers for customers.",
+    "actions": {
+      "create": "Create new voucher",
+      "edit": "Edit voucher"
+    },
+    "stats": {
+      "active": "Active vouchers",
+      "totalUsed": "Total redemptions"
+    },
+    "list": {
+      "title": "Voucher list"
+    },
+    "search": {
+      "placeholder": "Search voucher code..."
+    },
+    "table": {
+      "columns": {
+        "code": "Voucher code",
+        "discount": "Discount type",
+        "expiry": "Expiry",
+        "usage": "Usage",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "maxDiscount": "Max {{value}}",
+      "minOrder": "Min order: {{value}}"
+    },
+    "expiry": {
+      "expired": "Expired",
+      "daysLeft": "{{count}} days left",
+      "noExpiry": "No expiry"
+    },
+    "usage": {
+      "count": "{{used}} uses",
+      "countWithLimit": "{{used}}/{{limit}} uses"
+    },
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "expired": "Expired"
+    },
+    "empty": {
+      "title": "No vouchers found",
+      "create": "Create voucher"
+    },
+    "pagination": {
+      "loading": "Loading...",
+      "showing": "{{count}} / {{total}} vouchers",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "errors": {
+      "loadFailed": "Failed to load voucher list.",
+      "updateFailed": "Failed to update voucher status."
+    }
   }
 }

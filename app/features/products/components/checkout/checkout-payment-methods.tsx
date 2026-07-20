@@ -16,20 +16,20 @@ export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: Check
   const PAYMENT_METHODS = [
     {
       key: 'CASH' as const,
-      label: t('payment.methods.cod', 'Tiền mặt (COD)'),
-      description: t('payment.methods.codDesc', 'Thanh toán khi nhận hàng'),
+      label: t('checkout.payment.methods.cod'),
+      description: t('checkout.payment.methods.codDesc'),
       icon: 'payments',
     },
     {
       key: 'CARD' as const,
-      label: t('payment.methods.card', 'Thẻ ngân hàng / Tín dụng'),
-      description: t('payment.methods.cardDesc', 'Visa, Mastercard, JCB — thanh toán qua Stripe'),
+      label: t('checkout.payment.methods.card'),
+      description: t('checkout.payment.methods.cardDesc'),
       icon: 'credit_card',
     },
     {
       key: 'MOMO' as const,
-      label: t('payment.methods.momo', 'Ví MoMo'),
-      description: t('payment.methods.momoDesc', 'Thanh toán qua ứng dụng MoMo'),
+      label: t('checkout.payment.methods.momo'),
+      description: t('checkout.payment.methods.momoDesc'),
       icon: 'qr_code_2',
     },
   ] as const
@@ -39,7 +39,7 @@ export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: Check
       <div className='mb-6 flex items-center gap-3'>
         <MaterialIcon name='account_balance_wallet' className='text-[24px] text-primary' />
         <h2 className='font-display text-2xl font-semibold text-primary'>
-          {t('payment.title', 'Phương thức thanh toán')}
+          {t('checkout.payment.title')}
         </h2>
       </div>
 
@@ -85,11 +85,10 @@ export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: Check
           <MaterialIcon name='warning' className='mt-0.5 shrink-0 text-[20px] text-destructive' />
           <div className='flex flex-col gap-1'>
             <span className='font-semibold'>
-              {t('payment.warning.title', 'Cảnh báo thanh toán quá hạn')}
+              {t('checkout.payment.warning.title')}
             </span>
             <p className='text-muted-foreground text-xs leading-relaxed'>
-              {t('payment.warning.description', {
-                defaultValue: 'Tài khoản của bạn đã có {{streak}} lần thanh toán quá hạn. Vui lòng hoàn thành giao dịch trước khi hết thời gian chờ để tránh ảnh hưởng đến tài khoản hoặc bị hủy dịch vụ.',
+              {t('checkout.payment.warning.description', {
                 streak: user.paymentFailStreak
               })}
             </p>

@@ -273,8 +273,8 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 onChange={handleChange}
                 className='rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition focus:outline-none focus:ring-2 focus:ring-ring'
               >
-                <option value='ACTIVE'>Hoạt động</option>
-                <option value='INACTIVE'>Tạm dừng</option>
+                <option value='ACTIVE'>{t('voucherModal.statusActive')}</option>
+                <option value='INACTIVE'>{t('voucherModal.statusInactive')}</option>
               </select>
             </div>
           </div>
