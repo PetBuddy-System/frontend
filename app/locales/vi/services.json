@@ -437,7 +437,9 @@
       "subtitle": "Chỉ hiển thị khung giờ đang hoạt động theo dịch vụ và ngày đã chọn.",
       "dateLabel": "Ngày hẹn",
       "duration": "{{minutes}} phút",
-      "empty": "Không có khung giờ đang hoạt động cho dịch vụ này vào ngày đã chọn."
+      "empty": "Không có khung giờ đang hoạt động cho dịch vụ này vào ngày đã chọn.",
+      "pastSlot": "Đã qua giờ",
+      "pastSlotError": "Khung giờ này đã qua thời gian đặt lịch trong ngày. Bạn vui lòng chọn khung giờ khác nhé."
     },
     "review": {
       "title": "Checkout đặt lịch",
@@ -506,6 +508,7 @@
       "selectService": "Vui lòng chọn dịch vụ trước.",
       "selectPet": "Vui lòng chọn ít nhất một thú cưng.",
       "selectTime": "Vui lòng chọn ngày hẹn và khung giờ.",
+      "pastTimeSlot": "Khung giờ này đã qua thời gian đặt lịch trong ngày. Bạn vui lòng chọn khung giờ khác nhé.",
       "selectGroomer": "Vui lòng chọn nhân viên bạn muốn đặt lịch, hoặc chuyển sang để PetBuddy tự sắp xếp nhé.",
       "customerMissing": "Vui lòng nhập tên khách hàng và số điện thoại.",
       "addressMissing": "Vui lòng nhập địa chỉ sử dụng dịch vụ tại nhà.",
@@ -517,7 +520,10 @@
       "cardElementMissing": "Không thể tải ô nhập thẻ.",
       "cardholderMissing": "Vui lòng nhập tên chủ thẻ.",
       "paymentFailed": "Thanh toán thất bại. Vui lòng thử lại.",
-      "paymentIncomplete": "Thanh toán chưa hoàn tất. Vui lòng thử lại."
+      "paymentIncomplete": "Thanh toán chưa hoàn tất. Vui lòng thử lại.",
+      "paymentSyncing": "PetBuddy đang kiểm tra kết quả thanh toán...",
+      "paymentPendingConfirmation": "PetBuddy chưa nhận được xác nhận thanh toán từ hệ thống. Nếu bạn đang chạy local, hãy bật Stripe listener rồi kiểm tra lại sau ít phút nhé.",
+      "paymentConfirmationFailed": "Thanh toán chưa hoàn tất trên hệ thống PetBuddy. Bạn vui lòng thanh toán lại nhé."
     },
     "apiErrors": {
       "BOOKING_NOT_FOUND": "Mình chưa tìm thấy lịch đặt này. Bạn thử tải lại trang rồi kiểm tra lại nhé.",
@@ -586,6 +592,8 @@
       "processing": "Đang xử lý thanh toán...",
       "successTitle": "Thanh toán thành công",
       "successDescription": "Bạn đã thanh toán cọc thành công cho lịch đặt {{code}}.",
+      "syncingTitle": "Đang xác nhận thanh toán",
+      "syncingDescription": "PetBuddy đang chờ hệ thống thanh toán xác nhận lịch đặt {{code}}. Nếu bạn đang chạy local, hãy bật Stripe listener rồi kiểm tra lại sau ít phút nhé.",
       "failedTitle": "Thanh toán thất bại",
       "retry": "Thanh toán lại",
       "retrying": "Đang tạo lượt thanh toán mới..."

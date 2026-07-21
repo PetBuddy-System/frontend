@@ -212,7 +212,17 @@
       "type": "Loại booking",
       "minutesValue": "{{value}} phút"
     },
+    "table": {
+      "actions": "Thao tác",
+      "code": "Mã booking",
+      "customer": "Khách hàng",
+      "petAndServiceCount": "{{pets}} pet • {{services}} dịch vụ",
+      "schedule": "Lịch hẹn",
+      "status": "Trạng thái",
+      "workload": "Khối lượng"
+    },
     "actions": {
+      "backToList": "Quay lại danh sách",
       "cancelBooking": "Hủy đơn",
       "chooseAfterImage": "Chọn ảnh sau dịch vụ",
       "chooseBeforeImage": "Chọn ảnh trước dịch vụ",
@@ -844,7 +854,7 @@
       "other": "Khác"
     }
   },
-    "staffOrdersTable": {
+  "staffOrdersTable": {
     "heading": "Chi tiết đơn hàng",
     "searchPlaceholder": "Tìm kiếm mã, tên...",
     "clearFilters": "Xóa bộ lọc",
@@ -905,7 +915,7 @@
       "generic": "Có lỗi xảy ra"
     }
   },
-    "staffOrdersPage": {
+  "staffOrdersPage": {
     "topNav": {
       "title": "Mục đơn hàng",
       "subtitle": "Theo dõi và xử lý các đơn hàng trong ngày"
@@ -921,7 +931,7 @@
       "updateStatusError": "Có lỗi xảy ra khi cập nhật trạng thái"
     }
   },
-    "staffOrdersStats": {
+  "staffOrdersStats": {
     "pending": {
       "badge": "Chờ xử lý",
       "label": "Đơn hàng mới"
@@ -955,7 +965,7 @@
       "label": "Khách không nhận hàng"
     }
   },
-    "staffOrderDetailPage": {
+  "staffOrderDetailPage": {
     "topNav": {
       "title": "Chi tiết đơn hàng",
       "subtitle": "Xem chi tiết và xử lý đơn hàng"

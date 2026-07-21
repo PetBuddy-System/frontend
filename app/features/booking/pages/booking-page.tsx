@@ -24,6 +24,7 @@ import {
   createBooking,
   getAvailableGroomers,
   getAvailableCatalogTimeSlots,
+  getBookingDetail,
   getCatalogs,
   getMyBookings,
   getPets,
@@ -40,7 +41,7 @@ import {
 type BookingStep = 1 | 2 | 3 | 4
 type BookingType = 'AT_STORE' | 'AT_HOME'
 type StaffAssignmentMode = 'AUTO' | 'SELECTED'
-type CheckoutPhase = 'summary' | 'payment' | 'success' | 'failed'
+type CheckoutPhase = 'summary' | 'payment' | 'syncing' | 'success' | 'failed'
 type ToastState = { type: 'success' | 'error'; message: string } | null
 type BookingApiError = Error & { apiCode?: number | string; status?: number }
 type BookingDraft = {
@@ -83,6 +84,16 @@ const BOOKING_STATUS_KEYS = [
   'FAILED',
   'WAITING_STAFF'
 ] as const
+const BACKEND_CONFIRMED_PAYMENT_STATUSES = new Set<string>([
+  'PENDING_ACCEPTANCE',
+  'WAITING_STAFF',
+  'ACCEPTED',
+  'IN_PROGRESS',
+  'READY_FOR_PICKUP',
+  'COMPLETED'
+])
+const PAYMENT_SYNC_ATTEMPTS = 6
+const PAYMENT_SYNC_DELAY_MS = 1200
 const BOOKING_API_ERROR_KEYS = [
   'BOOKING_NOT_FOUND',
   'BOOKING_DETAIL_NOT_FOUND',
@@ -116,6 +127,10 @@ const stripeElementStyle = {
   invalid: { color: '#ba1a1a' }
 }
 
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => window.setTimeout(resolve, ms))
+}
+
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -132,6 +147,23 @@ function getTodayInputValue(): string {
 
 function formatSlotTime(value: string): string {
   return value.slice(0, 5)
+}
+
+function parseTimeSlotDateTime(dateValue: string, timeValue: string): Date | null {
+  const [hours = 0, minutes = 0, seconds = 0] = timeValue.split(':').map(Number)
+  const slotDate = new Date(`${dateValue}T00:00:00`)
+
+  if (Number.isNaN(slotDate.getTime()) || Number.isNaN(hours) || Number.isNaN(minutes) || Number.isNaN(seconds)) {
+    return null
+  }
+
+  slotDate.setHours(hours, minutes, seconds, 0)
+  return slotDate
+}
+
+function isTimeSlotPast(dateValue: string, timeValue: string, nowMs = Date.now()): boolean {
+  const slotDate = parseTimeSlotDateTime(dateValue, timeValue)
+  return slotDate ? slotDate.getTime() <= nowMs : false
 }
 
 function formatGroomerAvatarName(name: string): string {
@@ -289,6 +321,7 @@ export function BookingPage() {
   const [paymentError, setPaymentError] = useState('')
   const [paymentAttemptKey, setPaymentAttemptKey] = useState(0)
   const [isDraftReady, setIsDraftReady] = useState(false)
+  const [currentTimeMs, setCurrentTimeMs] = useState(() => Date.now())
   const [assignmentMode, setAssignmentMode] = useState<StaffAssignmentMode>('AUTO')
   const [requestedStaffId, setRequestedStaffId] = useState('')
   const [availableGroomers, setAvailableGroomers] = useState<AvailableGroomerResponse[]>([])
@@ -306,6 +339,9 @@ export function BookingPage() {
     () => availableTimeSlots.find((slot) => slot.timeSlotId === selectedTimeSlotId) ?? null,
     [availableTimeSlots, selectedTimeSlotId]
   )
+  const isSelectedTimeSlotPast = Boolean(
+    selectedTimeSlot && isTimeSlotPast(scheduledAt, selectedTimeSlot.startTime, currentTimeMs)
+  )
   const petPricePreviews = useMemo<PetPricePreview[]>(() => {
     if (!selectedCatalog) {
       return []
@@ -319,6 +355,11 @@ export function BookingPage() {
   const subtotal = petPricePreviews.reduce((total, preview) => total + preview.totalPrice, 0)
   const deposit = subtotal * DEPOSIT_RATE
   const remaining = subtotal - deposit
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => setCurrentTimeMs(Date.now()), 30_000)
+    return () => window.clearInterval(intervalId)
+  }, [])
 
   useEffect(() => {
     let isMounted = true
@@ -562,6 +603,11 @@ export function BookingPage() {
       return false
     }
 
+    if (step === 3 && isSelectedTimeSlotPast) {
+      showStepError(t('bookingFlow.toast.pastTimeSlot'))
+      return false
+    }
+
     return true
   }
 
@@ -671,6 +717,40 @@ export function BookingPage() {
     }
   }
 
+  function updateActiveBooking(booking: BookingResponse) {
+    setActiveBooking(booking)
+    setMyBookings((currentBookings) => {
+      const hasExistingBooking = currentBookings.some(
+        (currentBooking) => currentBooking.bookingId === booking.bookingId
+      )
+
+      if (!hasExistingBooking) {
+        return [booking, ...currentBookings]
+      }
+
+      return currentBookings.map((currentBooking) =>
+        currentBooking.bookingId === booking.bookingId ? booking : currentBooking
+      )
+    })
+  }
+
+  async function waitForBackendPaymentConfirmation(bookingId: number): Promise<BookingResponse | null> {
+    for (let attempt = 0; attempt < PAYMENT_SYNC_ATTEMPTS; attempt += 1) {
+      if (attempt > 0) {
+        await wait(PAYMENT_SYNC_DELAY_MS)
+      }
+
+      const latestBooking = await getBookingDetail(bookingId)
+      updateActiveBooking(latestBooking)
+
+      if (BACKEND_CONFIRMED_PAYMENT_STATUSES.has(latestBooking.bookingStatus)) {
+        return latestBooking
+      }
+    }
+
+    return null
+  }
+
   async function handleCheckout() {
     const payload = buildBookingPayload()
     if (!payload) {
@@ -703,9 +783,33 @@ export function BookingPage() {
   }
 
   async function handlePaymentSuccess() {
-    setCheckoutPhase('success')
-    setToast({ type: 'success', message: t('bookingFlow.toast.paymentSuccess') })
-    await refreshMyBookingsAfterPayment()
+    if (!activeBooking) {
+      setCheckoutPhase('failed')
+      setPaymentError(t('bookingFlow.toast.paymentConfirmationFailed'))
+      return
+    }
+
+    setCheckoutPhase('syncing')
+    setToast({ type: 'success', message: t('bookingFlow.toast.paymentSyncing') })
+
+    try {
+      const confirmedBooking = await waitForBackendPaymentConfirmation(activeBooking.bookingId)
+
+      if (confirmedBooking) {
+        setCheckoutPhase('success')
+        setToast({ type: 'success', message: t('bookingFlow.toast.paymentSuccess') })
+        await refreshMyBookingsAfterPayment()
+        return
+      }
+
+      setCheckoutPhase('failed')
+      setPaymentError(t('bookingFlow.toast.paymentConfirmationFailed'))
+      setToast({ type: 'error', message: t('bookingFlow.toast.paymentConfirmationFailed') })
+    } catch {
+      setCheckoutPhase('failed')
+      setPaymentError(t('bookingFlow.toast.paymentConfirmationFailed'))
+      setToast({ type: 'error', message: t('bookingFlow.toast.paymentConfirmationFailed') })
+    }
   }
 
   function handlePaymentFailure(message: string) {
@@ -835,11 +939,19 @@ export function BookingPage() {
                       availableTimeSlots={availableTimeSlots}
                       selectedTimeSlotId={selectedTimeSlotId}
                       onTimeSlotChange={(timeSlotId) => {
+                        const nextTimeSlot = availableTimeSlots.find((slot) => slot.timeSlotId === timeSlotId)
+
+                        if (nextTimeSlot && isTimeSlotPast(scheduledAt, nextTimeSlot.startTime)) {
+                          showStepError(t('bookingFlow.toast.pastTimeSlot'))
+                          return
+                        }
+
                         setSelectedTimeSlotId(timeSlotId)
                         resetCheckoutState()
                       }}
                       isTimeSlotsLoading={isTimeSlotsLoading}
                       selectedCatalog={selectedCatalog}
+                      currentTimeMs={currentTimeMs}
                     />
                   )}
 
@@ -1250,6 +1362,7 @@ interface ScheduleStepProps {
   onTimeSlotChange: (timeSlotId: number) => void
   isTimeSlotsLoading: boolean
   selectedCatalog: CatalogResponse | null
+  currentTimeMs: number
 }
 
 function ScheduleStep({
@@ -1259,9 +1372,13 @@ function ScheduleStep({
   selectedTimeSlotId,
   onTimeSlotChange,
   isTimeSlotsLoading,
-  selectedCatalog
+  selectedCatalog,
+  currentTimeMs
 }: ScheduleStepProps) {
   const { t } = useTranslation('services')
+  const hasSelectedPastTimeSlot = availableTimeSlots.some(
+    (slot) => slot.timeSlotId === selectedTimeSlotId && isTimeSlotPast(scheduledAt, slot.startTime, currentTimeMs)
+  )
 
   return (
     <div>
@@ -1286,43 +1403,56 @@ function ScheduleStep({
               ? Array.from({ length: 3 }).map((_, index) => (
                   <div key={index} className='h-24 animate-pulse rounded-md bg-muted' />
                 ))
-              : availableTimeSlots.map((slot) => (
-                  <button
-                    key={slot.timeSlotId}
-                    type='button'
-                    onClick={() => onTimeSlotChange(slot.timeSlotId)}
-                    className={cn(
-                      'rounded-md border p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
-                      selectedTimeSlotId === slot.timeSlotId
-                        ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-border bg-background hover:bg-muted'
-                    )}
-                  >
-                    <span className='flex items-center gap-2 font-semibold'>
-                      <MaterialIcon
-                        name='schedule'
-                        className={cn(
-                          'text-[20px]',
-                          selectedTimeSlotId === slot.timeSlotId ? 'text-secondary' : 'text-primary'
-                        )}
-                      />
-                      {formatSlotTime(slot.startTime)}
-                    </span>
-                    <span
+              : availableTimeSlots.map((slot) => {
+                  const isPastSlot = isTimeSlotPast(scheduledAt, slot.startTime, currentTimeMs)
+                  const isSelectedSlot = selectedTimeSlotId === slot.timeSlotId && !isPastSlot
+
+                  return (
+                    <button
+                      key={slot.timeSlotId}
+                      type='button'
+                      disabled={isPastSlot}
+                      aria-disabled={isPastSlot}
+                      onClick={() => onTimeSlotChange(slot.timeSlotId)}
                       className={cn(
-                        'mt-2 block text-sm',
-                        selectedTimeSlotId === slot.timeSlotId
-                          ? 'font-semibold text-primary-foreground'
-                          : 'text-muted-foreground'
+                        'rounded-md border p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
+                        isSelectedSlot
+                          ? 'border-primary bg-primary text-primary-foreground'
+                          : 'border-border bg-background hover:bg-muted',
+                        isPastSlot && 'cursor-not-allowed bg-muted/60 opacity-50 hover:bg-muted/60'
                       )}
                     >
-                      {t('bookingFlow.time.duration', {
-                        minutes: slot.durationMinute ?? selectedCatalog?.durationMinute ?? 0
-                      })}
-                    </span>
-                  </button>
-                ))}
+                      <span className='flex items-center gap-2 font-semibold'>
+                        <MaterialIcon
+                          name='schedule'
+                          className={cn('text-[20px]', isSelectedSlot ? 'text-secondary' : 'text-primary')}
+                        />
+                        {formatSlotTime(slot.startTime)}
+                      </span>
+                      <span
+                        className={cn(
+                          'mt-2 block text-sm',
+                          isSelectedSlot ? 'font-semibold text-primary-foreground' : 'text-muted-foreground'
+                        )}
+                      >
+                        {t('bookingFlow.time.duration', {
+                          minutes: slot.durationMinute ?? selectedCatalog?.durationMinute ?? 0
+                        })}
+                      </span>
+                      {isPastSlot ? (
+                        <span className='mt-2 block text-xs font-semibold text-muted-foreground'>
+                          {t('bookingFlow.time.pastSlot')}
+                        </span>
+                      ) : null}
+                    </button>
+                  )
+                })}
           </div>
+          {hasSelectedPastTimeSlot ? (
+            <p className='mt-4 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm font-medium text-destructive'>
+              {t('bookingFlow.time.pastSlotError')}
+            </p>
+          ) : null}
           {!isTimeSlotsLoading && availableTimeSlots.length === 0 && (
             <p className='mt-5 rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground'>
               {t('bookingFlow.time.empty')}
@@ -1421,6 +1551,10 @@ function ReviewPaymentStep({
 
   if (checkoutPhase === 'success' && activeBooking) {
     return <PaymentResultScreen type='success' booking={activeBooking} />
+  }
+
+  if (checkoutPhase === 'syncing' && activeBooking) {
+    return <PaymentResultScreen type='syncing' booking={activeBooking} message={paymentError} />
   }
 
   if (checkoutPhase === 'failed' && activeBooking) {
@@ -1822,7 +1956,7 @@ function BookingPaymentForm({ clientSecret, amount, onPaymentSuccess, onPaymentF
 }
 
 interface PaymentResultScreenProps {
-  type: 'success' | 'failed'
+  type: 'success' | 'syncing' | 'failed'
   booking: BookingResponse
   message?: string
   isRetrying?: boolean
@@ -1832,26 +1966,38 @@ interface PaymentResultScreenProps {
 function PaymentResultScreen({ type, booking, message, isRetrying, onRetryPayment }: PaymentResultScreenProps) {
   const { t } = useTranslation('services')
   const isSuccess = type === 'success'
+  const isSyncing = type === 'syncing'
 
   return (
     <div className='rounded-md border border-border bg-background p-6 text-center'>
       <div
         className={cn(
           'mx-auto flex h-16 w-16 items-center justify-center rounded-full',
-          isSuccess ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'
+          isSuccess && 'bg-success/10 text-success',
+          isSyncing && 'bg-info/10 text-info',
+          type === 'failed' && 'bg-destructive/10 text-destructive'
         )}
       >
-        <MaterialIcon name={isSuccess ? 'verified' : 'error'} className='text-[34px]' />
+        <MaterialIcon
+          name={isSuccess ? 'verified' : isSyncing ? 'progress_activity' : 'error'}
+          className={cn('text-[34px]', isSyncing && 'animate-spin')}
+        />
       </div>
       <h2 className='mt-5 text-2xl font-bold'>
-        {isSuccess ? t('bookingFlow.payment.successTitle') : t('bookingFlow.payment.failedTitle')}
+        {isSuccess
+          ? t('bookingFlow.payment.successTitle')
+          : isSyncing
+            ? t('bookingFlow.payment.syncingTitle')
+            : t('bookingFlow.payment.failedTitle')}
       </h2>
       <p className='mx-auto mt-2 max-w-xl text-sm text-muted-foreground'>
         {isSuccess
           ? t('bookingFlow.payment.successDescription', { code: booking.bookingCode })
-          : message || t('bookingFlow.toast.paymentFailed')}
+          : isSyncing
+            ? message || t('bookingFlow.payment.syncingDescription', { code: booking.bookingCode })
+            : message || t('bookingFlow.toast.paymentFailed')}
       </p>
-      {!isSuccess && onRetryPayment && (
+      {type === 'failed' && onRetryPayment && (
         <Button type='button' variant='secondary' className='mt-6' onClick={onRetryPayment} disabled={isRetrying}>
           <MaterialIcon
             name={isRetrying ? 'progress_activity' : 'refresh'}

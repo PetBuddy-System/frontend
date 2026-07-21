@@ -300,8 +300,18 @@
     "actions": {
       "refresh": "Refresh",
       "viewDetail": "View details",
+      "backToList": "Back to list",
       "payNow": "Pay now",
       "retryPayment": "Retry payment"
+    },
+    "table": {
+      "booking": "Booking",
+      "schedule": "Schedule",
+      "service": "Service",
+      "pets": "Pets",
+      "status": "Status",
+      "total": "Total",
+      "actions": "Actions"
     },
     "card": {
       "services": "Services",
@@ -313,12 +323,26 @@
     },
     "detail": {
       "title": "Booking details",
+      "subtitle": "View the full service, pet and payment details for this booking.",
+      "code": "Booking code",
       "customer": "Customer",
       "phone": "Phone",
       "staff": "Staff",
       "unassigned": "Not assigned yet",
+      "staffUnassigned": "No staff has been assigned yet",
+      "bookingDate": "Booking date",
+      "startTime": "Start time",
+      "endTime": "Estimated finish",
       "address": "Address",
       "cancelReason": "Cancel reason",
+      "petInfoTitle": "Pet information",
+      "petName": "Pet name",
+      "petSpecies": "Species",
+      "petBreed": "Breed",
+      "petWeight": "Weight",
+      "petHealthNote": "Health notes",
+      "petAllergyNote": "Allergy notes",
+      "petBehaviorNote": "Behavior",
       "beforeMedia": "Before-service photos",
       "afterMedia": "After-service photos",
       "noMedia": "No photos have been uploaded by staff yet.",
@@ -326,7 +350,17 @@
       "basePrice": "Service price",
       "extraPrice": "Extra fee",
       "extraPriceWithDuration": "Extra fee for {{minutes}} more minutes",
-      "pickupPayment": "Paid at pickup"
+      "pickupPayment": "Paid at pickup",
+      "durationMinute": "{{minutes}} minutes"
+    },
+    "progress": {
+      "title": "Booking progress",
+      "pendingPayment": "Awaiting payment",
+      "pendingAcceptance": "Awaiting confirmation",
+      "accepted": "Scheduled",
+      "inProgress": "In care",
+      "readyForPickup": "Ready for pickup",
+      "completed": "Completed"
     },
     "payment": {
       "title": "Complete deposit payment",

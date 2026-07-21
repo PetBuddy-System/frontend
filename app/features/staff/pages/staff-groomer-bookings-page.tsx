@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link, useParams } from 'react-router'
 
 import { cn } from '~/shared/lib/cn'
 import { Button, MaterialIcon } from '~/shared/ui'
@@ -82,169 +83,39 @@ function canMoveToNextStatus(booking: BookingResponse, nextStatus: GroomerBookin
   return true
 }
 
-function replaceBooking(bookings: BookingResponse[], nextBooking: BookingResponse) {
-  const exists = bookings.some((booking) => booking.bookingId === nextBooking.bookingId)
-  if (!exists) return [nextBooking, ...bookings]
-
-  return bookings.map((booking) => (booking.bookingId === nextBooking.bookingId ? nextBooking : booking))
-}
-
 export function StaffGroomerBookingsPage() {
   const { t } = useTranslation('staff')
   const [bookings, setBookings] = useState<BookingResponse[]>([])
   const [activeStatus, setActiveStatus] = useState<GroomerBookingStatus>('ACCEPTED')
-  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const [pendingStatus, setPendingStatus] = useState<GroomerBookingStatus | null>(null)
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
-  const [cancelReason, setCancelReason] = useState('')
-  const [previewByDetailId, setPreviewByDetailId] = useState<Record<number, { file: File; url: string }>>({})
 
   const filteredBookings = useMemo(
     () => bookings.filter((booking) => booking.bookingType === 'AT_STORE' && booking.bookingStatus === activeStatus),
     [activeStatus, bookings]
   )
-  const selectedBooking = bookings.find((booking) => booking.bookingId === selectedBookingId) ?? null
-  const nextStatus = selectedBooking ? getNextStatus(selectedBooking.bookingStatus as GroomerBookingStatus) : null
-  const isNextAllowed = selectedBooking ? canMoveToNextStatus(selectedBooking, nextStatus) : false
-
   function showMessage(type: 'success' | 'error', text: string) {
     setMessage({ type, text })
     window.setTimeout(() => setMessage(null), 3500)
   }
 
-  const loadBookings = useCallback(
-    async (preferredStatus = activeStatus) => {
-      setIsLoading(true)
-      try {
-        const lists = await Promise.all(STATUS_TABS.map((status) => fetchStaffBookings({ status })))
-        const nextBookings = lists.flat().filter((booking) => booking.bookingType === 'AT_STORE')
-        setBookings(nextBookings)
-        setSelectedBookingId((currentId) => {
-          if (currentId && nextBookings.some((booking) => booking.bookingId === currentId)) {
-            return currentId
-          }
-
-          if (preferredStatus !== activeStatus) {
-            return nextBookings.find((booking) => booking.bookingStatus === preferredStatus)?.bookingId ?? null
-          }
-
-          return null
-        })
-      } catch (error) {
-        showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.loadFailed'))
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [activeStatus, t]
-  )
+  const loadBookings = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const lists = await Promise.all(STATUS_TABS.map((status) => fetchStaffBookings({ status })))
+      const nextBookings = lists.flat().filter((booking) => booking.bookingType === 'AT_STORE')
+      setBookings(nextBookings)
+    } catch (error) {
+      showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.loadFailed'))
+    } finally {
+      setIsLoading(false)
+    }
+  }, [t])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Initial API sync for this staff workspace.
     void loadBookings()
   }, [loadBookings])
-
-  async function reloadSelectedBooking(bookingId: number) {
-    const detail = await fetchStaffBookingDetail(bookingId)
-    setBookings((current) => replaceBooking(current, detail))
-    setSelectedBookingId(detail.bookingId)
-    return detail
-  }
-
-  async function handleSelectBooking(bookingId: number) {
-    setSelectedBookingId(bookingId)
-    setIsLoading(true)
-
-    try {
-      const detail = await fetchStaffBookingDetail(bookingId)
-      setBookings((current) => replaceBooking(current, detail))
-    } catch (error) {
-      showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.loadDetailFailed'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  async function updateBookingStatus(status: GroomerBookingStatus, reason?: string) {
-    if (!selectedBooking) return
-
-    setIsLoading(true)
-    try {
-      const updated = await updateStaffBookingStatus(selectedBooking.bookingId, {
-        cancelReason: status === 'CANCELLED' ? reason : undefined,
-        status
-      })
-      setBookings((current) => replaceBooking(current, updated))
-      setActiveStatus(status)
-      setSelectedBookingId(updated.bookingId)
-      setPendingStatus(null)
-      setIsCancelModalOpen(false)
-      setCancelReason('')
-      await loadBookings(status)
-      showMessage('success', t('groomerBookings.messages.statusUpdated'))
-    } catch (error) {
-      showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.statusUpdateFailed'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  function handleCancelSubmit() {
-    if (!cancelReason.trim()) {
-      showMessage('error', t('groomerBookings.messages.cancelReasonRequired'))
-      return
-    }
-
-    void updateBookingStatus('CANCELLED', cancelReason.trim())
-  }
-
-  function handleFileChange(detailId: number, event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-
-    if (!file) return
-
-    if (!file.type.startsWith('image/')) {
-      showMessage('error', t('groomerBookings.messages.imageOnly'))
-      return
-    }
-
-    setPreviewByDetailId((current) => ({
-      ...current,
-      [detailId]: {
-        file,
-        url: URL.createObjectURL(file)
-      }
-    }))
-  }
-
-  async function handleUpload(detailId: number, type: BookingMediaType) {
-    if (!selectedBooking) return
-
-    const preview = previewByDetailId[detailId]
-    if (!preview) {
-      showMessage('error', t('groomerBookings.messages.noPreview'))
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      await uploadBookingDetailMedia(detailId, type, preview.file)
-      await reloadSelectedBooking(selectedBooking.bookingId)
-      setPreviewByDetailId((current) => {
-        const next = { ...current }
-        delete next[detailId]
-        return next
-      })
-      showMessage('success', t('groomerBookings.messages.uploaded'))
-    } catch (error) {
-      showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.uploadFailed'))
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -295,7 +166,6 @@ export function StaffGroomerBookingsPage() {
                     type='button'
                     onClick={() => {
                       setActiveStatus(status)
-                      setSelectedBookingId(null)
                     }}
                     className={cn(
                       'rounded-2xl border border-border bg-card p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md',
@@ -311,113 +181,282 @@ export function StaffGroomerBookingsPage() {
               })}
             </section>
 
-            <section
-              className={cn(
-                'grid grid-cols-1 gap-6',
-                selectedBooking && 'xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)]'
-              )}
-            >
-              <div className='flex flex-col gap-4'>
-                {isLoading && bookings.length === 0 && (
-                  <div className='rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-sm'>
-                    {t('groomerBookings.actions.loading')}
-                  </div>
-                )}
-
-                {!isLoading && filteredBookings.length === 0 && (
-                  <div className='rounded-2xl border border-border bg-card p-6 text-center text-sm text-muted-foreground shadow-sm'>
-                    {t('groomerBookings.empty')}
-                  </div>
-                )}
-
-                {filteredBookings.map((booking) => (
-                  <article
-                    key={booking.bookingId}
-                    role='button'
-                    tabIndex={0}
-                    onClick={() => void handleSelectBooking(booking.bookingId)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault()
-                        void handleSelectBooking(booking.bookingId)
-                      }
-                    }}
-                    className={cn(
-                      'cursor-pointer rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring',
-                      selectedBooking?.bookingId === booking.bookingId && 'border-primary ring-2 ring-primary/20'
+            <section className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm'>
+              <div className='overflow-x-auto'>
+                <table className='min-w-full text-left text-sm'>
+                  <thead className='bg-muted/70 text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+                    <tr>
+                      <th className='px-4 py-3'>{t('groomerBookings.table.code')}</th>
+                      <th className='px-4 py-3'>{t('groomerBookings.table.customer')}</th>
+                      <th className='px-4 py-3'>{t('groomerBookings.table.schedule')}</th>
+                      <th className='px-4 py-3'>{t('groomerBookings.table.workload')}</th>
+                      <th className='px-4 py-3'>{t('groomerBookings.table.status')}</th>
+                      <th className='px-4 py-3 text-right'>{t('groomerBookings.table.actions')}</th>
+                    </tr>
+                  </thead>
+                  <tbody className='divide-y divide-border'>
+                    {isLoading && bookings.length === 0 && (
+                      <tr>
+                        <td className='px-4 py-6 text-center text-muted-foreground' colSpan={6}>
+                          {t('groomerBookings.actions.loading')}
+                        </td>
+                      </tr>
                     )}
-                  >
-                    <div className='flex items-start justify-between gap-4'>
-                      <div>
-                        <p className='font-display text-lg font-bold text-card-foreground'>{booking.bookingCode}</p>
-                        <p className='mt-1 text-sm text-muted-foreground'>{formatDateTime(booking.scheduledAt)}</p>
-                      </div>
-                      <span
-                        className={cn(
-                          'rounded-full px-2.5 py-1 text-xs font-semibold',
-                          getStatusTone(booking.bookingStatus as GroomerBookingStatus)
-                        )}
-                      >
-                        {t(`groomerBookings.status.${booking.bookingStatus}`)}
-                      </span>
-                    </div>
-                    <div className='mt-4 grid grid-cols-2 gap-3 text-sm'>
-                      <InfoPill label={t('groomerBookings.card.customer')} value={booking.customerName} />
-                      <InfoPill label={t('groomerBookings.card.phone')} value={booking.customerPhone} />
-                      <InfoPill
-                        label={t('groomerBookings.card.petCount')}
-                        value={String(booking.bookingDetails.length)}
-                      />
-                      <InfoPill
-                        label={t('groomerBookings.card.serviceCount')}
-                        value={String(booking.bookingDetails.length)}
-                      />
-                      <InfoPill
-                        label={t('groomerBookings.card.duration')}
-                        value={t('groomerBookings.card.minutesValue', { value: getTotalDuration(booking) })}
-                      />
-                      <InfoPill
-                        label={t('groomerBookings.card.type')}
-                        value={t(`groomerBookings.bookingTypes.${booking.bookingType}`, {
-                          defaultValue: booking.bookingType
-                        })}
-                      />
-                    </div>
-                    <Button
-                      className='mt-4 w-full'
-                      variant='outline'
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        void handleSelectBooking(booking.bookingId)
-                      }}
-                    >
-                      <MaterialIcon name='visibility' className='text-[18px]' />
-                      {t('groomerBookings.actions.viewDetail')}
-                    </Button>
-                  </article>
-                ))}
-              </div>
 
-              {selectedBooking && (
-                <BookingDetailPanel
-                  booking={selectedBooking}
-                  isLoading={isLoading}
-                  isNextAllowed={isNextAllowed}
-                  nextStatus={nextStatus}
-                  previewByDetailId={previewByDetailId}
-                  onCancelClick={() => setIsCancelModalOpen(true)}
-                  onFileChange={handleFileChange}
-                  onRequestStatus={(status) => setPendingStatus(status)}
-                  onUpload={handleUpload}
-                  t={t}
-                />
-              )}
+                    {!isLoading && filteredBookings.length === 0 && (
+                      <tr>
+                        <td className='px-4 py-8 text-center text-muted-foreground' colSpan={6}>
+                          {t('groomerBookings.empty')}
+                        </td>
+                      </tr>
+                    )}
+
+                    {filteredBookings.map((booking) => (
+                      <tr key={booking.bookingId} className='transition-colors hover:bg-muted/35'>
+                        <td className='px-4 py-4 align-top'>
+                          <p className='font-display font-bold text-card-foreground'>{booking.bookingCode}</p>
+                          <p className='mt-1 text-xs text-muted-foreground'>
+                            {t(`groomerBookings.bookingTypes.${booking.bookingType}`, {
+                              defaultValue: booking.bookingType
+                            })}
+                          </p>
+                        </td>
+                        <td className='px-4 py-4 align-top'>
+                          <p className='font-semibold text-card-foreground'>{booking.customerName}</p>
+                          <p className='mt-1 text-xs text-muted-foreground'>{booking.customerPhone}</p>
+                        </td>
+                        <td className='px-4 py-4 align-top text-card-foreground'>
+                          {formatDateTime(booking.scheduledAt)}
+                        </td>
+                        <td className='px-4 py-4 align-top text-muted-foreground'>
+                          <p>
+                            {t('groomerBookings.table.petAndServiceCount', {
+                              pets: booking.bookingDetails.length,
+                              services: booking.bookingDetails.length
+                            })}
+                          </p>
+                          <p className='mt-1'>
+                            {t('groomerBookings.card.minutesValue', { value: getTotalDuration(booking) })}
+                          </p>
+                        </td>
+                        <td className='px-4 py-4 align-top'>
+                          <span
+                            className={cn(
+                              'inline-flex rounded-full px-2.5 py-1 text-xs font-semibold',
+                              getStatusTone(booking.bookingStatus as GroomerBookingStatus)
+                            )}
+                          >
+                            {t(`groomerBookings.status.${booking.bookingStatus}`)}
+                          </span>
+                        </td>
+                        <td className='px-4 py-4 text-right align-top'>
+                          <Link
+                            to={`/staff/groomer-bookings/${booking.bookingId}`}
+                            className='inline-flex h-9 items-center justify-center gap-2 rounded-md border border-border bg-transparent px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring'
+                          >
+                            <MaterialIcon name='visibility' className='text-[18px]' />
+                            {t('groomerBookings.actions.viewDetail')}
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </section>
           </div>
         </main>
       </div>
+    </div>
+  )
+}
 
-      {pendingStatus && selectedBooking && (
+export function StaffGroomerBookingDetailPage() {
+  const { t } = useTranslation('staff')
+  const { bookingId } = useParams()
+  const [booking, setBooking] = useState<BookingResponse | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [pendingStatus, setPendingStatus] = useState<GroomerBookingStatus | null>(null)
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
+  const [cancelReason, setCancelReason] = useState('')
+  const [previewByDetailId, setPreviewByDetailId] = useState<Record<number, { file: File; url: string }>>({})
+
+  const nextStatus = booking ? getNextStatus(booking.bookingStatus as GroomerBookingStatus) : null
+  const isNextAllowed = booking ? canMoveToNextStatus(booking, nextStatus) : false
+
+  function showMessage(type: 'success' | 'error', text: string) {
+    setMessage({ type, text })
+    window.setTimeout(() => setMessage(null), 3500)
+  }
+
+  const loadBooking = useCallback(async () => {
+    if (!bookingId) {
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      const detail = await fetchStaffBookingDetail(bookingId)
+      setBooking(detail)
+    } catch (error) {
+      showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.loadDetailFailed'))
+    } finally {
+      setIsLoading(false)
+    }
+  }, [bookingId, t])
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Detail route loads the booking payload on entry.
+    void loadBooking()
+  }, [loadBooking])
+
+  async function reloadBooking() {
+    if (!booking) return null
+
+    const detail = await fetchStaffBookingDetail(booking.bookingId)
+    setBooking(detail)
+    return detail
+  }
+
+  async function updateBookingStatus(status: GroomerBookingStatus, reason?: string) {
+    if (!booking) return
+
+    setIsLoading(true)
+    try {
+      const updated = await updateStaffBookingStatus(booking.bookingId, {
+        cancelReason: status === 'CANCELLED' ? reason : undefined,
+        status
+      })
+      setBooking(updated)
+      setPendingStatus(null)
+      setIsCancelModalOpen(false)
+      setCancelReason('')
+      await reloadBooking()
+      showMessage('success', t('groomerBookings.messages.statusUpdated'))
+    } catch (error) {
+      showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.statusUpdateFailed'))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  function handleCancelSubmit() {
+    if (!cancelReason.trim()) {
+      showMessage('error', t('groomerBookings.messages.cancelReasonRequired'))
+      return
+    }
+
+    void updateBookingStatus('CANCELLED', cancelReason.trim())
+  }
+
+  function handleFileChange(detailId: number, event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      showMessage('error', t('groomerBookings.messages.imageOnly'))
+      return
+    }
+
+    setPreviewByDetailId((current) => ({
+      ...current,
+      [detailId]: {
+        file,
+        url: URL.createObjectURL(file)
+      }
+    }))
+  }
+
+  async function handleUpload(detailId: number, type: BookingMediaType) {
+    if (!booking) return
+
+    const preview = previewByDetailId[detailId]
+    if (!preview) {
+      showMessage('error', t('groomerBookings.messages.noPreview'))
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      await uploadBookingDetailMedia(detailId, type, preview.file)
+      await reloadBooking()
+      setPreviewByDetailId((current) => {
+        const next = { ...current }
+        delete next[detailId]
+        return next
+      })
+      showMessage('success', t('groomerBookings.messages.uploaded'))
+    } catch (error) {
+      showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.uploadFailed'))
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className='flex h-screen overflow-hidden bg-background text-foreground'>
+      <StaffSidebar activeItem='groomerBookings' />
+      <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
+        <StaffTopNav titleKey='groomerBookings.detail.title' subtitleKey='groomerBookings.subtitle' />
+        <main className='flex-1 overflow-y-auto p-4 md:p-6'>
+          <div className='mx-auto flex max-w-7xl flex-col gap-6'>
+            {message && (
+              <div
+                className={cn(
+                  'fixed right-4 top-24 z-50 rounded-2xl border bg-card px-4 py-3 text-sm shadow-xl',
+                  message.type === 'success'
+                    ? 'border-success/40 text-success'
+                    : 'border-destructive/40 text-destructive'
+                )}
+              >
+                {message.text}
+              </div>
+            )}
+
+            <div>
+              <Link
+                to='/staff/groomer-bookings'
+                className='inline-flex h-10 items-center justify-center gap-2 rounded-md border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring'
+              >
+                <MaterialIcon name='arrow_back' className='text-[18px]' />
+                {t('groomerBookings.actions.backToList')}
+              </Link>
+            </div>
+
+            {isLoading && !booking ? (
+              <section className='rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground shadow-sm'>
+                {t('groomerBookings.actions.loading')}
+              </section>
+            ) : null}
+
+            {!isLoading && !booking ? (
+              <section className='rounded-2xl border border-border bg-card p-6 text-center text-sm text-muted-foreground shadow-sm'>
+                {t('groomerBookings.messages.loadDetailFailed')}
+              </section>
+            ) : null}
+
+            {booking ? (
+              <BookingDetailPanel
+                booking={booking}
+                isLoading={isLoading}
+                isNextAllowed={isNextAllowed}
+                nextStatus={nextStatus}
+                previewByDetailId={previewByDetailId}
+                onCancelClick={() => setIsCancelModalOpen(true)}
+                onFileChange={handleFileChange}
+                onRequestStatus={(status) => setPendingStatus(status)}
+                onUpload={handleUpload}
+                t={t}
+              />
+            ) : null}
+          </div>
+        </main>
+      </div>
+
+      {pendingStatus && booking && (
         <ConfirmModal
           description={t(`groomerBookings.confirm.${pendingStatus}.description`)}
           isLoading={isLoading}
@@ -717,15 +756,6 @@ function Timeline({ status, t }: { status: GroomerBookingStatus; t: (key: string
           </p>
         </div>
       ))}
-    </div>
-  )
-}
-
-function InfoPill({ label, value }: { label: string; value: string }) {
-  return (
-    <div className='rounded-xl bg-muted/70 px-3 py-2'>
-      <p className='text-xs text-muted-foreground'>{label}</p>
-      <p className='mt-1 truncate font-semibold text-card-foreground'>{value}</p>
     </div>
   )
 }

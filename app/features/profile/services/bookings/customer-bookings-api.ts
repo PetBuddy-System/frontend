@@ -39,8 +39,11 @@ export interface BookingDetailResponse {
   petName: string
   petImage?: string
   petSpecies?: string
+  petBreed?: string
   petWeight?: number
   petHealthNote?: string
+  petAllergyNote?: string
+  petBehaviorNote?: string
   catalogId: number
   catalogName: string
   catalogImage?: string
@@ -66,14 +69,15 @@ export interface BookingResponse {
   customerPhone: string
   address: string
   scheduledAt: string
+  estimatedEndAt?: string | null
   totalAmount: number
   depositAmount: number
   remainingAmount: number
   bookingStatus: BookingStatus | string
   cancelReason: string
   paymentDeadlineAt: string
-  staffId: string
-  staffName: string
+  staffId?: string | null
+  staffName?: string | null
   bookingDetails: BookingDetailResponse[]
   payments: PaymentResponse[]
 }

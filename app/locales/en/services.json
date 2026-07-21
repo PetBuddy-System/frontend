@@ -437,7 +437,9 @@
       "subtitle": "Only active time slots for the chosen service and date are shown.",
       "dateLabel": "Appointment date",
       "duration": "{{minutes}} minutes",
-      "empty": "No active time slots are available for this service on the selected date."
+      "empty": "No active time slots are available for this service on the selected date.",
+      "pastSlot": "Time passed",
+      "pastSlotError": "This time slot has already passed for today. Please choose another time slot."
     },
     "review": {
       "title": "Booking checkout",
@@ -522,6 +524,7 @@
       "selectService": "Please select a service first.",
       "selectPet": "Please select at least one pet.",
       "selectTime": "Please select an appointment date and time slot.",
+      "pastTimeSlot": "This time slot has already passed for today. Please choose another time slot.",
       "selectGroomer": "Please choose your preferred groomer, or let PetBuddy arrange one for you.",
       "customerMissing": "Please enter customer name and phone number.",
       "addressMissing": "Please enter the at-home service address.",
@@ -533,7 +536,10 @@
       "cardElementMissing": "Could not load the card input.",
       "cardholderMissing": "Please enter the cardholder name.",
       "paymentFailed": "Payment failed. Please try again.",
-      "paymentIncomplete": "Payment is not complete yet. Please try again."
+      "paymentIncomplete": "Payment is not complete yet. Please try again.",
+      "paymentSyncing": "PetBuddy is checking the payment result...",
+      "paymentPendingConfirmation": "PetBuddy has not received payment confirmation from the system yet. If you are running locally, start the Stripe listener and check again in a few minutes.",
+      "paymentConfirmationFailed": "Payment has not been completed in PetBuddy yet. Please try paying again."
     },
     "apiErrors": {
       "BOOKING_NOT_FOUND": "We could not find this booking. Please refresh and check again.",
@@ -586,6 +592,8 @@
       "processing": "Processing payment...",
       "successTitle": "Payment successful",
       "successDescription": "Your deposit for booking {{code}} has been paid successfully.",
+      "syncingTitle": "Confirming payment",
+      "syncingDescription": "PetBuddy is waiting for the payment system to confirm booking {{code}}. If you are running locally, start the Stripe listener and check again in a few minutes.",
       "failedTitle": "Payment failed",
       "retry": "Retry payment",
       "retrying": "Creating new payment..."

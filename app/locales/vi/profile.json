@@ -300,8 +300,18 @@
     "actions": {
       "refresh": "Tải lại",
       "viewDetail": "Xem chi tiết",
+      "backToList": "Quay lại danh sách",
       "payNow": "Thanh toán ngay",
       "retryPayment": "Thanh toán lại"
+    },
+    "table": {
+      "booking": "Lịch đặt",
+      "schedule": "Thời gian",
+      "service": "Dịch vụ",
+      "pets": "Thú cưng",
+      "status": "Trạng thái",
+      "total": "Tổng tiền",
+      "actions": "Thao tác"
     },
     "card": {
       "services": "Dịch vụ",
@@ -313,12 +323,26 @@
     },
     "detail": {
       "title": "Chi tiết lịch đặt",
+      "subtitle": "Xem đầy đủ thông tin dịch vụ, thú cưng và thanh toán của lịch đặt.",
+      "code": "Mã lịch đặt",
       "customer": "Khách hàng",
       "phone": "Số điện thoại",
       "staff": "Nhân viên",
       "unassigned": "Chưa phân công",
+      "staffUnassigned": "Chưa tìm được nhân viên để gán",
+      "bookingDate": "Ngày hẹn",
+      "startTime": "Giờ bắt đầu",
+      "endTime": "Dự kiến kết thúc",
       "address": "Địa chỉ",
       "cancelReason": "Lý do hủy",
+      "petInfoTitle": "Thông tin thú cưng",
+      "petName": "Tên thú cưng",
+      "petSpecies": "Loài",
+      "petBreed": "Giống",
+      "petWeight": "Cân nặng",
+      "petHealthNote": "Lưu ý sức khỏe",
+      "petAllergyNote": "Dị ứng cần chú ý",
+      "petBehaviorNote": "Tính cách",
       "beforeMedia": "Ảnh trước khi thực hiện",
       "afterMedia": "Ảnh sau khi thực hiện",
       "noMedia": "Chưa có ảnh được nhân viên tải lên.",
@@ -326,7 +350,17 @@
       "basePrice": "Giá dịch vụ",
       "extraPrice": "Phụ phí",
       "extraPriceWithDuration": "Phụ phí thêm {{minutes}} phút",
-      "pickupPayment": "Thanh toán khi nhận thú"
+      "pickupPayment": "Thanh toán khi nhận thú",
+      "durationMinute": "{{minutes}} phút"
+    },
+    "progress": {
+      "title": "Tiến độ lịch đặt",
+      "pendingPayment": "Chờ thanh toán",
+      "pendingAcceptance": "Chờ xác nhận",
+      "accepted": "Đã sắp xếp",
+      "inProgress": "Đang chăm sóc",
+      "readyForPickup": "Chờ nhận thú",
+      "completed": "Hoàn tất"
     },
     "payment": {
       "title": "Hoàn tất thanh toán đặt cọc",

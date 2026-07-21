@@ -9,6 +9,7 @@ import {
 import { loadStripe } from '@stripe/stripe-js'
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 
 import { ProfileFloatingSupport } from '../components/layout/profile-floating-support'
 import { ProfilePageHeader } from '../components/layout/profile-page-header'
@@ -18,9 +19,7 @@ import {
   getCustomerBookingDetail,
   getMyCustomerBookings,
   retryCustomerBookingPayment,
-  type BookingDetailResponse,
   type BookingResponse,
-  type MediaFileResponse,
   type PaymentResponse
 } from '../services'
 
@@ -72,12 +71,10 @@ export function MyBookingsPage() {
   const { t, i18n } = useTranslation('profile')
   const [bookings, setBookings] = useState<BookingResponse[]>([])
   const [selectedStatus, setSelectedStatus] = useState<BookingStatusFilter>('ALL')
-  const [selectedBooking, setSelectedBooking] = useState<BookingResponse | null>(null)
   const [paymentModal, setPaymentModal] = useState<{ booking: BookingResponse; payment: PaymentResponse } | null>(null)
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [isDetailLoading, setIsDetailLoading] = useState(false)
   const [retryingBookingId, setRetryingBookingId] = useState<number | null>(null)
   const isSyncingBookingsRef = useRef(false)
 
@@ -119,25 +116,17 @@ export function MyBookingsPage() {
 
       isSyncingBookingsRef.current = true
 
-      if (options?.silent) {
-        // Keep the existing UI steady while background sync refreshes status changes.
-      } else if (options?.quiet) {
-        setIsRefreshing(true)
-      } else {
-        setIsLoading(true)
+      if (!options?.silent) {
+        if (options?.quiet) {
+          setIsRefreshing(true)
+        } else {
+          setIsLoading(true)
+        }
       }
 
       try {
         const data = await getMyCustomerBookings()
-        const sortedBookings = sortBookings(data)
-        setBookings(sortedBookings)
-        setSelectedBooking((currentBooking) => {
-          if (!currentBooking) {
-            return currentBooking
-          }
-
-          return sortedBookings.find((booking) => booking.bookingId === currentBooking.bookingId) ?? currentBooking
-        })
+        setBookings(sortBookings(data))
       } catch {
         if (!options?.silent) {
           setToast({ type: 'error', message: t('myBookings.feedback.loadFailed') })
@@ -188,20 +177,6 @@ export function MyBookingsPage() {
     return () => window.clearTimeout(timerId)
   }, [toast])
 
-  async function handleViewDetail(booking: BookingResponse) {
-    setSelectedBooking(booking)
-    setIsDetailLoading(true)
-
-    try {
-      const detail = await getCustomerBookingDetail(booking.bookingId)
-      setSelectedBooking(detail)
-    } catch {
-      setToast({ type: 'error', message: t('myBookings.feedback.detailFailed') })
-    } finally {
-      setIsDetailLoading(false)
-    }
-  }
-
   async function handleRetryPayment(booking: BookingResponse) {
     setRetryingBookingId(booking.bookingId)
 
@@ -223,9 +198,6 @@ export function MyBookingsPage() {
       sortBookings(
         currentBookings.map((booking) => (booking.bookingId === updatedBooking.bookingId ? updatedBooking : booking))
       )
-    )
-    setSelectedBooking((currentBooking) =>
-      currentBooking?.bookingId === updatedBooking.bookingId ? updatedBooking : currentBooking
     )
   }
 
@@ -347,18 +319,12 @@ export function MyBookingsPage() {
             {isLoading ? (
               <BookingSkeletonList />
             ) : filteredBookings.length > 0 ? (
-              <div className='grid gap-4 xl:grid-cols-2'>
-                {filteredBookings.map((booking) => (
-                  <BookingCard
-                    key={booking.bookingId}
-                    booking={booking}
-                    formatCurrency={(value) => currencyFormatter.format(value)}
-                    isRetrying={retryingBookingId === booking.bookingId}
-                    onRetryPayment={handleRetryPayment}
-                    onViewDetail={handleViewDetail}
-                  />
-                ))}
-              </div>
+              <BookingTable
+                bookings={filteredBookings}
+                formatCurrency={(value) => currencyFormatter.format(value)}
+                retryingBookingId={retryingBookingId}
+                onRetryPayment={handleRetryPayment}
+              />
             ) : (
               <EmptyBookings />
             )}
@@ -369,15 +335,6 @@ export function MyBookingsPage() {
       <ProfileFloatingSupport />
 
       {toast ? <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} /> : null}
-
-      {selectedBooking ? (
-        <BookingDetailModal
-          booking={selectedBooking}
-          isLoading={isDetailLoading}
-          formatCurrency={(value) => currencyFormatter.format(value)}
-          onClose={() => setSelectedBooking(null)}
-        />
-      ) : null}
 
       {paymentModal ? (
         <PaymentModal
@@ -392,105 +349,115 @@ export function MyBookingsPage() {
   )
 }
 
-interface BookingCardProps {
-  booking: BookingResponse
+interface BookingTableProps {
+  bookings: BookingResponse[]
   formatCurrency: (value: number) => string
-  isRetrying: boolean
   onRetryPayment: (booking: BookingResponse) => void
-  onViewDetail: (booking: BookingResponse) => void
+  retryingBookingId: number | null
 }
 
-function BookingCard({ booking, formatCurrency, isRetrying, onRetryPayment, onViewDetail }: BookingCardProps) {
+function BookingTable({ bookings, formatCurrency, onRetryPayment, retryingBookingId }: BookingTableProps) {
   const { t } = useTranslation('profile')
-  const firstDetail = booking.bookingDetails[0]
-  const serviceNames = Array.from(new Set(booking.bookingDetails.map((detail) => detail.catalogName).filter(Boolean)))
-  const petNames = Array.from(new Set(booking.bookingDetails.map((detail) => detail.petName).filter(Boolean)))
-  const canRetryPayment = RETRYABLE_STATUSES.has(booking.bookingStatus)
 
   return (
-    <article className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md'>
-      <div className='flex flex-col gap-4 border-b border-border p-5 md:flex-row md:items-start md:justify-between'>
-        <div className='flex min-w-0 gap-4'>
-          <div className='flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-accent text-accent-foreground'>
-            <MaterialIcon name='spa' className='text-[28px]' />
-          </div>
-          <div className='min-w-0'>
-            <div className='flex flex-wrap items-center gap-2'>
-              <h2 className='truncate font-display text-lg font-bold text-card-foreground'>
-                {booking.bookingCode || `#${booking.bookingId}`}
-              </h2>
-              <StatusBadge status={booking.bookingStatus} />
-            </div>
-            <p className='mt-1 text-sm text-muted-foreground'>
-              {formatDateTime(booking.scheduledAt)}{' '}
-              {firstDetail?.timeSlot ? `• ${formatTime(firstDetail.timeSlot)}` : ''}
-            </p>
-            <p className='mt-1 text-sm font-medium text-foreground'>
-              {serviceNames.length > 0 ? serviceNames.join(', ') : t('myBookings.card.noService')}
-            </p>
-          </div>
-        </div>
-        <div className='text-left md:text-right'>
-          <p className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
-            {t('myBookings.card.total')}
-          </p>
-          <p className='mt-1 text-xl font-bold text-primary'>{formatCurrency(booking.totalAmount ?? 0)}</p>
-        </div>
-      </div>
+    <div className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm'>
+      <div className='overflow-x-auto'>
+        <table className='w-full min-w-[1040px] border-collapse text-left'>
+          <thead className='bg-muted/60 text-xs font-bold uppercase tracking-wide text-muted-foreground'>
+            <tr>
+              <th className='px-4 py-3'>{t('myBookings.table.booking')}</th>
+              <th className='px-4 py-3'>{t('myBookings.table.schedule')}</th>
+              <th className='px-4 py-3'>{t('myBookings.table.service')}</th>
+              <th className='px-4 py-3'>{t('myBookings.table.pets')}</th>
+              <th className='px-4 py-3'>{t('myBookings.table.status')}</th>
+              <th className='px-4 py-3 text-right'>{t('myBookings.table.total')}</th>
+              <th className='px-4 py-3 text-right'>{t('myBookings.table.actions')}</th>
+            </tr>
+          </thead>
+          <tbody className='divide-y divide-border'>
+            {bookings.map((booking) => {
+              const firstDetail = booking.bookingDetails[0]
+              const serviceNames = Array.from(
+                new Set(booking.bookingDetails.map((detail) => detail.catalogName).filter(Boolean))
+              )
+              const petNames = Array.from(
+                new Set(booking.bookingDetails.map((detail) => detail.petName).filter(Boolean))
+              )
+              const canRetryPayment = RETRYABLE_STATUSES.has(booking.bookingStatus)
+              const isRetrying = retryingBookingId === booking.bookingId
 
-      <div className='grid gap-4 p-5 md:grid-cols-3'>
-        <BookingInfo icon='pets' label={t('myBookings.card.pets')} value={petNames.join(', ') || '-'} />
-        <BookingInfo
-          icon='account_balance_wallet'
-          label={t('myBookings.card.deposit')}
-          value={formatCurrency(booking.depositAmount ?? 0)}
-        />
-        <BookingInfo
-          icon='receipt_long'
-          label={t('myBookings.card.remaining')}
-          value={formatCurrency(booking.remainingAmount ?? 0)}
-        />
-      </div>
-
-      <div className='flex flex-col gap-3 border-t border-border bg-muted/40 p-5 sm:flex-row sm:items-center sm:justify-between'>
-        <span className='inline-flex items-center gap-2 text-sm text-muted-foreground'>
-          <MaterialIcon name={booking.bookingType === 'AT_HOME' ? 'home_pin' : 'storefront'} className='text-[19px]' />
-          {t(`myBookings.bookingTypes.${booking.bookingType}`, { defaultValue: booking.bookingType })}
-        </span>
-        <div className='flex flex-col gap-2 sm:flex-row'>
-          <Button type='button' variant='outline' onClick={() => onViewDetail(booking)} className='gap-2'>
-            <MaterialIcon name='visibility' className='text-[18px]' />
-            {t('myBookings.actions.viewDetail')}
-          </Button>
-          {canRetryPayment ? (
-            <Button type='button' onClick={() => onRetryPayment(booking)} disabled={isRetrying} className='gap-2'>
-              <MaterialIcon name={isRetrying ? 'progress_activity' : 'credit_card'} className='text-[18px]' />
-              {booking.bookingStatus === BookingStatus.FAILED
-                ? t('myBookings.actions.retryPayment')
-                : t('myBookings.actions.payNow')}
-            </Button>
-          ) : null}
-        </div>
-      </div>
-    </article>
-  )
-}
-
-interface BookingInfoProps {
-  icon: string
-  label: string
-  value: string
-}
-
-function BookingInfo({ icon, label, value }: BookingInfoProps) {
-  return (
-    <div className='flex items-start gap-3'>
-      <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground'>
-        <MaterialIcon name={icon} className='text-[19px]' />
-      </span>
-      <div className='min-w-0'>
-        <p className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>{label}</p>
-        <p className='mt-1 truncate text-sm font-semibold text-foreground'>{value}</p>
+              return (
+                <tr key={booking.bookingId} className='align-top transition-colors hover:bg-muted/30'>
+                  <td className='px-4 py-4'>
+                    <div className='flex min-w-0 items-center gap-3'>
+                      <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground'>
+                        <MaterialIcon name='spa' className='text-[22px]' />
+                      </span>
+                      <div className='min-w-0'>
+                        <p className='font-display text-sm font-bold text-card-foreground'>
+                          {booking.bookingCode || `#${booking.bookingId}`}
+                        </p>
+                        <p className='mt-1 text-xs text-muted-foreground'>
+                          {t(`myBookings.bookingTypes.${booking.bookingType}`, { defaultValue: booking.bookingType })}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className='px-4 py-4 text-sm text-foreground'>
+                    <p className='font-semibold'>{formatDateTime(booking.scheduledAt)}</p>
+                    <p className='mt-1 text-xs text-muted-foreground'>
+                      {firstDetail?.timeSlot ? formatTime(firstDetail.timeSlot) : '-'}
+                    </p>
+                  </td>
+                  <td className='max-w-[260px] px-4 py-4 text-sm font-medium text-foreground'>
+                    <p className='line-clamp-2'>
+                      {serviceNames.length > 0 ? serviceNames.join(', ') : t('myBookings.card.noService')}
+                    </p>
+                  </td>
+                  <td className='max-w-[220px] px-4 py-4 text-sm text-muted-foreground'>
+                    <p className='line-clamp-2'>{petNames.join(', ') || '-'}</p>
+                  </td>
+                  <td className='px-4 py-4'>
+                    <StatusBadge status={booking.bookingStatus} />
+                  </td>
+                  <td className='px-4 py-4 text-right'>
+                    <p className='font-bold text-primary'>{formatCurrency(booking.totalAmount ?? 0)}</p>
+                    <p className='mt-1 text-xs text-muted-foreground'>
+                      {t('myBookings.card.deposit')}: {formatCurrency(booking.depositAmount ?? 0)}
+                    </p>
+                  </td>
+                  <td className='px-4 py-4'>
+                    <div className='flex justify-end gap-2'>
+                      <Link
+                        to={`/my-bookings/${booking.bookingId}`}
+                        className='inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md border border-border bg-transparent px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring'
+                      >
+                        <MaterialIcon name='visibility' className='text-[18px]' />
+                        {t('myBookings.actions.viewDetail')}
+                      </Link>
+                      {canRetryPayment ? (
+                        <Button
+                          type='button'
+                          onClick={() => onRetryPayment(booking)}
+                          disabled={isRetrying}
+                          className='gap-2 whitespace-nowrap'
+                        >
+                          <MaterialIcon
+                            name={isRetrying ? 'progress_activity' : 'credit_card'}
+                            className='text-[18px]'
+                          />
+                          {booking.bookingStatus === BookingStatus.FAILED
+                            ? t('myBookings.actions.retryPayment')
+                            : t('myBookings.actions.payNow')}
+                        </Button>
+                      ) : null}
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   )
@@ -534,283 +501,6 @@ function StatusBadge({ status }: StatusBadgeProps) {
     >
       {t(`myBookings.status.${status}`, { defaultValue: status })}
     </span>
-  )
-}
-
-function getDetailMediaByType(
-  detail: BookingDetailResponse,
-  bookingMediaType: 'BEFORE_SERVICE' | 'AFTER_SERVICE'
-): MediaFileResponse[] {
-  return detail.mediaFiles?.filter((media) => media.bookingMediaType === bookingMediaType) ?? []
-}
-
-function getDetailPetAvatarUrl(detail: BookingDetailResponse): string | null {
-  const detailWithImageAliases = detail as BookingDetailResponse & {
-    avatarUrl?: string
-    petAvatar?: string
-    petImageUrl?: string
-  }
-
-  return (
-    detail.petImage ||
-    detailWithImageAliases.petImageUrl ||
-    detailWithImageAliases.petAvatar ||
-    detailWithImageAliases.avatarUrl ||
-    null
-  )
-}
-
-function getRemainingAmountForDisplay(booking: BookingResponse): number {
-  return booking.bookingStatus === BookingStatus.COMPLETED ? 0 : (booking.remainingAmount ?? 0)
-}
-
-function getPickupPaidAmountForDisplay(booking: BookingResponse): number {
-  return booking.bookingStatus === BookingStatus.COMPLETED ? (booking.remainingAmount ?? 0) : 0
-}
-
-interface BookingDetailModalProps {
-  booking: BookingResponse
-  isLoading: boolean
-  formatCurrency: (value: number) => string
-  onClose: () => void
-}
-
-function BookingDetailModal({ booking, isLoading, formatCurrency, onClose }: BookingDetailModalProps) {
-  const { t } = useTranslation('profile')
-  const remainingAmount = getRemainingAmountForDisplay(booking)
-  const pickupPaidAmount = getPickupPaidAmountForDisplay(booking)
-
-  return (
-    <ModalShell title={t('myBookings.detail.title')} onClose={onClose}>
-      <div className='space-y-5'>
-        <div className='flex flex-col gap-3 rounded-2xl border border-border bg-muted/40 p-4 sm:flex-row sm:items-center sm:justify-between'>
-          <div>
-            <p className='font-display text-xl font-bold text-foreground'>{booking.bookingCode}</p>
-            <p className='mt-1 text-sm text-muted-foreground'>{formatDateTime(booking.scheduledAt)}</p>
-          </div>
-          <StatusBadge status={booking.bookingStatus} />
-        </div>
-
-        {isLoading ? (
-          <div className='h-32 animate-pulse rounded-2xl bg-muted' />
-        ) : (
-          <>
-            <div className='grid gap-3 sm:grid-cols-2'>
-              <DetailItem label={t('myBookings.detail.customer')} value={booking.customerName || '-'} />
-              <DetailItem label={t('myBookings.detail.phone')} value={booking.customerPhone || '-'} />
-              <DetailItem
-                label={t('myBookings.detail.staff')}
-                value={booking.staffName || t('myBookings.detail.unassigned')}
-              />
-              {booking.address ? <DetailItem label={t('myBookings.detail.address')} value={booking.address} /> : null}
-            </div>
-
-            {booking.cancelReason ? (
-              <div className='rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive'>
-                <strong>{t('myBookings.detail.cancelReason')}:</strong> {booking.cancelReason}
-              </div>
-            ) : null}
-
-            <div className='rounded-2xl border border-border'>
-              <div className='border-b border-border p-4'>
-                <h3 className='font-bold text-foreground'>{t('myBookings.card.services')}</h3>
-              </div>
-              <div className='divide-y divide-border'>
-                {booking.bookingDetails.map((detail) => {
-                  const petAvatarUrl = getDetailPetAvatarUrl(detail)
-
-                  return (
-                    <div key={detail.bookingDetailId} className='grid gap-4 p-4'>
-                      <div className='grid gap-3 sm:grid-cols-[1fr_auto]'>
-                        <div className='flex min-w-0 items-start gap-3'>
-                          {petAvatarUrl ? (
-                            <img
-                              src={petAvatarUrl}
-                              alt={detail.petName}
-                              className='h-14 w-14 shrink-0 rounded-xl border border-border object-cover'
-                            />
-                          ) : (
-                            <span className='flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted text-primary'>
-                              <MaterialIcon name='pets' className='text-[24px]' />
-                            </span>
-                          )}
-                          <div className='min-w-0'>
-                            <p className='font-semibold text-foreground'>{detail.catalogName}</p>
-                            <p className='mt-1 text-sm text-muted-foreground'>
-                              {detail.petName} • {formatTime(detail.timeSlot)} • {detail.durationMinute ?? 0} min
-                            </p>
-                            <BookingDetailPriceLines detail={detail} formatCurrency={formatCurrency} />
-                          </div>
-                        </div>
-                        <p className='font-bold text-primary'>
-                          {formatCurrency(detail.totalPrice ?? detail.unitPrice ?? 0)}
-                        </p>
-                      </div>
-                      <BookingDetailMediaGrid
-                        beforeMedia={getDetailMediaByType(detail, 'BEFORE_SERVICE')}
-                        afterMedia={getDetailMediaByType(detail, 'AFTER_SERVICE')}
-                      />
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            <div className='rounded-2xl border border-border p-4'>
-              <h3 className='font-bold text-foreground'>{t('myBookings.detail.paymentTitle')}</h3>
-              <dl className='mt-3 divide-y divide-border text-sm'>
-                <PaymentSummaryLine
-                  label={t('myBookings.card.total')}
-                  value={formatCurrency(booking.totalAmount ?? 0)}
-                />
-                <PaymentSummaryLine
-                  label={t('myBookings.card.deposit')}
-                  value={formatCurrency(booking.depositAmount ?? 0)}
-                />
-                {pickupPaidAmount > 0 ? (
-                  <PaymentSummaryLine
-                    label={t('myBookings.detail.pickupPayment')}
-                    value={formatCurrency(pickupPaidAmount)}
-                  />
-                ) : null}
-                <PaymentSummaryLine
-                  label={t('myBookings.card.remaining')}
-                  value={formatCurrency(remainingAmount)}
-                  strong
-                />
-              </dl>
-            </div>
-          </>
-        )}
-      </div>
-    </ModalShell>
-  )
-}
-
-interface BookingDetailPriceLinesProps {
-  detail: BookingDetailResponse
-  formatCurrency: (value: number) => string
-}
-
-function BookingDetailPriceLines({ detail, formatCurrency }: BookingDetailPriceLinesProps) {
-  const { t } = useTranslation('profile')
-  const basePrice = detail.basePrice ?? detail.unitPrice ?? detail.totalPrice ?? 0
-  const additionalPrice = detail.additionalPrice ?? 0
-  const additionalDurationMinute = detail.additionalDurationMinute ?? 0
-
-  if (additionalPrice <= 0 && additionalDurationMinute <= 0) {
-    return null
-  }
-
-  return (
-    <dl className='mt-3 space-y-1 text-xs text-muted-foreground'>
-      <div className='flex items-center justify-between gap-3'>
-        <dt>{t('myBookings.detail.basePrice')}</dt>
-        <dd className='font-semibold text-foreground'>{formatCurrency(basePrice)}</dd>
-      </div>
-      {additionalPrice > 0 ? (
-        <div className='flex items-center justify-between gap-3'>
-          <dt>
-            {additionalDurationMinute > 0
-              ? t('myBookings.detail.extraPriceWithDuration', { minutes: additionalDurationMinute })
-              : t('myBookings.detail.extraPrice')}
-          </dt>
-          <dd className='font-semibold text-foreground'>{formatCurrency(additionalPrice)}</dd>
-        </div>
-      ) : null}
-    </dl>
-  )
-}
-
-interface PaymentSummaryLineProps {
-  label: string
-  value: string
-  strong?: boolean
-}
-
-function PaymentSummaryLine({ label, value, strong }: PaymentSummaryLineProps) {
-  return (
-    <div className='flex items-center justify-between gap-4 py-3'>
-      <dt className='text-muted-foreground'>{label}</dt>
-      <dd className={cn('text-right font-semibold text-foreground', strong && 'text-primary')}>{value}</dd>
-    </div>
-  )
-}
-
-interface BookingDetailMediaGridProps {
-  beforeMedia: MediaFileResponse[]
-  afterMedia: MediaFileResponse[]
-}
-
-function BookingDetailMediaGrid({ beforeMedia, afterMedia }: BookingDetailMediaGridProps) {
-  const { t } = useTranslation('profile')
-
-  return (
-    <div className='grid gap-3 md:grid-cols-2'>
-      <BookingMediaStrip
-        title={t('myBookings.detail.beforeMedia')}
-        emptyText={t('myBookings.detail.noMedia')}
-        mediaFiles={beforeMedia}
-      />
-      <BookingMediaStrip
-        title={t('myBookings.detail.afterMedia')}
-        emptyText={t('myBookings.detail.noMedia')}
-        mediaFiles={afterMedia}
-      />
-    </div>
-  )
-}
-
-interface BookingMediaStripProps {
-  title: string
-  emptyText: string
-  mediaFiles: MediaFileResponse[]
-}
-
-function BookingMediaStrip({ title, emptyText, mediaFiles }: BookingMediaStripProps) {
-  const imageFiles = mediaFiles.filter((media) => !media.fileType || media.fileType.toUpperCase() === 'IMAGE')
-
-  return (
-    <section className='rounded-2xl border border-border bg-muted/30 p-3'>
-      <p className='text-sm font-bold text-foreground'>{title}</p>
-      {imageFiles.length > 0 ? (
-        <div className='mt-3 grid grid-cols-3 gap-2'>
-          {imageFiles.map((media) => (
-            <a
-              key={media.mediaFileId}
-              href={media.fileUrl}
-              target='_blank'
-              rel='noreferrer'
-              className='group block overflow-hidden rounded-xl border border-border bg-background'
-            >
-              <img
-                src={media.fileUrl}
-                alt={media.fileKey || title}
-                className='aspect-square w-full object-cover transition-transform group-hover:scale-105'
-              />
-            </a>
-          ))}
-        </div>
-      ) : (
-        <p className='mt-3 rounded-xl border border-dashed border-border bg-background p-3 text-sm text-muted-foreground'>
-          {emptyText}
-        </p>
-      )}
-    </section>
-  )
-}
-
-interface DetailItemProps {
-  label: string
-  value: string
-}
-
-function DetailItem({ label, value }: DetailItemProps) {
-  return (
-    <div className='rounded-xl bg-muted/60 p-3'>
-      <p className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>{label}</p>
-      <p className='mt-1 text-sm font-semibold text-foreground'>{value}</p>
-    </div>
   )
 }
 
@@ -1007,17 +697,26 @@ function Toast({ type, message, onClose }: ToastProps) {
         >
           <MaterialIcon name={type === 'success' ? 'check' : 'error'} className='text-[19px]' />
         </span>
-        <div className='min-w-0 flex-1'>
-          <p className='text-sm font-semibold text-foreground'>{message}</p>
-        </div>
-        <button
-          type='button'
-          onClick={onClose}
-          className='text-muted-foreground hover:text-foreground'
-          aria-label='Close'
-        >
+        <p className='flex-1 text-sm font-medium text-card-foreground'>{message}</p>
+        <button type='button' onClick={onClose} className='text-muted-foreground hover:text-foreground'>
           <MaterialIcon name='close' className='text-[18px]' />
         </button>
+      </div>
+    </div>
+  )
+}
+
+function BookingSkeletonList() {
+  return (
+    <div className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm'>
+      <div className='space-y-0 divide-y divide-border'>
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} className='grid gap-4 p-5 md:grid-cols-6'>
+            {Array.from({ length: 6 }).map((__, cellIndex) => (
+              <div key={cellIndex} className='h-9 animate-pulse rounded-xl bg-muted' />
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -1027,42 +726,33 @@ function EmptyBookings() {
   const { t } = useTranslation('profile')
 
   return (
-    <div className='rounded-2xl border border-dashed border-border bg-card p-10 text-center'>
-      <div className='mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-accent text-accent-foreground'>
+    <section className='rounded-2xl border border-dashed border-border bg-card p-10 text-center shadow-sm'>
+      <span className='mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-muted text-primary'>
         <MaterialIcon name='event_busy' className='text-[32px]' />
-      </div>
-      <h2 className='mt-4 font-display text-xl font-bold text-foreground'>{t('myBookings.feedback.emptyTitle')}</h2>
+      </span>
+      <h2 className='mt-4 font-display text-xl font-bold text-card-foreground'>
+        {t('myBookings.feedback.emptyTitle')}
+      </h2>
       <p className='mx-auto mt-2 max-w-md text-sm text-muted-foreground'>{t('myBookings.feedback.emptyText')}</p>
-    </div>
+    </section>
   )
 }
 
-function BookingSkeletonList() {
-  return (
-    <div className='grid gap-4 xl:grid-cols-2'>
-      {Array.from({ length: 4 }).map((_, index) => (
-        <div key={index} className='rounded-2xl border border-border bg-card p-5'>
-          <div className='flex gap-4'>
-            <div className='h-14 w-14 animate-pulse rounded-2xl bg-muted' />
-            <div className='flex-1 space-y-3'>
-              <div className='h-5 w-2/3 animate-pulse rounded-full bg-muted' />
-              <div className='h-4 w-1/2 animate-pulse rounded-full bg-muted' />
-            </div>
-          </div>
-          <div className='mt-6 grid gap-3 md:grid-cols-3'>
-            <div className='h-16 animate-pulse rounded-xl bg-muted' />
-            <div className='h-16 animate-pulse rounded-xl bg-muted' />
-            <div className='h-16 animate-pulse rounded-xl bg-muted' />
-          </div>
-        </div>
-      ))}
-    </div>
-  )
+function getStatusBadgeClassName(status: string): string {
+  if (status === BookingStatus.COMPLETED) return 'bg-success/15 text-success'
+  if (status === BookingStatus.CANCELLED || status === BookingStatus.FAILED) return 'bg-destructive/15 text-destructive'
+  if (status === BookingStatus.PENDING_PAYMENT) return 'bg-warning/15 text-warning'
+  if (status === BookingStatus.PENDING_ACCEPTANCE || status === BookingStatus.WAITING_STAFF) {
+    return 'bg-info/15 text-info'
+  }
+  return 'bg-primary/15 text-primary'
 }
 
-function sortBookings(bookings: BookingResponse[]) {
+function sortBookings(bookings: BookingResponse[]): BookingResponse[] {
   return [...bookings].sort((first, second) => {
-    return new Date(second.scheduledAt).getTime() - new Date(first.scheduledAt).getTime()
+    const firstTime = new Date(first.scheduledAt).getTime()
+    const secondTime = new Date(second.scheduledAt).getTime()
+    return secondTime - firstTime
   })
 }
 
@@ -1076,36 +766,13 @@ function formatDateTime(value: string) {
     return value
   }
 
-  return date.toLocaleDateString('vi-VN', {
+  return new Intl.DateTimeFormat('vi-VN', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
-  })
+  }).format(date)
 }
 
 function formatTime(value: string) {
-  if (!value) {
-    return ''
-  }
-
-  return value.slice(0, 5)
-}
-
-function getStatusBadgeClassName(status: string) {
-  switch (status) {
-    case BookingStatus.COMPLETED:
-      return 'bg-success/15 text-success'
-    case BookingStatus.PENDING_PAYMENT:
-    case BookingStatus.READY_FOR_PICKUP:
-      return 'bg-warning/15 text-warning'
-    case BookingStatus.FAILED:
-    case BookingStatus.CANCELLED:
-      return 'bg-destructive/15 text-destructive'
-    case BookingStatus.IN_PROGRESS:
-      return 'bg-info/15 text-info'
-    case BookingStatus.ACCEPTED:
-      return 'bg-primary/15 text-primary'
-    default:
-      return 'bg-accent text-accent-foreground'
-  }
+  return value ? value.slice(0, 5) : '-'
 }
