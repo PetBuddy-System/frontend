@@ -44,14 +44,27 @@ export function RestockDetailDialog({
             try {
                 const data = await restockApi.getRestockInfo(returnRequestId)
                 console.log('🔍 Restock Info Data:', JSON.stringify(data, null, 2))
-                setRestockInfo(data)
 
-                const items = data.items.map(item => ({
+                // ✅ Lọc duplicate batches theo batchId
+                const uniqueItems = data.items.map(item => ({
+                    ...item,
+                    batches: item.batches.filter((batch, index, self) =>
+                        index === self.findIndex(b => b.batchId === batch.batchId)
+                    )
+                }))
+
+                const cleanedData = { ...data, items: uniqueItems }
+                setRestockInfo(cleanedData)
+
+                // ✅ Chỉ tạo restockData cho các batch chưa được restock
+                const items = cleanedData.items.map(item => ({
                     orderDetailId: item.orderDetailId,
-                    batches: item.batches.map(batch => ({
-                        batchId: batch.batchId,
-                        restockQuantity: batch.availableToRestock
-                    }))
+                    batches: item.batches
+                        .filter(batch => batch.restockQuantity === 0) // Chỉ lấy batch chưa nhập
+                        .map(batch => ({
+                            batchId: batch.batchId,
+                            restockQuantity: batch.availableToRestock
+                        }))
                 }))
                 setRestockData({ items })
             } catch (err) {
@@ -104,6 +117,11 @@ export function RestockDetailDialog({
             })
         })
         return total
+    }
+
+    function getUniqueProductCount() {
+        if (!restockInfo) return 0
+        return restockInfo.items.length
     }
 
     function isRestocked() {

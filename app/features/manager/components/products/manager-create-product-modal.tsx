@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { createProductApi, updateProductImagesApi, updateProductVideoApi } from '../../services/product'
 import type { CategoryData, ProductUnit } from '~/shared/lib/product'
@@ -14,6 +15,7 @@ interface CreateProductFormData {
   ingredients: string
   usageInstructions: string
   unit: ProductUnit | ''
+  weight: number | ''
 }
 
 interface ManagerCreateProductModalProps {
@@ -22,17 +24,6 @@ interface ManagerCreateProductModalProps {
   onSuccess: () => void
 }
 
-const UNIT_OPTIONS: { value: ProductUnit; label: string }[] = [
-  { value: 'PIECE', label: 'Cái' },
-  { value: 'BAG', label: 'Túi' },
-  { value: 'BOX', label: 'Hộp' },
-  { value: 'PACK', label: 'Gói' },
-  { value: 'BOTTLE', label: 'Chai' },
-  { value: 'CAN', label: 'Lon' },
-  { value: 'TUBE', label: 'Tuýp' },
-  { value: 'SET', label: 'Bộ' },
-]
-
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export function ManagerCreateProductModal({
@@ -40,6 +31,8 @@ export function ManagerCreateProductModal({
   onClose,
   onSuccess
 }: ManagerCreateProductModalProps) {
+  const { t } = useTranslation('manager')
+
   const [form, setForm] = useState<CreateProductFormData>({
     name: '',
     salePrice: 0,
@@ -49,6 +42,7 @@ export function ManagerCreateProductModal({
     ingredients: '',
     usageInstructions: '',
     unit: '',
+    weight: '',
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
@@ -56,6 +50,18 @@ export function ManagerCreateProductModal({
   const [videoPreview, setVideoPreview] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Lấy unit options từ translation
+  const UNIT_OPTIONS: { value: ProductUnit; label: string }[] = [
+    { value: 'PIECE', label: t('unit.PIECE') },
+    { value: 'BAG', label: t('unit.BAG') },
+    { value: 'BOX', label: t('unit.BOX') },
+    { value: 'PACK', label: t('unit.PACK') },
+    { value: 'BOTTLE', label: t('unit.BOTTLE') },
+    { value: 'CAN', label: t('unit.CAN') },
+    { value: 'TUBE', label: t('unit.TUBE') },
+    { value: 'SET', label: t('unit.SET') },
+  ]
 
   // Cleanup previews on unmount
   useEffect(() => {
@@ -71,7 +77,7 @@ export function ManagerCreateProductModal({
     if (e.target.files) {
       const filesArray = Array.from(e.target.files)
       if (images.length + filesArray.length > 4) {
-        setError('Chỉ được chọn tối đa 4 hình ảnh')
+        setError(t('productManagement.createModal.errors.maxImages'))
         e.target.value = ''
         return
       }
@@ -110,24 +116,37 @@ export function ManagerCreateProductModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
+    // Validate form
     if (!form.name.trim()) {
-      setError('Tên sản phẩm không được để trống')
+      setError(t('productManagement.createModal.errors.nameRequired'))
       return
     }
     if (form.salePrice < 0) {
-      setError('Đơn giá không được âm')
+      setError(t('productManagement.createModal.errors.priceInvalid'))
       return
     }
     if (!form.brandName.trim()) {
-      setError('Thương hiệu không được để trống')
+      setError(t('productManagement.createModal.errors.brandRequired'))
       return
     }
     if (!form.categoryId) {
-      setError('Vui lòng chọn danh mục')
+      setError(t('productManagement.createModal.errors.categoryRequired'))
+      return
+    }
+    if (!form.unit) {
+      setError(t('productManagement.createModal.errors.unitRequired'))
       return
     }
     if (images.length > 4) {
-      setError('Chỉ được chọn tối đa 4 hình ảnh')
+      setError(t('productManagement.createModal.errors.maxImages'))
+      return
+    }
+    if (!form.weight) {
+      setError(t('productManagement.createModal.errors.weightRequired'))
+      return
+    }
+    if (Number(form.weight) <= 0) {
+      setError(t('productManagement.createModal.errors.weightInvalid'))
       return
     }
 
@@ -144,11 +163,12 @@ export function ManagerCreateProductModal({
         description: form.description.trim(),
         ingredients: form.ingredients.trim(),
         usageInstructions: form.usageInstructions.trim(),
-        unit: form.unit as ProductUnit | undefined
+        unit: form.unit as ProductUnit,
+        weight: Number(form.weight)
       })
 
       if (!response.success) {
-        setError(response.message || 'Lỗi khi tạo sản phẩm')
+        setError(response.message || t('productManagement.createModal.errors.createFailed'))
         setIsSubmitting(false)
         return
       }
@@ -174,7 +194,7 @@ export function ManagerCreateProductModal({
       onSuccess()
       onClose()
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Lỗi khi tạo sản phẩm')
+      setError(err instanceof Error ? err.message : t('productManagement.createModal.errors.createFailed'))
     } finally {
       setIsSubmitting(false)
     }
@@ -187,7 +207,7 @@ export function ManagerCreateProductModal({
       {/* Backdrop */}
       <button
         type='button'
-        aria-label='Close'
+        aria-label={t('productManagement.createModal.close')}
         className='absolute inset-0 bg-foreground/45 backdrop-blur-sm transition-opacity'
         onClick={onClose}
       />
@@ -197,10 +217,10 @@ export function ManagerCreateProductModal({
         <header className='flex items-center justify-between border-b border-border bg-muted/50 px-6 py-4'>
           <div>
             <h2 className='font-display text-lg font-bold text-card-foreground'>
-              Thêm sản phẩm mới
+              {t('productManagement.createModal.title')}
             </h2>
             <p className='text-xs text-muted-foreground mt-0.5'>
-              Vui lòng điền thông tin sản phẩm mới bên dưới
+              {t('productManagement.createModal.subtitle')}
             </p>
           </div>
           <button
@@ -226,13 +246,13 @@ export function ManagerCreateProductModal({
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor='create-name' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                  Tên sản phẩm <span className='text-destructive'>*</span>
+                  {t('productManagement.createModal.name')} <span className='text-destructive'>*</span>
                 </label>
                 <input
                   id='create-name'
                   type='text'
                   required
-                  placeholder='Nhập tên sản phẩm'
+                  placeholder={t('productManagement.createModal.namePlaceholder')}
                   value={form.name}
                   onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
                   className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
@@ -241,7 +261,7 @@ export function ManagerCreateProductModal({
 
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor='create-price' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                  Giá bán (VNĐ) <span className='text-destructive'>*</span>
+                  {t('productManagement.createModal.price')} <span className='text-destructive'>*</span>
                 </label>
                 <input
                   id='create-price'
@@ -259,13 +279,13 @@ export function ManagerCreateProductModal({
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor='create-brand' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                  Thương hiệu <span className='text-destructive'>*</span>
+                  {t('productManagement.createModal.brand')} <span className='text-destructive'>*</span>
                 </label>
                 <input
                   id='create-brand'
                   type='text'
                   required
-                  placeholder='Whiskas, Pedigree, etc.'
+                  placeholder={t('productManagement.createModal.brandPlaceholder')}
                   value={form.brandName}
                   onChange={(e) => setForm((prev) => ({ ...prev, brandName: e.target.value }))}
                   className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
@@ -274,7 +294,7 @@ export function ManagerCreateProductModal({
 
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor='create-category' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                  Danh mục <span className='text-destructive'>*</span>
+                  {t('productManagement.createModal.category')} <span className='text-destructive'>*</span>
                 </label>
                 <div className='relative'>
                   <select
@@ -284,7 +304,7 @@ export function ManagerCreateProductModal({
                     onChange={(e) => setForm((prev) => ({ ...prev, categoryId: e.target.value ? Number(e.target.value) : undefined }))}
                     className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
                   >
-                    <option value=''>-- Chọn danh mục --</option>
+                    <option value=''>{t('productManagement.createModal.selectCategory')}</option>
                     {categories.map((cat) => (
                       <option key={cat.categoryId} value={cat.categoryId}>
                         {cat.name}
@@ -299,28 +319,50 @@ export function ManagerCreateProductModal({
               </div>
             </div>
 
-            {/* Unit */}
-            <div className='flex flex-col gap-1.5'>
-              <label htmlFor='create-unit' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                Đơn vị
-              </label>
-              <div className='relative'>
-                <select
-                  id='create-unit'
-                  value={form.unit}
-                  onChange={(e) => setForm((prev) => ({ ...prev, unit: e.target.value as ProductUnit }))}
-                  className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
-                >
-                  <option value=''>-- Chọn đơn vị --</option>
-                  {UNIT_OPTIONS.map((u) => (
-                    <option key={u.value} value={u.value}>
-                      {u.label}
-                    </option>
-                  ))}
-                </select>
-                <MaterialIcon
-                  name='expand_more'
-                  className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
+            {/* Unit & Weight - 2 cột */}
+            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+              {/* Unit */}
+              <div className='flex flex-col gap-1.5'>
+                <label htmlFor='create-unit' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                  {t('productManagement.createModal.unit')} <span className='text-destructive'>*</span>
+                </label>
+                <div className='relative'>
+                  <select
+                    id='create-unit'
+                    required  // ✅ Thêm required
+                    value={form.unit}
+                    onChange={(e) => setForm((prev) => ({ ...prev, unit: e.target.value as ProductUnit }))}
+                    className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
+                  >
+                    <option value=''>{t('productManagement.createModal.selectUnit')}</option>
+                    {UNIT_OPTIONS.map((u) => (
+                      <option key={u.value} value={u.value}>
+                        {u.label}
+                      </option>
+                    ))}
+                  </select>
+                  <MaterialIcon
+                    name='expand_more'
+                    className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
+                  />
+                </div>
+              </div>
+
+              {/* Weight */}
+              <div className='flex flex-col gap-1.5'>
+                <label htmlFor='create-weight' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                  {t('productManagement.createModal.weight')} <span className='text-destructive'>*</span>
+                </label>
+                <input
+                  id='create-weight'
+                  type='number'
+                  required
+                  min='0'
+                  step='0.1'
+                  placeholder={t('productManagement.createModal.weightPlaceholder')}
+                  value={form.weight}
+                  onChange={(e) => setForm((prev) => ({ ...prev, weight: e.target.value ? Number(e.target.value) : '' }))}
+                  className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
                 />
               </div>
             </div>
@@ -328,12 +370,12 @@ export function ManagerCreateProductModal({
             {/* Description - rows=5 */}
             <div className='flex flex-col gap-1.5'>
               <label htmlFor='create-desc' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                Mô tả sản phẩm
+                {t('productManagement.createModal.description')}
               </label>
               <textarea
                 id='create-desc'
                 rows={5}
-                placeholder='Mô tả thông tin chi tiết về sản phẩm...'
+                placeholder={t('productManagement.createModal.descriptionPlaceholder')}
                 value={form.description}
                 onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
                 className='w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors resize-y min-h-[100px]'
@@ -344,12 +386,12 @@ export function ManagerCreateProductModal({
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor='create-ingredients' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                  Thành phần
+                  {t('productManagement.createModal.ingredients')}
                 </label>
                 <textarea
                   id='create-ingredients'
                   rows={4}
-                  placeholder='Nhập thành phần sản phẩm...'
+                  placeholder={t('productManagement.createModal.ingredientsPlaceholder')}
                   value={form.ingredients}
                   onChange={(e) => setForm((prev) => ({ ...prev, ingredients: e.target.value }))}
                   className='w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors resize-y min-h-[80px]'
@@ -358,12 +400,12 @@ export function ManagerCreateProductModal({
 
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor='create-usage' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                  Hướng dẫn sử dụng
+                  {t('productManagement.createModal.usageInstructions')}
                 </label>
                 <textarea
                   id='create-usage'
                   rows={4}
-                  placeholder='Nhập hướng dẫn sử dụng...'
+                  placeholder={t('productManagement.createModal.usagePlaceholder')}
                   value={form.usageInstructions}
                   onChange={(e) => setForm((prev) => ({ ...prev, usageInstructions: e.target.value }))}
                   className='w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors resize-y min-h-[80px]'
@@ -374,21 +416,21 @@ export function ManagerCreateProductModal({
             {/* Image Upload */}
             <div className='flex flex-col gap-3.5 border-t border-border pt-4'>
               <h3 className='text-xs font-bold uppercase tracking-wider text-primary'>
-                Hình ảnh sản phẩm
+                {t('productManagement.createModal.images')}
               </h3>
 
               {/* Previews */}
               {imagePreviews.length > 0 && (
                 <div className='flex flex-col gap-1.5'>
                   <span className='text-xs font-bold text-muted-foreground'>
-                    Hình ảnh đã chọn
+                    {t('productManagement.createModal.selectedImages')}
                   </span>
                   <div className='flex flex-wrap gap-2'>
                     {imagePreviews.map((url, idx) => (
                       <div key={idx} className='relative group h-16 w-16 rounded-xl border border-border bg-muted overflow-hidden shadow-sm'>
                         <img
                           src={url}
-                          alt='preview'
+                          alt={t('productManagement.createModal.previewAlt')}
                           className='h-full w-full object-cover'
                         />
                         <button
@@ -407,13 +449,17 @@ export function ManagerCreateProductModal({
               {/* Upload zone */}
               <div className='flex flex-col gap-1.5'>
                 <span className='text-xs font-bold text-muted-foreground'>
-                  Tải lên hình ảnh mới
+                  {t('productManagement.createModal.uploadImages')}
                 </span>
                 <label className='flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/20 transition-all hover:bg-muted/50 hover:border-primary/50'>
                   <div className='flex flex-col items-center justify-center pb-2 pt-2 text-center px-4'>
                     <MaterialIcon name='cloud_upload' className='text-3xl text-muted-foreground' />
-                    <p className='text-xs text-muted-foreground mt-2 font-semibold'>Chọn tệp hình ảnh để tải lên</p>
-                    <p className='text-[10px] text-muted-foreground/80 mt-1'>Định dạng JPG, PNG tối đa 5MB (Tối đa 4 ảnh)</p>
+                    <p className='text-xs text-muted-foreground mt-2 font-semibold'>
+                      {t('productManagement.createModal.uploadImagesLabel')}
+                    </p>
+                    <p className='text-[10px] text-muted-foreground/80 mt-1'>
+                      {t('productManagement.createModal.uploadImagesHint')}
+                    </p>
                   </div>
                   <input
                     type='file'
@@ -429,7 +475,7 @@ export function ManagerCreateProductModal({
             {/* Video Upload */}
             <div className='flex flex-col gap-3.5 border-t border-border pt-4'>
               <h3 className='text-xs font-bold uppercase tracking-wider text-primary'>
-                Video sản phẩm
+                {t('productManagement.createModal.video')}
               </h3>
 
               {/* Video preview */}
@@ -453,13 +499,17 @@ export function ManagerCreateProductModal({
               {/* Upload zone */}
               <div className='flex flex-col gap-1.5'>
                 <span className='text-xs font-bold text-muted-foreground'>
-                  Tải lên video mới
+                  {t('productManagement.createModal.uploadVideo')}
                 </span>
                 <label className='flex h-24 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/20 transition-all hover:bg-muted/50 hover:border-primary/50'>
                   <div className='flex flex-col items-center justify-center pb-2 pt-2 text-center px-4'>
                     <MaterialIcon name='play_circle' className='text-3xl text-muted-foreground' />
-                    <p className='text-xs text-muted-foreground mt-2 font-semibold'>Chọn tệp video để tải lên</p>
-                    <p className='text-[10px] text-muted-foreground/80 mt-1'>Định dạng MP4 tối đa 50MB</p>
+                    <p className='text-xs text-muted-foreground mt-2 font-semibold'>
+                      {t('productManagement.createModal.uploadVideoLabel')}
+                    </p>
+                    <p className='text-[10px] text-muted-foreground/80 mt-1'>
+                      {t('productManagement.createModal.uploadVideoHint')}
+                    </p>
                   </div>
                   <input
                     type='file'
@@ -480,7 +530,7 @@ export function ManagerCreateProductModal({
               onClick={onClose}
               className='h-11 rounded-full border border-border bg-card px-6 text-sm font-bold text-card-foreground hover:bg-muted transition-colors disabled:opacity-50'
             >
-              Hủy
+              {t('productManagement.createModal.cancel')}
             </button>
             <button
               type='submit'
@@ -492,7 +542,7 @@ export function ManagerCreateProductModal({
               ) : (
                 <MaterialIcon name='save' className='text-lg' />
               )}
-              <span>Lưu sản phẩm</span>
+              <span>{t('productManagement.createModal.save')}</span>
             </button>
           </footer>
         </form>

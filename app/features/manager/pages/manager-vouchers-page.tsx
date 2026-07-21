@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
 import { MaterialIcon } from '~/shared/ui'
@@ -13,49 +14,9 @@ import { VoucherModal } from '~/shared/components/vouchers/voucher-modal'
 
 const PAGE_SIZE = 10
 
-function formatPrice(value: number) {
-  return `${new Intl.NumberFormat('vi-VN').format(value)}đ`
-}
-
-function formatDate(dateString: string) {
-  if (!dateString) return '—'
-  try {
-    return new Date(dateString).toLocaleDateString('vi-VN')
-  } catch {
-    return dateString
-  }
-}
-
-function getDiscountLabel(voucher: VoucherResponse) {
-  if (voucher.discountType === 'PERCENTAGE') {
-    const base = `${voucher.discountValue}%`
-    return voucher.maxDiscount ? `${base} / Tối đa ${formatPrice(voucher.maxDiscount)}` : base
-  }
-  return formatPrice(voucher.discountValue)
-}
-
-function getDaysRemaining(expiredAt: string): number | null {
-  try {
-    const diff = new Date(expiredAt).getTime() - Date.now()
-    return Math.ceil(diff / (1000 * 60 * 60 * 24))
-  } catch {
-    return null
-  }
-}
-
-function getStatusColor(status: string) {
-  if (status === 'ACTIVE') return 'text-success'
-  if (status === 'EXPIRED') return 'text-destructive'
-  return 'text-muted-foreground'
-}
-
-function getStatusLabel(status: string) {
-  if (status === 'ACTIVE') return 'Hoạt động'
-  if (status === 'EXPIRED') return 'Hết hạn'
-  return 'Tạm dừng'
-}
-
 export function ManagerVouchersPage() {
+  const { t, i18n } = useTranslation('manager')
+
   const [vouchers, setVouchers] = useState<VoucherResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -65,6 +26,50 @@ export function ManagerVouchersPage() {
   const [totalElements, setTotalElements] = useState(0)
   const [editingVoucher, setEditingVoucher] = useState<VoucherResponse | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  function formatPrice(value: number) {
+    return `${new Intl.NumberFormat(i18n.language).format(value)}đ`
+  }
+
+  function formatDate(dateString: string) {
+    if (!dateString) return '—'
+    try {
+      return new Date(dateString).toLocaleDateString(i18n.language)
+    } catch {
+      return dateString
+    }
+  }
+
+  function getDiscountLabel(voucher: VoucherResponse) {
+    if (voucher.discountType === 'PERCENTAGE') {
+      const base = `${voucher.discountValue}%`
+      return voucher.maxDiscount
+        ? `${base} / ${t('vouchers.table.maxDiscount', { value: formatPrice(voucher.maxDiscount) })}`
+        : base
+    }
+    return formatPrice(voucher.discountValue)
+  }
+
+  function getDaysRemaining(expiredAt: string): number | null {
+    try {
+      const diff = new Date(expiredAt).getTime() - Date.now()
+      return Math.ceil(diff / (1000 * 60 * 60 * 24))
+    } catch {
+      return null
+    }
+  }
+
+  function getStatusColor(status: string) {
+    if (status === 'ACTIVE') return 'text-success'
+    if (status === 'EXPIRED') return 'text-destructive'
+    return 'text-muted-foreground'
+  }
+
+  function getStatusLabel(status: string) {
+    if (status === 'ACTIVE') return t('vouchers.status.active')
+    if (status === 'EXPIRED') return t('vouchers.status.expired')
+    return t('vouchers.status.paused')
+  }
 
   const loadVouchers = useCallback(async (page: number) => {
     setIsLoading(true)
@@ -77,10 +82,11 @@ export function ManagerVouchersPage() {
         setTotalElements(res.data.totalElements)
       }
     } catch {
-      setError('Không thể tải danh sách voucher.')
+      setError(t('vouchers.errors.loadFailed'))
     } finally {
       setIsLoading(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -110,7 +116,7 @@ export function ManagerVouchersPage() {
         prev.map((v) => (v.voucherId === voucher.voucherId ? { ...v, status: newStatus } : v))
       )
     } catch {
-      setError('Không thể cập nhật trạng thái voucher.')
+      setError(t('vouchers.errors.updateFailed'))
     }
   }
 
@@ -156,7 +162,7 @@ export function ManagerVouchersPage() {
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
       <ManagerSidebar activeItem='vouchers' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <ManagerTopNav titleKey='Quản lý Voucher' subtitleKey='Tạo và quản lý mã giảm giá' />
+        <ManagerTopNav titleKey={t('vouchers.title')} subtitleKey={t('vouchers.subtitle')} />
 
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
@@ -165,10 +171,10 @@ export function ManagerVouchersPage() {
             <section className='flex flex-col gap-4 md:flex-row md:items-end md:justify-between'>
               <div>
                 <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
-                  Quản lý Voucher
+                  {t('vouchers.title')}
                 </h1>
                 <p className='mt-1 text-sm text-muted-foreground'>
-                  Tạo và quản lý các mã giảm giá cho khách hàng.
+                  {t('vouchers.subtitle')}
                 </p>
               </div>
               <button
@@ -177,7 +183,7 @@ export function ManagerVouchersPage() {
                 className='inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:opacity-90 hover:shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-ring'
               >
                 <MaterialIcon name='add_circle' className='text-lg' />
-                Tạo voucher mới
+                {t('vouchers.actions.create')}
               </button>
             </section>
 
@@ -188,7 +194,7 @@ export function ManagerVouchersPage() {
                   <MaterialIcon name='confirmation_number' filled className='text-[32px] text-primary' />
                 </div>
                 <div>
-                  <p className='text-sm font-semibold text-muted-foreground'>Voucher đang hoạt động</p>
+                  <p className='text-sm font-semibold text-muted-foreground'>{t('vouchers.stats.active')}</p>
                   <p className='font-display text-4xl font-bold text-foreground'>{activeCount}</p>
                 </div>
               </div>
@@ -197,7 +203,7 @@ export function ManagerVouchersPage() {
                   <MaterialIcon name='stars' filled className='text-[32px] text-success' />
                 </div>
                 <div>
-                  <p className='text-sm font-semibold text-muted-foreground'>Tổng lượt sử dụng</p>
+                  <p className='text-sm font-semibold text-muted-foreground'>{t('vouchers.stats.totalUsed')}</p>
                   <p className='font-display text-4xl font-bold text-foreground'>{totalUsed}</p>
                 </div>
               </div>
@@ -208,7 +214,7 @@ export function ManagerVouchersPage() {
               <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                 <h2 className='flex items-center gap-2 font-display text-lg font-bold text-card-foreground'>
                   <MaterialIcon name='list_alt' className='text-primary' />
-                  Danh sách voucher
+                  {t('vouchers.list.title')}
                   {totalElements > 0 && <span className='text-sm font-normal text-muted-foreground'>({totalElements})</span>}
                 </h2>
                 <div className='relative min-w-0 flex-1 sm:w-64'>
@@ -217,7 +223,7 @@ export function ManagerVouchersPage() {
                     type='search'
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder='Tìm kiếm mã voucher...'
+                    placeholder={t('vouchers.search.placeholder')}
                     className='h-10 w-full rounded-lg border border-border bg-card pl-10 pr-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                   />
                 </div>
@@ -235,12 +241,12 @@ export function ManagerVouchersPage() {
                   <table className='w-full min-w-[780px] border-collapse text-left'>
                     <thead>
                       <tr className='border-b border-border bg-muted/50 text-xs font-bold uppercase tracking-wide text-muted-foreground'>
-                        <th className='px-4 py-3'>Mã voucher</th>
-                        <th className='px-4 py-3'>Loại giảm giá</th>
-                        <th className='px-4 py-3'>Hết hạn</th>
-                        <th className='px-4 py-3'>Lượt dùng</th>
-                        <th className='px-4 py-3'>Trạng thái</th>
-                        <th className='px-4 py-3 text-right'>Thao tác</th>
+                        <th className='px-4 py-3'>{t('vouchers.table.columns.code')}</th>
+                        <th className='px-4 py-3'>{t('vouchers.table.columns.discount')}</th>
+                        <th className='px-4 py-3'>{t('vouchers.table.columns.expiry')}</th>
+                        <th className='px-4 py-3'>{t('vouchers.table.columns.usage')}</th>
+                        <th className='px-4 py-3'>{t('vouchers.table.columns.status')}</th>
+                        <th className='px-4 py-3 text-right'>{t('vouchers.table.columns.actions')}</th>
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-border'>
@@ -258,14 +264,14 @@ export function ManagerVouchersPage() {
                         <tr>
                           <td colSpan={6} className='py-12 text-center text-sm text-muted-foreground'>
                             <MaterialIcon name='confirmation_number' className='mx-auto mb-2 text-[36px] text-muted-foreground/50' />
-                            <p className='mb-3'>Không tìm thấy voucher nào</p>
+                            <p className='mb-3'>{t('vouchers.empty.title')}</p>
                             <button
                               type='button'
                               onClick={handleCreate}
                               className='inline-flex h-9 items-center justify-center gap-1 rounded-xl bg-primary/10 px-4 text-xs font-bold text-primary transition hover:bg-primary/20'
                             >
                               <MaterialIcon name='add' className='text-sm' />
-                              Tạo voucher
+                              {t('vouchers.empty.create')}
                             </button>
                           </td>
                         </tr>
@@ -291,25 +297,31 @@ export function ManagerVouchersPage() {
                               <td className='px-4 py-4'>
                                 <p className='text-sm font-semibold text-foreground'>{getDiscountLabel(voucher)}</p>
                                 <p className='text-xs text-muted-foreground'>
-                                  Đơn tối thiểu: {voucher.minOrderValue ? formatPrice(voucher.minOrderValue) : '0đ'}
+                                  {t('vouchers.table.minOrder', {
+                                    value: voucher.minOrderValue ? formatPrice(voucher.minOrderValue) : formatPrice(0),
+                                  })}
                                 </p>
                               </td>
                               <td className='px-4 py-4'>
                                 <p className='text-sm font-medium text-foreground'>{formatDate(voucher.expiredAt)}</p>
                                 {voucher.status === 'EXPIRED' ? (
-                                  <p className='text-xs font-semibold text-destructive'>Đã hết hạn</p>
+                                  <p className='text-xs font-semibold text-destructive'>{t('vouchers.expiry.expired')}</p>
                                 ) : daysLeft !== null && daysLeft > 0 ? (
                                   <p className='text-xs font-semibold text-success'>
-                                    Còn {daysLeft} ngày
+                                    {t('vouchers.expiry.daysLeft', { count: daysLeft })}
                                   </p>
                                 ) : (
-                                  <p className='text-xs text-muted-foreground'>Vô thời hạn</p>
+                                  <p className='text-xs text-muted-foreground'>{t('vouchers.expiry.noExpiry')}</p>
                                 )}
                               </td>
                               <td className='px-4 py-4'>
                                 <p className='text-sm font-bold text-foreground'>
-                                  {voucher.usedCount ?? 0}
-                                  {voucher.usageLimit ? `/${voucher.usageLimit}` : ''} lượt
+                                  {voucher.usageLimit
+                                    ? t('vouchers.usage.countWithLimit', {
+                                        used: voucher.usedCount ?? 0,
+                                        limit: voucher.usageLimit,
+                                      })
+                                    : t('vouchers.usage.count', { used: voucher.usedCount ?? 0 })}
                                 </p>
                               </td>
                               <td className='px-4 py-4'>
@@ -336,7 +348,7 @@ export function ManagerVouchersPage() {
                                 <button
                                   type='button'
                                   onClick={() => handleEdit(voucher)}
-                                  aria-label='Sửa voucher'
+                                  aria-label={t('vouchers.actions.edit')}
                                   className='flex h-9 w-9 items-center justify-center rounded-lg text-primary transition-colors hover:bg-primary/10'
                                 >
                                   <MaterialIcon name='edit' className='text-lg' />
@@ -353,13 +365,16 @@ export function ManagerVouchersPage() {
                 {/* Pagination */}
                 <div className='flex flex-col gap-3 border-t border-border bg-muted/30 px-4 py-3 sm:flex-row sm:items-center sm:justify-between'>
                   <p className='text-sm text-muted-foreground'>
-                    {isLoading ? 'Đang tải...' : `${filteredVouchers.length} / ${totalElements} voucher`}
+                    {isLoading
+                      ? t('vouchers.pagination.loading')
+                      : t('vouchers.pagination.showing', { count: filteredVouchers.length, total: totalElements })}
                   </p>
                   <div className='flex items-center gap-2'>
                     <button
                       type='button'
                       onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
                       disabled={currentPage === 0}
+                      aria-label={t('vouchers.pagination.previous')}
                       className='flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card transition hover:bg-muted disabled:opacity-40'
                     >
                       <MaterialIcon name='chevron_left' className='text-[18px]' />
@@ -383,6 +398,7 @@ export function ManagerVouchersPage() {
                       type='button'
                       onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
                       disabled={currentPage >= totalPages - 1}
+                      aria-label={t('vouchers.pagination.next')}
                       className='flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card transition hover:bg-muted disabled:opacity-40'
                     >
                       <MaterialIcon name='chevron_right' className='text-[18px]' />

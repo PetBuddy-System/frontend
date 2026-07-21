@@ -668,6 +668,146 @@
     "title": "Disposal Requests"
   },
   "productManagement": {
+    "batch": {
+      "searchPlaceholder": "Search batches...",
+      "statusAll": "Status: All",
+      "sortNewest": "Sort: Newest",
+      "sortOldest": "Sort: Oldest",
+      "sortStockDesc": "Stock: High to Low",
+      "sortStockAsc": "Stock: Low to High",
+      "sortExpiryAsc": "Expiring Soon",
+      "sortExpiryDesc": "Farthest Expiry",
+      "refresh": "Refresh",
+      "title": "Batch Management",
+      "actions": "Actions",
+      "intakeTitle": "Import Multiple Batches",
+      "addRow": "Add Row",
+      "confirmImport": "Confirm Import",
+      "stt": "No.",
+      "quantity": "Quantity",
+      "quantityPlaceholder": "0",
+      "basePrice": "Base Price",
+      "basePricePlaceholder": "0",
+      "expiryDate": "Expiry Date",
+      "batchList": "Batch List ({{count}})",
+      "importSuccess": "Batches imported successfully!",
+      "batchCode": "Batch Code",
+      "daysRemaining": "Days Remaining",
+      "status": "Status",
+      "expired": "Expired",
+      "daysCount": "{{count}} days",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "statusDeleted": "Deleted",
+      "viewDetail": "View Details",
+      "edit": "Edit",
+      "delete": "Delete",
+      "noBatches": "No batches found",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "deletedAt": "Deleted At",
+      "errors": {
+        "invalidBatch": "Please fill in all information (Quantity > 0, Base Price >= 0, Expiry Date)",
+        "submitFailed": "Failed to import batches",
+        "updateFailed": "Failed to update batch",
+        "deleteFailed": "Failed to delete batch"
+      }
+    },
+    "deleteDialog": {
+      "close": "Close",
+      "title": "Delete product?",
+      "reason": "Reason for deletion",
+      "optional": "optional",
+      "reasonPlaceholder": "Enter reason for deletion...",
+      "note": "Note",
+      "notePlaceholder": "Enter additional notes...",
+      "cancel": "Cancel",
+      "confirm": "Confirm delete"
+    },
+    "detail": {
+      "productCode": "Product Code",
+      "productName": "Product Name",
+      "status": "Status",
+      "statusUnknown": "Unknown",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "statusDeleted": "Deleted",
+      "category": "Category",
+      "brand": "Brand",
+      "salePrice": "Sale Price",
+      "totalStock": "Total Stock",
+      "totalBatches": "Total Batches",
+      "createdAt": "Created At",
+      "updatedAt": "Last Updated",
+      "title": "Product Details",
+      "backToList": "Back to list",
+      "deleteProduct": "Delete product",
+      "editProduct": "Edit",
+      "images": "Images",
+      "video": "Video",
+      "thumbnail": "Thumbnail",
+      "setThumbnail": "Set as thumbnail",
+      "thumbnailHint": "Hover over an image and click \"Set as thumbnail\" to set it as the product thumbnail",
+      "noImages": "No images for this product",
+      "noVideo": "No video for this product",
+      "videoNotSupported": "Your browser does not support video.",
+      "description": "Product Description",
+      "noDescription": "No description for this product.",
+      "ingredients": "Ingredients",
+      "usageInstructions": "Usage Instructions",
+      "errors": {
+        "loadFailed": "Failed to load product information",
+        "imagesLoadFailed": "Failed to load product images",
+        "videoLoadFailed": "Failed to load product video",
+        "thumbnailUpdateFailed": "Failed to update thumbnail",
+        "deleteFailed": "Failed to delete product"
+      }
+    },
+    "createModal": {
+      "title": "Add New Product",
+      "subtitle": "Please fill in the new product information below",
+      "close": "Close",
+      "name": "Product Name",
+      "namePlaceholder": "Enter product name",
+      "price": "Price (VND)",
+      "brand": "Brand",
+      "brandPlaceholder": "Whiskas, Pedigree, etc.",
+      "category": "Category",
+      "selectCategory": "-- Select category --",
+      "unit": "Unit",
+      "selectUnit": "-- Select unit --",
+      "weight": "Weight (g)",
+      "weightPlaceholder": "Enter product weight",
+      "description": "Product Description",
+      "descriptionPlaceholder": "Enter detailed product information...",
+      "ingredients": "Ingredients",
+      "ingredientsPlaceholder": "Enter product ingredients...",
+      "usageInstructions": "Usage Instructions",
+      "usagePlaceholder": "Enter usage instructions...",
+      "images": "Product Images",
+      "selectedImages": "Selected Images",
+      "previewAlt": "Preview",
+      "uploadImages": "Upload New Images",
+      "uploadImagesLabel": "Select image files to upload",
+      "uploadImagesHint": "JPG, PNG format max 5MB (Max 4 images)",
+      "video": "Product Video",
+      "uploadVideo": "Upload New Video",
+      "uploadVideoLabel": "Select video file to upload",
+      "uploadVideoHint": "MP4 format max 50MB",
+      "cancel": "Cancel",
+      "save": "Save Product",
+      "errors": {
+        "nameRequired": "Product name is required",
+        "priceInvalid": "Price cannot be negative",
+        "brandRequired": "Brand is required",
+        "categoryRequired": "Please select a category",
+        "unitRequired": "Please select a product unit",
+        "maxImages": "Maximum 4 images allowed",
+        "weightRequired": "Weight is required",
+        "weightInvalid": "Weight must be greater than 0",
+        "createFailed": "Failed to create product"
+      }
+    },
     "title": "Product Management",
     "subtitle": "Track categories, pricing, stock levels, and product availability.",
     "searchPlaceholder": "Search products...",
@@ -707,15 +847,19 @@
     "status": {
       "active": "Active",
       "inactive": "Inactive",
-      "deleted": "Deleted"
+      "deleted": "Deleted",
+      "outOfStock": "Out of Stock",
+      "lowStock": "Low Stock"
     },
     "stock": {
-      "low": "Low stock"
+      "low": "Low stock",
+      "outOfStock": "Out of Stock"
     },
     "table": {
       "columns": {
         "actions": "Actions",
         "category": "Category",
+        "code": "SKU",
         "name": "Product Name",
         "brand": "Brand",
         "price": "Price",
@@ -727,24 +871,71 @@
       "noProductsDesc": "Try adjusting your filters or keyword query"
     },
     "editModal": {
+      "weight": "Weight (kg)",
+      "weightPlaceholder": "Enter product weight",
       "title": "Edit Product",
-      "code": "Product Code",
+      "statusLabel": "Status:",
       "name": "Product Name",
-      "price": "Unit Price",
-      "brand": "Brand Name",
+      "price": "Price",
+      "brand": "Brand",
       "category": "Category",
-      "stock": "Total Stock",
+      "selectCategory": "-- Select category --",
       "status": "Status",
+      "stock": "Stock",
+      "unit": "Unit",
+      "selectUnit": "-- Select unit --",
       "description": "Description",
-      "imageUrls": "Product Images",
-      "currentImages": "Current Images",
-      "uploadNew": "Upload New Images",
-      "newImagesPreview": "New Images Preview",
-      "save": "Save Changes",
+      "ingredients": "Ingredients",
+      "usageInstructions": "Usage Instructions",
+      "reason": "Reason for change",
+      "note": "Note",
+      "optional": "optional",
+      "reasonPlaceholder": "Enter reason for product change...",
+      "notePlaceholder": "Enter additional notes...",
+      "images": "Product Images",
+      "currentImages": "Current images (click to keep):",
+      "productImage": "Product",
+      "allImagesDeleted": "All images will be deleted",
+      "keepingImages": "Keeping",
+      "uploadNewImages": "Add new images (max 4 images total):",
+      "selectImages": "Select images",
+      "selectedImagesCount": "Selected {{count}} images",
+      "preview": "Preview",
+      "video": "Product Video",
+      "currentVideo": "Current video",
+      "deleteVideo": "Delete video",
+      "videoMarkedForDeletion": "Video marked for deletion",
+      "undo": "Undo",
+      "replaceVideo": "Replace with new video:",
+      "selectVideo": "Select video",
+      "videoSelected": "Selected: {{name}}",
+      "hasVideo": "Has video. Choose new video to replace.",
+      "noVideo": "No video. Choose video to add.",
       "cancel": "Cancel",
-      "loading": "Loading product details...",
-      "success": "Product updated successfully",
-      "error": "Failed to update product"
+      "save": "Save",
+      "errors": {
+        "loadFailed": "Failed to load product information",
+        "maxImages": "Maximum 4 images allowed (including kept and new images)",
+        "updateFailed": "Failed to update product",
+        "unitRequired": "Please select a product unit",
+        "weightRequired": "Weight is required",
+        "weightInvalid": "Weight must be greater than 0"
+      }
+    },
+    "toolbar": {
+      "searchPlaceholder": "Search by product name or SKU...",
+      "categoryLabel": "Category",
+      "categoryAll": "All",
+      "statusLabel": "Status",
+      "statusAll": "All statuses",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "statusDeleted": "Deleted",
+      "sortLabel": "Sort by",
+      "sortNewest": "Newest",
+      "sortOldest": "Oldest",
+      "sortPriceHigh": "Price high → low",
+      "sortPriceLow": "Price low → high"
     }
   },
   "unit": {
@@ -835,7 +1026,6 @@
     "title": "Review Management",
     "subtitle": "View, moderate and manage customer product reviews."
   },
-
   "auditLogs": {
     "title": "System Logs",
     "subtitle": "Track change logs for payments, vouchers, and voucher usages.",
@@ -915,6 +1105,64 @@
       "expiredAt": "Expiration Time",
       "userEmail": "Customer Email",
       "usedAt": "Used Time"
+    }
+  },
+   "vouchers": {
+    "title": "Voucher Management",
+    "subtitle": "Create and manage discount vouchers for customers.",
+    "actions": {
+      "create": "Create new voucher",
+      "edit": "Edit voucher"
+    },
+    "stats": {
+      "active": "Active vouchers",
+      "totalUsed": "Total redemptions"
+    },
+    "list": {
+      "title": "Voucher list"
+    },
+    "search": {
+      "placeholder": "Search voucher code..."
+    },
+    "table": {
+      "columns": {
+        "code": "Voucher code",
+        "discount": "Discount type",
+        "expiry": "Expiry",
+        "usage": "Usage",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "maxDiscount": "Max {{value}}",
+      "minOrder": "Min order: {{value}}"
+    },
+    "expiry": {
+      "expired": "Expired",
+      "daysLeft": "{{count}} days left",
+      "noExpiry": "No expiry"
+    },
+    "usage": {
+      "count": "{{used}} uses",
+      "countWithLimit": "{{used}}/{{limit}} uses"
+    },
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "expired": "Expired"
+    },
+    "empty": {
+      "title": "No vouchers found",
+      "create": "Create voucher"
+    },
+    "pagination": {
+      "loading": "Loading...",
+      "showing": "{{count}} / {{total}} vouchers",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "errors": {
+      "loadFailed": "Failed to load voucher list.",
+      "updateFailed": "Failed to update voucher status."
     }
   }
 }

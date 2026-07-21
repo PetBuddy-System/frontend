@@ -18,14 +18,17 @@ import { cn } from '~/shared/lib/cn'
 import { getCatalogPriceForWeight, type WeightRange } from '~/shared/lib/catalog-pricing'
 import { readStorage, removeStorage, writeStorage } from '~/shared/lib/storage'
 import { Button, MaterialIcon } from '~/shared/ui'
+import { useAuth } from '~/providers/auth-provider'
 
 import {
   createBooking,
+  getAvailableGroomers,
   getAvailableCatalogTimeSlots,
   getCatalogs,
   getMyBookings,
   getPets,
   retryBookingPayment,
+  type AvailableGroomerResponse,
   type BookingCreationRequest,
   type BookingResponse,
   type CatalogResponse,
@@ -36,6 +39,7 @@ import {
 
 type BookingStep = 1 | 2 | 3 | 4
 type BookingType = 'AT_STORE' | 'AT_HOME'
+type StaffAssignmentMode = 'AUTO' | 'SELECTED'
 type CheckoutPhase = 'summary' | 'payment' | 'success' | 'failed'
 type ToastState = { type: 'success' | 'error'; message: string } | null
 type BookingApiError = Error & { apiCode?: number | string; status?: number }
@@ -50,16 +54,20 @@ type BookingDraft = {
   customerPhone: string
   address: string
   note: string
+  assignmentMode: StaffAssignmentMode
+  requestedStaffId: string
 }
 type PetPricePreview = {
   pet: PetProfileResponse
   weightRange: WeightRange
   basePrice: number
-  surcharge: number
+  additionalMinutes: number
+  additionalPricePerMinute: number
+  additionalPrice: number
+  durationMinute: number
   totalPrice: number
 }
 
-const MAX_PETS_PER_SLOT = 5
 const DEPOSIT_RATE = 0.2
 const STEPS: BookingStep[] = [1, 2, 3, 4]
 const BOOKING_TYPES: BookingType[] = ['AT_STORE', 'AT_HOME']
@@ -72,7 +80,8 @@ const BOOKING_STATUS_KEYS = [
   'READY_FOR_PICKUP',
   'COMPLETED',
   'CANCELLED',
-  'FAILED'
+  'FAILED',
+  'WAITING_STAFF'
 ] as const
 const BOOKING_API_ERROR_KEYS = [
   'BOOKING_NOT_FOUND',
@@ -125,8 +134,17 @@ function formatSlotTime(value: string): string {
   return value.slice(0, 5)
 }
 
+function formatGroomerAvatarName(name: string): string {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(-2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join('')
+}
+
 function isCatalogBookable(catalog: CatalogResponse): boolean {
-  return !catalog.status || catalog.status === 'AVAILABLE'
+  return catalog.status === 'AVAILABLE' && catalog.catalogType !== 'AT_HOME'
 }
 
 function getBookingStatusLabelKey(status: string): string | null {
@@ -190,6 +208,34 @@ function getBookingErrorMessage(error: unknown, fallbackMessage: string, transla
   return errorKey ? translate(errorKey) : fallbackMessage
 }
 
+function isPaymentResponse(value: BookingResponse | PaymentResponse): value is PaymentResponse {
+  return 'stripeClientSecret' in value && 'amount' in value && !('bookingId' in value)
+}
+
+function getUserPhone(user: unknown): string {
+  if (!user || typeof user !== 'object') {
+    return ''
+  }
+
+  const userRecord = user as { phone?: unknown; phoneNumber?: unknown }
+  return typeof userRecord.phone === 'string'
+    ? userRecord.phone
+    : typeof userRecord.phoneNumber === 'string'
+      ? userRecord.phoneNumber
+      : ''
+}
+
+function getPetAvatarUrl(pet: PetProfileResponse): string | null {
+  return (
+    pet.mediaFiles?.find((media) => {
+      const fileType = media.fileType?.toUpperCase()
+      const mediaStatus = media.mediaStatus?.toUpperCase()
+
+      return media.fileUrl && fileType === 'IMAGE' && (!mediaStatus || mediaStatus === 'ACTIVE')
+    })?.fileUrl ?? null
+  )
+}
+
 function getFirstPaymentWithClientSecret(booking: BookingResponse): PaymentResponse | null {
   if (booking.payments && Array.isArray(booking.payments)) {
     return booking.payments.find((payment) => Boolean(payment.stripeClientSecret)) ?? null
@@ -212,6 +258,7 @@ function getFirstPaymentWithClientSecret(booking: BookingResponse): PaymentRespo
 
 export function BookingPage() {
   const { t } = useTranslation('services')
+  const { user } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const queryCatalogId = Number(searchParams.get('catalogId'))
@@ -232,6 +279,7 @@ export function BookingPage() {
   const [note, setNote] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isTimeSlotsLoading, setIsTimeSlotsLoading] = useState(false)
+  const [isGroomersLoading, setIsGroomersLoading] = useState(false)
   const [isCreatingBooking, setIsCreatingBooking] = useState(false)
   const [isRetryingPayment, setIsRetryingPayment] = useState(false)
   const [toast, setToast] = useState<ToastState>(null)
@@ -241,6 +289,9 @@ export function BookingPage() {
   const [paymentError, setPaymentError] = useState('')
   const [paymentAttemptKey, setPaymentAttemptKey] = useState(0)
   const [isDraftReady, setIsDraftReady] = useState(false)
+  const [assignmentMode, setAssignmentMode] = useState<StaffAssignmentMode>('AUTO')
+  const [requestedStaffId, setRequestedStaffId] = useState('')
+  const [availableGroomers, setAvailableGroomers] = useState<AvailableGroomerResponse[]>([])
 
   const selectedCatalog = useMemo(
     () => catalogs.find((catalog) => catalog.catalogId === selectedCatalogId) ?? null,
@@ -248,18 +299,13 @@ export function BookingPage() {
   )
   const selectedPets = useMemo(() => pets.filter((pet) => selectedPetIds.includes(pet.petId)), [pets, selectedPetIds])
   const availableTimeSlots = useMemo(
-    () =>
-      timeSlots
-        .filter((slot) => slot.catalogId === selectedCatalogId)
-        .filter((slot) => slot.isActive)
-        .sort((first, second) => first.startTime.localeCompare(second.startTime)),
-    [selectedCatalogId, timeSlots]
+    () => [...timeSlots].sort((first, second) => first.startTime.localeCompare(second.startTime)),
+    [timeSlots]
   )
   const selectedTimeSlot = useMemo(
     () => availableTimeSlots.find((slot) => slot.timeSlotId === selectedTimeSlotId) ?? null,
     [availableTimeSlots, selectedTimeSlotId]
   )
-  const selectedTimeSlotMaxPets = Math.max(1, Number(selectedTimeSlot?.maxPets ?? MAX_PETS_PER_SLOT))
   const petPricePreviews = useMemo<PetPricePreview[]>(() => {
     if (!selectedCatalog) {
       return []
@@ -297,19 +343,22 @@ export function BookingPage() {
         const catalogFromDraft = bookableCatalogs.find((catalog) => catalog.catalogId === savedCatalogId)?.catalogId
         const nextCatalogId = catalogFromQuery ?? catalogFromDraft ?? bookableCatalogs[0]?.catalogId ?? null
         const nextStep = queryStep ?? (catalogFromQuery ? 2 : savedDraft?.currentStep) ?? 1
+        const savedAssignmentMode = savedDraft?.assignmentMode === 'SELECTED' ? 'SELECTED' : 'AUTO'
 
         setCatalogs(bookableCatalogs)
         setPets(petResults)
         setMyBookings(bookingResults)
         setSelectedCatalogId(nextCatalogId)
-        setBookingType(savedDraft?.bookingType === 'AT_HOME' ? 'AT_HOME' : 'AT_STORE')
+        setBookingType('AT_STORE')
         setSelectedPetIds(Array.isArray(savedDraft?.selectedPetIds) ? savedDraft.selectedPetIds : [])
         setScheduledAt(savedDraft?.scheduledAt || getTodayInputValue())
         setSelectedTimeSlotId(Number(savedDraft?.selectedTimeSlotId) || null)
-        setCustomerName(savedDraft?.customerName ?? '')
-        setCustomerPhone(savedDraft?.customerPhone ?? '')
+        setCustomerName(savedDraft?.customerName || user?.fullName || '')
+        setCustomerPhone(savedDraft?.customerPhone || getUserPhone(user))
         setAddress(savedDraft?.address ?? '')
         setNote(savedDraft?.note ?? '')
+        setAssignmentMode(savedAssignmentMode)
+        setRequestedStaffId(savedAssignmentMode === 'SELECTED' ? (savedDraft?.requestedStaffId ?? '') : '')
         setCurrentStep(nextStep)
       } catch (error) {
         if (isMounted) {
@@ -331,7 +380,7 @@ export function BookingPage() {
     return () => {
       isMounted = false
     }
-  }, [queryCatalogId, queryStep, t])
+  }, [queryCatalogId, queryStep, t, user])
 
   useEffect(() => {
     let isMounted = true
@@ -380,6 +429,60 @@ export function BookingPage() {
   }, [scheduledAt, selectedCatalogId, selectedTimeSlotId, t])
 
   useEffect(() => {
+    let isMounted = true
+
+    async function loadAvailableGroomers() {
+      if (!selectedCatalog || !selectedTimeSlot || selectedPetIds.length === 0 || !scheduledAt) {
+        setAvailableGroomers([])
+        setRequestedStaffId('')
+        setAssignmentMode('AUTO')
+        return
+      }
+
+      const bookingDetails = selectedPetIds.map((petId) => ({
+        petId,
+        catalogId: selectedCatalog.catalogId,
+        timeSlotId: selectedTimeSlot.timeSlotId
+      }))
+
+      try {
+        setIsGroomersLoading(true)
+        const groomers = await getAvailableGroomers({
+          scheduledAt: `${scheduledAt}T${selectedTimeSlot.startTime}`,
+          bookingDetails
+        })
+
+        if (isMounted) {
+          setAvailableGroomers(groomers)
+          setRequestedStaffId((currentStaffId) =>
+            groomers.some((groomer) => groomer.staffId === currentStaffId) ? currentStaffId : ''
+          )
+        }
+      } catch (error) {
+        if (isMounted) {
+          setAvailableGroomers([])
+          setRequestedStaffId('')
+          setAssignmentMode('AUTO')
+          setToast({
+            type: 'error',
+            message: getBookingErrorMessage(error, t('bookingFlow.toast.groomerLoadError'), t)
+          })
+        }
+      } finally {
+        if (isMounted) {
+          setIsGroomersLoading(false)
+        }
+      }
+    }
+
+    void loadAvailableGroomers()
+
+    return () => {
+      isMounted = false
+    }
+  }, [scheduledAt, selectedCatalog, selectedPetIds, selectedTimeSlot, t])
+
+  useEffect(() => {
     if (!toast) {
       return
     }
@@ -403,18 +506,22 @@ export function BookingPage() {
       customerName,
       customerPhone,
       address,
-      note
+      note,
+      assignmentMode,
+      requestedStaffId
     }
 
     writeStorage(STORAGE_KEYS.bookingDraft, JSON.stringify(draft))
   }, [
     address,
+    assignmentMode,
     bookingType,
     currentStep,
     customerName,
     customerPhone,
     isDraftReady,
     note,
+    requestedStaffId,
     scheduledAt,
     selectedCatalogId,
     selectedPetIds,
@@ -426,17 +533,7 @@ export function BookingPage() {
   }
 
   function validateStep(step: BookingStep): boolean {
-    if (step === 1 && !selectedCatalog) {
-      showStepError(t('bookingFlow.toast.selectService'))
-      return false
-    }
-
-    if (step === 2 && (!scheduledAt || !selectedTimeSlot)) {
-      showStepError(t('bookingFlow.toast.selectTime'))
-      return false
-    }
-
-    if (step === 3) {
+    if (step === 1) {
       if (!customerName.trim() || !customerPhone.trim()) {
         showStepError(t('bookingFlow.toast.customerMissing'))
         return false
@@ -451,6 +548,18 @@ export function BookingPage() {
         showStepError(t('bookingFlow.toast.selectPet'))
         return false
       }
+
+      return true
+    }
+
+    if (step === 2 && !selectedCatalog) {
+      showStepError(t('bookingFlow.toast.selectService'))
+      return false
+    }
+
+    if (step === 3 && (!scheduledAt || !selectedTimeSlot)) {
+      showStepError(t('bookingFlow.toast.selectTime'))
+      return false
     }
 
     return true
@@ -475,10 +584,13 @@ export function BookingPage() {
     setSelectedPetIds([])
     setScheduledAt(getTodayInputValue())
     setSelectedTimeSlotId(null)
-    setCustomerName('')
-    setCustomerPhone('')
+    setCustomerName(user?.fullName ?? '')
+    setCustomerPhone(getUserPhone(user))
     setAddress('')
     setNote('')
+    setAssignmentMode('AUTO')
+    setRequestedStaffId('')
+    setAvailableGroomers([])
     resetCheckoutState()
     setToast({ type: 'success', message: t('bookingFlow.toast.resetSuccess') })
     void navigate('/booking', { replace: true })
@@ -497,7 +609,11 @@ export function BookingPage() {
   }
 
   function handleCatalogChange(catalogId: number) {
+    const nextCatalog = catalogs.find((catalog) => catalog.catalogId === catalogId)
     setSelectedCatalogId(catalogId)
+    if (nextCatalog?.catalogType === 'AT_STORE') {
+      setBookingType(nextCatalog.catalogType)
+    }
     setSelectedTimeSlotId(null)
     resetCheckoutState()
   }
@@ -507,11 +623,6 @@ export function BookingPage() {
     setSelectedPetIds((currentIds) => {
       if (currentIds.includes(petId)) {
         return currentIds.filter((id) => id !== petId)
-      }
-
-      if (currentIds.length >= selectedTimeSlotMaxPets) {
-        setToast({ type: 'error', message: t('bookingFlow.toast.slotLimit') })
-        return currentIds
       }
 
       return [...currentIds, petId]
@@ -529,6 +640,11 @@ export function BookingPage() {
       return null
     }
 
+    if (assignmentMode === 'SELECTED' && !requestedStaffId) {
+      showStepError(t('bookingFlow.toast.selectGroomer'))
+      return null
+    }
+
     return {
       customerName: customerName.trim(),
       customerPhone: customerPhone.trim(),
@@ -536,6 +652,8 @@ export function BookingPage() {
       note: note.trim() || undefined,
       bookingType,
       scheduledAt,
+      assignmentMode,
+      requestedStaffId: assignmentMode === 'SELECTED' ? requestedStaffId : undefined,
       bookingDetails: selectedPetIds.map((petId) => ({
         petId,
         catalogId: selectedCatalog.catalogId,
@@ -604,8 +722,9 @@ export function BookingPage() {
     try {
       setIsRetryingPayment(true)
       setPaymentError('')
-      const booking = await retryBookingPayment(activeBooking.bookingId)
-      const payment = getFirstPaymentWithClientSecret(booking)
+      const retryResponse = await retryBookingPayment(activeBooking.bookingId)
+      const booking = isPaymentResponse(retryResponse) ? activeBooking : retryResponse
+      const payment = isPaymentResponse(retryResponse) ? retryResponse : getFirstPaymentWithClientSecret(retryResponse)
 
       if (!payment) {
         throw new Error(t('bookingFlow.toast.paymentSecretMissing'))
@@ -678,31 +797,6 @@ export function BookingPage() {
               ) : (
                 <>
                   {currentStep === 1 && (
-                    <ServiceStep
-                      catalogs={catalogs}
-                      selectedCatalogId={selectedCatalogId}
-                      selectedPets={selectedPets}
-                      onCatalogChange={handleCatalogChange}
-                      formatCurrency={formatCurrency}
-                    />
-                  )}
-
-                  {currentStep === 2 && (
-                    <ScheduleStep
-                      scheduledAt={scheduledAt}
-                      onDateChange={handleDateChange}
-                      availableTimeSlots={availableTimeSlots}
-                      selectedTimeSlotId={selectedTimeSlotId}
-                      onTimeSlotChange={(timeSlotId) => {
-                        setSelectedTimeSlotId(timeSlotId)
-                        resetCheckoutState()
-                      }}
-                      isTimeSlotsLoading={isTimeSlotsLoading}
-                      selectedCatalog={selectedCatalog}
-                    />
-                  )}
-
-                  {currentStep === 3 && (
                     <CustomerInfoStep
                       bookingType={bookingType}
                       onBookingTypeChange={(value) => {
@@ -720,8 +814,32 @@ export function BookingPage() {
                       pets={pets}
                       selectedPetIds={selectedPetIds}
                       onPetToggle={handlePetToggle}
-                      maxPets={selectedTimeSlotMaxPets}
-                      createPetHref='/profile/pets/new?returnTo=%2Fbooking%3Fstep%3D3'
+                      createPetHref='/profile/pets/new?returnTo=%2Fbooking%3Fstep%3D1'
+                    />
+                  )}
+
+                  {currentStep === 2 && (
+                    <ServiceStep
+                      catalogs={catalogs}
+                      selectedCatalogId={selectedCatalogId}
+                      selectedPets={selectedPets}
+                      onCatalogChange={handleCatalogChange}
+                      formatCurrency={formatCurrency}
+                    />
+                  )}
+
+                  {currentStep === 3 && (
+                    <ScheduleStep
+                      scheduledAt={scheduledAt}
+                      onDateChange={handleDateChange}
+                      availableTimeSlots={availableTimeSlots}
+                      selectedTimeSlotId={selectedTimeSlotId}
+                      onTimeSlotChange={(timeSlotId) => {
+                        setSelectedTimeSlotId(timeSlotId)
+                        resetCheckoutState()
+                      }}
+                      isTimeSlotsLoading={isTimeSlotsLoading}
+                      selectedCatalog={selectedCatalog}
                     />
                   )}
 
@@ -736,6 +854,22 @@ export function BookingPage() {
                       selectedPets={selectedPets}
                       scheduledAt={scheduledAt}
                       selectedTimeSlot={selectedTimeSlot}
+                      assignmentMode={assignmentMode}
+                      requestedStaffId={requestedStaffId}
+                      availableGroomers={availableGroomers}
+                      isGroomersLoading={isGroomersLoading}
+                      onAssignmentModeChange={(mode) => {
+                        setAssignmentMode(mode)
+                        if (mode === 'AUTO') {
+                          setRequestedStaffId('')
+                        }
+                        resetCheckoutState()
+                      }}
+                      onRequestedStaffChange={(staffId) => {
+                        setRequestedStaffId(staffId)
+                        setAssignmentMode(staffId ? 'SELECTED' : 'AUTO')
+                        resetCheckoutState()
+                      }}
                       petPricePreviews={petPricePreviews}
                       subtotal={subtotal}
                       deposit={deposit}
@@ -822,7 +956,6 @@ interface CustomerInfoStepProps {
   pets: PetProfileResponse[]
   selectedPetIds: string[]
   onPetToggle: (petId: string) => void
-  maxPets: number
   createPetHref: string
 }
 
@@ -840,7 +973,6 @@ function CustomerInfoStep({
   pets,
   selectedPetIds,
   onPetToggle,
-  maxPets,
   createPetHref
 }: CustomerInfoStepProps) {
   const { t } = useTranslation('services')
@@ -852,23 +984,24 @@ function CustomerInfoStep({
 
       <div className='mt-5 grid grid-cols-2 gap-2 rounded-md bg-muted p-1'>
         {BOOKING_TYPES.map((type) => {
-          const isAtHome = type === 'AT_HOME'
+          const isDisabled = type === 'AT_HOME'
+
           return (
             <button
               key={type}
               type='button'
-              disabled={isAtHome}
+              disabled={isDisabled}
               onClick={() => onBookingTypeChange(type)}
               className={cn(
                 'flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-semibold transition-colors',
                 bookingType === type ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground',
-                isAtHome && 'opacity-60 cursor-not-allowed'
+                isDisabled && 'cursor-not-allowed opacity-60 hover:text-muted-foreground'
               )}
             >
               <MaterialIcon name={type === 'AT_STORE' ? 'storefront' : 'home_pin'} className='text-[18px]' />
               <span>
                 {t(`bookingFlow.bookingTypes.${type}`)}
-                {isAtHome && ` (${t('bookingFlow.bookingTypes.developing', 'Đang phát triển')})`}
+                {isDisabled ? ` (${t('bookingFlow.bookingTypes.paused')})` : ''}
               </span>
             </button>
           )
@@ -901,7 +1034,6 @@ function CustomerInfoStep({
         pets={pets}
         selectedPetIds={selectedPetIds}
         onPetToggle={onPetToggle}
-        maxPets={maxPets}
         createPetHref={createPetHref}
       />
     </div>
@@ -1028,11 +1160,10 @@ interface PetSelectionPanelProps {
   pets: PetProfileResponse[]
   selectedPetIds: string[]
   onPetToggle: (petId: string) => void
-  maxPets: number
   createPetHref: string
 }
 
-function PetSelectionPanel({ pets, selectedPetIds, onPetToggle, maxPets, createPetHref }: PetSelectionPanelProps) {
+function PetSelectionPanel({ pets, selectedPetIds, onPetToggle, createPetHref }: PetSelectionPanelProps) {
   const { t } = useTranslation('services')
 
   return (
@@ -1054,7 +1185,7 @@ function PetSelectionPanel({ pets, selectedPetIds, onPetToggle, maxPets, createP
       <div className='mt-3 grid gap-3 md:grid-cols-2'>
         {pets.map((pet) => {
           const isSelected = selectedPetIds.includes(pet.petId)
-          const isDisabled = !isSelected && selectedPetIds.length >= maxPets
+          const avatarUrl = getPetAvatarUrl(pet)
 
           return (
             <label
@@ -1063,28 +1194,30 @@ function PetSelectionPanel({ pets, selectedPetIds, onPetToggle, maxPets, createP
                 'flex cursor-pointer items-center gap-3 rounded-md border p-4 transition-colors',
                 isSelected
                   ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-border bg-background hover:bg-muted',
-                isDisabled && 'cursor-not-allowed opacity-60'
+                  : 'border-border bg-background hover:bg-muted'
               )}
             >
               <input
                 type='checkbox'
                 className='h-4 w-4 accent-current'
                 checked={isSelected}
-                disabled={isDisabled}
                 onChange={() => onPetToggle(pet.petId)}
               />
-              <span
-                className={cn(
-                  'flex h-11 w-11 shrink-0 items-center justify-center rounded-md',
-                  isSelected ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-primary'
-                )}
-              >
-                <MaterialIcon
-                  name={pet.species === 'CAT' ? 'pets' : 'sound_detection_dog_barking'}
-                  className='text-[24px]'
-                />
-              </span>
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={pet.petName} className='h-11 w-11 shrink-0 rounded-md object-cover' />
+              ) : (
+                <span
+                  className={cn(
+                    'flex h-11 w-11 shrink-0 items-center justify-center rounded-md',
+                    isSelected ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-primary'
+                  )}
+                >
+                  <MaterialIcon
+                    name={pet.species === 'CAT' ? 'pets' : 'sound_detection_dog_barking'}
+                    className='text-[24px]'
+                  />
+                </span>
+              )}
               <span>
                 <span className='block font-semibold'>{pet.petName}</span>
                 <span
@@ -1211,6 +1344,12 @@ interface ReviewPaymentStepProps {
   selectedPets: PetProfileResponse[]
   scheduledAt: string
   selectedTimeSlot: TimeSlotResponse | null
+  assignmentMode: StaffAssignmentMode
+  requestedStaffId: string
+  availableGroomers: AvailableGroomerResponse[]
+  isGroomersLoading: boolean
+  onAssignmentModeChange: (mode: StaffAssignmentMode) => void
+  onRequestedStaffChange: (staffId: string) => void
   petPricePreviews: PetPricePreview[]
   subtotal: number
   deposit: number
@@ -1238,6 +1377,12 @@ function ReviewPaymentStep({
   selectedPets,
   scheduledAt,
   selectedTimeSlot,
+  assignmentMode,
+  requestedStaffId,
+  availableGroomers,
+  isGroomersLoading,
+  onAssignmentModeChange,
+  onRequestedStaffChange,
   petPricePreviews,
   subtotal,
   deposit,
@@ -1255,6 +1400,11 @@ function ReviewPaymentStep({
   onRetryPayment
 }: ReviewPaymentStepProps) {
   const { t } = useTranslation('services')
+  const selectedGroomer = availableGroomers.find((groomer) => groomer.staffId === requestedStaffId)
+  const groomerSummary =
+    assignmentMode === 'SELECTED' && selectedGroomer
+      ? t('bookingFlow.assignment.selectedSummary', { name: selectedGroomer.fullName })
+      : t('bookingFlow.assignment.autoSummary')
 
   if (checkoutPhase === 'payment' && activeBooking && activePayment) {
     return (
@@ -1324,8 +1474,157 @@ function ReviewPaymentStep({
                 : t('bookingFlow.summary.empty')
             }
           />
+          <SummaryLine label={t('bookingFlow.summary.groomer')} value={groomerSummary} />
         </ReviewCard>
       </div>
+
+      <section className='mt-5 rounded-md border border-border bg-background p-4'>
+        <div className='flex items-start gap-3'>
+          <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-muted text-primary'>
+            <MaterialIcon name='content_cut' className='text-[24px]' />
+          </span>
+          <div>
+            <h3 className='text-sm font-semibold'>{t('bookingFlow.assignment.title')}</h3>
+            <p className='mt-1 text-sm text-muted-foreground'>{t('bookingFlow.assignment.subtitle')}</p>
+          </div>
+        </div>
+
+        <div className='mt-4 grid gap-3 md:grid-cols-2'>
+          <button
+            type='button'
+            onClick={() => onAssignmentModeChange('AUTO')}
+            className={cn(
+              'rounded-md border p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
+              assignmentMode === 'AUTO'
+                ? 'border-primary bg-primary text-primary-foreground'
+                : 'border-border bg-card hover:bg-muted'
+            )}
+          >
+            <span className='flex items-center gap-2 font-semibold'>
+              <MaterialIcon
+                name='auto_awesome'
+                className={cn('text-[20px]', assignmentMode === 'AUTO' ? 'text-secondary' : 'text-primary')}
+              />
+              {t('bookingFlow.assignment.auto.title')}
+            </span>
+            <span
+              className={cn(
+                'mt-2 block text-sm',
+                assignmentMode === 'AUTO' ? 'font-semibold text-primary-foreground' : 'text-muted-foreground'
+              )}
+            >
+              {t('bookingFlow.assignment.auto.description')}
+            </span>
+          </button>
+
+          <button
+            type='button'
+            onClick={() => onAssignmentModeChange('SELECTED')}
+            className={cn(
+              'rounded-md border p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
+              assignmentMode === 'SELECTED'
+                ? 'border-primary bg-primary text-primary-foreground'
+                : 'border-border bg-card hover:bg-muted'
+            )}
+          >
+            <span className='flex items-center gap-2 font-semibold'>
+              <MaterialIcon
+                name='person_search'
+                className={cn('text-[20px]', assignmentMode === 'SELECTED' ? 'text-secondary' : 'text-primary')}
+              />
+              {t('bookingFlow.assignment.selected.title')}
+            </span>
+            <span
+              className={cn(
+                'mt-2 block text-sm',
+                assignmentMode === 'SELECTED' ? 'font-semibold text-primary-foreground' : 'text-muted-foreground'
+              )}
+            >
+              {t('bookingFlow.assignment.selected.description')}
+            </span>
+          </button>
+        </div>
+
+        {assignmentMode === 'SELECTED' && (
+          <div className='mt-4 space-y-3'>
+            {isGroomersLoading ? (
+              <div className='grid gap-3 md:grid-cols-2'>
+                {Array.from({ length: 2 }).map((_, index) => (
+                  <div key={index} className='h-24 animate-pulse rounded-md bg-muted' />
+                ))}
+              </div>
+            ) : availableGroomers.length > 0 ? (
+              <div className='grid gap-3 md:grid-cols-2'>
+                {availableGroomers.map((groomer) => {
+                  const isSelected = requestedStaffId === groomer.staffId
+
+                  return (
+                    <button
+                      key={groomer.staffId}
+                      type='button'
+                      onClick={() => onRequestedStaffChange(groomer.staffId)}
+                      className={cn(
+                        'flex min-h-24 items-center gap-3 rounded-md border p-3 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
+                        isSelected
+                          ? 'border-primary bg-primary text-primary-foreground'
+                          : 'border-border bg-card hover:bg-muted'
+                      )}
+                    >
+                      {groomer.avatar ? (
+                        <img
+                          src={groomer.avatar}
+                          alt={groomer.fullName}
+                          className='h-12 w-12 shrink-0 rounded-md object-cover'
+                        />
+                      ) : (
+                        <span
+                          className={cn(
+                            'flex h-12 w-12 shrink-0 items-center justify-center rounded-md text-sm font-bold',
+                            isSelected ? 'bg-secondary text-secondary-foreground' : 'bg-muted text-primary'
+                          )}
+                        >
+                          {formatGroomerAvatarName(groomer.fullName)}
+                        </span>
+                      )}
+                      <span className='min-w-0 flex-1'>
+                        <span className='block truncate font-semibold'>{groomer.fullName}</span>
+                        <span
+                          className={cn(
+                            'mt-1 block text-sm',
+                            isSelected ? 'font-semibold text-primary-foreground' : 'text-muted-foreground'
+                          )}
+                        >
+                          {groomer.yearsOfExperience
+                            ? t('bookingFlow.assignment.experience', { years: groomer.yearsOfExperience })
+                            : t('bookingFlow.assignment.noExperience')}
+                        </span>
+                        <span
+                          className={cn(
+                            'mt-1 block text-xs',
+                            isSelected ? 'font-semibold text-primary-foreground' : 'text-muted-foreground'
+                          )}
+                        >
+                          {t('bookingFlow.assignment.shift', {
+                            start: formatSlotTime(groomer.shiftStart),
+                            end: formatSlotTime(groomer.shiftEnd)
+                          })}
+                        </span>
+                      </span>
+                      {isSelected && (
+                        <MaterialIcon name='check_circle' className='shrink-0 text-[22px] text-secondary' />
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            ) : (
+              <p className='rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground'>
+                {t('bookingFlow.assignment.empty')}
+              </p>
+            )}
+          </div>
+        )}
+      </section>
 
       <div className='mt-5 rounded-md border border-border bg-background p-4'>
         {petPricePreviews.length > 0 ? (
@@ -1336,10 +1635,11 @@ function ReviewPaymentStep({
                 key={preview.pet.petId}
                 label={`${preview.pet.petName} - ${t(`bookingFlow.weightRanges.${preview.weightRange}`)}`}
                 value={
-                  preview.surcharge > 0
-                    ? t('bookingFlow.summary.priceWithSurcharge', {
+                  preview.additionalMinutes > 0
+                    ? t('bookingFlow.summary.priceWithExtraDuration', {
                         total: formatCurrency(preview.totalPrice),
-                        surcharge: formatCurrency(preview.surcharge)
+                        minutes: preview.additionalMinutes,
+                        fee: formatCurrency(preview.additionalPrice)
                       })
                     : formatCurrency(preview.totalPrice)
                 }

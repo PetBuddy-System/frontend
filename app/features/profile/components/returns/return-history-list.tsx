@@ -10,6 +10,7 @@ import {
 import type { ReturnRequestResponse } from '~/shared/lib/returns'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
+import { ReturnTimeline } from '~/shared/components/return-timeline'
 
 import { ReturnCancelDialog } from './return-cancel-dialog'
 import { ReturnItemsSection } from './return-items-section'
@@ -146,6 +147,18 @@ export function ReturnHistoryList() {
                   </div>
                 ) : detail ? (
                   <>
+                    <div className='rounded-xl border border-border bg-card p-4 sm:px-6'>
+                      <h4 className='text-sm font-bold border-b border-border pb-3 mb-2'>Trạng thái yêu cầu</h4>
+                      <ReturnTimeline 
+                        type={detail.type} 
+                        status={detail.status} 
+                        createdAt={detail.createdAt} 
+                        approvedAt={detail.approvedAt} 
+                        pickedUpAt={detail.pickedUpAt} 
+                        returnedToStoreAt={detail.returnedToStoreAt} 
+                        completedAt={detail.completedAt} 
+                      />
+                    </div>
                     <ReturnReasonBlock detail={detail} />
                     {detail.type === 'RETURN' ? <ReturnRefundSection detail={detail} /> : null}
                     <ReturnItemsSection detail={detail} />

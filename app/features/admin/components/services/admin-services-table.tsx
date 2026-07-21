@@ -1,14 +1,18 @@
-import { useMemo, useState, type FormEvent, type InputHTMLAttributes, type SelectHTMLAttributes } from 'react'
+import {
+  useMemo,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  type InputHTMLAttributes,
+  type SelectHTMLAttributes
+} from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/shared/lib/cn'
 import {
   DURATION_CONFIG_WEIGHT_RANGES,
-  SURCHARGE_WEIGHT_RANGES,
   parseDurationConfig,
-  parseSurchargeConfig,
-  serializeDurationConfig,
-  serializeSurchargeConfig
+  serializeDurationConfig
 } from '~/shared/lib/catalog-pricing'
 import { Button, MaterialIcon } from '~/shared/ui'
 
@@ -31,7 +35,7 @@ export interface AdminServicesTableProps {
   timeSlotsByCatalogId: Record<number, AdminTimeSlot[]>
   isLoading?: boolean
   isSaving?: boolean
-  onUpdateCatalog: (service: AdminCatalog) => void | Promise<void>
+  onUpdateCatalog: (service: AdminCatalog, imageFile?: File, shouldDeleteImage?: boolean) => void | Promise<void>
   onToggleCatalogStatus: (service: AdminCatalog) => void | Promise<void>
   onLoadTimeSlots: (catalogId: number) => void | Promise<void>
   onCreateTimeSlot: (payload: TimeSlotRequest) => void | Promise<void>
@@ -49,6 +53,8 @@ const CATEGORY_CLASS_BY_TYPE: Record<CatalogType, string> = {
   AT_STORE: 'bg-primary/10 text-primary',
   AT_HOME: 'bg-secondary text-secondary-foreground'
 }
+
+const SERVICES_PER_PAGE = 5
 
 const formatCurrency = (value: number) => new Intl.NumberFormat('vi-VN').format(value)
 const formatTime = (value: string) => value.slice(0, 5)
@@ -73,6 +79,7 @@ export function AdminServicesTable({
   const [scheduleService, setScheduleService] = useState<AdminCatalog | null>(null)
   const [isCreateSlotOpen, setIsCreateSlotOpen] = useState(false)
   const [editingSlot, setEditingSlot] = useState<AdminTimeSlot | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const filteredServices = useMemo(() => {
     const normalizedSearchTerm = searchTerm.trim().toLowerCase()
@@ -91,6 +98,13 @@ export function AdminServicesTable({
     })
   }, [searchTerm, services, statusFilter])
 
+  const pageCount = Math.max(1, Math.ceil(filteredServices.length / SERVICES_PER_PAGE))
+  const safeCurrentPage = Math.min(currentPage, pageCount)
+  const paginationStartIndex = (safeCurrentPage - 1) * SERVICES_PER_PAGE
+  const paginatedServices = filteredServices.slice(paginationStartIndex, paginationStartIndex + SERVICES_PER_PAGE)
+  const showingFrom = filteredServices.length === 0 ? 0 : paginationStartIndex + 1
+  const showingTo = Math.min(paginationStartIndex + paginatedServices.length, filteredServices.length)
+
   const scheduleSlots = scheduleService ? (timeSlotsByCatalogId[scheduleService.catalogId] ?? []) : []
 
   return (
@@ -103,14 +117,20 @@ export function AdminServicesTable({
               <input
                 type='search'
                 value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
+                onChange={(event) => {
+                  setSearchTerm(event.target.value)
+                  setCurrentPage(1)
+                }}
                 placeholder={t('serviceManagement.searchPlaceholder')}
                 className='h-10 w-full rounded-lg border border-input bg-card px-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring sm:w-72'
               />
             </div>
             <select
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value as typeof statusFilter)}
+              onChange={(event) => {
+                setStatusFilter(event.target.value as typeof statusFilter)
+                setCurrentPage(1)
+              }}
               className='h-10 rounded-lg border border-input bg-card px-4 text-sm font-semibold text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring'
             >
               <option value='all'>{t('serviceManagement.filters.status.all')}</option>
@@ -149,12 +169,20 @@ export function AdminServicesTable({
                 </tr>
               ) : null}
               {!isLoading
-                ? filteredServices.map((service) => (
+                ? paginatedServices.map((service) => (
                     <tr key={service.catalogId} className='transition-colors hover:bg-muted'>
                       <td className='px-4 py-3'>
                         <div className='flex items-center gap-4'>
-                          <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-muted text-primary shadow-sm'>
-                            <MaterialIcon name={service.icon} className='text-2xl' />
+                          <div className='flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-muted text-primary shadow-sm'>
+                            {service.imageUrl ? (
+                              <img
+                                src={service.imageUrl}
+                                alt={service.catalogName}
+                                className='h-full w-full object-cover'
+                              />
+                            ) : (
+                              <MaterialIcon name={service.icon} className='text-2xl' />
+                            )}
                           </div>
                           <div>
                             <p className='font-bold text-card-foreground'>{service.catalogName}</p>
@@ -267,10 +295,36 @@ export function AdminServicesTable({
         <div className='flex flex-col gap-4 border-t border-border bg-muted px-4 py-3 sm:flex-row sm:items-center sm:justify-between'>
           <p className='text-sm text-muted-foreground'>
             {t('serviceManagement.pagination.showing', {
-              shown: filteredServices.length,
-              total: services.length
+              from: showingFrom,
+              to: showingTo,
+              total: filteredServices.length
             })}
           </p>
+          <div className='flex items-center gap-2'>
+            <Button
+              type='button'
+              variant='outline'
+              size='sm'
+              disabled={safeCurrentPage <= 1 || isLoading}
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            >
+              <MaterialIcon name='chevron_left' className='text-lg' />
+              {t('serviceManagement.pagination.previous')}
+            </Button>
+            <span className='rounded-lg border border-border bg-card px-3 py-2 text-sm font-bold text-card-foreground'>
+              {safeCurrentPage}/{pageCount}
+            </span>
+            <Button
+              type='button'
+              variant='outline'
+              size='sm'
+              disabled={safeCurrentPage >= pageCount || isLoading}
+              onClick={() => setCurrentPage((page) => Math.min(pageCount, page + 1))}
+            >
+              {t('serviceManagement.pagination.next')}
+              <MaterialIcon name='chevron_right' className='text-lg' />
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -279,8 +333,8 @@ export function AdminServicesTable({
         mode={detailMode}
         isSaving={isSaving}
         onClose={() => setDetailService(null)}
-        onSubmit={(updatedService) => {
-          void onUpdateCatalog(updatedService)
+        onSubmit={(updatedService, imageFile, shouldDeleteImage) => {
+          void onUpdateCatalog(updatedService, imageFile, shouldDeleteImage)
           setDetailService(null)
         }}
       />
@@ -327,7 +381,7 @@ function ServiceDetailModal({
   mode: 'view' | 'edit'
   isSaving: boolean
   onClose: () => void
-  onSubmit: (service: AdminCatalog) => void
+  onSubmit: (service: AdminCatalog, imageFile?: File, shouldDeleteImage?: boolean) => void
 }) {
   const { t } = useTranslation('admin')
 
@@ -360,45 +414,33 @@ function ServiceDetailModal({
     }
 
     const formData = new FormData(event.currentTarget)
-    onSubmit({
-      ...service,
-      catalogName: String(formData.get('catalogName') ?? '').trim(),
-      catalogType: String(formData.get('catalogType') ?? service.catalogType) as CatalogRequest['catalogType'],
-      petSpecies: String(formData.get('petSpecies') ?? service.petSpecies) as CatalogRequest['petSpecies'],
-      price: Number(formData.get('price') ?? service.price),
-      durationMinute: Number(formData.get('durationMinute') ?? service.durationMinute),
-      bufferTime: Number(formData.get('bufferTime') ?? service.bufferTime),
-      status: String(formData.get('status') ?? service.status) as CatalogRequest['status'],
-      description: String(formData.get('description') ?? '').trim(),
-      surchargeConfig: serializeSurchargeConfig({
-        MEDIUM: Number(formData.get('surcharge_MEDIUM') ?? 0),
-        LARGE: Number(formData.get('surcharge_LARGE') ?? 0),
-        EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_LARGE') ?? 0),
-        EXTRA_EXTRA_LARGE: Number(formData.get('surcharge_EXTRA_EXTRA_LARGE') ?? 0)
-      }),
-      durationConfig: serializeDurationConfig({
-        MEDIUM: Number(formData.get('durationExtra_MEDIUM') ?? 0)
-          ? Number(formData.get('durationMinute') ?? service.durationMinute) +
-            Number(formData.get('durationExtra_MEDIUM') ?? 0)
-          : 0,
-        LARGE: Number(formData.get('durationExtra_LARGE') ?? 0)
-          ? Number(formData.get('durationMinute') ?? service.durationMinute) +
-            Number(formData.get('durationExtra_LARGE') ?? 0)
-          : 0,
-        EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0)
-          ? Number(formData.get('durationMinute') ?? service.durationMinute) +
-            Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0)
-          : 0,
-        EXTRA_EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
-          ? Number(formData.get('durationMinute') ?? service.durationMinute) +
-            Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
-          : 0
-      })
-    })
+    const selectedImage = formData.get('imageFile')
+    onSubmit(
+      {
+        ...service,
+        catalogName: String(formData.get('catalogName') ?? '').trim(),
+        catalogType: String(formData.get('catalogType') ?? service.catalogType) as CatalogRequest['catalogType'],
+        petSpecies: String(formData.get('petSpecies') ?? service.petSpecies) as CatalogRequest['petSpecies'],
+        price: Number(formData.get('price') ?? service.price),
+        durationMinute: Number(formData.get('durationMinute') ?? service.durationMinute),
+        bufferTime: Number(formData.get('bufferTime') ?? service.bufferTime),
+        status: String(formData.get('status') ?? service.status) as CatalogRequest['status'],
+        description: String(formData.get('description') ?? '').trim(),
+        additionalPricePerMinute: Number(formData.get('additionalPricePerMinute') ?? 0),
+        imageUrl: String(formData.get('imageUrl') ?? service.imageUrl ?? '').trim() || undefined,
+        additionalDurationConfig: serializeDurationConfig({
+          MEDIUM: Number(formData.get('durationExtra_MEDIUM') ?? 0),
+          LARGE: Number(formData.get('durationExtra_LARGE') ?? 0),
+          EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_LARGE') ?? 0),
+          EXTRA_EXTRA_LARGE: Number(formData.get('durationExtra_EXTRA_EXTRA_LARGE') ?? 0)
+        })
+      },
+      selectedImage instanceof File && selectedImage.size > 0 ? selectedImage : undefined,
+      formData.get('deleteImage') === 'on'
+    )
   }
 
-  const surchargeValues = parseSurchargeConfig(service.surchargeConfig)
-  const durationValues = parseDurationConfig(service.durationConfig)
+  const durationValues = parseDurationConfig(service.additionalDurationConfig)
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
@@ -411,8 +453,12 @@ function ServiceDetailModal({
       <section className='relative w-full max-w-4xl overflow-hidden rounded-xl border border-border bg-card shadow-xl'>
         <header className='flex flex-col gap-4 border-b border-border p-5 sm:flex-row sm:items-center sm:justify-between'>
           <div className='flex items-center gap-4'>
-            <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-primary'>
-              <MaterialIcon name={service.icon} className='text-2xl' />
+            <div className='flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-muted text-primary'>
+              {service.imageUrl ? (
+                <img src={service.imageUrl} alt={service.catalogName} className='h-full w-full object-cover' />
+              ) : (
+                <MaterialIcon name={service.icon} className='text-2xl' />
+              )}
             </div>
             <div>
               <p className='text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>#{service.catalogId}</p>
@@ -470,24 +516,13 @@ function ServiceDetailModal({
             readOnly={isReadOnly}
             required
           />
-          <fieldset className='space-y-3 rounded-lg border border-border bg-muted/40 p-4 md:col-span-2'>
-            <legend className='px-1 text-sm font-semibold text-card-foreground'>
-              {t('serviceManagement.surcharge.title')}
-            </legend>
-            <p className='text-xs leading-relaxed text-muted-foreground'>{t('serviceManagement.surcharge.help')}</p>
-            <div className='grid grid-cols-2 gap-3 lg:grid-cols-4'>
-              {SURCHARGE_WEIGHT_RANGES.map((range) => (
-                <CurrencyField
-                  key={range}
-                  name={`surcharge_${range}`}
-                  label={t(`serviceManagement.surcharge.ranges.${range}`)}
-                  defaultValue={surchargeValues[range] ?? 0}
-                  readOnly={isReadOnly}
-                  required={false}
-                />
-              ))}
-            </div>
-          </fieldset>
+          <CurrencyField
+            name='additionalPricePerMinute'
+            label={t('serviceManagement.detail.fields.additionalPricePerMinute')}
+            defaultValue={service.additionalPricePerMinute ?? 0}
+            readOnly={isReadOnly}
+            required={false}
+          />
           <fieldset className='space-y-3 rounded-lg border border-border bg-muted/40 p-4 md:col-span-2'>
             <legend className='px-1 text-sm font-semibold text-card-foreground'>
               {t('serviceManagement.durationConfig.title')}
@@ -495,13 +530,13 @@ function ServiceDetailModal({
             <p className='text-xs leading-relaxed text-muted-foreground'>
               {t('serviceManagement.durationConfig.help')}
             </p>
-            <div className='grid grid-cols-2 gap-3 lg:grid-cols-4'>
+            <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4'>
               {DURATION_CONFIG_WEIGHT_RANGES.map((range) => (
                 <NumberField
                   key={range}
                   name={`durationExtra_${range}`}
                   label={t(`serviceManagement.durationConfig.ranges.${range}`)}
-                  defaultValue={Math.max(0, Number(durationValues[range] ?? 0) - service.durationMinute)}
+                  defaultValue={Number(durationValues[range] ?? 0)}
                   readOnly={isReadOnly}
                   required={false}
                   unit={t('serviceManagement.durationConfig.unit')}
@@ -533,6 +568,46 @@ function ServiceDetailModal({
             options={[...CATALOG_STATUSES]}
             optionLabels={statusLabels}
           />
+          <div className='space-y-3 rounded-lg border border-border bg-muted/40 p-4 md:col-span-2'>
+            <div className='space-y-2'>
+              <span className='text-sm font-semibold text-card-foreground'>
+                {t('serviceManagement.detail.fields.image')}
+              </span>
+              {service.imageUrl ? (
+                <img
+                  src={service.imageUrl}
+                  alt={service.catalogName}
+                  className='h-40 w-full rounded-lg border border-border object-cover'
+                />
+              ) : (
+                <div className='flex h-28 items-center justify-center rounded-lg border border-dashed border-border bg-background text-sm font-semibold text-muted-foreground'>
+                  {t('serviceManagement.detail.fields.noImage')}
+                </div>
+              )}
+            </div>
+            <Field
+              name='imageUrl'
+              label={t('serviceManagement.detail.fields.imageUrl')}
+              defaultValue={service.imageUrl ?? ''}
+              readOnly
+            />
+            {!isReadOnly ? (
+              <div className='space-y-3'>
+                <input
+                  name='imageFile'
+                  type='file'
+                  accept='image/*'
+                  className='w-full rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-bold file:text-primary-foreground focus:border-primary focus:ring-2 focus:ring-ring'
+                />
+                {service.imageUrl ? (
+                  <label className='flex items-center gap-2 text-sm font-semibold text-muted-foreground'>
+                    <input name='deleteImage' type='checkbox' className='h-4 w-4 rounded border-border text-primary' />
+                    <span>{t('serviceManagement.detail.fields.deleteImage')}</span>
+                  </label>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
           <label className='space-y-2 md:col-span-2'>
             <span className='text-sm font-semibold text-card-foreground'>
               {t('serviceManagement.detail.fields.description')}
@@ -940,7 +1015,7 @@ function NumberField({
   return (
     <div className='flex flex-col gap-2'>
       <span className='text-sm font-semibold text-card-foreground'>{label}</span>
-      <div className='flex h-11 overflow-hidden rounded-lg border border-input bg-background transition focus-within:border-primary focus-within:ring-2 focus-within:ring-ring read-only:bg-muted'>
+      <div className='grid h-11 grid-cols-[minmax(5.5rem,1fr)_auto] overflow-hidden rounded-lg border border-input bg-background transition focus-within:border-primary focus-within:ring-2 focus-within:ring-ring read-only:bg-muted'>
         <input
           name={name}
           type='number'
@@ -948,7 +1023,7 @@ function NumberField({
           defaultValue={defaultValue}
           required={required}
           readOnly={readOnly}
-          className='min-w-0 flex-1 bg-transparent px-4 text-sm font-semibold text-foreground outline-none read-only:bg-muted'
+          className='min-w-0 bg-transparent px-4 text-sm font-semibold text-foreground outline-none read-only:bg-muted'
         />
         {unit && (
           <span className='flex shrink-0 items-center border-l border-input bg-muted px-3 text-xs font-semibold text-muted-foreground'>
@@ -980,7 +1055,7 @@ function CurrencyField({
   const [displayValue, setDisplayValue] = useState(() => format(defaultValue))
   const [rawValue, setRawValue] = useState(defaultValue)
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
     if (readOnly) return
     const stripped = e.target.value.replace(/\D/g, '')
     const numeric = stripped === '' ? 0 : parseInt(stripped, 10)

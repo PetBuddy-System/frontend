@@ -67,3 +67,23 @@ export async function confirmRefundApi(
     method: 'POST'
   })
 }
+
+export async function reportDeliveryFailedApi(
+  orderId: number,
+  reason: string
+): Promise<ApiResponse<any>> {
+  return customFetch<ApiResponse<any>>({
+    url: `${ORDER_BASE_URL}/${orderId}/delivery-failed`,
+    method: 'POST',
+    data: { reason }
+  })
+}
+
+export async function confirmReturnedToWarehouseApi(
+  orderId: number
+): Promise<ApiResponse<any>> {
+  return customFetch<ApiResponse<any>>({
+    url: `${ORDER_BASE_URL}/${orderId}/returned-to-warehouse`,
+    method: 'POST'
+  })
+}

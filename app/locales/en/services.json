@@ -402,13 +402,13 @@
   "bookingFlow": {
     "eyebrow": "Checkout & booking",
     "title": "Book spa and grooming",
-    "subtitle": "Select a service, choose a time slot, add pet details, then pay the 20% deposit.",
+    "subtitle": "Enter your information, choose a service and time slot, then pay the 20% deposit.",
     "steps": {
       "step": "Step {{step}}",
       "items": {
-        "1": "Service",
-        "2": "Date & time",
-        "3": "Pets & info",
+        "1": "Info & pets",
+        "2": "Service",
+        "3": "Date & time",
         "4": "Checkout"
       }
     },
@@ -440,8 +440,8 @@
       "empty": "No active time slots are available for this service on the selected date."
     },
     "review": {
-      "title": "Review and pay",
-      "subtitle": "Review your booking like checkout, then pay the deposit securely by card.",
+      "title": "Booking checkout",
+      "subtitle": "Review your booking details before continuing to the deposit payment screen.",
       "customerSection": "Customer",
       "serviceSection": "Service booking",
       "created": "Booking {{code}} is ready for payment.",
@@ -457,9 +457,29 @@
       "deposit": "20% deposit",
       "remaining": "Remaining",
       "priceByPet": "Price by pet weight",
-      "priceWithSurcharge": "{{total}} (includes {{surcharge}} surcharge)",
+      "priceWithExtraDuration": "{{total}} (+{{minutes}} min: {{fee}})",
+      "groomer": "Assigned groomer",
       "empty": "Not selected",
       "depositNote": "The booking uses one shared time slot for all selected pets. At-home bookings include the service address."
+    },
+    "assignment": {
+      "title": "Choose a groomer",
+      "subtitle": "Let PetBuddy arrange the best available groomer, or choose one who is free for this time slot.",
+      "auto": {
+        "title": "Let PetBuddy arrange",
+        "description": "The system will choose a suitable available groomer for your booking."
+      },
+      "selected": {
+        "title": "Choose groomer",
+        "description": "Pick the groomer you prefer for this care session."
+      },
+      "loading": "Finding available groomers...",
+      "empty": "No groomer is currently available for this time slot. You can still let PetBuddy arrange one.",
+      "shift": "Shift {{start}} - {{end}}",
+      "experience": "{{years}} years of experience",
+      "noExperience": "Experience details are being updated",
+      "autoSummary": "PetBuddy will arrange",
+      "selectedSummary": "{{name}}"
     },
     "weightRanges": {
       "EXTRA_SMALL": "Under 5kg",
@@ -481,6 +501,7 @@
         "READY_FOR_PICKUP": "Ready for pickup",
         "COMPLETED": "Completed",
         "CANCELLED": "Cancelled",
+        "WAITING_STAFF": "Waiting for staff",
         "unknown": "Updating"
       }
     },
@@ -488,7 +509,7 @@
       "back": "Back",
       "next": "Continue",
       "reset": "Reset form",
-      "checkout": "Checkout",
+      "checkout": "Continue to payment",
       "submit": "Create booking",
       "submitting": "Creating booking..."
     },
@@ -501,12 +522,14 @@
       "selectService": "Please select a service first.",
       "selectPet": "Please select at least one pet.",
       "selectTime": "Please select an appointment date and time slot.",
+      "selectGroomer": "Please choose your preferred groomer, or let PetBuddy arrange one for you.",
       "customerMissing": "Please enter customer name and phone number.",
       "addressMissing": "Please enter the at-home service address.",
       "slotLimit": "The selected time slot has reached its pet capacity.",
       "resetSuccess": "Booking form has been reset.",
       "paymentSecretMissing": "The booking was created but no Stripe payment secret was returned.",
       "retryPaymentFailed": "Could not create a new payment attempt.",
+      "groomerLoadError": "Could not load available groomers. You can still let PetBuddy arrange one for you.",
       "cardElementMissing": "Could not load the card input.",
       "cardholderMissing": "Please enter the cardholder name.",
       "paymentFailed": "Payment failed. Please try again.",
@@ -539,7 +562,8 @@
     },
     "bookingTypes": {
       "AT_STORE": "At store",
-      "AT_HOME": "At home"
+      "AT_HOME": "At home",
+      "paused": "paused"
     },
     "customer": {
       "title": "Customer information",

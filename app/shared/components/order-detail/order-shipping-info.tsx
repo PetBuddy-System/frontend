@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { OrderDetailFull } from '~/shared/lib/order'
 import { MaterialIcon } from '~/shared/ui'
+import { formatDateTime } from '~/shared/lib/date'
 
 interface OrderShippingInfoProps {
   order: OrderDetailFull
@@ -37,6 +38,17 @@ export function OrderShippingInfo({ order }: OrderShippingInfoProps) {
               {order.phoneNumber || t('orderDetail.notProvided', 'Chưa cung cấp')}
             </p>
           </div>
+          {order.estimatedDeliveryAt && (
+            <div>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1 font-bold">
+                {t('orderDetail.estimatedDeliveryAt', 'Dự kiến giao hàng')}
+              </p>
+              <p className="font-semibold text-foreground text-sm flex items-center gap-1.5">
+                <MaterialIcon name="event" className="text-primary text-[18px]" />
+                <span>{formatDateTime(order.estimatedDeliveryAt)}</span>
+              </p>
+            </div>
+          )}
         </div>
         <div className="space-y-4">
           <div>

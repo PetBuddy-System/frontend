@@ -22,10 +22,10 @@ export function OrderPaymentDetail({
 }: OrderPaymentDetailProps) {
   const { t } = useTranslation('profile')
 
-  // Shipper cannot see prices for prepaid (CARD/MOMO) orders
+  // Đơn đã thanh toán online (CARD/MOMO): shipper vẫn thấy giá trị thật,
+  // nhưng được trừ luôn "Số tiền đã trả" để biết không cần thu thêm gì nữa.
   const isOnlinePayment = order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO'
-  const hidePrice = isShipper && isOnlinePayment
-  const displayPrice = hidePrice ? () => '0đ' : formatPrice
+  const showPaidDeduction = isShipper && isOnlinePayment
 
   return (
     <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
@@ -112,13 +112,13 @@ export function OrderPaymentDetail({
             <span className="text-muted-foreground">
               {t('orderDetail.subtotal', 'Tổng giá trị sản phẩm')}
             </span>
-            <span className="font-semibold text-foreground">{displayPrice(subtotal)}</span>
+            <span className="font-semibold text-foreground">{formatPrice(subtotal)}</span>
           </div>
           <div className="flex justify-between items-center text-xs">
             <span className="text-muted-foreground">
               {t('orderDetail.shippingFee', 'Phí giao hàng')}
             </span>
-            <span className="font-semibold text-foreground">{displayPrice(shippingFee)}</span>
+            <span className="font-semibold text-foreground">{formatPrice(shippingFee)}</span>
           </div>
           {discount > 0 && (
             <div className="flex justify-between items-center text-xs">
@@ -132,7 +132,7 @@ export function OrderPaymentDetail({
                   </span>
                 )}
               </div>
-              <span className="text-destructive font-bold">-{hidePrice ? '0đ' : formatPrice(discount)}</span>
+              <span className="text-destructive font-bold">-{formatPrice(discount)}</span>
             </div>
           )}
           <div className="h-px bg-border my-1" />
@@ -140,8 +140,30 @@ export function OrderPaymentDetail({
             <span className="font-bold text-sm">
               {t('orderDetail.totalOrder', 'Tổng đơn hàng')}
             </span>
-            <span className="text-lg font-black text-primary">{displayPrice(order.finalAmount)}</span>
+            <span className="text-lg font-black text-primary">{formatPrice(order.finalAmount)}</span>
           </div>
+
+          {showPaidDeduction && (
+            <>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted-foreground">
+                  {t('orderDetail.amountPaid', 'Số tiền đã thanh toán')}
+                </span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  -{formatPrice(order.finalAmount)}
+                </span>
+              </div>
+              <div className="h-px bg-border my-1" />
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-sm">
+                  {t('orderDetail.amountToCollect', 'Số tiền cần thu')}
+                </span>
+                <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">
+                  {formatPrice(0)}
+                </span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

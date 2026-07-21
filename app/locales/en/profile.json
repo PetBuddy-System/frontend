@@ -278,7 +278,8 @@
       "IN_PROGRESS": "In progress",
       "READY_FOR_PICKUP": "Ready for pickup",
       "COMPLETED": "Completed",
-      "CANCELLED": "Cancelled"
+      "CANCELLED": "Cancelled",
+      "WAITING_STAFF": "Waiting for staff"
     },
     "status": {
       "PENDING_PAYMENT": "Pending payment",
@@ -288,7 +289,8 @@
       "IN_PROGRESS": "In progress",
       "READY_FOR_PICKUP": "Ready for pickup",
       "COMPLETED": "Completed",
-      "CANCELLED": "Cancelled"
+      "CANCELLED": "Cancelled",
+      "WAITING_STAFF": "Waiting for staff"
     },
     "bookingTypes": {
       "AT_HOME": "At home",
@@ -320,7 +322,11 @@
       "beforeMedia": "Before-service photos",
       "afterMedia": "After-service photos",
       "noMedia": "No photos have been uploaded by staff yet.",
-      "paymentTitle": "Payment summary"
+      "paymentTitle": "Payment summary",
+      "basePrice": "Service price",
+      "extraPrice": "Extra fee",
+      "extraPriceWithDuration": "Extra fee for {{minutes}} more minutes",
+      "pickupPayment": "Paid at pickup"
     },
     "payment": {
       "title": "Complete deposit payment",
@@ -330,6 +336,8 @@
       "pay": "Pay {{amount}}",
       "processing": "Processing payment...",
       "success": "Payment successful. Your booking is now waiting for staff confirmation.",
+      "syncing": "Payment successful. PetBuddy is updating your booking status...",
+      "pendingSync": "Payment succeeded, and the system needs a little more time to update your booking status.",
       "failed": "Payment failed. Please check your card and try again.",
       "stripeMissing": "Stripe publishable key is missing. Please configure VITE_STRIPE_PK.",
       "cardElementMissing": "Could not load the card input. Please refresh and try again.",
@@ -536,7 +544,9 @@
       "cancelled": "Cancelled",
       "expired": "Expired",
       "cancel_requested": "Refund pending",
-      "picked": "Picked"
+      "picked": "Picked",
+      "bombed": "Customer No-show",
+      "returned_to_warehouse": "Returned to Warehouse"
     },
     "expiredBanner": "Order has expired due to payment timeout.",
     "pendingBanner": "Please complete your payment before expiration: {{time}}",
@@ -544,6 +554,10 @@
     "cancelReasonLabel": "Cancellation reason:",
     "noCancelReason": "No reason provided",
     "refundPendingDesc": "Staff will review and confirm your refund as soon as possible.",
+    "bombedBannerTitle": "Delivery failed after 3 attempts",
+    "bombedBannerDesc": "Our shipper attempted delivery multiple times but was unable to reach you. If you paid online, a refund will be processed per our policy.",
+    "bombedReason": "Reason provided:",
+    "returnedToWarehouseBanner": "The items in this order have been confirmed as returned to our warehouse.",
     "deliveryProofImage": "Delivery confirmation photo",
     "payNow": "Pay Now",
     "payAgain": "Pay Again",
@@ -559,6 +573,7 @@
     "recipient": "Recipient",
     "phone": "Phone number",
     "address": "Shipping address",
+    "estimatedDeliveryAt": "Estimated Delivery Date",
     "note": "Note",
     "notProvided": "Not provided",
     "productsOrdered": "Products ordered",
@@ -586,6 +601,8 @@
     "shippingFee": "Shipping fee",
     "voucherDiscount": "Voucher discount",
     "totalOrder": "Order total",
+    "amountPaid": "Amount paid",
+    "amountToCollect": "Amount to collect",
     "printOrder": "Print order",
     "startShipping": "Ship Order",
     "startPicking": "Start Picking",

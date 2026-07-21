@@ -278,7 +278,8 @@
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Sẵn sàng đón",
       "COMPLETED": "Hoàn tất",
-      "CANCELLED": "Đã hủy"
+      "CANCELLED": "Đã hủy",
+      "WAITING_STAFF": "Đang chờ nhân viên"
     },
     "status": {
       "PENDING_PAYMENT": "Chờ thanh toán",
@@ -288,7 +289,8 @@
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Sẵn sàng đón",
       "COMPLETED": "Hoàn tất",
-      "CANCELLED": "Đã hủy"
+      "CANCELLED": "Đã hủy",
+      "WAITING_STAFF": "Đang chờ nhân viên"
     },
     "bookingTypes": {
       "AT_HOME": "Tại nhà",
@@ -320,7 +322,11 @@
       "beforeMedia": "Ảnh trước khi thực hiện",
       "afterMedia": "Ảnh sau khi thực hiện",
       "noMedia": "Chưa có ảnh được nhân viên tải lên.",
-      "paymentTitle": "Tóm tắt thanh toán"
+      "paymentTitle": "Tóm tắt thanh toán",
+      "basePrice": "Giá dịch vụ",
+      "extraPrice": "Phụ phí",
+      "extraPriceWithDuration": "Phụ phí thêm {{minutes}} phút",
+      "pickupPayment": "Thanh toán khi nhận thú"
     },
     "payment": {
       "title": "Hoàn tất thanh toán đặt cọc",
@@ -330,6 +336,8 @@
       "pay": "Thanh toán {{amount}}",
       "processing": "Đang xử lý thanh toán...",
       "success": "Thanh toán thành công. Lịch của bạn đang chờ nhân viên xác nhận.",
+      "syncing": "Thanh toán thành công. PetBuddy đang cập nhật trạng thái lịch của bạn...",
+      "pendingSync": "Thanh toán đã thành công, hệ thống cần thêm chút thời gian để cập nhật trạng thái lịch.",
       "failed": "Thanh toán thất bại. Vui lòng kiểm tra thẻ và thử lại.",
       "stripeMissing": "Thiếu Stripe publishable key. Vui lòng cấu hình VITE_STRIPE_PK.",
       "cardElementMissing": "Không thể tải ô nhập thẻ. Vui lòng tải lại và thử lại.",
@@ -536,7 +544,9 @@
       "cancelled": "Đã hủy",
       "expired": "Hết hạn",
       "cancel_requested": "Chờ hoàn tiền",
-      "picked": "Đã lấy hàng"
+      "picked": "Đã lấy hàng",
+      "bombed": "Khách bom hàng",
+      "returned_to_warehouse": "Đã trả về kho"
     },
     "expiredBanner": "Đơn hàng đã hết hạn do quá hạn thanh toán.",
     "pendingBanner": "Vui lòng thanh toán đơn hàng trước khi hết hạn: {{time}}",
@@ -544,6 +554,10 @@
     "cancelReasonLabel": "Lý do khách hủy:",
     "noCancelReason": "Khách hàng không cung cấp lý do",
     "refundPendingDesc": "Nhân viên sẽ xem xét và xác nhận hoàn tiền cho bạn sớm nhất có thể.",
+    "bombedBannerTitle": "Không thể giao hàng sau 3 lần thử",
+    "bombedBannerDesc": "Shipper đã cố gắng liên hệ và giao hàng nhưng không thành công. Nếu bạn đã thanh toán online, hệ thống sẽ hoàn tiền theo chính sách.",
+    "bombedReason": "Lý do không giao được:",
+    "returnedToWarehouseBanner": "Hàng hoá đã được nhân viên xác nhận trả về kho thành công.",
     "deliveryProofImage": "Ảnh xác nhận giao hàng",
     "payNow": "Thanh toán ngay",
     "payAgain": "Thanh toán lại",
@@ -559,6 +573,7 @@
     "recipient": "Người nhận",
     "phone": "Số điện thoại",
     "address": "Địa chỉ giao hàng",
+    "estimatedDeliveryAt": "Dự kiến giao hàng",
     "note": "Ghi chú",
     "notProvided": "Chưa cung cấp",
     "productsOrdered": "Sản phẩm đã đặt",
@@ -586,6 +601,8 @@
     "shippingFee": "Phí giao hàng",
     "voucherDiscount": "Mã giảm giá",
     "totalOrder": "Tổng đơn hàng",
+    "amountPaid": "Số tiền đã thanh toán",
+    "amountToCollect": "Số tiền cần thu",
     "printOrder": "In đơn hàng",
     "startShipping": "Giao hàng",
     "startPicking": "Bắt đầu lấy hàng",

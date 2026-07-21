@@ -56,12 +56,14 @@
       "groomerBookings": "My grooming jobs",
       "coordinatorBookings": "Booking assignment",
       "orders": "Manage Orders",
+      "deliveryRoute": "Manage Delivery Route",
       "attendanceHistory": "Attendance history",
       "weeklySchedule": "Weekly shifts",
       "disposalRequest": "Disposal request",
       "inventory": "Inventory management",
       "returns": "Manage Returns",
-      "shipperAssignment": "Shipper Assignment"
+      "shipperAssignment": "Shipper Assignment",
+      "deliveryHistory": "Delivery History"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Store Staff",
@@ -101,6 +103,80 @@
   },
   "staff": {
     "name": "Nguyen Van An"
+  },
+  "deliveryRoute": {
+    "title": "Delivery Route",
+    "subtitle": "Track delivery order and map for today",
+    "topNav": {
+      "title": "deliveryRoute.title",
+      "subtitle": "deliveryRoute.subtitle"
+    },
+    "stats": {
+      "currentStop": "Current Stop",
+      "sequence": "Stop #{{seq}}",
+      "nextStop": "Next Stop",
+      "completed": "Completed",
+      "completedCount": "{{done}} / {{total}}"
+    },
+    "timeline": {
+      "title": "Today's Delivery Sequence",
+      "statusDelivering": "DELIVERING",
+      "statusPending": "PENDING",
+      "customer": "Customer",
+      "address": "Delivery Address",
+      "deliveredBtn": "Mark as Delivered",
+      "failedBtn": "Delivery Failed",
+      "bombedBtn": "Bombed",
+      "callBtn": "Call Customer",
+      "paymentCard": "Card (Paid)"
+    },
+    "map": {
+      "title": "Map Preview",
+      "overview": "ROUTE OVERVIEW",
+      "totalDistance": "Total Distance",
+      "estimatedTime": "Estimated Time",
+      "openMaps": "Open Google Maps",
+      "currentLocation": "Current location",
+      "distanceToNext": "{{dist}}km to next stop",
+      "noRouteTitle": "No orders assigned",
+      "noRouteDesc": "You have no delivery orders assigned for today."
+    },
+    "proof": {
+      "title": "Confirm Delivery",
+      "desc": "Please capture and upload a photo confirming successful delivery to complete the order.",
+      "upload": "Upload Photo",
+      "uploadNote": "PNG, JPG or JPEG",
+      "uploadError": "Please select a delivery proof photo.",
+      "uploadTypeError": "Please select an image file.",
+      "confirm": "Confirm Delivered",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "loadFailed": "Failed to load delivery route.",
+      "updateFailed": "Failed to update delivery status."
+    }
+  },
+  "deliveryHistory": {
+    "title": "Delivery History",
+    "subtitle": "View completed and failed delivery orders list",
+    "topNav": {
+      "title": "Delivery History",
+      "subtitle": "Completed and failed deliveries"
+    },
+    "heading": "Delivery History",
+    "subheading": "All your completed and failed delivery orders",
+    "loading": "Loading delivery history...",
+    "retry": "Retry",
+    "emptyTitle": "No history found",
+    "emptyDesc": "There are no completed or failed delivery orders found in this filter.",
+    "deliveryDateLabel": "Est. Delivery Date:",
+    "viewDetails": "View Details",
+    "filter": {
+      "all": "All",
+      "completed": "Completed",
+      "failed": "Failed",
+      "dateLabel": "Delivery Date:"
+    }
   },
   "groomerBookings": {
     "title": "My grooming jobs",
@@ -392,9 +468,11 @@
   },
   "welcome": {
     "checkIn": "Check in now",
+    "deliveryHistory": "View delivery history",
     "kicker": "Today's shift",
     "subtitle": "Wishing you an energetic workday at PetBuddy.",
-    "title": "Good morning, Nguyen Van An"
+    "title": "Good morning, Nguyen Van An",
+    "titleDynamic": "Good morning, {{name}}"
   },
   "attendance": {
     "pageTitle": "Attendance History",
@@ -597,8 +675,34 @@
       "rejected": "Rejected",
       "completed": "Completed",
       "cancelled": "Cancelled",
-      "pickedUp": "Picked Up",
-      "deliveryFailed": "Delivery Failed"
+      "pickingUp": "Picking up",
+      "pickedUp": "Picked up",
+      "returnedToStore": "Returned to store",
+      "readyToDeliver": "Ready to deliver",
+      "delivering": "Delivering",
+      "deliveryFailed": "Delivery failed"
+    },
+    "type": {
+      "RETURN": "Return & Refund",
+      "EXCHANGE": "Exchange"
+    },
+    "reason": {
+      "DAMAGED": "Product was severely damaged upon delivery",
+      "WRONG_PRODUCT": "Wrong product delivered",
+      "MISSING_ITEM": "Missing product",
+      "EXPIRED": "Product expired",
+      "CUSTOMER_CHANGED_MIND": "Customer changed mind",
+      "OTHER": "Other reason"
+    },
+    "refundStatus": {
+      "NOT_REQUIRED": "No refund required",
+      "PENDING": "Refund pending",
+      "SUCCESS": "Refunded",
+      "FAILED": "Refund failed"
+    },
+    "refundMethod": {
+      "STRIPE_PAYMENT": "Original payment account",
+      "BANK_TRANSFER": "Bank transfer"
     },
     "filters": {
       "status": "Status",
@@ -635,10 +739,15 @@
       "type": "Request Type",
       "createdAt": "Time Submitted",
       "status": "Status",
+      "requestStatus": "Request Status",
       "customerInfo": "Customer Information",
       "customerName": "Full Name",
       "customerEmail": "Email",
+      "recipientName": "Recipient Name",
+      "phoneNumber": "Phone Number",
+      "address": "Pickup / Delivery Address",
       "reason": "Reason for Return",
+      "specificReason": "Specific reason:",
       "description": "Customer Description",
       "refundInfo": "Refund Information",
       "refundMethod": "Refund Method",
@@ -650,13 +759,25 @@
       "media": "Attached Photos/Videos",
       "mediaEmpty": "No attachments",
       "items": "Items to Return",
+      "quantity": "Qty:",
+      "refundBack": "Refund:",
+      "additionalInfo": "Additional Information",
+      "updatedAt": "Last Updated",
       "processInfo": "Processing Information",
+      "coordinator": "Coordinator",
+      "shipper": "Shipper",
       "processedBy": "Processed By",
       "processedAt": "Processed Time",
+      "approvedAt": "Approved Date",
+      "pickedUpAt": "Picked Up Date",
+      "returnedToStoreAt": "Returned to Store Date",
+      "restockedAt": "Restocked Date",
       "completedAt": "Completed Time",
+      "staffNoteLabel": "Reason / Note:",
       "staffNote": "Staff Note",
       "actionTitle": "Process Request",
       "notePlaceholder": "Enter reason for approval/rejection or additional notes...",
+      "noteRequired": "* (required when rejecting or failing delivery)",
       "btnApprove": "Approve Request",
       "btnReject": "Reject",
       "btnComplete": "Complete",
@@ -664,7 +785,24 @@
       "successReject": "Request rejected successfully",
       "successComplete": "Return request completed successfully",
       "errorUpdate": "Failed to update status",
-      "requiredNote": "Please enter a staff note when rejecting the request."
+      "requiredNote": "Please enter a staff note when rejecting the request.",
+      "close": "Close",
+      "assignShipperTitle": "Assign Delivery Staff",
+      "loadingShippers": "Loading...",
+      "noShippers": "No shippers available",
+      "activeOrders": "Active returns: {{count}}",
+      "cancelBtn": "Cancel",
+      "confirmAssign": "Confirm Assignment",
+      "saving": "Saving...",
+      "assignShipper": "Assign Shipper",
+      "btnPickingUp": "Start Pickup",
+      "btnPickedUp": "Picked Up",
+      "btnReturnedToStore": "Returned to Store",
+      "btnReadyToDeliver": "Ready to Deliver",
+      "btnDelivering": "Start Delivery",
+      "btnDelivered": "Delivery Successful",
+      "errorAssign": "Failed to assign delivery staff",
+      "errorLoadShippers": "Failed to load shippers"
     }
   },
   "orderCancel": {
@@ -704,5 +842,172 @@
       "policyViolation": "Store policy violation",
       "other": "Other"
     }
+  },
+    "staffOrdersTable": {
+    "heading": "Order details",
+    "searchPlaceholder": "Search code, name...",
+    "clearFilters": "Clear filters",
+    "columns": {
+      "orderCode": "Order code",
+      "customer": "Customer",
+      "orderDate": "Order date",
+      "totalAmount": "Total amount",
+      "payment": "Payment",
+      "status": "Order status",
+      "actions": "Actions"
+    },
+    "loading": "Loading orders...",
+    "empty": "No orders match the current filter.",
+    "customerFallback": "CU",
+    "paymentMethods": {
+      "CARD": "Card",
+      "MOMO": "MoMo",
+      "COD": "Cash"
+    },
+    "paymentStatuses": {
+      "PAID": "Paid",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled",
+      "PROCESSING": "Processing",
+      "REFUNDED": "Refunded",
+      "UNPAID": "Unpaid"
+    },
+    "statuses": {
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "PICKING": "Picking",
+      "PICKED": "Picked",
+      "SHIPPING": "Shipping",
+      "DELIVERED": "Delivered (awaiting receipt)",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "CANCEL_REQUESTED": "Refund pending",
+      "BOMBED": "Customer no-show",
+      "RETURNED_TO_WAREHOUSE": "Returned to warehouse"
+    },
+    "actions": {
+      "view": "View",
+      "confirmRefund": "Confirm refund",
+      "approve": "Approve",
+      "cancel": "Cancel",
+      "startPicking": "Start picking",
+      "pickItems": "Pick items",
+      "delivered": "Delivered",
+      "deliveryFailed": "Delivery Failed",
+      "confirmReturnedWarehouse": "Confirm Returned to Warehouse"
+    },
+    "confirm": {
+      "refundPrompt": "Confirm refund for order #{{code}}?"
+    },
+    "errors": {
+      "refundFailed": "Unable to confirm refund",
+      "generic": "Something went wrong"
+    }
+  },
+    "staffOrdersPage": {
+    "topNav": {
+      "title": "Order management",
+      "subtitle": "Track and process today's orders"
+    },
+    "heading": "Orders list",
+    "subheading": "Track and process orders in the system.",
+    "suggestRoute": "Suggest route",
+    "pagination": {
+      "showing": "Showing {{from}}-{{to}} of {{total}} orders"
+    },
+    "errors": {
+      "updateStatusFailed": "Failed to update status",
+      "updateStatusError": "An error occurred while updating the status"
+    }
+  },
+    "staffOrdersStats": {
+    "pending": {
+      "badge": "Pending",
+      "label": "New orders"
+    },
+    "confirmed": {
+      "badge": "Confirmed",
+      "label": "Preparing stock"
+    },
+    "picking": {
+      "badge": "Picking",
+      "label": "Awaiting pickup"
+    },
+    "shippingDelivered": {
+      "badge": "Shipping",
+      "label": "On the way"
+    },
+    "completed": {
+      "badge": "Completed",
+      "label": "Finished"
+    },
+    "cancelled": {
+      "badge": "Cancelled",
+      "label": "Cancelled"
+    },
+    "refundPending": {
+      "badge": "Refund pending",
+      "label": "Needs confirmation"
+    },
+    "bombed": {
+      "badge": "No-show",
+      "label": "Customer no-show"
+    }
+  },
+    "staffOrderDetailPage": {
+    "topNav": {
+      "title": "Order detail",
+      "subtitle": "View and process order details"
+    }
+  },
+  "deliveryFailedDialog": {
+    "title": "Report Delivery Failure",
+    "orderCode": "Order #{{code}}",
+    "failCountLabel": "Delivery attempt {{current}} of {{max}}",
+    "willBeBombed": "This is the final attempt. After submitting, the order will be marked as \"Customer No-show\" and a refund will be initiated.",
+    "reasonLabel": "Reason for failed delivery",
+    "reasonPlaceholder": "e.g. Customer did not answer the phone, wrong address, no one at home...",
+    "reasonRequired": "Please enter a reason.",
+    "submit": "Report & Return to Picked",
+    "submitBombed": "Confirm Customer No-show",
+    "submitting": "Submitting...",
+    "cancel": "Cancel",
+    "submitError": "Failed to report delivery failure."
+  },
+  "confirmReturnedWarehouseDialog": {
+    "title": "Confirm Items Returned to Warehouse",
+    "orderCode": "Order #{{code}}",
+    "infoTitle": "Stock will be restored",
+    "infoDesc": "Confirming this action will restore the stock quantities for all items in this order and mark it as returned.",
+    "bombedReason": "Reason for no-show",
+    "submit": "Confirm Returned",
+    "submitting": "Confirming...",
+    "cancel": "Cancel",
+    "submitError": "Failed to confirm return to warehouse."
+  },
+  "shippingLabel": {
+    "storeAddressError": "Store location not configured",
+    "storeAddressLoadError": "Failed to load store location",
+    "loadingStoreAddress": "Loading address...",
+    "previewTitle": "Order Preview",
+    "orderCodeLabel": "Tracking code:",
+    "close": "Close",
+    "print": "Print label",
+    "storeName": "PetBuddy Store",
+    "senderLabel": "From (Sender):",
+    "recipientLabel": "To (Recipient):",
+    "notProvided": "Not provided",
+    "itemsLabel": "Items:",
+    "totalQuantity": "(Total qty: {{count}})",
+    "weightLabel": "Weight:",
+    "gramUnit": "g",
+    "noteLabel": "Note:",
+    "noNote": "No note",
+    "codLabel": "Cash on delivery (COD):",
+    "currencyUnit": "VND",
+    "paidOnline": "(Paid online)",
+    "signatureTitle": "Recipient signature",
+    "signatureConfirm": "Confirms item received intact, no damage",
+    "footerText": "© {{year}} PetBuddy Logistics - Smart logistics operating system"
   }
 }

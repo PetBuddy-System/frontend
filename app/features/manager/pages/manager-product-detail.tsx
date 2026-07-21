@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
 import { MaterialIcon } from '~/shared/ui'
@@ -21,6 +22,7 @@ import { ManagerProductInfoCard } from '../components/products/manager-product-i
 type MediaTab = 'images' | 'video'
 
 export function ManagerProductDetailPage() {
+    const { t } = useTranslation('manager')
     const { productId } = useParams()
     const navigate = useNavigate()
 
@@ -68,16 +70,16 @@ export function ManagerProductDetailPage() {
                     setProduct(response.data)
                     console.log('📦 Product data loaded:', response.data)
                 } else {
-                    setError('Không thể tải thông tin sản phẩm')
+                    setError(t('productManagement.detail.errors.loadFailed'))
                 }
             } catch {
-                setError('Không thể tải thông tin sản phẩm')
+                setError(t('productManagement.detail.errors.loadFailed'))
             } finally {
                 setIsLoading(false)
             }
         }
         void loadProduct(productId)
-    }, [productId])
+    }, [productId, t])
 
     // ─── API 2: Load Product Images ──────────────────────────────
     useEffect(() => {
@@ -97,16 +99,16 @@ export function ManagerProductDetailPage() {
                         }))
                     setProductImages(images)
                 } else {
-                    setImagesError('Không thể tải hình ảnh sản phẩm')
+                    setImagesError(t('productManagement.detail.errors.imagesLoadFailed'))
                 }
             } catch {
-                setImagesError('Không thể tải hình ảnh sản phẩm')
+                setImagesError(t('productManagement.detail.errors.imagesLoadFailed'))
             } finally {
                 setIsLoadingImages(false)
             }
         }
         void loadProductImages(productId)
-    }, [productId])
+    }, [productId, t])
 
     // ─── API 3: Load Product Video ──────────────────────────────
     useEffect(() => {
@@ -123,16 +125,16 @@ export function ManagerProductDetailPage() {
                         mediaFileId: response.data.mediaFileId
                     })
                 } else {
-                    setVideoError('Không thể tải video sản phẩm')
+                    setVideoError(t('productManagement.detail.errors.videoLoadFailed'))
                 }
             } catch {
-                setVideoError('Không thể tải video sản phẩm')
+                setVideoError(t('productManagement.detail.errors.videoLoadFailed'))
             } finally {
                 setIsLoadingVideo(false)
             }
         }
         void loadProductVideo(productId)
-    }, [productId])
+    }, [productId, t])
 
     // ─── Load Categories (một lần, cho Edit Modal) ──────────────
     useEffect(() => {
@@ -174,10 +176,10 @@ export function ManagerProductDetailPage() {
                     thumbnailUrl: productImages.find(img => img.mediaFileId === mediaFileId)?.fileUrl
                 } : null)
             } else {
-                setThumbnailUpdateError(response.message || 'Không thể cập nhật ảnh đại diện')
+                setThumbnailUpdateError(response.message || t('productManagement.detail.errors.thumbnailUpdateFailed'))
             }
         } catch (err) {
-            setThumbnailUpdateError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi cập nhật ảnh đại diện')
+            setThumbnailUpdateError(err instanceof Error ? err.message : t('productManagement.detail.errors.thumbnailUpdateFailed'))
         } finally {
             setIsUpdatingThumbnail(false)
         }
@@ -200,10 +202,10 @@ export function ManagerProductDetailPage() {
             if (response.success) {
                 navigate('/manager/products')
             } else {
-                setDeleteError(response.message || 'Không thể xóa sản phẩm')
+                setDeleteError(response.message || t('productManagement.detail.errors.deleteFailed'))
             }
         } catch (err) {
-            setDeleteError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi xóa sản phẩm')
+            setDeleteError(err instanceof Error ? err.message : t('productManagement.detail.errors.deleteFailed'))
         } finally {
             setIsDeletingProduct(false)
         }
@@ -230,7 +232,7 @@ export function ManagerProductDetailPage() {
         <div className='flex h-screen overflow-hidden bg-background text-foreground'>
             <ManagerSidebar activeItem='products' />
             <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-                <ManagerTopNav titleKey='Chi tiết sản phẩm' />
+                <ManagerTopNav titleKey={t('productManagement.detail.title')} />
                 <main className='flex-1 overflow-y-auto p-4 md:p-6'>
                     <div className='mx-auto flex max-w-7xl flex-col gap-6'>
 
@@ -259,7 +261,7 @@ export function ManagerProductDetailPage() {
                                         className='flex items-center gap-2 text-primary font-medium hover:underline self-start text-sm'
                                     >
                                         <MaterialIcon name='arrow_back' className='text-base' />
-                                        Quay lại danh sách
+                                        {t('productManagement.detail.backToList')}
                                     </button>
                                     <div className='flex items-center gap-3 self-end sm:self-auto'>
                                         {!isDeleted && (
@@ -269,14 +271,14 @@ export function ManagerProductDetailPage() {
                                                     className='flex items-center gap-2 px-4 py-2 bg-card hover:bg-destructive/10 text-destructive border border-destructive/40 rounded-lg text-sm font-semibold transition-colors'
                                                 >
                                                     <MaterialIcon name='delete' className='text-lg' />
-                                                    Xóa sản phẩm
+                                                    {t('productManagement.detail.deleteProduct')}
                                                 </button>
                                                 <button
                                                     onClick={() => setIsEditModalOpen(true)}
                                                     className='flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg text-sm font-semibold transition-colors shadow-sm'
                                                 >
                                                     <MaterialIcon name='edit' className='text-lg' />
-                                                    Chỉnh sửa
+                                                    {t('productManagement.detail.editProduct')}
                                                 </button>
                                             </>
                                         )}
@@ -301,7 +303,7 @@ export function ManagerProductDetailPage() {
                                                 }`}
                                         >
                                             <MaterialIcon name='photo_library' className='text-base' />
-                                            Hình ảnh
+                                            {t('productManagement.detail.images')}
                                             {isLoadingImages && (
                                                 <span className='ml-1 inline-block h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent'></span>
                                             )}
@@ -314,7 +316,7 @@ export function ManagerProductDetailPage() {
                                                 }`}
                                         >
                                             <MaterialIcon name='videocam' className='text-base' />
-                                            Video
+                                            {t('productManagement.detail.video')}
                                             {isLoadingVideo && (
                                                 <span className='ml-1 inline-block h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent'></span>
                                             )}
@@ -365,7 +367,7 @@ export function ManagerProductDetailPage() {
                                                                     {isThumbnail && (
                                                                         <div className='absolute top-2 right-2 bg-primary text-primary-foreground text-[10px] font-bold uppercase px-2 py-0.5 rounded shadow-sm flex items-center gap-1'>
                                                                             <MaterialIcon name='star' className='text-xs' />
-                                                                            <span>Đại diện</span>
+                                                                            <span>{t('productManagement.detail.thumbnail')}</span>
                                                                         </div>
                                                                     )}
 
@@ -381,7 +383,7 @@ export function ManagerProductDetailPage() {
                                                                             ) : (
                                                                                 <span className='text-white text-xs font-semibold bg-primary/90 px-3 py-1.5 rounded-lg flex items-center gap-1'>
                                                                                     <MaterialIcon name='star_border' className='text-sm' />
-                                                                                    Chọn làm đại diện
+                                                                                    {t('productManagement.detail.setThumbnail')}
                                                                                 </span>
                                                                             )}
                                                                         </button>
@@ -400,14 +402,14 @@ export function ManagerProductDetailPage() {
                                                     {!isDeleted && (
                                                         <p className='text-xs text-muted-foreground mt-4 flex items-center gap-1'>
                                                             <MaterialIcon name='info' className='text-sm' />
-                                                            <span>Di chuột vào ảnh và nhấn "Chọn làm đại diện" để đặt ảnh thumbnail</span>
+                                                            <span>{t('productManagement.detail.thumbnailHint')}</span>
                                                         </p>
                                                     )}
                                                 </>
                                             ) : (
                                                 <div className='flex items-center gap-2 text-muted-foreground py-8 justify-center'>
                                                     <MaterialIcon name='image_not_supported' className='text-2xl' />
-                                                    <span className='text-sm'>Chưa có hình ảnh cho sản phẩm này</span>
+                                                    <span className='text-sm'>{t('productManagement.detail.noImages')}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -433,13 +435,13 @@ export function ManagerProductDetailPage() {
                                                         className='w-full h-full object-contain'
                                                         poster={productImages.find(img => img.mediaFileId === currentThumbnailId)?.fileUrl || productImages[0]?.fileUrl}
                                                     >
-                                                        Trình duyệt của bạn không hỗ trợ video.
+                                                        {t('productManagement.detail.videoNotSupported')}
                                                     </video>
                                                 </div>
                                             ) : (
                                                 <div className='flex items-center gap-2 text-muted-foreground py-8 justify-center'>
                                                     <MaterialIcon name='videocam_off' className='text-2xl' />
-                                                    <span className='text-sm'>Chưa có video cho sản phẩm này</span>
+                                                    <span className='text-sm'>{t('productManagement.detail.noVideo')}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -452,10 +454,10 @@ export function ManagerProductDetailPage() {
                                     <div>
                                         <h3 className="text-lg font-bold text-foreground font-display mb-3 flex items-center gap-2">
                                             <MaterialIcon name="description" className="text-primary text-xl" />
-                                            Mô tả sản phẩm
+                                            {t('productManagement.detail.description')}
                                         </h3>
                                         <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-                                            {product.description || 'Chưa có mô tả cho sản phẩm này.'}
+                                            {product.description || t('productManagement.detail.noDescription')}
                                         </p>
                                     </div>
 
@@ -464,7 +466,7 @@ export function ManagerProductDetailPage() {
                                         <div className="border-t border-border pt-4 mt-4">
                                             <h3 className="text-lg font-bold text-foreground font-display mb-3 flex items-center gap-2">
                                                 <MaterialIcon name="science" className="text-primary text-xl" />
-                                                Thành phần
+                                                {t('productManagement.detail.ingredients')}
                                             </h3>
                                             <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
                                                 {product.ingredients}
@@ -477,7 +479,7 @@ export function ManagerProductDetailPage() {
                                         <div className="border-t border-border pt-4 mt-4">
                                             <h3 className="text-lg font-bold text-foreground font-display mb-3 flex items-center gap-2">
                                                 <MaterialIcon name="info" className="text-primary text-xl" />
-                                                Hướng dẫn sử dụng
+                                                {t('productManagement.detail.usageInstructions')}
                                             </h3>
                                             <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
                                                 {product.usageInstructions}

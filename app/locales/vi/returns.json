@@ -38,7 +38,8 @@
         "processedBy": "Người xử lý:",
         "processedAt": "Thời gian xử lý:",
         "completedAt": "Thời gian hoàn thành:",
-        "staffNote": "Ghi chú:"
+        "staffNote": "Ghi chú:",
+        "addressLabel": "Địa chỉ lấy / giao hàng"
       },
       "actions": {
         "cancel": "Hủy yêu cầu đổi trả"
@@ -48,7 +49,11 @@
   "status": {
     "PENDING": "Chờ duyệt",
     "APPROVED": "Đã chấp thuận",
+    "PICKING_UP": "Đang đi lấy hàng",
     "PICKED_UP": "Đã lấy hàng",
+    "RETURNED_TO_STORE": "Đã trả về kho",
+    "READY_TO_DELIVER": "Sẵn sàng giao hàng",
+    "DELIVERING": "Đang giao hàng",
     "REJECTED": "Từ chối",
     "CANCELLED": "Đã hủy",
     "COMPLETED": "Hoàn thành",

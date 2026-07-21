@@ -116,7 +116,7 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
                 <div className='flex items-start justify-between'>
                   <div>
                     <h4 className='font-bold text-foreground line-clamp-1'>{shipper.staffName}</h4>
-                    <p className='text-xs text-muted-foreground'>Email: {shipper.staffEmail}</p>
+                    <p className='text-xs text-muted-foreground'>{shipper.staffEmail}</p>
                   </div>
                   <div className='h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center'>
                     <MaterialIcon name='person' className='text-[18px]' />

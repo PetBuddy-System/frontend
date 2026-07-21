@@ -7,7 +7,7 @@ import {
   useStripe
 } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
-import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ProfileFloatingSupport } from '../components/layout/profile-floating-support'
@@ -37,6 +37,7 @@ const STATUS_FILTERS: BookingStatusFilter[] = [
   BookingStatus.PENDING_PAYMENT,
   BookingStatus.FAILED,
   BookingStatus.PENDING_ACCEPTANCE,
+  BookingStatus.WAITING_STAFF,
   BookingStatus.ACCEPTED,
   BookingStatus.IN_PROGRESS,
   BookingStatus.READY_FOR_PICKUP,
@@ -45,6 +46,9 @@ const STATUS_FILTERS: BookingStatusFilter[] = [
 ]
 
 const RETRYABLE_STATUSES = new Set<string>([BookingStatus.PENDING_PAYMENT, BookingStatus.FAILED])
+const CUSTOMER_BOOKINGS_SYNC_INTERVAL_MS = 5000
+const PAYMENT_SYNC_ATTEMPTS = 6
+const PAYMENT_SYNC_DELAY_MS = 1200
 
 const stripeElementStyle = {
   base: {
@@ -60,6 +64,10 @@ const stripeElementStyle = {
   }
 }
 
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => window.setTimeout(resolve, ms))
+}
+
 export function MyBookingsPage() {
   const { t, i18n } = useTranslation('profile')
   const [bookings, setBookings] = useState<BookingResponse[]>([])
@@ -71,6 +79,7 @@ export function MyBookingsPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isDetailLoading, setIsDetailLoading] = useState(false)
   const [retryingBookingId, setRetryingBookingId] = useState<number | null>(null)
+  const isSyncingBookingsRef = useRef(false)
 
   const currencyFormatter = useMemo(
     () =>
@@ -103,8 +112,16 @@ export function MyBookingsPage() {
   }, [bookings])
 
   const loadBookings = useCallback(
-    async (options?: { quiet?: boolean }) => {
-      if (options?.quiet) {
+    async (options?: { quiet?: boolean; silent?: boolean }) => {
+      if (isSyncingBookingsRef.current) {
+        return
+      }
+
+      isSyncingBookingsRef.current = true
+
+      if (options?.silent) {
+        // Keep the existing UI steady while background sync refreshes status changes.
+      } else if (options?.quiet) {
         setIsRefreshing(true)
       } else {
         setIsLoading(true)
@@ -112,12 +129,25 @@ export function MyBookingsPage() {
 
       try {
         const data = await getMyCustomerBookings()
-        setBookings(sortBookings(data))
+        const sortedBookings = sortBookings(data)
+        setBookings(sortedBookings)
+        setSelectedBooking((currentBooking) => {
+          if (!currentBooking) {
+            return currentBooking
+          }
+
+          return sortedBookings.find((booking) => booking.bookingId === currentBooking.bookingId) ?? currentBooking
+        })
       } catch {
-        setToast({ type: 'error', message: t('myBookings.feedback.loadFailed') })
+        if (!options?.silent) {
+          setToast({ type: 'error', message: t('myBookings.feedback.loadFailed') })
+        }
       } finally {
-        setIsLoading(false)
-        setIsRefreshing(false)
+        isSyncingBookingsRef.current = false
+        if (!options?.silent) {
+          setIsLoading(false)
+          setIsRefreshing(false)
+        }
       }
     },
     [t]
@@ -129,6 +159,24 @@ export function MyBookingsPage() {
     }, 0)
 
     return () => window.clearTimeout(timerId)
+  }, [loadBookings])
+
+  useEffect(() => {
+    function syncVisibleBookings() {
+      if (document.visibilityState === 'visible') {
+        void loadBookings({ silent: true })
+      }
+    }
+
+    const intervalId = window.setInterval(syncVisibleBookings, CUSTOMER_BOOKINGS_SYNC_INTERVAL_MS)
+    window.addEventListener('focus', syncVisibleBookings)
+    document.addEventListener('visibilitychange', syncVisibleBookings)
+
+    return () => {
+      window.clearInterval(intervalId)
+      window.removeEventListener('focus', syncVisibleBookings)
+      document.removeEventListener('visibilitychange', syncVisibleBookings)
+    }
   }, [loadBookings])
 
   useEffect(() => {
@@ -170,10 +218,57 @@ export function MyBookingsPage() {
     }
   }
 
-  function handlePaymentSuccess() {
+  function updateBookingInList(updatedBooking: BookingResponse) {
+    setBookings((currentBookings) =>
+      sortBookings(
+        currentBookings.map((booking) => (booking.bookingId === updatedBooking.bookingId ? updatedBooking : booking))
+      )
+    )
+    setSelectedBooking((currentBooking) =>
+      currentBooking?.bookingId === updatedBooking.bookingId ? updatedBooking : currentBooking
+    )
+  }
+
+  async function waitForBookingPaymentSync(bookingId: number): Promise<BookingResponse | null> {
+    for (let attempt = 0; attempt < PAYMENT_SYNC_ATTEMPTS; attempt += 1) {
+      if (attempt > 0) {
+        await wait(PAYMENT_SYNC_DELAY_MS)
+      }
+
+      const detail = await getCustomerBookingDetail(bookingId)
+      updateBookingInList(detail)
+
+      if (!RETRYABLE_STATUSES.has(detail.bookingStatus)) {
+        return detail
+      }
+    }
+
+    return null
+  }
+
+  async function handlePaymentSuccess() {
+    const paidBookingId = paymentModal?.booking.bookingId
     setPaymentModal(null)
-    setToast({ type: 'success', message: t('myBookings.payment.success') })
-    void loadBookings({ quiet: true })
+    setToast({ type: 'success', message: t('myBookings.payment.syncing') })
+
+    if (!paidBookingId) {
+      void loadBookings({ quiet: true })
+      return
+    }
+
+    try {
+      const syncedBooking = await waitForBookingPaymentSync(paidBookingId)
+      if (syncedBooking) {
+        setToast({ type: 'success', message: t('myBookings.payment.success') })
+        return
+      }
+
+      setToast({ type: 'success', message: t('myBookings.payment.pendingSync') })
+      void loadBookings({ quiet: true })
+    } catch {
+      setToast({ type: 'success', message: t('myBookings.payment.pendingSync') })
+      void loadBookings({ quiet: true })
+    }
   }
 
   return (
@@ -449,6 +544,30 @@ function getDetailMediaByType(
   return detail.mediaFiles?.filter((media) => media.bookingMediaType === bookingMediaType) ?? []
 }
 
+function getDetailPetAvatarUrl(detail: BookingDetailResponse): string | null {
+  const detailWithImageAliases = detail as BookingDetailResponse & {
+    avatarUrl?: string
+    petAvatar?: string
+    petImageUrl?: string
+  }
+
+  return (
+    detail.petImage ||
+    detailWithImageAliases.petImageUrl ||
+    detailWithImageAliases.petAvatar ||
+    detailWithImageAliases.avatarUrl ||
+    null
+  )
+}
+
+function getRemainingAmountForDisplay(booking: BookingResponse): number {
+  return booking.bookingStatus === BookingStatus.COMPLETED ? 0 : (booking.remainingAmount ?? 0)
+}
+
+function getPickupPaidAmountForDisplay(booking: BookingResponse): number {
+  return booking.bookingStatus === BookingStatus.COMPLETED ? (booking.remainingAmount ?? 0) : 0
+}
+
 interface BookingDetailModalProps {
   booking: BookingResponse
   isLoading: boolean
@@ -458,6 +577,8 @@ interface BookingDetailModalProps {
 
 function BookingDetailModal({ booking, isLoading, formatCurrency, onClose }: BookingDetailModalProps) {
   const { t } = useTranslation('profile')
+  const remainingAmount = getRemainingAmountForDisplay(booking)
+  const pickupPaidAmount = getPickupPaidAmountForDisplay(booking)
 
   return (
     <ModalShell title={t('myBookings.detail.title')} onClose={onClose}>
@@ -495,43 +616,124 @@ function BookingDetailModal({ booking, isLoading, formatCurrency, onClose }: Boo
                 <h3 className='font-bold text-foreground'>{t('myBookings.card.services')}</h3>
               </div>
               <div className='divide-y divide-border'>
-                {booking.bookingDetails.map((detail) => (
-                  <div key={detail.bookingDetailId} className='grid gap-4 p-4'>
-                    <div className='grid gap-3 sm:grid-cols-[1fr_auto]'>
-                      <div>
-                        <p className='font-semibold text-foreground'>{detail.catalogName}</p>
-                        <p className='mt-1 text-sm text-muted-foreground'>
-                          {detail.petName} • {formatTime(detail.timeSlot)} • {detail.durationMinute} min
+                {booking.bookingDetails.map((detail) => {
+                  const petAvatarUrl = getDetailPetAvatarUrl(detail)
+
+                  return (
+                    <div key={detail.bookingDetailId} className='grid gap-4 p-4'>
+                      <div className='grid gap-3 sm:grid-cols-[1fr_auto]'>
+                        <div className='flex min-w-0 items-start gap-3'>
+                          {petAvatarUrl ? (
+                            <img
+                              src={petAvatarUrl}
+                              alt={detail.petName}
+                              className='h-14 w-14 shrink-0 rounded-xl border border-border object-cover'
+                            />
+                          ) : (
+                            <span className='flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted text-primary'>
+                              <MaterialIcon name='pets' className='text-[24px]' />
+                            </span>
+                          )}
+                          <div className='min-w-0'>
+                            <p className='font-semibold text-foreground'>{detail.catalogName}</p>
+                            <p className='mt-1 text-sm text-muted-foreground'>
+                              {detail.petName} • {formatTime(detail.timeSlot)} • {detail.durationMinute ?? 0} min
+                            </p>
+                            <BookingDetailPriceLines detail={detail} formatCurrency={formatCurrency} />
+                          </div>
+                        </div>
+                        <p className='font-bold text-primary'>
+                          {formatCurrency(detail.totalPrice ?? detail.unitPrice ?? 0)}
                         </p>
                       </div>
-                      <p className='font-bold text-primary'>
-                        {formatCurrency(detail.totalPrice ?? detail.unitPrice ?? 0)}
-                      </p>
+                      <BookingDetailMediaGrid
+                        beforeMedia={getDetailMediaByType(detail, 'BEFORE_SERVICE')}
+                        afterMedia={getDetailMediaByType(detail, 'AFTER_SERVICE')}
+                      />
                     </div>
-                    <BookingDetailMediaGrid
-                      beforeMedia={getDetailMediaByType(detail, 'BEFORE_SERVICE')}
-                      afterMedia={getDetailMediaByType(detail, 'AFTER_SERVICE')}
-                    />
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
 
             <div className='rounded-2xl border border-border p-4'>
               <h3 className='font-bold text-foreground'>{t('myBookings.detail.paymentTitle')}</h3>
-              <div className='mt-3 grid gap-3 sm:grid-cols-3'>
-                <DetailItem label={t('myBookings.card.total')} value={formatCurrency(booking.totalAmount ?? 0)} />
-                <DetailItem label={t('myBookings.card.deposit')} value={formatCurrency(booking.depositAmount ?? 0)} />
-                <DetailItem
-                  label={t('myBookings.card.remaining')}
-                  value={formatCurrency(booking.remainingAmount ?? 0)}
+              <dl className='mt-3 divide-y divide-border text-sm'>
+                <PaymentSummaryLine
+                  label={t('myBookings.card.total')}
+                  value={formatCurrency(booking.totalAmount ?? 0)}
                 />
-              </div>
+                <PaymentSummaryLine
+                  label={t('myBookings.card.deposit')}
+                  value={formatCurrency(booking.depositAmount ?? 0)}
+                />
+                {pickupPaidAmount > 0 ? (
+                  <PaymentSummaryLine
+                    label={t('myBookings.detail.pickupPayment')}
+                    value={formatCurrency(pickupPaidAmount)}
+                  />
+                ) : null}
+                <PaymentSummaryLine
+                  label={t('myBookings.card.remaining')}
+                  value={formatCurrency(remainingAmount)}
+                  strong
+                />
+              </dl>
             </div>
           </>
         )}
       </div>
     </ModalShell>
+  )
+}
+
+interface BookingDetailPriceLinesProps {
+  detail: BookingDetailResponse
+  formatCurrency: (value: number) => string
+}
+
+function BookingDetailPriceLines({ detail, formatCurrency }: BookingDetailPriceLinesProps) {
+  const { t } = useTranslation('profile')
+  const basePrice = detail.basePrice ?? detail.unitPrice ?? detail.totalPrice ?? 0
+  const additionalPrice = detail.additionalPrice ?? 0
+  const additionalDurationMinute = detail.additionalDurationMinute ?? 0
+
+  if (additionalPrice <= 0 && additionalDurationMinute <= 0) {
+    return null
+  }
+
+  return (
+    <dl className='mt-3 space-y-1 text-xs text-muted-foreground'>
+      <div className='flex items-center justify-between gap-3'>
+        <dt>{t('myBookings.detail.basePrice')}</dt>
+        <dd className='font-semibold text-foreground'>{formatCurrency(basePrice)}</dd>
+      </div>
+      {additionalPrice > 0 ? (
+        <div className='flex items-center justify-between gap-3'>
+          <dt>
+            {additionalDurationMinute > 0
+              ? t('myBookings.detail.extraPriceWithDuration', { minutes: additionalDurationMinute })
+              : t('myBookings.detail.extraPrice')}
+          </dt>
+          <dd className='font-semibold text-foreground'>{formatCurrency(additionalPrice)}</dd>
+        </div>
+      ) : null}
+    </dl>
+  )
+}
+
+interface PaymentSummaryLineProps {
+  label: string
+  value: string
+  strong?: boolean
+}
+
+function PaymentSummaryLine({ label, value, strong }: PaymentSummaryLineProps) {
+  return (
+    <div className='flex items-center justify-between gap-4 py-3'>
+      <dt className='text-muted-foreground'>{label}</dt>
+      <dd className={cn('text-right font-semibold text-foreground', strong && 'text-primary')}>{value}</dd>
+    </div>
   )
 }
 
@@ -617,7 +819,7 @@ interface PaymentModalProps {
   payment: PaymentResponse
   formatCurrency: (value: number) => string
   onClose: () => void
-  onSuccess: () => void
+  onSuccess: () => Promise<void>
 }
 
 function PaymentModal({ booking, payment, formatCurrency, onClose, onSuccess }: PaymentModalProps) {
@@ -656,7 +858,7 @@ interface CustomerBookingPaymentFormProps {
   clientSecret: string
   amount: number
   formatCurrency: (value: number) => string
-  onSuccess: () => void
+  onSuccess: () => Promise<void>
 }
 
 function CustomerBookingPaymentForm({
@@ -711,7 +913,7 @@ function CustomerBookingPaymentForm({
     }
 
     if (result.paymentIntent?.status === 'succeeded') {
-      onSuccess()
+      await onSuccess()
       return
     }
 
