@@ -224,6 +224,20 @@
       "districtPlaceholder": "Chọn Quận/Huyện",
       "ward": "Phường/Xã",
       "wardPlaceholder": "Chọn Phường/Xã",
+      "addressRequired": "Vui lòng nhập địa chỉ giao hàng",
+      "addressRequiredMap": "Vui lòng chọn địa chỉ giao hàng trên bản đồ",
+      "phoneRequired": "Vui lòng nhập số điện thoại hợp lệ (10 chữ số, bắt đầu bằng số 0)",
+      "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác.",
+      "orderIdMissing": "Không nhận được mã đơn hàng từ hệ thống.",
+      "deliveryAddressLabel": "Địa chỉ giao hàng",
+      "enterAddressButton": "Nhập địa chỉ giao hàng",
+      "changeAddressButton": "Thay đổi địa chỉ giao hàng",
+      "outOfStockDefault": "Sản phẩm đã hết hàng",
+      "paymentMethods": {
+        "card": "Thẻ quốc tế",
+        "momo": "Ví MoMo",
+        "cash": "Tiền mặt"
+      },
       "cities": {
         "hoChiMinh": "Hồ Chí Minh",
         "haNoi": "Hà Nội",

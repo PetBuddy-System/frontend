@@ -222,8 +222,22 @@
       "cityPlaceholder": "Choose province / city",
       "district": "District",
       "districtPlaceholder": "Choose district",
+      "addressRequired": "Please enter the delivery address",
+      "addressRequiredMap": "Please select the delivery address on the map",
+      "phoneRequired": "Please enter a valid phone number (10 digits, starting with 0)",
       "ward": "Ward",
       "wardPlaceholder": "Choose ward",
+      "voucherNoLongerValid": "This voucher is no longer valid. Please choose another one.",
+      "orderIdMissing": "Order ID was not returned by the system.",
+      "outOfStockDefault": "This product is out of stock",
+      "deliveryAddressLabel": "Delivery address",
+      "enterAddressButton": "Enter delivery address",
+      "changeAddressButton": "Change delivery address",
+      "paymentMethods": {
+        "card": "International card",
+        "momo": "MoMo wallet",
+        "cash": "Cash on delivery"
+      },
       "cities": {
         "hoChiMinh": "Ho Chi Minh City",
         "haNoi": "Ha Noi",

@@ -13,6 +13,7 @@ export function StaffShipperAssignmentPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [regionFilter, setRegionFilter] = useState<'ALL' | 'HCM' | 'OTHER'>('ALL')
 
   async function loadOrders() {
     setIsLoading(true)
@@ -38,6 +39,14 @@ export function StaffShipperAssignmentPage() {
   const filteredPickedOrders = useMemo(() => {
     return orders.filter((o) => {
       if (o.status !== 'PICKED') return false
+
+      if (regionFilter !== 'ALL') {
+        const address = o.address?.toLowerCase() || ''
+        const isHCM = address.includes('hồ chí minh') || address.includes('ho chi minh') || address.includes('hcm')
+        if (regionFilter === 'HCM' && !isHCM) return false
+        if (regionFilter === 'OTHER' && isHCM) return false
+      }
+
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase()
         const codeMatch = o.orderCode?.toLowerCase().includes(q)
@@ -47,7 +56,7 @@ export function StaffShipperAssignmentPage() {
       }
       return true
     })
-  }, [orders, searchQuery])
+  }, [orders, searchQuery, regionFilter])
 
   const extractDistrict = (address: string): string => {
     if (!address) return t('shipperAssignment.otherArea', 'Khu vực khác')
@@ -117,7 +126,7 @@ export function StaffShipperAssignmentPage() {
               </div>
             </div>
 
-            <div className='flex items-center gap-4'>
+            <div className='flex flex-wrap items-center gap-4'>
               <div className='relative w-full max-w-md'>
                 <MaterialIcon
                   name='search'
@@ -131,6 +140,23 @@ export function StaffShipperAssignmentPage() {
                   className='w-full rounded-xl border border-border bg-card py-2.5 pl-10 pr-4 text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20'
                 />
               </div>
+
+              <select
+                value={regionFilter}
+                onChange={(e) => setRegionFilter(e.target.value as 'ALL' | 'HCM' | 'OTHER')}
+                className='rounded-xl border border-border bg-card py-2.5 px-4 text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer appearance-none'
+                style={{
+                  backgroundImage: `url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E")`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 1rem top 50%',
+                  backgroundSize: '0.65rem auto',
+                  paddingRight: '2.5rem'
+                }}
+              >
+                <option value="ALL">{t('shipperAssignment.region.all', 'Tất cả khu vực')}</option>
+                <option value="HCM">{t('shipperAssignment.region.hcm', 'Nội thành (TP. HCM)')}</option>
+                <option value="OTHER">{t('shipperAssignment.region.other', 'Ngoại thành')}</option>
+              </select>
             </div>
 
             {error && (

@@ -19,6 +19,9 @@ export function ChangePasswordPage() {
   const [oldPassword, setOldPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
+  const [showOldPassword, setShowOldPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
@@ -124,15 +127,23 @@ export function ChangePasswordPage() {
                 />
                 <input
                   id='old_password'
-                  type='password'
+                  type={showOldPassword ? 'text' : 'password'}
                   required
                   minLength={8}
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
                   placeholder={t('fields.password.placeholder')}
-                  className='w-full rounded-xl border border-border bg-muted py-4 pl-12 pr-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
+                  className='w-full rounded-xl border border-border bg-muted py-4 pl-12 pr-12 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
                   disabled={isSubmitting || isSuccess}
                 />
+                <button
+                  type='button'
+                  onClick={() => setShowOldPassword(!showOldPassword)}
+                  className='absolute inset-y-0 right-0 flex items-center justify-center px-4 text-muted-foreground transition-colors hover:text-foreground'
+                  aria-label={showOldPassword ? t('hidePassword') : t('showPassword')}
+                >
+                  <MaterialIcon name={showOldPassword ? 'visibility_off' : 'visibility'} className='text-xl' />
+                </button>
               </div>
             </div>
 
@@ -145,15 +156,23 @@ export function ChangePasswordPage() {
                 <MaterialIcon name='lock' className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground' />
                 <input
                   id='change_new_password'
-                  type='password'
+                  type={showNewPassword ? 'text' : 'password'}
                   required
                   minLength={8}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder={t('fields.password.placeholder')}
-                  className='w-full rounded-xl border border-border bg-muted py-4 pl-12 pr-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
+                  className='w-full rounded-xl border border-border bg-muted py-4 pl-12 pr-12 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
                   disabled={isSubmitting || isSuccess}
                 />
+                <button
+                  type='button'
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className='absolute inset-y-0 right-0 flex items-center justify-center px-4 text-muted-foreground transition-colors hover:text-foreground'
+                  aria-label={showNewPassword ? t('hidePassword') : t('showPassword')}
+                >
+                  <MaterialIcon name={showNewPassword ? 'visibility_off' : 'visibility'} className='text-xl' />
+                </button>
               </div>
             </div>
 
@@ -169,15 +188,23 @@ export function ChangePasswordPage() {
                 />
                 <input
                   id='change_confirm_new_password'
-                  type='password'
+                  type={showConfirmNewPassword ? 'text' : 'password'}
                   required
                   minLength={8}
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
                   placeholder={t('fields.confirmPassword.placeholder')}
-                  className='w-full rounded-xl border border-border bg-muted py-4 pl-12 pr-4 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
+                  className='w-full rounded-xl border border-border bg-muted py-4 pl-12 pr-12 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring'
                   disabled={isSubmitting || isSuccess}
                 />
+                <button
+                  type='button'
+                  onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                  className='absolute inset-y-0 right-0 flex items-center justify-center px-4 text-muted-foreground transition-colors hover:text-foreground'
+                  aria-label={showConfirmNewPassword ? t('hidePassword') : t('showPassword')}
+                >
+                  <MaterialIcon name={showConfirmNewPassword ? 'visibility_off' : 'visibility'} className='text-xl' />
+                </button>
               </div>
             </div>
 

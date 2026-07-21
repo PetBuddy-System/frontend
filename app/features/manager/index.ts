@@ -1,6 +1,3 @@
-export { ManagerDashboardPage } from './pages/manager-dashboard-page'
-export { ManagerDisposalApprovalsPage } from './pages/manager-disposal-approvals-page'
-export { ManagerReturnRequestsPage } from './pages/manager-return-requests-page'
 export { ManagerStaffSchedulePage } from './pages/manager-staff-schedule-page'
 export { ManagerStaffScheduleCreatePage } from './pages/manager-staff-schedule-create-page'
 export { ManagerStaffScheduleDetailPage } from './pages/manager-staff-schedule-detail-page'
@@ -17,7 +14,6 @@ export { ManagerReviewsPage } from './pages/manager-reviews-page'
 export { ManagerRestockPage } from './pages/manager-restock-page'
 export { ManagerAuditLogsPage } from './pages/manager-audit-logs-page'
 export { ManagerAuditDetailPage } from './pages/manager-audit-detail-page'
-
 
 export { ManagerSidebar } from './components/layout/manager-sidebar'
 export { ManagerTopNav } from './components/layout/manager-top-nav'

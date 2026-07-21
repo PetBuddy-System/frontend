@@ -9,14 +9,11 @@ import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
 const MANAGER_NAV_ITEMS = [
-  { icon: 'dashboard', key: 'dashboard', href: '/manager/dashboard' },
   { icon: 'shopping_bag', key: 'products', href: '/manager/products' },
   { icon: 'medical_services', key: 'services', href: '/manager/services' },
   { icon: 'event_note', key: 'serviceBookings', href: '/manager/bookings' },
   { icon: 'groups', key: 'staff', href: '/manager/staff-schedule' },
-  { icon: 'assignment_turned_in', key: 'returnRequests', href: '/manager/return-requests' },
   { icon: 'inventory_2', key: 'restock', href: '/manager/restock' },
-  { icon: 'delete_sweep', key: 'disposalApprovals', href: '/manager/disposal-approvals' },
   { icon: 'local_offer', key: 'promotions', href: '/manager/promotions' },
   { icon: 'confirmation_number', key: 'vouchers', href: '/manager/vouchers' },
   { icon: 'storefront', key: 'storeLocations', href: '/manager/store-locations' },
@@ -29,7 +26,7 @@ export interface ManagerSidebarProps {
   activeItem?: ManagerNavKey
 }
 
-export function ManagerSidebar({ activeItem = 'dashboard' }: ManagerSidebarProps) {
+export function ManagerSidebar({ activeItem = 'products' }: ManagerSidebarProps) {
   const { t } = useTranslation('manager')
   const { isCollapsed, toggleSidebar, closeMobileSidebar } = useSidebar()
   const { logout } = useAuth()
@@ -107,7 +104,9 @@ export function ManagerSidebar({ activeItem = 'dashboard' }: ManagerSidebarProps
             <MaterialIcon name='close' className='text-[20px]' />
           </button>
         </div>
-        <nav className='flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-3'>{renderNavItems(closeMobileSidebar)}</nav>
+        <nav className='flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-3'>
+          {renderNavItems(closeMobileSidebar)}
+        </nav>
         <div className='my-3 h-px shrink-0 bg-border' />
         <div className='shrink-0 px-3 pb-3'>{renderLogoutButton()}</div>
       </MobileSidebarDrawer>

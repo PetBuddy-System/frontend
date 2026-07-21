@@ -14,7 +14,7 @@ export interface ProductDetailInfoProps {
   salePrice: number
   brandName: string
   totalStock: number
-  unit?: string
+  unit?: string // ⭐ Thêm unit
   discountAmount?: number | null
   discountValue?: number | null
   hasActivePromotion?: boolean
@@ -33,7 +33,7 @@ export function ProductDetailInfo({
   salePrice,
   brandName,
   totalStock,
-  unit,
+  unit, // ⭐ Nhận unit
   discountAmount,
   discountValue,
   hasActivePromotion,
@@ -87,8 +87,8 @@ export function ProductDetailInfo({
         quantity,
         productName: name,
         price: originalPrice,
-        salePrice: isPromoted ? promotionPrice ?? null : null,
-        imageUrl,
+        salePrice: isPromoted ? (promotionPrice ?? null) : null,
+        imageUrl
       })
       await refreshCart()
       setShowSuccessToast(true)
@@ -109,8 +109,8 @@ export function ProductDetailInfo({
         quantity,
         productName: name,
         price: originalPrice,
-        salePrice: isPromoted ? promotionPrice ?? null : null,
-        imageUrl,
+        salePrice: isPromoted ? (promotionPrice ?? null) : null,
+        imageUrl
       })
       navigate('/checkout')
     } catch (err) {
@@ -121,9 +121,7 @@ export function ProductDetailInfo({
 
   return (
     <section className='relative flex flex-col justify-start'>
-      <h1 className='font-display text-3xl font-black tracking-tight text-foreground md:text-5xl'>
-        {name}
-      </h1>
+      <h1 className='font-display text-3xl font-black tracking-tight text-foreground md:text-5xl'>{name}</h1>
 
       {/* Phần hiển thị giá */}
       {isPromoted ? (
@@ -134,9 +132,7 @@ export function ProductDetailInfo({
                 <MaterialIcon name='local_fire_department' className='text-[18px]' />
               </span>
               <div>
-                <p className='text-sm font-semibold text-foreground'>
-                  {promotionName || t('detail.promotion.active')}
-                </p>
+                <p className='text-sm font-semibold text-foreground'>{promotionName || 'Ưu đãi đang áp dụng'}</p>
               </div>
             </div>
             {discountText() && (
@@ -152,9 +148,7 @@ export function ProductDetailInfo({
                 {formatPrice(displayPrice)}
               </span>
               {originalPrice > 0 && originalPrice !== displayPrice && (
-                <span className='pb-1 text-lg text-muted-foreground line-through'>
-                  {formatPrice(originalPrice)}
-                </span>
+                <span className='pb-1 text-lg text-muted-foreground line-through'>{formatPrice(originalPrice)}</span>
               )}
             </div>
             {promotionDescription && <p className='mt-2 text-sm text-muted-foreground'>{promotionDescription}</p>}
@@ -214,7 +208,7 @@ export function ProductDetailInfo({
 
       <div className='mt-8 flex flex-col gap-3'>
         <label className='text-sm font-semibold text-foreground' htmlFor='quantity'>
-          {t('detail.actions.quantity')}
+          Số lượng
         </label>
         <div className='flex w-fit items-center overflow-hidden rounded-2xl border border-border bg-card p-1 shadow-sm'>
           <button
@@ -268,7 +262,11 @@ export function ProductDetailInfo({
       </div>
 
       {showSuccessToast && (
-        <div className='fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-2xl bg-success px-4 py-3 text-success-foreground shadow-lg animate-in fade-in slide-in-from-bottom-4'>
+        <div
+          role='status'
+          aria-live='polite'
+          className='fixed top-20 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl bg-success px-4 py-3 text-success-foreground shadow-lg animate-in fade-in slide-in-from-top-4'
+        >
           <MaterialIcon name='check_circle' className='text-[20px]' />
           <p className='text-sm font-bold'>{t('cart.addedToCart')}</p>
         </div>
