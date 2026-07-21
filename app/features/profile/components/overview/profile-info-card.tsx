@@ -1,14 +1,15 @@
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 
 import { MaterialIcon } from '~/shared/ui'
 
 const PROFILE_IMAGE =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuASyF5YyGHq5Vpgp-UK1MftgFCn3sOApwssuP50T-npqcGjI167fZz-5k_bJY2mY9bVTmAvtM8zkyxKhoNwC1wwciR6rh7HflaeKIzEOMzeQoHfeSnhFwLChcGe6Gb2AxBNXTkcMcgYppVgZJouWjwzr31ma6f66hoT7fA0DqQm_PtDibmI-rpWQFxvOrjj_8NoBVdUzTbgihAgJcC0UWaYOaGNenVLfPVfA4i-iv7p8Tq0qCvWYTbo6WG5rmpEaxJkfgkLU-MkXFQ'
 
-const PROFILE_FIELDS = ['fullName', 'email', 'phone', 'birthday', 'gender'] as const
+const PROFILE_FIELDS = ['fullName', 'email', 'phone', 'birthday'] as const
 
 export function ProfileInfoCard() {
-  const { t } = useTranslation('profile')
+  const { t } = useTranslation(['profile', 'auth'])
 
   return (
     <section className='rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-transform hover:-translate-y-0.5 md:p-6'>
@@ -59,6 +60,23 @@ export function ProfileInfoCard() {
             </p>
           </div>
         ))}
+
+        {/* Giới tính + nút đổi mật khẩu (security action đặt cạnh trường giới tính) */}
+        <div className='space-y-1'>
+          <p className='text-sm font-semibold text-muted-foreground'>{t('profile.fields.gender.label')}</p>
+          <div className='flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between'>
+            <p className='flex-1 rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground md:py-3 md:text-base'>
+              {t('profile.fields.gender.value')}
+            </p>
+            <Link
+              to='/change-password'
+              className='inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-bold text-foreground transition-colors hover:border-primary hover:text-primary md:py-3'
+            >
+              <MaterialIcon name='key' className='text-[18px]' />
+              {t('auth:changePassword.title')}
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   )
