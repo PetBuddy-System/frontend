@@ -9,11 +9,7 @@ import type { UserResponse } from '~/shared/lib/auth'
 import { WorkScheduleStaffSelect } from '../components/staff-schedule/work-schedule-staff-select'
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
-import {
-  workScheduleApi,
-  type WorkScheduleResponse,
-  type WorkScheduleShiftType
-} from '../services'
+import { workScheduleApi, type WorkScheduleResponse, type WorkScheduleShiftType } from '../services'
 import { formatWorkScheduleDateTime } from '../lib/work-schedule-format'
 import { getWorkScheduleErrorMessage } from '../lib/work-schedule-error'
 
@@ -78,12 +74,7 @@ export function ManagerStaffScheduleEditPage() {
     } catch (error) {
       setMessage({
         type: 'error',
-        text: getWorkScheduleErrorMessage(
-          error,
-          t,
-          'staffSchedule.workSchedules.messages.loadDetailFailed',
-          'detail'
-        )
+        text: getWorkScheduleErrorMessage(error, t, 'staffSchedule.workSchedules.messages.loadDetailFailed', 'detail')
       })
     } finally {
       setIsLoading(false)
@@ -117,12 +108,7 @@ export function ManagerStaffScheduleEditPage() {
     } catch (error) {
       setMessage({
         type: 'error',
-        text: getWorkScheduleErrorMessage(
-          error,
-          t,
-          'staffSchedule.workSchedules.messages.updateFailed',
-          'update'
-        )
+        text: getWorkScheduleErrorMessage(error, t, 'staffSchedule.workSchedules.messages.updateFailed', 'update')
       })
     } finally {
       setIsSubmitting(false)
@@ -149,12 +135,7 @@ export function ManagerStaffScheduleEditPage() {
     } catch (error) {
       setMessage({
         type: 'error',
-        text: getWorkScheduleErrorMessage(
-          error,
-          t,
-          'staffSchedule.workSchedules.messages.assignFailed',
-          'assign'
-        )
+        text: getWorkScheduleErrorMessage(error, t, 'staffSchedule.workSchedules.messages.assignFailed', 'assign')
       })
     } finally {
       setIsSubmitting(false)
@@ -183,12 +164,7 @@ export function ManagerStaffScheduleEditPage() {
     } catch (error) {
       setMessage({
         type: 'error',
-        text: getWorkScheduleErrorMessage(
-          error,
-          t,
-          'staffSchedule.workSchedules.messages.reassignFailed',
-          'reassign'
-        )
+        text: getWorkScheduleErrorMessage(error, t, 'staffSchedule.workSchedules.messages.reassignFailed', 'reassign')
       })
     } finally {
       setIsSubmitting(false)
@@ -303,9 +279,7 @@ export function ManagerStaffScheduleEditPage() {
                         value={form.shiftType}
                         onChange={(event) =>
                           setForm((current) =>
-                            current
-                              ? { ...current, shiftType: event.target.value as WorkScheduleShiftType }
-                              : current
+                            current ? { ...current, shiftType: event.target.value as WorkScheduleShiftType } : current
                           )
                         }
                         className='h-10 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring'
@@ -320,9 +294,7 @@ export function ManagerStaffScheduleEditPage() {
                     <Field label={t('staffSchedule.workSchedules.form.note')}>
                       <textarea
                         value={form.note}
-                        onChange={(event) =>
-                          setForm((current) => current && { ...current, note: event.target.value })
-                        }
+                        onChange={(event) => setForm((current) => current && { ...current, note: event.target.value })}
                         rows={4}
                         className='w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring'
                       />

@@ -94,10 +94,7 @@ export function BlogPage() {
   }, [fetchBlogs])
 
   // Filter theo category (client-side)
-  const filteredPosts =
-    selectedCategory === 'all'
-      ? posts
-      : posts.filter((post) => post.category === selectedCategory)
+  const filteredPosts = selectedCategory === 'all' ? posts : posts.filter((post) => post.category === selectedCategory)
 
   const totalPages = pageMeta?.totalPages ?? 0
 
@@ -168,10 +165,7 @@ export function BlogPage() {
               {isLoading ? (
                 <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className='animate-pulse overflow-hidden rounded-xl border border-border/60 bg-card'
-                    >
+                    <div key={i} className='animate-pulse overflow-hidden rounded-xl border border-border/60 bg-card'>
                       <div className='h-48 bg-muted' />
                       <div className='space-y-3 p-5'>
                         <div className='h-3 w-2/3 rounded bg-muted' />

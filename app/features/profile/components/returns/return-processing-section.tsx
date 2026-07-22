@@ -41,9 +41,7 @@ export function ReturnProcessingSection({ detail }: ReturnProcessingSectionProps
       </div>
       {detail.address ? (
         <div className='mt-2 pt-2 border-t border-border/60'>
-          <span className='text-muted-foreground block mb-1'>
-            {t('list.detail.processing.addressLabel')}
-          </span>
+          <span className='text-muted-foreground block mb-1'>{t('list.detail.processing.addressLabel')}</span>
           <p className='bg-muted/20 p-2 rounded border border-border text-sm text-foreground font-medium flex items-start gap-2'>
             <MaterialIcon name='location_on' className='text-primary mt-0.5' />
             {detail.address}
@@ -52,12 +50,8 @@ export function ReturnProcessingSection({ detail }: ReturnProcessingSectionProps
       ) : null}
       {detail.staffNote ? (
         <div className='mt-2 pt-2 border-t border-border/60'>
-          <span className='text-muted-foreground block mb-1'>
-            {t('list.detail.processing.staffNote')}
-          </span>
-          <p className='bg-muted/20 p-2 rounded border border-border text-sm text-foreground'>
-            {detail.staffNote}
-          </p>
+          <span className='text-muted-foreground block mb-1'>{t('list.detail.processing.staffNote')}</span>
+          <p className='bg-muted/20 p-2 rounded border border-border text-sm text-foreground'>{detail.staffNote}</p>
         </div>
       ) : null}
     </div>

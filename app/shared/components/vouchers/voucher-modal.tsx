@@ -11,23 +11,20 @@ export interface VoucherModalProps {
 }
 
 export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: VoucherModalProps) {
-  const {
-    form,
-    handleChange,
-    handleSubmit,
-    isSubmitting,
-    error,
-    fieldErrors,
-    isEditMode,
-    t
-  } = useVoucherForm({ editingVoucher, onClose, onSuccess })
+  const { form, handleChange, handleSubmit, isSubmitting, error, fieldErrors, isEditMode, t } = useVoucherForm({
+    editingVoucher,
+    onClose,
+    onSuccess
+  })
 
   if (!isOpen) return null
 
   return (
     <div
       className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm'
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
     >
       <div className='relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-card shadow-2xl'>
         <div className='sticky top-0 z-10 flex items-center justify-between rounded-t-2xl border-b border-border bg-card px-6 py-4'>
@@ -74,10 +71,13 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 maxLength={20}
                 className={cn(
                   'rounded-xl border bg-background px-4 py-2.5 text-sm font-mono font-semibold uppercase text-foreground transition focus:outline-none focus:ring-2 focus:ring-ring',
-                  fieldErrors.voucherCode ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary',
+                  fieldErrors.voucherCode
+                    ? 'border-destructive focus:border-destructive'
+                    : 'border-border focus:border-primary',
                   isEditMode && 'cursor-not-allowed opacity-60'
                 )}
               />
+              {fieldErrors.voucherCode && <p className='text-xs font-medium text-destructive'>{fieldErrors.voucherCode}</p>}
               {isEditMode && <p className='text-xs text-muted-foreground'>{t('voucherModal.codeDisabledHint')}</p>}
             </div>
 
@@ -95,9 +95,12 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 maxLength={100}
                 className={cn(
                   'rounded-xl border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition focus:outline-none focus:ring-2 focus:ring-ring',
-                  fieldErrors.voucherName ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+                  fieldErrors.voucherName
+                    ? 'border-destructive focus:border-destructive'
+                    : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.voucherName && <p className='text-xs font-medium text-destructive'>{fieldErrors.voucherName}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -130,9 +133,12 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 onChange={handleChange}
                 className={cn(
                   'rounded-xl border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition focus:outline-none focus:ring-2 focus:ring-ring',
-                  fieldErrors.discountValue ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+                  fieldErrors.discountValue
+                    ? 'border-destructive focus:border-destructive'
+                    : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.discountValue && <p className='text-xs font-medium text-destructive'>{fieldErrors.discountValue}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -149,9 +155,12 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 placeholder={t('voucherModal.maxDiscountPlaceholder')}
                 className={cn(
                   'rounded-xl border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition focus:outline-none focus:ring-2 focus:ring-ring',
-                  fieldErrors.maxDiscount ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+                  fieldErrors.maxDiscount
+                    ? 'border-destructive focus:border-destructive'
+                    : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.maxDiscount && <p className='text-xs font-medium text-destructive'>{fieldErrors.maxDiscount}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -168,9 +177,12 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 placeholder={t('voucherModal.minOrderPlaceholder')}
                 className={cn(
                   'rounded-xl border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition focus:outline-none focus:ring-2 focus:ring-ring',
-                  fieldErrors.minOrderValue ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+                  fieldErrors.minOrderValue
+                    ? 'border-destructive focus:border-destructive'
+                    : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.minOrderValue && <p className='text-xs font-medium text-destructive'>{fieldErrors.minOrderValue}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -187,9 +199,12 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 placeholder={t('voucherModal.usageLimitPlaceholder')}
                 className={cn(
                   'rounded-xl border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition focus:outline-none focus:ring-2 focus:ring-ring',
-                  fieldErrors.usageLimit ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+                  fieldErrors.usageLimit
+                    ? 'border-destructive focus:border-destructive'
+                    : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.usageLimit && <p className='text-xs font-medium text-destructive'>{fieldErrors.usageLimit}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -206,9 +221,12 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 placeholder={t('voucherModal.perUserLimitPlaceholder')}
                 className={cn(
                   'rounded-xl border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition focus:outline-none focus:ring-2 focus:ring-ring',
-                  fieldErrors.perUserLimit ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+                  fieldErrors.perUserLimit
+                    ? 'border-destructive focus:border-destructive'
+                    : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.perUserLimit && <p className='text-xs font-medium text-destructive'>{fieldErrors.perUserLimit}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -224,9 +242,12 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 onChange={handleChange}
                 className={cn(
                   'rounded-xl border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition focus:outline-none focus:ring-2 focus:ring-ring',
-                  fieldErrors.startAt ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+                  fieldErrors.startAt
+                    ? 'border-destructive focus:border-destructive'
+                    : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.startAt && <p className='text-xs font-medium text-destructive'>{fieldErrors.startAt}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -242,9 +263,12 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                 onChange={handleChange}
                 className={cn(
                   'rounded-xl border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition focus:outline-none focus:ring-2 focus:ring-ring',
-                  fieldErrors.expiredAt ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+                  fieldErrors.expiredAt
+                    ? 'border-destructive focus:border-destructive'
+                    : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.expiredAt && <p className='text-xs font-medium text-destructive'>{fieldErrors.expiredAt}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>

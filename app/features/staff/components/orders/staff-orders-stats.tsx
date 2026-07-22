@@ -13,7 +13,7 @@ interface StaffOrdersStatsProps {
         completed: number
         cancelled: number
         refundPending: number
-        bombed: number
+        deliveryFailed: number
     }
     statusFilter: string
     onStatusFilterChange: (status: string) => void
@@ -178,25 +178,25 @@ export function StaffOrdersStats({ stats, statusFilter, onStatusFilterChange }: 
                 </div>
             </button>
 
-            {/* Card 8: Bombed */}
+            {/* Card 8: Delivery Failed */}
             <button
-                onClick={() => onStatusFilterChange(statusFilter === 'BOMBED' ? 'ALL' : 'BOMBED')}
+                onClick={() => onStatusFilterChange(statusFilter === 'DELIVERY_FAILED' ? 'ALL' : 'DELIVERY_FAILED')}
                 className={cn(
                     'flex flex-col justify-between rounded-2xl border bg-card p-4 text-left transition-all hover:scale-[1.02] hover:border-primary',
-                    statusFilter === 'BOMBED' ? 'border-primary ring-2 ring-ring' : 'border-border'
+                    statusFilter === 'DELIVERY_FAILED' ? 'border-primary ring-2 ring-ring' : 'border-border'
                 )}
             >
                 <div className='flex justify-between items-start w-full mb-4'>
                     <div className='rounded-xl bg-rose-100 p-2 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400'>
-                        <MaterialIcon name='block' className='text-[22px]' />
+                        <MaterialIcon name='local_shipping' className='text-[22px]' />
                     </div>
                     <span className='text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 animate-pulse'>
-                        {t('staffOrdersStats.bombed.badge')}
+                        {t('staffOrdersStats.deliveryFailed.badge')}
                     </span>
                 </div>
                 <div>
-                    <span className='text-3xl font-extrabold text-foreground'>{stats.bombed}</span>
-                    <span className='block text-xs text-muted-foreground mt-0.5'>{t('staffOrdersStats.bombed.label')}</span>
+                    <span className='text-3xl font-extrabold text-foreground'>{stats.deliveryFailed}</span>
+                    <span className='block text-xs text-muted-foreground mt-0.5'>{t('staffOrdersStats.deliveryFailed.label')}</span>
                 </div>
             </button>
         </div>

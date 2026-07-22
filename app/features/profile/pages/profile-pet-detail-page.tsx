@@ -108,20 +108,14 @@ export function ProfilePetDetailPage() {
                   <div className='p-5'>
                     <h2 className='font-display text-3xl font-bold text-card-foreground'>{pet.petName}</h2>
                     <p className='mt-2 text-muted-foreground'>
-                      {[
-                        speciesKey ? t(`petProfiles.species.${speciesKey}`) : pet.species,
-                        pet.breed,
-                        pet.color
-                      ]
+                      {[speciesKey ? t(`petProfiles.species.${speciesKey}`) : pet.species, pet.breed, pet.color]
                         .filter(Boolean)
                         .join(' • ') || '-'}
                     </p>
                     <span
                       className={cn(
                         'mt-4 inline-flex rounded-full px-3 py-1 text-xs font-bold',
-                        pet.petStatus === 'ACTIVE'
-                          ? 'bg-success/10 text-success'
-                          : 'bg-muted text-muted-foreground'
+                        pet.petStatus === 'ACTIVE' ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'
                       )}
                     >
                       {t(`petProfiles.petStatus.${pet.petStatus}`)}

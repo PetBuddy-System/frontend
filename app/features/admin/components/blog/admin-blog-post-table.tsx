@@ -26,29 +26,26 @@ export function AdminBlogPostTable({ posts, onEdit, onDelete }: AdminBlogPostTab
   const { t } = useTranslation('admin')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
-  const filteredPosts =
-    selectedCategory === 'all' ? posts : posts.filter((post) => post.label === selectedCategory)
+  const filteredPosts = selectedCategory === 'all' ? posts : posts.filter((post) => post.label === selectedCategory)
 
   return (
     <div className='space-y-4'>
       <div className='flex flex-wrap items-center gap-2'>
-        {(['all', 'featured', 'nutrition', 'health', 'grooming', 'training', 'lifestyle'] as const).map(
-          (cat) => (
-            <button
-              key={cat}
-              type='button'
-              onClick={() => setSelectedCategory(cat)}
-              className={cn(
-                'rounded-full px-4 py-2 text-sm font-semibold transition-colors',
-                selectedCategory === cat
-                  ? 'bg-primary text-primary-foreground'
-                  : 'border border-border bg-card text-muted-foreground hover:bg-muted hover:text-primary'
-              )}
-            >
-              {t(`blogManagement.sidebar.${cat}`)}
-            </button>
-          )
-        )}
+        {(['all', 'featured', 'nutrition', 'health', 'grooming', 'training', 'lifestyle'] as const).map((cat) => (
+          <button
+            key={cat}
+            type='button'
+            onClick={() => setSelectedCategory(cat)}
+            className={cn(
+              'rounded-full px-4 py-2 text-sm font-semibold transition-colors',
+              selectedCategory === cat
+                ? 'bg-primary text-primary-foreground'
+                : 'border border-border bg-card text-muted-foreground hover:bg-muted hover:text-primary'
+            )}
+          >
+            {t(`blogManagement.sidebar.${cat}`)}
+          </button>
+        ))}
       </div>
 
       <div className='overflow-x-auto rounded-3xl border border-border bg-card shadow-sm'>
@@ -92,11 +89,7 @@ export function AdminBlogPostTable({ posts, onEdit, onDelete }: AdminBlogPostTab
                     <div className='flex items-center gap-3'>
                       <div className='h-12 w-16 shrink-0 overflow-hidden rounded-xl border border-border'>
                         {post.imageUrl ? (
-                          <img
-                            src={post.imageUrl}
-                            alt={post.title}
-                            className='h-full w-full object-cover'
-                          />
+                          <img src={post.imageUrl} alt={post.title} className='h-full w-full object-cover' />
                         ) : (
                           <div className='flex h-full w-full items-center justify-center bg-muted'>
                             <MaterialIcon name='image' className='text-lg text-muted-foreground' />
@@ -124,9 +117,7 @@ export function AdminBlogPostTable({ posts, onEdit, onDelete }: AdminBlogPostTab
                     <span
                       className={cn(
                         'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold',
-                        post.isPublished
-                          ? 'bg-success/10 text-success'
-                          : 'bg-muted text-muted-foreground'
+                        post.isPublished ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'
                       )}
                     >
                       <span
@@ -135,9 +126,7 @@ export function AdminBlogPostTable({ posts, onEdit, onDelete }: AdminBlogPostTab
                           post.isPublished ? 'bg-success' : 'bg-muted-foreground'
                         )}
                       />
-                      {post.isPublished
-                        ? t('blogManagement.table.published')
-                        : t('blogManagement.table.draft')}
+                      {post.isPublished ? t('blogManagement.table.published') : t('blogManagement.table.draft')}
                     </span>
                   </td>
                   <td className='px-5 py-4'>

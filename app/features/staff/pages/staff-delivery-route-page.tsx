@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 
 import { StaffSidebar } from '../components/layout/staff-sidebar'
 import { StaffTopNav } from '../components/layout/staff-top-nav'
@@ -12,8 +12,9 @@ import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { formatDateTime } from '~/shared/lib/date'
 
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)
+function formatCurrency(value: number, locale: string): string {
+  const intlLocale = locale === 'vi' ? 'vi-VN' : 'en-US'
+  return new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'VND' }).format(value)
 }
 
 interface DeliveryProofDialogProps {
@@ -127,10 +128,11 @@ interface StopCardProps {
 }
 
 function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardProps) {
-  const { t } = useTranslation('staff')
+  const { t, i18n } = useTranslation('staff')
   const navigate = useNavigate()
   const isDelivered = stop.status === 'DELIVERED'
-  const isPaidByCard = stop.paymentMethod === 'CARD' && stop.paymentStatus === 'PAID'
+  const isPaid = stop.paymentStatus === 'PAID'
+  const displayAmount = isPaid ? 0 : stop.finalAmount
 
   return (
     <div className='flex relative pb-8'>
@@ -178,9 +180,9 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
             </button>
           </div>
           <div className='text-right'>
-            <p className='font-bold text-foreground'>{formatCurrency(stop.finalAmount)}</p>
-            <p className='text-xs text-muted-foreground'>
-              {isPaidByCard ? t('deliveryRoute.timeline.paymentCard') : t('deliveryRoute.timeline.paymentCash')}
+            <p className='font-bold text-foreground'>{formatCurrency(displayAmount, i18n.language)}</p>
+            <p className='text-xs text-muted-foreground font-medium'>
+              {isPaid ? t('deliveryRoute.timeline.paymentPaid') : t('deliveryRoute.timeline.paymentCod')}
             </p>
           </div>
         </div>
@@ -196,7 +198,9 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
           </div>
           {stop.estimatedDeliveryAt && (
             <div>
-              <p className='text-xs text-muted-foreground mb-0.5'>{t('orderDetail.estimatedDeliveryAt', 'Dự kiến giao hàng', { ns: 'profile' })}</p>
+              {/* Đã bỏ defaultValue tiếng Việt cứng — cần đảm bảo key này tồn tại
+                  trong namespace 'profile' ở cả en.json và vi.json */}
+              <p className='text-xs text-muted-foreground mb-0.5'>{t('orderDetail.estimatedDeliveryAt', { ns: 'profile' })}</p>
               <p className='font-semibold text-foreground flex items-center gap-1'>
                 <MaterialIcon name='event' className='text-primary text-[16px]' />
                 {formatDateTime(stop.estimatedDeliveryAt)}
@@ -227,8 +231,8 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
               )}
             >
               {(stop.deliveryFailCount ?? 0) >= 3
-                ? t('deliveryRoute.timeline.bombedBtn', 'Bom hàng')
-                : t('deliveryRoute.timeline.failedBtn', 'Giao hàng thất bại')}
+                ? t('deliveryRoute.timeline.failedBtn')
+                : t('deliveryRoute.timeline.failedBtn')}
             </button>
           </div>
         )}
@@ -238,7 +242,7 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
 }
 
 export function StaffDeliveryRoutePage() {
-  const { t } = useTranslation('staff')
+  const { t, i18n } = useTranslation('staff')
   const { user } = useAuth()
 
   const [stops, setStops] = useState<DeliveryStop[]>([])
@@ -285,10 +289,10 @@ export function StaffDeliveryRoutePage() {
 
   async function handleMarkFailed(stop: DeliveryStop) {
     if ((stop.deliveryFailCount ?? 0) >= 3) {
-      // Transition directly to BOMBED
+      // Transition to DELIVERY_FAILED after 3 failed attempts
       setIsSubmittingProof(true)
       try {
-        await updateOrderStatusApi(stop.orderId, 'BOMBED')
+        await updateOrderStatusApi(stop.orderId, 'DELIVERY_FAILED')
         await loadRoute()
       } catch {
       } finally {
@@ -302,13 +306,6 @@ export function StaffDeliveryRoutePage() {
   const activeStop = stops.find((s) => s.status === 'SHIPPING') ?? stops[0]
   const nextStop = stops.find((s, i) => i > 0 && s.status !== 'DELIVERED')
 
-  const totalDistanceKm = stops.reduce((sum, s) => sum + (s.distanceFromPreviousKm ?? 0), 0)
-  const totalDistanceLabel = totalDistanceKm > 0 ? `${totalDistanceKm.toFixed(1)} km` : '—'
-  const durationLabel = '—'
-
-  const googleMapsUrl = activeStop
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activeStop.address)}`
-    : 'https://maps.google.com'
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -324,7 +321,9 @@ export function StaffDeliveryRoutePage() {
               <div className='flex h-64 items-center justify-center'>
                 <div className='flex flex-col items-center gap-3 text-muted-foreground'>
                   <MaterialIcon name='progress_activity' className='animate-spin text-[40px] text-primary' />
-                  <p className='text-sm'>{t('deliveryRoute.errors.loadFailed')}</p>
+                  {/* Trước đây dùng nhầm key 'errors.loadFailed' (nghĩa là "tải thất bại")
+                      để hiển thị lúc đang tải — cần thêm key riêng 'deliveryRoute.loading' */}
+                  <p className='text-sm'>{t('deliveryRoute.loading')}</p>
                 </div>
               </div>
             )}
@@ -337,7 +336,7 @@ export function StaffDeliveryRoutePage() {
                   onClick={() => void loadRoute()}
                   className='rounded-xl bg-primary px-5 py-2 text-sm font-bold text-primary-foreground'
                 >
-                  Thử lại
+                  {t('deliveryRoute.errors.retry')}
                 </button>
               </div>
             )}
@@ -376,80 +375,21 @@ export function StaffDeliveryRoutePage() {
                   </div>
                 </div>
 
-                <div className='flex flex-col gap-6 lg:flex-row'>
-                  <div className='flex-1 min-w-0'>
-                    <div className='rounded-2xl border border-border bg-card shadow-sm p-6'>
-                      <div className='mb-6 flex items-center justify-between'>
-                        <h2 className='font-bold text-lg text-foreground'>{t('deliveryRoute.timeline.title')}</h2>
-                      </div>
-
-                      <div>
-                        {stops.map((stop) => (
-                          <StopCard
-                            key={stop.orderId}
-                            stop={stop}
-                            isActive={stop.orderId === activeStop?.orderId && stop.status !== 'DELIVERED'}
-                            onMarkDelivered={setProofTarget}
-                            onMarkFailed={handleMarkFailed}
-                          />
-                        ))}
-                      </div>
-                    </div>
+                <div className='rounded-2xl border border-border bg-card shadow-sm p-6'>
+                  <div className='mb-6 flex items-center justify-between'>
+                    <h2 className='font-bold text-lg text-foreground'>{t('deliveryRoute.timeline.title')}</h2>
                   </div>
-                  <div className='lg:w-80 xl:w-96 shrink-0'>
-                    <div className='sticky top-6 rounded-2xl border border-border bg-card shadow-sm overflow-hidden'>
-                      <div className='border-b border-border px-6 py-4'>
-                        <h2 className='font-bold text-foreground'>{t('deliveryRoute.map.title')}</h2>
-                      </div>
 
-                      <div className='relative flex h-64 items-center justify-center bg-primary/5'>
-                        <div className='z-10 text-center px-6'>
-                          <MaterialIcon name='location_on' className='text-[48px] text-primary mb-2' />
-                          <p className='text-sm text-muted-foreground'>
-                            {t('deliveryRoute.map.currentLocation')}:{' '}
-                            <strong className='text-foreground'>
-                              {activeStop?.address?.split(',').slice(-2).join(',').trim() ?? '—'}
-                            </strong>
-                          </p>
-                          {nextStop && (
-                            <p className='mt-1.5 font-bold text-primary text-sm'>
-                              {t('deliveryRoute.map.distanceToNext', {
-                                dist: nextStop.distanceFromPreviousKm.toFixed(1)
-                              })}
-                            </p>
-                          )}
-                        </div>
-                        <div className='absolute inset-0 opacity-10 pointer-events-none'
-                          style={{ backgroundImage: 'repeating-linear-gradient(0deg, var(--color-border) 0, var(--color-border) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, var(--color-border) 0, var(--color-border) 1px, transparent 1px, transparent 40px)' }}
-                        />
-                      </div>
-                      <div className='p-5 space-y-4'>
-                        <div className='rounded-xl bg-muted p-4'>
-                          <p className='mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground'>
-                            {t('deliveryRoute.map.overview')}
-                          </p>
-                          <div className='flex justify-between text-sm'>
-                            <span className='text-muted-foreground'>{t('deliveryRoute.map.totalDistance')}</span>
-                            <span className='font-bold text-foreground'>{totalDistanceLabel}</span>
-                          </div>
-                          <div className='mt-2 flex justify-between text-sm'>
-                            <span className='text-muted-foreground'>{t('deliveryRoute.map.estimatedTime')}</span>
-                            <span className='font-bold text-foreground'>{durationLabel}</span>
-                          </div>
-                        </div>
-
-                        <a
-                          id='open-google-maps-btn'
-                          href={googleMapsUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='flex w-full items-center justify-center gap-2 rounded-xl bg-primary/10 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary/20'
-                        >
-                          <MaterialIcon name='open_in_new' className='text-[18px]' />
-                          {t('deliveryRoute.map.openMaps')}
-                        </a>
-                      </div>
-                    </div>
+                  <div>
+                    {stops.map((stop) => (
+                      <StopCard
+                        key={stop.orderId}
+                        stop={stop}
+                        isActive={stop.orderId === activeStop?.orderId && stop.status !== 'DELIVERED'}
+                        onMarkDelivered={setProofTarget}
+                        onMarkFailed={handleMarkFailed}
+                      />
+                    ))}
                   </div>
                 </div>
               </>

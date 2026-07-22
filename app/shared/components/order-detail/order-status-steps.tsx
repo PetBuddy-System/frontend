@@ -18,7 +18,11 @@ export function OrderStatusSteps({ order, formatDate, formatTime }: OrderStatusS
     'PICKING': 2,
     'PICKED': 2,
     'SHIPPING': 3,
+    'AWAITING_REDELIVERY': 3,
+    'COORDINATOR_REVIEW': 3,
+    'DELIVERY_FAILED': 3,
     'DELIVERED': 4,
+    'RETURNED_TO_WAREHOUSE': 4,
     'COMPLETED': 5,
     'CANCEL_REQUESTED': 1,
   }

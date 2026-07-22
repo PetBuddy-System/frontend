@@ -3,25 +3,17 @@
  * API functions nằm trong features/services/.
  */
 
-export type ProductUnit =
-  | 'PIECE'
-  | 'BAG'
-  | 'BOX'
-  | 'PACK'
-  | 'BOTTLE'
-  | 'CAN'
-  | 'TUBE'
-  | 'SET'
+export type ProductUnit = 'PIECE' | 'BAG' | 'BOX' | 'PACK' | 'BOTTLE' | 'CAN' | 'TUBE' | 'SET'
 
 export const ProductUnitLabels: Record<ProductUnit, string> = {
-  'PIECE': 'Cái',
-  'BAG': 'Túi',
-  'BOX': 'Hộp',
-  'PACK': 'Gói',
-  'BOTTLE': 'Chai',
-  'CAN': 'Lon',
-  'TUBE': 'Tuýp',
-  'SET': 'Bộ'
+  PIECE: 'Cái',
+  BAG: 'Túi',
+  BOX: 'Hộp',
+  PACK: 'Gói',
+  BOTTLE: 'Chai',
+  CAN: 'Lon',
+  TUBE: 'Tuýp',
+  SET: 'Bộ'
 }
 
 export interface ProductResponse {
@@ -144,7 +136,7 @@ export interface ProductManagementItem {
   updatedAt: string
   unit?: ProductUnit
   hasActivePromotion?: boolean
-  weight?: number  // ✅ Thêm weight
+  weight?: number // ✅ Thêm weight
 }
 
 export interface PagedProductManagementResponse {
@@ -187,7 +179,7 @@ export interface UpdateProductPayload {
   usageInstructions?: string
   unit?: ProductUnit
   thumbnailMediaId?: number
-  weight?: number  // ✅ Thêm weight
+  weight?: number // ✅ Thêm weight
   reason?: string
   note?: string
 }
@@ -210,7 +202,7 @@ export interface CreateProductPayload {
   ingredients?: string
   usageInstructions?: string
   unit?: ProductUnit
-  weight: number  // ✅ Thêm weight (bắt buộc)
+  weight: number // ✅ Thêm weight (bắt buộc)
 }
 
 export interface CreateProductResponse {
@@ -288,8 +280,8 @@ export interface ProductImagesResponse {
 }
 
 export interface UpdateProductImagesPayload {
-  images?: File[]  // Danh sách ảnh mới (null: giữ nguyên, []: xóa hết)
-  keepImageIds?: number[]  // Danh sách ID ảnh cũ muốn giữ lại
+  images?: File[] // Danh sách ảnh mới (null: giữ nguyên, []: xóa hết)
+  keepImageIds?: number[] // Danh sách ID ảnh cũ muốn giữ lại
 }
 
 export interface UpdateProductImagesResponse {
@@ -301,7 +293,7 @@ export interface UpdateProductImagesResponse {
 
 // ─── Update Video ──────────────────────────────────────────────────────────
 export interface UpdateProductVideoPayload {
-  video?: File | null  // video = null: giữ nguyên, video = empty: xóa
+  video?: File | null // video = null: giữ nguyên, video = empty: xóa
 }
 
 export interface UpdateProductVideoResponse {

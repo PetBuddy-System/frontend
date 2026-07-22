@@ -32,24 +32,21 @@ export function ManagerProductsToolbar({
     { value: 'date_desc', label: t('productManagement.toolbar.sortNewest') },
     { value: 'date_asc', label: t('productManagement.toolbar.sortOldest') },
     { value: 'price_desc', label: t('productManagement.toolbar.sortPriceHigh') },
-    { value: 'price_asc', label: t('productManagement.toolbar.sortPriceLow') },
+    { value: 'price_asc', label: t('productManagement.toolbar.sortPriceLow') }
   ]
 
   const STATUS_OPTIONS = [
     { value: 'all', label: t('productManagement.toolbar.statusAll') },
     { value: 'ACTIVE', label: t('productManagement.toolbar.statusActive') },
     { value: 'INACTIVE', label: t('productManagement.toolbar.statusInactive') },
-    { value: 'DELETED', label: t('productManagement.toolbar.statusDeleted') },
+    { value: 'DELETED', label: t('productManagement.toolbar.statusDeleted') }
   ]
 
   return (
     <div className='flex flex-col gap-3'>
       {/* Hàng 1: Search */}
       <div className='relative w-full'>
-        <MaterialIcon
-          name='search'
-          className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'
-        />
+        <MaterialIcon name='search' className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground' />
         <input
           type='search'
           value={searchValue}

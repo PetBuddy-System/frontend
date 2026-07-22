@@ -31,6 +31,10 @@ function getTotalDuration(booking: BookingResponse) {
   return booking.bookingDetails.reduce((total, detail) => total + detail.durationMinute, 0)
 }
 
+function getAssignmentStatus(booking: BookingResponse): 'WAITING_STAFF' | 'PENDING_ACCEPTANCE' {
+  return booking.bookingStatus === 'WAITING_STAFF' ? 'WAITING_STAFF' : 'PENDING_ACCEPTANCE'
+}
+
 export function StaffCoordinatorBookingsPage() {
   const { t } = useTranslation('staff')
   const [bookings, setBookings] = useState<BookingResponse[]>([])
@@ -51,10 +55,12 @@ export function StaffCoordinatorBookingsPage() {
   const loadData = useCallback(async () => {
     setIsLoading(true)
     try {
-      const [bookingList, staffList] = await Promise.all([
+      const [pendingBookings, waitingBookings, staffList] = await Promise.all([
         fetchStaffBookings({ status: 'PENDING_ACCEPTANCE' }),
+        fetchStaffBookings({ status: 'WAITING_STAFF' }),
         fetchStaffUsers()
       ])
+      const bookingList = [...waitingBookings, ...pendingBookings]
       setBookings(bookingList)
       setGroomers(staffList)
       setSelectedBookingId(bookingList[0]?.bookingId ?? null)
@@ -155,7 +161,7 @@ export function StaffCoordinatorBookingsPage() {
                         <p className='mt-1 text-sm text-muted-foreground'>{formatDateTime(booking.scheduledAt)}</p>
                       </div>
                       <span className='rounded-full bg-warning/10 px-2.5 py-1 text-xs font-semibold text-warning'>
-                        {t('coordinatorBookings.pendingStatus')}
+                        {t(`coordinatorBookings.status.${getAssignmentStatus(booking)}`)}
                       </span>
                     </div>
                     <div className='mt-4 grid grid-cols-2 gap-3 text-sm'>
@@ -197,7 +203,7 @@ export function StaffCoordinatorBookingsPage() {
                       </p>
                     </div>
                     <span className='w-fit rounded-full bg-warning/10 px-3 py-1 text-xs font-semibold text-warning'>
-                      {t('coordinatorBookings.pendingStatus')}
+                      {t(`coordinatorBookings.status.${getAssignmentStatus(selectedBooking)}`)}
                     </span>
                   </div>
 
@@ -219,7 +225,15 @@ export function StaffCoordinatorBookingsPage() {
                       items={[
                         [t('coordinatorBookings.detail.customerName'), selectedBooking.customerName],
                         [t('coordinatorBookings.detail.customerPhone'), selectedBooking.customerPhone],
-                        [t('coordinatorBookings.detail.address'), selectedBooking.address || '-']
+                        [t('coordinatorBookings.detail.address'), selectedBooking.address || '-'],
+                        [
+                          t('coordinatorBookings.detail.requestedStaff'),
+                          selectedBooking.requestedStaffName || t('coordinatorBookings.detail.autoAssign')
+                        ],
+                        [
+                          t('coordinatorBookings.detail.assignedStaff'),
+                          selectedBooking.assignedStaffName || t('coordinatorBookings.detail.notAssigned')
+                        ]
                       ]}
                     />
                   </div>

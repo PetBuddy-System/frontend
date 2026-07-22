@@ -42,9 +42,7 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
         className={cn(
           'flex items-center rounded-xl text-sm font-semibold transition-colors active:scale-95',
           isCollapsed ? 'justify-center p-2.5' : 'gap-3 px-3.5 py-2.5',
-          activeItem === item.key
-            ? 'bg-secondary text-secondary-foreground'
-            : 'text-muted-foreground hover:bg-card'
+          activeItem === item.key ? 'bg-secondary text-secondary-foreground' : 'text-muted-foreground hover:bg-card'
         )}
         title={isCollapsed ? t(`sidebar.nav.${item.key}`) : undefined}
       >
@@ -99,9 +97,7 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
         <div className='mb-auto flex flex-col gap-2 p-3'>
           <nav className='flex flex-col gap-1'>{renderNavItems(closeMobileSidebar)}</nav>
         </div>
-        <div className='flex flex-col gap-1 border-t border-border p-3'>
-          {renderLogoutButton()}
-        </div>
+        <div className='flex flex-col gap-1 border-t border-border p-3'>{renderLogoutButton()}</div>
       </MobileSidebarDrawer>
 
       <aside
@@ -126,9 +122,7 @@ export function ProfileSidebar({ activeItem = 'profile' }: ProfileSidebarProps) 
           <nav className='flex flex-col gap-1'>{renderNavItems()}</nav>
         </div>
 
-        <div className='flex flex-col gap-1 border-t border-border pt-4'>
-          {renderLogoutButton()}
-        </div>
+        <div className='flex flex-col gap-1 border-t border-border pt-4'>{renderLogoutButton()}</div>
       </aside>
     </>
   )

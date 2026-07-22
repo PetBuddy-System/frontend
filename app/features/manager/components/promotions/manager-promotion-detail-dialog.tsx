@@ -9,10 +9,7 @@ interface ManagerPromotionDetailDialogProps {
   onClose: () => void
 }
 
-export function ManagerPromotionDetailDialog({
-  promotionId,
-  onClose
-}: ManagerPromotionDetailDialogProps) {
+export function ManagerPromotionDetailDialog({ promotionId, onClose }: ManagerPromotionDetailDialogProps) {
   const { t } = useTranslation('manager')
   const [promotion, setPromotion] = useState<Promotion | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -99,7 +96,9 @@ export function ManagerPromotionDetailDialog({
       <section className='relative w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl transition-all'>
         <header className='flex items-center justify-between border-b border-border bg-muted/50 px-6 py-4 shrink-0'>
           <div>
-            <p className='text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>Xem chi tiết chương trình</p>
+            <p className='text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>
+              Xem chi tiết chương trình
+            </p>
             <h2 className='mt-1 font-display text-xl font-bold text-card-foreground'>
               {promotion?.name || 'Khuyến mãi'}
             </h2>
@@ -126,19 +125,25 @@ export function ManagerPromotionDetailDialog({
               {/* Basic Info */}
               <div className='grid gap-4 sm:grid-cols-2 rounded-xl border border-border bg-muted/20 p-4'>
                 <div>
-                  <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Thời gian diễn ra</h3>
+                  <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                    Thời gian diễn ra
+                  </h3>
                   <p className='text-sm font-medium text-foreground mt-1'>
                     {formatDate(promotion.startDate)} - {formatDate(promotion.endDate)}
                   </p>
                 </div>
                 <div>
                   <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Trạng thái</h3>
-                  <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wide mt-1 ${getStatusClass(promotion.status)}`}>
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wide mt-1 ${getStatusClass(promotion.status)}`}
+                  >
                     {promotion.status}
                   </span>
                 </div>
                 <div className='sm:col-span-2 border-t border-border/50 pt-3'>
-                  <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Mô tả chương trình</h3>
+                  <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                    Mô tả chương trình
+                  </h3>
                   <p className='whitespace-pre-line text-sm leading-6 text-foreground mt-1'>
                     {promotion.description || 'Không có mô tả'}
                   </p>
@@ -147,7 +152,9 @@ export function ManagerPromotionDetailDialog({
                   <div className='sm:col-span-2 grid gap-4 sm:grid-cols-2 border-t border-border/50 pt-3'>
                     {promotion.reason && (
                       <div>
-                        <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lý do thay đổi</h3>
+                        <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                          Lý do thay đổi
+                        </h3>
                         <p className='text-sm text-foreground mt-1'>{promotion.reason}</p>
                       </div>
                     )}
@@ -188,26 +195,21 @@ export function ManagerPromotionDetailDialog({
                       ) : (
                         promotion.promotionDetails.map((detail) => (
                           <tr key={detail.promotionDetailId} className='hover:bg-muted/40 transition-colors'>
-                            <td className='px-4 py-3 font-mono font-semibold text-primary'>
-                              {detail.productCode}
-                            </td>
-                            <td className='px-4 py-3 font-medium text-foreground'>
-                              {detail.productName}
-                            </td>
+                            <td className='px-4 py-3 font-mono font-semibold text-primary'>{detail.productCode}</td>
+                            <td className='px-4 py-3 font-medium text-foreground'>{detail.productName}</td>
                             <td className='px-4 py-3 text-right font-semibold text-foreground'>
                               {formatPrice(detail.salePrice)} đ
                             </td>
                             <td className='px-4 py-3 text-center font-bold text-success'>
                               {detail.promotionType === 'PERCENTAGE'
                                 ? `${detail.discountValue}%`
-                                : `${formatPrice(detail.discountValue)} đ`
-                              }
+                                : `${formatPrice(detail.discountValue)} đ`}
                             </td>
                             <td className='px-4 py-3 text-right font-semibold text-destructive'>
                               -{formatPrice(detail.discountAmount)} đ
                             </td>
                             <td className='px-4 py-3 text-right font-bold text-primary'>
-                              {formatPrice(detail.promotionPrice)} đ  {/* ✅ Đổi từ salePrice → promotionPrice */}
+                              {formatPrice(detail.promotionPrice)} đ {/* ✅ Đổi từ salePrice → promotionPrice */}
                             </td>
                           </tr>
                         ))

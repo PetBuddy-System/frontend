@@ -295,8 +295,7 @@ export function AddressPickerPage() {
     setIsLocationValid(true)
     setCurrentCoords({ lat, lng })
     if (markerRef.current) markerRef.current.setLatLng([lat, lng])
-    if (mapInstanceRef.current)
-      mapInstanceRef.current.setView([lat, lng], mapInstanceRef.current.getZoom())
+    if (mapInstanceRef.current) mapInstanceRef.current.setView([lat, lng], mapInstanceRef.current.getZoom())
 
     if (reverseGeocode_) {
       const addr = await reverseGeocode(lat, lng)
@@ -403,9 +402,7 @@ export function AddressPickerPage() {
     }
 
     const addressToSave =
-      selectedAddress ||
-      searchQuery ||
-      `${currentCoords.lat.toFixed(6)}, ${currentCoords.lng.toFixed(6)}`
+      selectedAddress || searchQuery || `${currentCoords.lat.toFixed(6)}, ${currentCoords.lng.toFixed(6)}`
 
     sessionStorage.setItem(SESSION_KEY_ADDRESS, addressToSave)
     sessionStorage.setItem(SESSION_KEY_LAT, String(currentCoords.lat))
@@ -433,9 +430,7 @@ export function AddressPickerPage() {
           {t('addressPicker.backButton')}
         </button>
 
-        <h1 className='mb-2 font-display text-2xl font-bold text-foreground md:text-3xl'>
-          {t('addressPicker.title')}
-        </h1>
+        <h1 className='mb-2 font-display text-2xl font-bold text-foreground md:text-3xl'>{t('addressPicker.title')}</h1>
         <p className='mb-6 text-sm text-muted-foreground'>{t('addressPicker.subtitle')}</p>
 
         {/* Search bar */}
@@ -512,9 +507,7 @@ export function AddressPickerPage() {
           <div className='mt-4 flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3'>
             <MaterialIcon name='location_on' className='mt-0.5 shrink-0 text-primary text-[20px]' />
             <div className='flex-1'>
-              <p className='text-xs font-semibold text-muted-foreground'>
-                {t('addressPicker.selectedAddressLabel')}
-              </p>
+              <p className='text-xs font-semibold text-muted-foreground'>{t('addressPicker.selectedAddressLabel')}</p>
               <p className='text-sm font-medium text-foreground'>{cleanAddress(selectedAddress)}</p>
             </div>
           </div>

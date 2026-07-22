@@ -27,6 +27,6 @@ export function useCheckout() {
     handleAdjustedDecline: state.handleAdjustedDecline,
     handleRetryPayment: state.handleRetryPayment,
     handleSubmit,
-    subtotal: state.subtotal,
+    subtotal: state.subtotal
   }
 }

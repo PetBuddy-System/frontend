@@ -21,7 +21,9 @@ export function StaffWelcomeSection() {
             {t('welcome.kicker')}
           </p>
           <h1 className='font-display text-2xl font-bold md:text-3xl'>
-            {user?.fullName ? t('welcome.titleDynamic', 'Chào buổi sáng, {{name}}', { name: user.fullName }) : t('welcome.title')}
+            {user?.fullName
+              ? t('welcome.titleDynamic', 'Chào buổi sáng, {{name}}', { name: user.fullName })
+              : t('welcome.title')}
           </h1>
           <p className='mt-3 text-lg text-primary-foreground/85'>{t('welcome.subtitle')}</p>
           <div className='mt-6 flex flex-wrap gap-3'>

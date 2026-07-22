@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
@@ -8,6 +8,7 @@ export interface CheckoutShippingFormProps {
   addressValue: string
   defaultName?: string
   defaultPhone?: string
+  errorMessage?: string
 }
 
 export function toPhoneDisplay(phone: string): string {
@@ -22,7 +23,7 @@ function isValidPhone(phone: string): boolean {
   return /^0\d{9}$/.test(phone.trim())
 }
 
-export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }: CheckoutShippingFormProps) {
+export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone, errorMessage }: CheckoutShippingFormProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
   const [savedName, setSavedName] = useState('')
@@ -81,6 +82,12 @@ export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }
     navigate('/order/address')
   }
 
+  const translatedError = errorMessage
+    ? errorMessage.startsWith('checkout.')
+      ? t(errorMessage)
+      : errorMessage
+    : ''
+
   return (
     <section className='rounded-xl border border-border/60 bg-card p-6 shadow-sm md:p-8'>
       <div className='mb-6 flex items-center gap-3'>
@@ -112,8 +119,9 @@ export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }
           <input
             id='phone'
             name='phoneNumber'
-            className={`w-full rounded-xl border bg-background px-4 py-3 text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${phoneError ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
-              }`}
+            className={`w-full rounded-xl border bg-background px-4 py-3 text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${
+              phoneError ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+            }`}
             placeholder={t('checkout.shipping.phonePlaceholder')}
             required
             type='tel'
@@ -146,6 +154,13 @@ export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone }
         <MaterialIcon name='pin_drop' className='text-[20px]' />
         {addressValue ? t('checkout.shipping.changeAddressButton') : t('checkout.shipping.enterAddressButton')}
       </button>
+
+      {translatedError && (
+        <div className='mt-3 flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
+          <MaterialIcon name='error' className='mt-0.5 shrink-0 text-[20px]' />
+          <p>{translatedError}</p>
+        </div>
+      )}
     </section>
   )
 }

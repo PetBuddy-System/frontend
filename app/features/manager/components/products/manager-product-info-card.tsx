@@ -9,10 +9,7 @@ export interface ManagerProductInfoCardProps {
   formatDate: (dateStr: string) => string
 }
 
-export function ManagerProductInfoCard({
-  product,
-  formatDate
-}: ManagerProductInfoCardProps) {
+export function ManagerProductInfoCard({ product, formatDate }: ManagerProductInfoCardProps) {
   const { t } = useTranslation('manager')
 
   // ✅ Lấy unit label từ translation
@@ -67,8 +64,12 @@ export function ManagerProductInfoCard({
             {t('productManagement.detail.status')}
           </span>
           <div className='flex items-center gap-1.5 mt-0.5'>
-            <span className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-success' : product.status === 'DELETED' ? 'bg-destructive' : 'bg-muted-foreground'}`}></span>
-            <span className={`text-sm font-semibold ${product.status === 'ACTIVE' ? 'text-success' : product.status === 'DELETED' ? 'text-destructive' : 'text-muted-foreground'}`}>
+            <span
+              className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-success' : product.status === 'DELETED' ? 'bg-destructive' : 'bg-muted-foreground'}`}
+            ></span>
+            <span
+              className={`text-sm font-semibold ${product.status === 'ACTIVE' ? 'text-success' : product.status === 'DELETED' ? 'text-destructive' : 'text-muted-foreground'}`}
+            >
               {getStatusLabel(product.status)}
             </span>
           </div>
@@ -94,14 +95,8 @@ export function ManagerProductInfoCard({
             {t('productManagement.detail.salePrice')}
           </span>
           <div className='flex items-baseline gap-1 mt-0.5'>
-            <span className='text-base font-bold text-primary'>
-              {formatPrice(displayPrice)} VNĐ
-            </span>
-            {unitLabel && (
-              <span className='text-sm font-semibold text-muted-foreground'>
-                /{unitLabel}
-              </span>
-            )}
+            <span className='text-base font-bold text-primary'>{formatPrice(displayPrice)} VNĐ</span>
+            {unitLabel && <span className='text-sm font-semibold text-muted-foreground'>/{unitLabel}</span>}
           </div>
         </div>
         <div>
@@ -110,11 +105,7 @@ export function ManagerProductInfoCard({
           </span>
           <div className='flex items-baseline gap-1 mt-0.5'>
             <span className='text-base font-bold text-foreground'>{product.totalStock ?? 0}</span>
-            {unitLabel && (
-              <span className='text-sm font-semibold text-muted-foreground'>
-                {unitLabel}
-              </span>
-            )}
+            {unitLabel && <span className='text-sm font-semibold text-muted-foreground'>{unitLabel}</span>}
           </div>
         </div>
         <div>
@@ -133,7 +124,9 @@ export function ManagerProductInfoCard({
             <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block'>
               {t('productManagement.detail.createdAt')}
             </span>
-            <span className='text-sm font-semibold text-muted-foreground block'>{formatDateSafe(product.createdAt)}</span>
+            <span className='text-sm font-semibold text-muted-foreground block'>
+              {formatDateSafe(product.createdAt)}
+            </span>
           </div>
         </div>
         <div className='flex items-start gap-3 border-t border-border/50 pt-3'>
@@ -142,7 +135,9 @@ export function ManagerProductInfoCard({
             <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block'>
               {t('productManagement.detail.updatedAt')}
             </span>
-            <span className='text-sm font-semibold text-muted-foreground block'>{formatDateSafe(product.updatedAt)}</span>
+            <span className='text-sm font-semibold text-muted-foreground block'>
+              {formatDateSafe(product.updatedAt)}
+            </span>
           </div>
         </div>
       </div>

@@ -7,7 +7,6 @@ import { OrderHistoryFilters, type OrderHistoryFilter } from './order-history-fi
 import { fetchMyOrdersApi } from '~/features/profile/services'
 import { MaterialIcon } from '~/shared/ui'
 
-
 function matchesFilter(status: string, filter: OrderHistoryFilter) {
   if (filter === 'all') return true
   const filterLower = filter.toLowerCase()
@@ -66,10 +65,7 @@ export function OrderHistoryList() {
   }, [activeFilter, searchQuery])
 
   const filteredItems = useMemo(
-    () =>
-      orders.filter(
-        (item) => matchesFilter(item.status, activeFilter) && matchesSearch(item, searchQuery)
-      ),
+    () => orders.filter((item) => matchesFilter(item.status, activeFilter) && matchesSearch(item, searchQuery)),
     [orders, activeFilter, searchQuery]
   )
 
@@ -133,7 +129,7 @@ export function OrderHistoryList() {
         <div className='mt-8 flex items-center justify-center gap-4 bg-card border border-border rounded-xl p-4 shadow-sm'>
           <button
             type='button'
-            onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+            onClick={() => setCurrentPage((prev) => Math.max(0, prev - 1))}
             disabled={currentPage === 0}
             className='flex items-center justify-center rounded-lg border border-border p-2 hover:bg-muted active:scale-95 disabled:opacity-40 disabled:pointer-events-none text-muted-foreground hover:text-foreground transition-colors'
           >
@@ -146,7 +142,7 @@ export function OrderHistoryList() {
 
           <button
             type='button'
-            onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+            onClick={() => setCurrentPage((prev) => Math.min(totalPages - 1, prev + 1))}
             disabled={currentPage >= totalPages - 1}
             className='flex items-center justify-center rounded-lg border border-border p-2 hover:bg-muted active:scale-95 disabled:opacity-40 disabled:pointer-events-none text-muted-foreground hover:text-foreground transition-colors'
           >

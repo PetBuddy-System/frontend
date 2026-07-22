@@ -13,9 +13,7 @@ import type {
 const PRODUCTS_BASE_URL = `${env.API_URL}${env.API_PRODUCTS_PATH}`
 const CATEGORIES_BASE_URL = `${env.API_URL}${env.API_CATEGORIES_PATH}`
 
-export async function fetchProductsApi(
-  params: FetchProductsParams = {}
-): Promise<PagedProductResponse> {
+export async function fetchProductsApi(params: FetchProductsParams = {}): Promise<PagedProductResponse> {
   const { keyword, page = 0, size = 12, categoryId, brandName, sortBy } = params
 
   return customFetch<PagedProductResponse>({

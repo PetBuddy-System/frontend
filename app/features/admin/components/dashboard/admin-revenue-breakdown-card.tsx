@@ -37,10 +37,7 @@ export function AdminRevenueBreakdownCard({ items = [], isLoading }: AdminRevenu
         </div>
       ) : (
         <div className='mb-5 flex justify-center'>
-          <div
-            className='flex h-48 w-48 items-center justify-center rounded-full'
-            style={{ background: gradient }}
-          >
+          <div className='flex h-48 w-48 items-center justify-center rounded-full' style={{ background: gradient }}>
             <div className='h-32 w-32 rounded-full bg-card' />
           </div>
         </div>

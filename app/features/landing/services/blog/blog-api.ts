@@ -4,17 +4,11 @@
 
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
-import type {
-  PagedBlogResponse,
-  FetchBlogsParams,
-  BlogDetailResponse
-} from '~/shared/lib/blog'
+import type { PagedBlogResponse, FetchBlogsParams, BlogDetailResponse } from '~/shared/lib/blog'
 
 const BLOGS_BASE_URL = `${env.API_URL}${env.API_BLOGS_PATH}`
 
-export async function fetchBlogsApi(
-  params: FetchBlogsParams = {}
-): Promise<PagedBlogResponse> {
+export async function fetchBlogsApi(params: FetchBlogsParams = {}): Promise<PagedBlogResponse> {
   const { keyword = '', page = 0, size = 9 } = params
 
   return customFetch<PagedBlogResponse>({

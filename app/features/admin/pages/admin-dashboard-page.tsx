@@ -5,7 +5,10 @@ import { useQuery } from '@tanstack/react-query'
 import { AdminBookingRevenueChartCard } from '../components/dashboard/admin-booking-revenue-chart-card'
 import { AdminBookingRevenueStructureCard } from '../components/dashboard/admin-booking-revenue-structure-card'
 import { AdminMetricsGrid } from '../components/dashboard/admin-metrics-grid'
-import { AdminRevenueBreakdownCard, type RevenueBreakdownItem } from '../components/dashboard/admin-revenue-breakdown-card'
+import {
+  AdminRevenueBreakdownCard,
+  type RevenueBreakdownItem
+} from '../components/dashboard/admin-revenue-breakdown-card'
 import { AdminRevenueChartCard } from '../components/dashboard/admin-revenue-chart-card'
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
@@ -59,7 +62,7 @@ function formatDashboardMoney(value: number): string {
   const abs = Math.abs(amount)
 
   if (abs >= 1_000_000) {
-    const millions = Math.floor((abs / 1_000_000) * 10) / 10 
+    const millions = Math.floor((abs / 1_000_000) * 10) / 10
     return `${sign}${millions}M đ`
   }
 

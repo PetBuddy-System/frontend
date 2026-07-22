@@ -1,5 +1,5 @@
-import { AdminOrdersPage } from '~/features/admin/pages/admin-orders-page'
+import { OrdersManagementPage } from '~/shared/components'
 
 export default function AdminOrdersRoute() {
-  return <AdminOrdersPage />
+  return <OrdersManagementPage />
 }

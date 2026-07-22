@@ -223,8 +223,7 @@ export async function customFetch<T>(options: RequestOptions): Promise<T> {
 
       if (responseData?.code && ERROR_CODE_I18N_KEY[responseData.code]) {
         errorMessage = i18n.t(ERROR_CODE_I18N_KEY[responseData.code])
-      }
-      else if (responseData?.message) {
+      } else if (responseData?.message) {
         errorMessage = responseData.message
       } else if (responseData?.errors && typeof responseData.errors === 'object') {
         // Handle validation errors array

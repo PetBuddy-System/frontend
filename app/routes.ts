@@ -18,6 +18,7 @@ export default [
   route('services', 'routes/services.tsx'),
   route('services/:serviceId', 'routes/service-detail.tsx'),
   route('payment/momo/return', 'routes/momo-return.tsx'),
+  route('payment/vnpay/return', 'routes/vnpay-return.tsx'),
 
   // ─── Authenticated General Routes ─────────────────────────────────────────
   layout('routes/auth-layout.tsx', [
@@ -32,6 +33,7 @@ export default [
     route('profile/orders/:orderId/cancel', 'routes/profile-order-cancel.tsx'),
     route('profile/services', 'routes/profile-services.tsx'),
     route('my-bookings', 'routes/my-bookings.tsx'),
+    route('my-bookings/:bookingId', 'routes/my-booking-detail.tsx'),
     route('profile/returns', 'routes/profile-returns.tsx'),
     route('booking', 'routes/booking.tsx'),
     route('checkout', 'routes/checkout.tsx'),
@@ -48,6 +50,7 @@ export default [
   layout('routes/staff-layout.tsx', [
     route('staff/dashboard', 'routes/staff-dashboard.tsx'),
     route('staff/groomer-bookings', 'routes/staff-groomer-bookings.tsx'),
+    route('staff/groomer-bookings/:bookingId', 'routes/staff-groomer-booking-detail.tsx'),
     route('staff/coordinator-bookings', 'routes/staff-coordinator-bookings.tsx'),
     route('staff/attendance', 'routes/staff-attendance.tsx'),
     route('staff/disposal-request', 'routes/staff-disposal-request.tsx'),

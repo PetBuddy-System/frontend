@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import type { OrderResponse, OrderStatus } from '~/shared/lib/order'
@@ -12,10 +13,12 @@ const STATUS_BADGE_STYLES: Record<string, string> = {
     PICKED: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400',
     SHIPPING: 'bg-teal-100 text-teal-700 dark:bg-teal-950/40 dark:text-teal-400',
     DELIVERED: 'bg-purple-100 text-purple-700 dark:bg-purple-950/40 dark:text-purple-400',
+    AWAITING_REDELIVERY: 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300',
+    DELIVERY_FAILED: 'bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300 animate-pulse',
+    COORDINATOR_REVIEW: 'bg-purple-100 text-purple-800 dark:bg-purple-950/40 dark:text-purple-300 animate-pulse',
     COMPLETED: 'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400',
     CANCELLED: 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400',
     CANCEL_REQUESTED: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 animate-pulse',
-    BOMBED: 'bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300 animate-pulse',
     RETURNED_TO_WAREHOUSE: 'bg-slate-100 text-slate-700 dark:bg-slate-800/60 dark:text-slate-300',
 }
 
@@ -26,10 +29,12 @@ const DOT_STYLES: Record<string, string> = {
     PICKED: 'bg-indigo-700 dark:bg-indigo-400',
     SHIPPING: 'bg-teal-700 dark:bg-teal-400',
     DELIVERED: 'bg-purple-700 dark:bg-purple-400',
+    AWAITING_REDELIVERY: 'bg-amber-800 dark:bg-amber-300',
+    DELIVERY_FAILED: 'bg-rose-800 dark:bg-rose-300',
+    COORDINATOR_REVIEW: 'bg-purple-800 dark:bg-purple-300',
     COMPLETED: 'bg-green-700 dark:bg-green-400',
     CANCELLED: 'bg-red-700 dark:bg-red-400',
     CANCEL_REQUESTED: 'bg-amber-700 dark:bg-amber-400',
-    BOMBED: 'bg-rose-800 dark:bg-rose-300',
     RETURNED_TO_WAREHOUSE: 'bg-slate-700 dark:bg-slate-300',
 }
 
@@ -60,6 +65,8 @@ interface StaffOrdersTableProps {
     onRefresh: () => void
     onDeliveryFailed: (order: OrderResponse) => void
     onConfirmReturnedWarehouse: (order: OrderResponse) => void
+    onOpenCoordinatorReview?: (order: OrderResponse) => void
+    onCancelOrder: (order: OrderResponse) => void
 }
 
 export function StaffOrdersTable({
@@ -76,15 +83,15 @@ export function StaffOrdersTable({
     onViewDetail,
     onTransition,
     onOpenPicking,
-    onTransitionToShipped,
     onRefresh,
-    onDeliveryFailed,
     onConfirmReturnedWarehouse,
+    onOpenCoordinatorReview,
+    onCancelOrder,
 }: StaffOrdersTableProps) {
     const { t, i18n } = useTranslation('staff')
     const { user } = useAuth()
     const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
-    const isCoordinator = user?.role === 'STAFF' && user?.staffTask === 'COORDINATOR'
+    const isCoordinator = user?.role === 'ADMIN' || (user?.role === 'STAFF' && user?.staffTask === 'COORDINATOR')
 
     function formatPrice(value: number) {
         if (value == null || isNaN(Number(value))) return '—'
@@ -117,7 +124,7 @@ export function StaffOrdersTable({
     }
 
     function paymentMethodLabel(method?: string) {
-        const key = method === 'CARD' || method === 'MOMO' ? method : 'COD'
+        const key = method === 'CARD' || method === 'MOMO' || method === 'VNPAY' ? method : 'COD'
         return t(`staffOrdersTable.paymentMethods.${key}`)
     }
 
@@ -254,7 +261,9 @@ export function StaffOrdersTable({
                                                             ? 'credit_card'
                                                             : order.payment?.paymentMethod === 'MOMO'
                                                                 ? 'qr_code_2'
-                                                                : 'payments'
+                                                                : order.payment?.paymentMethod === 'VNPAY'
+                                                                    ? 'account_balance'
+                                                                    : 'payments'
                                                     }
                                                     className='text-[16px] text-muted-foreground'
                                                 />
@@ -297,11 +306,12 @@ export function StaffOrdersTable({
                                             {order.status === 'PENDING' && isCoordinator && (
                                                 <>
                                                     {((
-                                                        (order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO')
+                                                        (order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO' || order.payment?.paymentMethod === 'VNPAY')
                                                         && order.payment?.status === 'PAID'
                                                     ) || (
                                                         order.payment?.paymentMethod !== 'CARD'
                                                         && order.payment?.paymentMethod !== 'MOMO'
+                                                        && order.payment?.paymentMethod !== 'VNPAY'
                                                     )) && (
                                                         <button
                                                             onClick={() => onTransition(order.orderId, 'CONFIRMED')}
@@ -311,7 +321,7 @@ export function StaffOrdersTable({
                                                         </button>
                                                     )}
                                                     <button
-                                                        onClick={() => onTransition(order.orderId, 'CANCELLED')}
+                                                        onClick={() => onCancelOrder(order)}
                                                         className='rounded-xl bg-red-600 hover:bg-red-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'
                                                     >
                                                         {t('staffOrdersTable.actions.cancel')}
@@ -336,7 +346,17 @@ export function StaffOrdersTable({
                                                     {t('staffOrdersTable.actions.pickItems')}
                                                 </button>
                                             )}
-                                            {order.status === 'BOMBED' && isCoordinator && (
+                                            {order.status === 'COORDINATOR_REVIEW' && isCoordinator && onOpenCoordinatorReview && (
+                                                <button
+                                                    onClick={() => onOpenCoordinatorReview(order)}
+                                                    className='rounded-xl bg-purple-600 hover:bg-purple-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm flex items-center gap-1'
+                                                >
+                                                    <MaterialIcon name='support_agent' className='text-[16px]' />
+                                                    <span>{t('staffOrdersTable.actions.coordinatorReview', { defaultValue: 'Xử lý Coordinator' })}</span>
+                                                </button>
+                                            )}
+
+                                            {order.status === 'DELIVERY_FAILED' && isCoordinator && (
                                                 <button
                                                     onClick={() => onConfirmReturnedWarehouse(order)}
                                                     className='rounded-xl bg-slate-700 hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-700 px-3 py-1.5 text-xs font-bold text-white transition-colors active:scale-95 shadow-sm'

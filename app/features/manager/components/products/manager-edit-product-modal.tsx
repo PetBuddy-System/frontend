@@ -10,7 +10,7 @@ import {
   updateProductApi,
   updateProductImagesApi,
   updateProductVideoApi,
-  fetchProductVideoApi,
+  fetchProductVideoApi
 } from '../../services/product'
 import type { CategoryData, ProductUnit } from '~/shared/lib/product'
 
@@ -70,13 +70,13 @@ export function ManagerEditProductModal({
     { value: 'BOTTLE', label: t('unit.BOTTLE') },
     { value: 'CAN', label: t('unit.CAN') },
     { value: 'TUBE', label: t('unit.TUBE') },
-    { value: 'SET', label: t('unit.SET') },
+    { value: 'SET', label: t('unit.SET') }
   ]
 
   // Lấy status options từ translation
   const STATUS_OPTIONS_I18N = [
     { value: 'ACTIVE', label: t('productManagement.status.active') },
-    { value: 'INACTIVE', label: t('productManagement.status.inactive') },
+    { value: 'INACTIVE', label: t('productManagement.status.inactive') }
   ] as const
 
   useEffect(() => {
@@ -113,13 +113,13 @@ export function ManagerEditProductModal({
           const imagesRes = await fetchProductImagesApi(productId!)
           if (active && imagesRes.success) {
             const images = imagesRes.data
-              .filter(item => item.fileType === 'IMAGE')
-              .map(item => ({
+              .filter((item) => item.fileType === 'IMAGE')
+              .map((item) => ({
                 mediaFileId: item.mediaFileId,
                 fileUrl: item.fileUrl
               }))
             setExistingImages(images)
-            setKeepImageIds(images.map(img => img.mediaFileId))
+            setKeepImageIds(images.map((img) => img.mediaFileId))
           }
         } catch {
           console.warn('Không thể tải ảnh sản phẩm')
@@ -141,11 +141,13 @@ export function ManagerEditProductModal({
       }
     }
     loadData()
-    return () => { active = false }
+    return () => {
+      active = false
+    }
   }, [productId, t])
 
   useEffect(() => {
-    return () => previewUrls.forEach(url => URL.revokeObjectURL(url))
+    return () => previewUrls.forEach((url) => URL.revokeObjectURL(url))
   }, [previewUrls])
 
   const toggleKeepImage = (mediaFileId: number) => {
@@ -155,10 +157,8 @@ export function ManagerEditProductModal({
       return
     }
     setError(null)
-    setKeepImageIds(prev =>
-      prev.includes(mediaFileId)
-        ? prev.filter(id => id !== mediaFileId)
-        : [...prev, mediaFileId]
+    setKeepImageIds((prev) =>
+      prev.includes(mediaFileId) ? prev.filter((id) => id !== mediaFileId) : [...prev, mediaFileId]
     )
   }
 
@@ -171,7 +171,7 @@ export function ManagerEditProductModal({
     }
     setError(null)
     setSelectedFiles(files)
-    setPreviewUrls(files.map(f => URL.createObjectURL(f)))
+    setPreviewUrls(files.map((f) => URL.createObjectURL(f)))
     e.target.value = ''
   }
 
@@ -232,7 +232,7 @@ export function ManagerEditProductModal({
         unit: unit as ProductUnit,
         weight: Number(weight),
         reason: reason || undefined,
-        note: note || undefined,
+        note: note || undefined
       })
       if (!updateRes.success) throw new Error(updateRes.message)
 
@@ -292,11 +292,15 @@ export function ManagerEditProductModal({
 
               {/* Status badge */}
               <div className='flex items-center gap-3 rounded-xl bg-muted/30 px-4 py-2'>
-                <span className='text-xs font-bold uppercase text-muted-foreground'>{t('productManagement.editModal.statusLabel')}</span>
-                <span className={cn(
-                  'rounded-full px-2.5 py-1 text-xs font-bold',
-                  status === 'ACTIVE' ? 'bg-success/15 text-success' : 'bg-warning/15 text-warning'
-                )}>
+                <span className='text-xs font-bold uppercase text-muted-foreground'>
+                  {t('productManagement.editModal.statusLabel')}
+                </span>
+                <span
+                  className={cn(
+                    'rounded-full px-2.5 py-1 text-xs font-bold',
+                    status === 'ACTIVE' ? 'bg-success/15 text-success' : 'bg-warning/15 text-warning'
+                  )}
+                >
                   {status === 'ACTIVE' ? t('productManagement.status.active') : t('productManagement.status.inactive')}
                 </span>
                 {isDeleted && (
@@ -338,7 +342,11 @@ export function ManagerEditProductModal({
                   disabled={isDeleted}
                 >
                   <option value=''>{t('productManagement.editModal.selectCategory')}</option>
-                  {categories.map(c => <option key={c.categoryId} value={c.categoryId}>{c.name}</option>)}
+                  {categories.map((c) => (
+                    <option key={c.categoryId} value={c.categoryId}>
+                      {c.name}
+                    </option>
+                  ))}
                 </SelectField>
 
                 <SelectField
@@ -347,7 +355,11 @@ export function ManagerEditProductModal({
                   onChange={(v) => setStatus(v as 'ACTIVE' | 'INACTIVE')}
                   disabled={isDeleted}
                 >
-                  {STATUS_OPTIONS_I18N.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                  {STATUS_OPTIONS_I18N.map((s) => (
+                    <option key={s.value} value={s.value}>
+                      {s.label}
+                    </option>
+                  ))}
                 </SelectField>
 
                 <InputField
@@ -355,7 +367,7 @@ export function ManagerEditProductModal({
                   type='number'
                   value={totalStock}
                   disabled
-                  onChange={() => { }}
+                  onChange={() => {}}
                 />
               </div>
 
@@ -378,11 +390,16 @@ export function ManagerEditProductModal({
                       )}
                     >
                       <option value=''>{t('productManagement.editModal.selectUnit')}</option>
-                      {UNIT_OPTIONS_I18N.map(u => (
-                        <option key={u.value} value={u.value}>{u.label}</option>
+                      {UNIT_OPTIONS_I18N.map((u) => (
+                        <option key={u.value} value={u.value}>
+                          {u.label}
+                        </option>
                       ))}
                     </select>
-                    <MaterialIcon name='expand_more' className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground' />
+                    <MaterialIcon
+                      name='expand_more'
+                      className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
+                    />
                   </div>
                 </div>
 
@@ -438,7 +455,9 @@ export function ManagerEditProductModal({
                   <div className='flex flex-col gap-1.5'>
                     <label className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
                       {t('productManagement.editModal.reason')}
-                      <span className='text-xs font-normal text-muted-foreground ml-1'>({t('productManagement.editModal.optional')})</span>
+                      <span className='text-xs font-normal text-muted-foreground ml-1'>
+                        ({t('productManagement.editModal.optional')})
+                      </span>
                     </label>
                     <textarea
                       rows={2}
@@ -455,7 +474,9 @@ export function ManagerEditProductModal({
                   <div className='flex flex-col gap-1.5'>
                     <label className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
                       {t('productManagement.editModal.note')}
-                      <span className='text-xs font-normal text-muted-foreground ml-1'>({t('productManagement.editModal.optional')})</span>
+                      <span className='text-xs font-normal text-muted-foreground ml-1'>
+                        ({t('productManagement.editModal.optional')})
+                      </span>
                     </label>
                     <textarea
                       rows={2}
@@ -528,10 +549,12 @@ export function ManagerEditProductModal({
                     {t('productManagement.editModal.uploadNewImages')}
                   </label>
                   <div className='mt-1'>
-                    <label className={cn(
-                      'inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card cursor-pointer hover:bg-muted transition-colors',
-                      isDeleted && 'opacity-50 cursor-not-allowed'
-                    )}>
+                    <label
+                      className={cn(
+                        'inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card cursor-pointer hover:bg-muted transition-colors',
+                        isDeleted && 'opacity-50 cursor-not-allowed'
+                      )}
+                    >
                       <MaterialIcon name='upload' className='text-lg' />
                       <span className='text-sm font-medium'>{t('productManagement.editModal.selectImages')}</span>
                       <input
@@ -555,7 +578,11 @@ export function ManagerEditProductModal({
                   <div className='flex flex-wrap gap-3 mt-2'>
                     {previewUrls.map((url, idx) => (
                       <div key={idx} className='w-20 h-20 rounded-lg border border-border overflow-hidden'>
-                        <img src={url} alt={`${t('productManagement.editModal.preview')} ${idx}`} className='w-full h-full object-cover' />
+                        <img
+                          src={url}
+                          alt={`${t('productManagement.editModal.preview')} ${idx}`}
+                          className='w-full h-full object-cover'
+                        />
                       </div>
                     ))}
                   </div>
@@ -638,14 +665,10 @@ export function ManagerEditProductModal({
                 )}
 
                 {existingVideoUrl && !deleteVideo && !videoFile && (
-                  <p className='text-xs text-muted-foreground mt-2'>
-                    ✓ {t('productManagement.editModal.hasVideo')}
-                  </p>
+                  <p className='text-xs text-muted-foreground mt-2'>✓ {t('productManagement.editModal.hasVideo')}</p>
                 )}
                 {!existingVideoUrl && !videoFile && !deleteVideo && (
-                  <p className='text-xs text-muted-foreground mt-2'>
-                    {t('productManagement.editModal.noVideo')}
-                  </p>
+                  <p className='text-xs text-muted-foreground mt-2'>{t('productManagement.editModal.noVideo')}</p>
                 )}
                 {videoFile && !deleteVideo && (
                   <p className='text-xs text-success mt-2'>
@@ -742,7 +765,10 @@ function SelectField({ label, value, onChange, disabled, children }: SelectField
         >
           {children}
         </select>
-        <MaterialIcon name='expand_more' className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground' />
+        <MaterialIcon
+          name='expand_more'
+          className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
+        />
       </div>
     </div>
   )

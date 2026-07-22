@@ -5,7 +5,6 @@ import { SiteBottomNav, SiteFab, SiteFooter, SiteHeader } from '~/shared/compone
 import { getPaymentByOrderIdApi } from '~/features/products/services'
 import { fetchOrderDetailApi } from '~/features/profile/services/order/order-api'
 
-
 export function PaymentFailedPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -38,15 +37,11 @@ export function PaymentFailedPage() {
             clientSecret,
             amount,
             shippingFee,
-            isFreeShipping,
+            isFreeShipping
           }
         })
       } else {
-        setRetryError(
-          paymentRes.message ||
-          orderRes.message ||
-          'Không thể lấy thông tin thanh toán cho đơn hàng này.'
-        )
+        setRetryError(paymentRes.message || orderRes.message || 'Không thể lấy thông tin thanh toán cho đơn hàng này.')
       }
     } catch (err) {
       setRetryError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi lấy thông tin thanh toán.')
@@ -79,15 +74,12 @@ export function PaymentFailedPage() {
     <div className='flex min-h-screen flex-col bg-[#f8f9fa] dark:bg-[#0b1220] text-foreground transition-colors duration-300'>
       <SiteHeader />
       <main className='mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center p-6 text-center md:py-16'>
-
         <div className='mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10 text-destructive animate-bounce'>
           <MaterialIcon name='cancel' className='text-[48px]' />
         </div>
 
         <span className='text-xs font-bold uppercase tracking-wider text-destructive mb-1'>Lỗi giao dịch</span>
-        <h1 className='font-display text-2xl font-black text-foreground md:text-3xl mb-4'>
-          {reasonTitle}
-        </h1>
+        <h1 className='font-display text-2xl font-black text-foreground md:text-3xl mb-4'>{reasonTitle}</h1>
 
         <div className='w-full rounded-2xl bg-white dark:bg-[#111a2e] border border-border/40 p-6 shadow-sm mb-8 space-y-4 text-left'>
           {orderId && (
@@ -104,7 +96,9 @@ export function PaymentFailedPage() {
 
           <div className='rounded-xl bg-destructive/5 border border-destructive/10 p-3 text-xs text-muted-foreground flex gap-2'>
             <MaterialIcon name='info' className='text-[16px] text-destructive shrink-0 mt-0.5' />
-            <span>Đơn hàng của bạn vẫn được lưu ở trạng thái chờ. Bạn có thể thanh toán lại hoặc kiểm tra lịch sử đặt hàng.</span>
+            <span>
+              Đơn hàng của bạn vẫn được lưu ở trạng thái chờ. Bạn có thể thanh toán lại hoặc kiểm tra lịch sử đặt hàng.
+            </span>
           </div>
         </div>
 
@@ -151,7 +145,6 @@ export function PaymentFailedPage() {
             Tiếp tục mua sắm
           </button>
         </div>
-
       </main>
       <SiteFooter />
       <SiteBottomNav />

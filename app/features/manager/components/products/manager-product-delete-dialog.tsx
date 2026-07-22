@@ -52,9 +52,7 @@ export function ManagerProductDeleteDialog({
           <div className='flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10'>
             <MaterialIcon name='delete_forever' className='text-3xl text-destructive' />
           </div>
-          <h2 className='text-lg font-bold text-foreground'>
-            {t('productManagement.deleteDialog.title')}
-          </h2>
+          <h2 className='text-lg font-bold text-foreground'>{t('productManagement.deleteDialog.title')}</h2>
         </div>
 
         <div className='flex flex-col gap-1.5'>

@@ -9,19 +9,29 @@ export type OrderStatus =
   | 'PICKED'
   | 'SHIPPING'
   | 'DELIVERED'
+  | 'AWAITING_REDELIVERY'
+  | 'DELIVERY_FAILED'
+  | 'COORDINATOR_REVIEW'
+  | 'RETURNED_TO_WAREHOUSE'
   | 'COMPLETED'
+  | 'CANCEL_REQUESTED'
   | 'CANCELLED'
   | 'EXPIRED'
-  | 'CANCEL_REQUESTED'
-  | 'BOMBED'
-  | 'RETURNED_TO_WAREHOUSE'
   | (string & {})
+
+export interface DeliveryFailedRequest {
+  reason: string
+}
+
+export interface CancelOrderRequest {
+  cancelReason: string
+}
 
 export interface ShipperSuggestionResponse {
   staffId: string
   staffEmail: string
   staffName: string
-  staffTask: string 
+  staffTask: string
   currentLoad: number
   maxCapacity: number
   distanceToClusterKm: number | null
@@ -61,7 +71,6 @@ export interface PageableParams {
   sort?: string
 }
 
-
 export interface CreateOrderRequest {
   recipientName: string
   phoneNumber: string
@@ -70,7 +79,7 @@ export interface CreateOrderRequest {
   voucherCode?: string
   latitude: number
   longitude: number
-  paymentMethod?: 'CASH' | 'CARD' | 'MOMO'
+  paymentMethod?: 'CASH' | 'CARD' | 'MOMO' | 'VNPAY'
 }
 
 export interface UpdateOrderRequest {
@@ -96,7 +105,6 @@ export interface OrderDetailResponse {
   createdAt: string
 }
 
-
 export interface OrderDetailFull {
   orderId: number
   orderCode: string
@@ -104,7 +112,7 @@ export interface OrderDetailFull {
   phoneNumber?: string
   address?: string
   note?: string
-  status: string
+  status: OrderStatus
   finalAmount: number
   clientSecret?: string
   createdAt: string
@@ -114,13 +122,15 @@ export interface OrderDetailFull {
   estimatedDeliveryAt?: string
   paymentExpiredAt?: string
   orderDetails: OrderDetailResponse[]
-  payment?: PaymentResponse  
+  payment?: PaymentResponse
   voucherCode?: string
   voucher?: VoucherResponse
   shippingFee?: number
   mediaFiles?: MediaFileResponse[]
   cancelReason?: string
   deliveryFailCount?: number
+  negotiatedDeliveryDate?: string
+  postCoordinatorRedelivery?: boolean
   latitude?: number
   longitude?: number
 }
@@ -148,6 +158,8 @@ export interface OrderResponse {
   mediaFiles?: MediaFileResponse[]
   cancelReason?: string
   deliveryFailCount?: number
+  negotiatedDeliveryDate?: string
+  postCoordinatorRedelivery?: boolean
   latitude?: number
   longitude?: number
 }

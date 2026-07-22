@@ -88,6 +88,9 @@
     "assignBtn": "Phân công",
     "confirmAssignBtn": "Xác nhận phân công",
     "recommendedShipper": "Shipper quản lý khu vực (Đề xuất)",
+    "farShipperBadge": "Khoảng cách xa",
+    "farWarningTitle": "Cảnh báo khoảng cách shipper xa",
+    "farWarningDesc": "Shipper {{name}} ở vị trí xa khu vực giao hàng ({{distance}} km). Bạn có chắc chắn muốn phân công không?",
     "ordersToDeliver": "{{count}} đơn hàng cần giao",
     "stats": {
       "pendingPickup": "Đơn hàng chờ giao",
@@ -125,9 +128,10 @@
       "address": "Địa chỉ giao hàng",
       "deliveredBtn": "Đã giao xong",
       "failedBtn": "Giao thất bại",
-      "bombedBtn": "Bom hàng",
       "callBtn": "Gọi khách",
-      "paymentCard": "Thẻ (Đã trả)"
+      "paymentCard": "Thẻ (Đã trả)",
+      "paymentPaid": "Đã thanh toán",
+      "paymentCod": "Thu tiền mặt"
     },
     "map": {
       "title": "Bản đồ di chuyển",
@@ -140,6 +144,7 @@
       "noRouteTitle": "Chưa có đơn hàng được phân công",
       "noRouteDesc": "Bạn chưa có đơn hàng giao hàng nào được phân công hôm nay."
     },
+    "loading": "Đang tải lộ trình giao hàng...",
     "proof": {
       "title": "Xác nhận đã giao hàng",
       "desc": "Vui lòng chụp và tải lên hình ảnh xác nhận đã giao hàng thành công để hoàn tất đơn hàng.",
@@ -152,7 +157,8 @@
     },
     "errors": {
       "loadFailed": "Không thể tải lộ trình giao hàng.",
-      "updateFailed": "Không thể cập nhật trạng thái giao hàng."
+      "updateFailed": "Không thể cập nhật trạng thái giao hàng.",
+      "retry": "Thử lại"
     }
   },
   "deliveryHistory": {
@@ -186,6 +192,7 @@
     "empty": "Không có booking được giao trong trạng thái này.",
     "status": {
       "ACCEPTED": "Chờ thực hiện",
+      "ON_THE_WAY": "Đang di chuyển",
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Chờ khách nhận",
       "COMPLETED": "Hoàn thành",
@@ -197,6 +204,7 @@
     },
     "timeline": {
       "ACCEPTED": "Đã phân công",
+      "ON_THE_WAY": "Đang di chuyển",
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Chờ khách nhận",
       "COMPLETED": "Hoàn thành"
@@ -210,16 +218,28 @@
       "type": "Loại booking",
       "minutesValue": "{{value}} phút"
     },
+    "table": {
+      "actions": "Thao tác",
+      "code": "Mã booking",
+      "customer": "Khách hàng",
+      "petAndServiceCount": "{{pets}} pet • {{services}} dịch vụ",
+      "schedule": "Lịch hẹn",
+      "status": "Trạng thái",
+      "workload": "Khối lượng"
+    },
     "actions": {
+      "backToList": "Quay lại danh sách",
       "cancelBooking": "Hủy đơn",
       "chooseAfterImage": "Chọn ảnh sau dịch vụ",
       "chooseBeforeImage": "Chọn ảnh trước dịch vụ",
       "chooseImage": "Chọn ảnh",
       "close": "Đóng",
       "complete": "Xác nhận khách đã nhận pet",
+      "completeHome": "Hoàn tất dịch vụ tại nhà",
       "confirm": "Xác nhận",
       "loading": "Đang tải...",
       "readyForPickup": "Hoàn tất và báo khách đến nhận",
+      "onTheWay": "Bắt đầu di chuyển",
       "reload": "Tải lại",
       "start": "Bắt đầu thực hiện",
       "upload": "Upload ảnh",
@@ -253,6 +273,10 @@
       "IN_PROGRESS": {
         "title": "Bắt đầu thực hiện booking này?",
         "description": "Booking sẽ chuyển từ chờ thực hiện sang đang thực hiện."
+      },
+      "ON_THE_WAY": {
+        "title": "Bắt đầu di chuyển đến nhà khách?",
+        "description": "Booking sẽ chuyển sang trạng thái nhân viên đang di chuyển."
       },
       "READY_FOR_PICKUP": {
         "title": "Đánh dấu dịch vụ đã hoàn tất?",
@@ -290,6 +314,10 @@
     "description": "Chỉ hiển thị booking đang chờ phân công. Khi chọn Groomer, booking sẽ chuyển sang trạng thái chờ thực hiện cho Groomer đó.",
     "empty": "Không có booking nào đang chờ phân công.",
     "pendingStatus": "Chờ phân công",
+    "status": {
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "WAITING_STAFF": "Chờ phân công"
+    },
     "card": {
       "customer": "Khách hàng",
       "phone": "Số điện thoại",
@@ -317,6 +345,10 @@
       "detailList": "Danh sách pet và dịch vụ",
       "note": "Ghi chú",
       "remainingAmount": "Số tiền còn lại",
+      "requestedStaff": "Groomer khách chọn",
+      "assignedStaff": "Groomer được phân công",
+      "autoAssign": "PetBuddy tự sắp xếp",
+      "notAssigned": "Chưa phân công",
       "title": "Chi tiết booking",
       "totalAmount": "Tổng tiền"
     },
@@ -840,6 +872,7 @@
     "paymentMethod": "Phương thức TT",
     "paymentMethodCard": "Thẻ ngân hàng",
     "paymentMethodMomo": "Ví MoMo",
+    "paymentMethodVnpay": "Ví VNPAY",
     "paymentMethodCOD": "Tiền mặt (COD)",
     "confirmCancelBtn": "Xác nhận hủy đơn",
     "processing": "Đang hủy...",
@@ -884,6 +917,7 @@
     "paymentMethods": {
       "CARD": "Thẻ",
       "MOMO": "MoMo",
+      "VNPAY": "VNPAY",
       "COD": "Tiền mặt"
     },
     "paymentStatuses": {
@@ -900,11 +934,13 @@
       "PICKING": "Đang lấy hàng",
       "PICKED": "Đã chuẩn bị xong",
       "SHIPPING": "Đang giao hàng",
-      "DELIVERED": "Đã giao (Chờ nhận)",
+      "DELIVERED": "Đã giao",
+      "AWAITING_REDELIVERY": "Đợi giao lại",
+      "DELIVERY_FAILED": "Giao thất bại",
+      "COORDINATOR_REVIEW": "Chờ Coordinator xử lý",
       "COMPLETED": "Hoàn thành",
       "CANCELLED": "Đã hủy",
       "CANCEL_REQUESTED": "Chờ hoàn tiền",
-      "BOMBED": "Khách bom hàng",
       "RETURNED_TO_WAREHOUSE": "Đã trả về kho"
     },
     "actions": {
@@ -916,6 +952,7 @@
       "pickItems": "Lấy hàng",
       "delivered": "Đã giao",
       "deliveryFailed": "Giao thất bại",
+      "coordinatorReview": "Xử lý Coordinator",
       "confirmReturnedWarehouse": "Xác nhận trả về kho"
     },
     "confirm": {
@@ -971,9 +1008,9 @@
       "badge": "Chờ hoàn tiền",
       "label": "Cần xác nhận"
     },
-    "bombed": {
-      "badge": "Bom hàng",
-      "label": "Khách không nhận hàng"
+    "deliveryFailed": {
+      "badge": "Giao thất bại",
+      "label": "Đơn giao thất bại"
     }
   },
   "staffOrderDetailPage": {
@@ -985,13 +1022,13 @@
   "deliveryFailedDialog": {
     "title": "Báo cáo giao hàng thất bại",
     "orderCode": "Đơn hàng #{{code}}",
-    "failCountLabel": "Lần giao thứ {{current}} / {{max}}",
-    "willBeBombed": "Đây là lần cuối. Sau khi xác nhận, đơn hàng sẽ bị đánh dấu \"Khách bom hàng\" và tiến hành hoàn tiền (nếu đã thanh toán online).",
+    "willBeCoordinatorReview": "Đơn hàng sẽ chuyển sang Coordinator để xử lý hoặc hủy.",
     "reasonLabel": "Lý do không giao được hàng",
     "reasonPlaceholder": "Ví dụ: Khách không nghe máy, địa chỉ sai, không có người ở nhà...",
     "reasonRequired": "Vui lòng nhập lý do.",
-    "submit": "Báo cáo & Trả về kho",
-    "submitBombed": "Xác nhận khách bom hàng",
+    "submit": "Báo cáo",
+    "submitCoordinatorReview": "Báo chuyển Coordinator",
+    "submitDeliveryFailed": "Xác nhận giao thất bại",
     "submitting": "Đang xử lý...",
     "cancel": "Hủy",
     "submitError": "Không thể báo cáo giao hàng thất bại."
@@ -1001,7 +1038,7 @@
     "orderCode": "Đơn hàng #{{code}}",
     "infoTitle": "Tồn kho sẽ được cộng lại",
     "infoDesc": "Xác nhận hành động này sẽ cộng lại số lượng tồn kho cho tất cả sản phẩm trong đơn và đánh dấu đã hoàn kho.",
-    "bombedReason": "Lý do bom hàng",
+    "failedDeliveryReason": "Lý do giao thất bại",
     "submit": "Xác nhận đã trả kho",
     "submitting": "Đang xác nhận...",
     "cancel": "Hủy",

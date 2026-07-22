@@ -210,6 +210,7 @@
     "title": "Thanh toán",
     "backToCart": "Quay lại giỏ hàng",
     "momoUrlMissing": "Không tìm thấy liên kết thanh toán MoMo.",
+    "vnpayUrlMissing": "Không tìm thấy liên kết thanh toán VNPAY.",
     "shipping": {
       "title": "Thông tin giao hàng",
       "fullName": "Họ và tên",
@@ -236,6 +237,7 @@
       "paymentMethods": {
         "card": "Thẻ quốc tế",
         "momo": "Ví MoMo",
+        "vnpay": "Ví VNPAY",
         "cash": "Tiền mặt"
       },
       "cities": {
@@ -267,6 +269,8 @@
         "cardDesc": "Visa, Mastercard, JCB — thanh toán qua Stripe",
         "momo": "Ví MoMo",
         "momoDesc": "Thanh toán qua ứng dụng MoMo",
+        "vnpay": "Cổng thanh toán VNPAY",
+        "vnpayDesc": "Thanh toán qua ứng dụng VNPAY hoặc tài khoản ngân hàng",
         "zaloPay": "Ví ZaloPay"
       },
       "alt": {
@@ -304,11 +308,12 @@
       }
     },
     "coupon": {
-      "title": "Mã giảm giá / Voucher",
-      "placeholder": "Nhập mã...",
-      "apply": "Áp dụng"
-    },
-    "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
+      "title": "Mã giảm giá",
+      "apply": "Áp dụng mã giảm giá",
+      "change": "Đổi",
+      "discountApplied": "Giảm {{amount}}",
+      "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
+    }
   },
   "voucherPicker": {
     "back": "Quay lại",
@@ -608,5 +613,9 @@
   "momoReturn": {
     "confirming": "Đang xác nhận thanh toán, vui lòng chờ trong giây lát...",
     "paymentNotCompleted": "Thanh toán chưa hoàn tất, vui lòng thử lại."
+  },
+  "vnpayReturn": {
+    "confirming": "Đang xác nhận thanh toán VNPAY, vui lòng chờ trong giây lát...",
+    "paymentNotCompleted": "Giao dịch VNPAY không thành công, vui lòng thử lại."
   }
 }

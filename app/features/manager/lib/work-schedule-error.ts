@@ -117,7 +117,17 @@ function resolveErrorKey(info: ErrorInfo, context: WorkScheduleErrorContext) {
   if (
     (context === 'assign' || context === 'reassign' || context === 'update') &&
     hasAny(message, ['staff', 'nhan vien']) &&
-    hasAny(message, ['conflict', 'overlap', 'duplicate', 'trung', 'da co lich', 'co ca', 'khung gio', 'schedule', 'lich'])
+    hasAny(message, [
+      'conflict',
+      'overlap',
+      'duplicate',
+      'trung',
+      'da co lich',
+      'co ca',
+      'khung gio',
+      'schedule',
+      'lich'
+    ])
   ) {
     return 'staffConflict'
   }

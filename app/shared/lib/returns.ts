@@ -1,12 +1,6 @@
 export type ReturnType = 'RETURN' | 'EXCHANGE'
 
-export type ReturnReason =
-  | 'DAMAGED'
-  | 'WRONG_PRODUCT'
-  | 'MISSING_ITEM'
-  | 'EXPIRED'
-  | 'CUSTOMER_CHANGED_MIND'
-  | 'OTHER'
+export type ReturnReason = 'DAMAGED' | 'WRONG_PRODUCT' | 'MISSING_ITEM' | 'EXPIRED' | 'CUSTOMER_CHANGED_MIND' | 'OTHER'
 
 export type RefundMethod = 'STRIPE_PAYMENT' | 'BANK_TRANSFER'
 

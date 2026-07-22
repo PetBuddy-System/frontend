@@ -14,11 +14,9 @@ import { isLoggedIn } from '~/features/products/services/cart/cart-api'
 
 const CART_PLACEHOLDER_IMAGE = 'https://placehold.co/300x300?text=PetBuddy'
 
-
 function formatPrice(value: number) {
   return `${new Intl.NumberFormat('vi-VN').format(value)}đ`
 }
-
 
 export function CartPage() {
   const { t } = useTranslation('products')
@@ -31,36 +29,35 @@ export function CartPage() {
 
   const [adjustedItem, setAdjustedItem] = useState<CartItemResponse | null>(null)
 
-
   const fetchCart = useCallback(async () => {
-  try {
-    setError(null)
-    if (isLoggedIn()) {
-      const cart = await getCartApi()
-      setCartItems(cart.cartItems ?? [])
-    } else {
-      const guestItems = guestCart.getAll()
-      setCartItems(
-        guestItems.map((i) => ({
-          cartItemId: i.cartItemId,
-          productId: i.productId,
-          productName: i.productName,
-          description: undefined,
-          price: i.price,
-          salePrice: i.salePrice ?? null, 
-          quantity: i.quantity,
-          imageUrl: i.imageUrl,
-          subtotal: i.subtotal,
-        }))
-      )
+    try {
+      setError(null)
+      if (isLoggedIn()) {
+        const cart = await getCartApi()
+        setCartItems(cart.cartItems ?? [])
+      } else {
+        const guestItems = guestCart.getAll()
+        setCartItems(
+          guestItems.map((i) => ({
+            cartItemId: i.cartItemId,
+            productId: i.productId,
+            productName: i.productName,
+            description: undefined,
+            price: i.price,
+            salePrice: i.salePrice ?? null,
+            quantity: i.quantity,
+            imageUrl: i.imageUrl,
+            subtotal: i.subtotal
+          }))
+        )
+      }
+      await refetchCart()
+    } catch {
+      setError('Không thể tải giỏ hàng. Vui lòng thử lại.')
+    } finally {
+      setIsLoading(false)
     }
-    await refetchCart()
-  } catch {
-    setError('Không thể tải giỏ hàng. Vui lòng thử lại.')
-  } finally {
-    setIsLoading(false)
-  }
-}, [refetchCart])
+  }, [refetchCart])
 
   useEffect(() => {
     fetchCart()
@@ -78,14 +75,13 @@ export function CartPage() {
       price: item.price,
       salePrice: item.salePrice,
       quantity: item.quantity,
-      subtotal: item.subtotal,
+      subtotal: item.subtotal
     }))
   }, [cartItems])
 
   const subtotal = useMemo(() => {
     return cartItems.reduce((total, item) => {
-      const effectivePrice =
-        item.salePrice != null && item.salePrice < item.price ? item.salePrice : item.price
+      const effectivePrice = item.salePrice != null && item.salePrice < item.price ? item.salePrice : item.price
       return total + effectivePrice * item.quantity
     }, 0)
   }, [cartItems])
@@ -93,7 +89,6 @@ export function CartPage() {
   const itemCount = useMemo(() => {
     return cartItems.reduce((total, item) => total + item.quantity, 0)
   }, [cartItems])
-
 
   async function handleDecrease(item: CartItem) {
     if (item.quantity <= 1 || isMutating) return
@@ -163,15 +158,12 @@ export function CartPage() {
     }
   }
 
-
   if (isLoading) {
     return (
       <div className='flex min-h-screen flex-col bg-background text-foreground'>
         <SiteHeader />
         <main className='mx-auto flex w-full max-w-6xl flex-1 items-center justify-center px-4 py-10 pb-24 md:px-6 md:py-12'>
-          <p className='text-sm text-muted-foreground'>
-            {t('cart.loading', 'Đang tải giỏ hàng...')}
-          </p>
+          <p className='text-sm text-muted-foreground'>{t('cart.loading', 'Đang tải giỏ hàng...')}</p>
         </main>
         <SiteFooter />
         <SiteBottomNav />
@@ -185,15 +177,10 @@ export function CartPage() {
       <SiteHeader />
 
       <main className='mx-auto w-full max-w-6xl flex-1 px-4 py-10 pb-24 md:px-6 md:py-12'>
-        <h1 className='mb-10 font-display text-3xl font-bold text-primary md:text-5xl'>
-          {t('cart.title')}
-        </h1>
+        <h1 className='mb-10 font-display text-3xl font-bold text-primary md:text-5xl'>{t('cart.title')}</h1>
 
-        <a
-          className="inline-flex items-center text-primary font-semibold hover:underline gap-2 mt-4"
-          href="/products"
-        >
-          <MaterialIcon name="arrow_back" className="text-[18px]" />
+        <a className='inline-flex items-center text-primary font-semibold hover:underline gap-2 mt-4' href='/products'>
+          <MaterialIcon name='arrow_back' className='text-[18px]' />
           {t('cart.continueShopping', 'Tiếp tục mua sắm')}
         </a>
         {error && (
@@ -249,7 +236,6 @@ export function CartPage() {
             </div>
           </div>
         )}
-
       </main>
 
       <SiteFooter />

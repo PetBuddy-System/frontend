@@ -8,7 +8,7 @@ import {
   updateOrderApi,
   getPaymentByOrderIdApi,
   removeCartItemApi,
-  fetchActiveVouchersApi,
+  fetchActiveVouchersApi
 } from '../services'
 import type { CreateOrderRequest, UpdateOrderRequest, OrderResponse } from '~/shared/lib/order'
 import type { CartItemResponse } from '~/shared/lib/cart'
@@ -18,7 +18,7 @@ import {
   SESSION_KEY_VOUCHER_CODE,
   SESSION_KEY_VOUCHER_NAME,
   SESSION_KEY_VOUCHER_DISCOUNT,
-  clearCheckoutSessionData,
+  clearCheckoutSessionData
 } from '../lib/checkout-storage-keys'
 import { isVoucherEligible } from '~/shared/lib/voucher'
 import type { PendingOrderView } from './use-checkout-state'
@@ -56,7 +56,7 @@ interface UseCheckoutSubmitDeps {
 
 export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
   const {
-    t ,
+    t,
     navigate,
     voucherCode,
     setVoucherCode,
@@ -78,78 +78,98 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
     voucherDiscount,
     setIsSubmitting,
     setErrorMessage,
-    setOutOfStockProductName,
+    setOutOfStockProductName
   } = deps
 
   function getPaymentMethodLabel() {
     if (selectedPaymentMethod === 'CARD') return t('checkout.shipping.paymentMethods.card')
     if (selectedPaymentMethod === 'MOMO') return t('checkout.shipping.paymentMethods.momo')
+    if (selectedPaymentMethod === 'VNPAY') return t('checkout.shipping.paymentMethods.vnpay')
     return t('checkout.shipping.paymentMethods.cash')
   }
 
-  const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const form = event.currentTarget
-    setErrorMessage('')
-    setIsSubmitting(true)
+  const handleSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+      const form = event.currentTarget
+      setErrorMessage('')
+      setIsSubmitting(true)
 
-    try {
-      if (voucherCode) {
-        try {
-          const voucherRes = await fetchActiveVouchersApi({ size: 100 })
-          const currentVoucher = voucherRes?.data?.content?.find((v) => v.voucherCode === voucherCode)
-          const stillEligible = currentVoucher ? isVoucherEligible(currentVoucher, subtotal) : false
+      try {
+        if (voucherCode) {
+          try {
+            const voucherRes = await fetchActiveVouchersApi({ size: 100 })
+            const currentVoucher = voucherRes?.data?.content?.find((v) => v.voucherCode === voucherCode)
+            const stillEligible = currentVoucher ? isVoucherEligible(currentVoucher, subtotal) : false
 
-          if (!stillEligible) {
-            sessionStorage.removeItem(SESSION_KEY_VOUCHER_CODE)
-            sessionStorage.removeItem(SESSION_KEY_VOUCHER_NAME)
-            sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
-            setVoucherCode('')
-            setVoucherName('')
-            setVoucherDiscount(0)
-            setErrorMessage('checkout.voucherNoLongerValid')
-            return
-          }
-        } catch {
+            if (!stillEligible) {
+              sessionStorage.removeItem(SESSION_KEY_VOUCHER_CODE)
+              sessionStorage.removeItem(SESSION_KEY_VOUCHER_NAME)
+              sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
+              setVoucherCode('')
+              setVoucherName('')
+              setVoucherDiscount(0)
+              setErrorMessage('checkout.voucherNoLongerValid')
+              return
+            }
+          } catch {}
         }
-      }
 
-      const formData = new FormData(form)
-      const finalAddress = selectedAddress || getFormString(formData, 'address')
+        const formData = new FormData(form)
+        const finalAddress = selectedAddress || getFormString(formData, 'address')
 
-      if (!finalAddress) {
-        setErrorMessage('checkout.shipping.addressRequired')
-        return
-      }
+        if (!finalAddress) {
+          setErrorMessage('checkout.shipping.addressRequired')
+          return
+        }
 
-      if (!deliveryLat || !deliveryLng) {
-        setErrorMessage('checkout.shipping.addressRequiredMap')
-        return
-      }
+        if (!deliveryLat || !deliveryLng) {
+          setErrorMessage('checkout.shipping.addressRequiredMap')
+          return
+        }
 
-      const phoneNumber = getFormString(formData, 'phoneNumber')
-      if (!phoneNumber || !/^0\d{9}$/.test(phoneNumber)) {
-        setErrorMessage('checkout.shipping.phoneRequired')
-        return
+        const phoneNumber = getFormString(formData, 'phoneNumber')
+        if (!phoneNumber || !/^0\d{9}$/.test(phoneNumber)) {
+          setErrorMessage('checkout.shipping.phoneRequired')
+          return
+        }
+        if (pendingOrder) {
+          await submitPendingOrder(formData, finalAddress, phoneNumber)
+        } else {
+          await submitNewOrder(formData, finalAddress, phoneNumber)
+        }
+      } catch (error: unknown) {
+        await handleSubmitError(error)
+      } finally {
+        setIsSubmitting(false)
       }
-      if (pendingOrder) {
-        await submitPendingOrder(formData, finalAddress, phoneNumber)
-      } else {
-        await submitNewOrder(formData, finalAddress, phoneNumber)
-      }
-    } catch (error: unknown) {
-      await handleSubmitError(error)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }, [
-    voucherCode, subtotal, selectedAddress, deliveryLat, deliveryLng,
-    pendingOrder, clearCheckoutSession, selectedPaymentMethod,
-    cartItems, navigate, rawCartItems, shippingFee, isFreeShipping,
-    voucherDiscount, t, setIsSubmitting, setErrorMessage, setVoucherCode,
-    setVoucherName, setVoucherDiscount, setOutOfStockProductName,
-    setRawCartItems, setCartItems,
-  ])
+    },
+    [
+      voucherCode,
+      subtotal,
+      selectedAddress,
+      deliveryLat,
+      deliveryLng,
+      pendingOrder,
+      clearCheckoutSession,
+      selectedPaymentMethod,
+      cartItems,
+      navigate,
+      rawCartItems,
+      shippingFee,
+      isFreeShipping,
+      voucherDiscount,
+      t,
+      setIsSubmitting,
+      setErrorMessage,
+      setVoucherCode,
+      setVoucherName,
+      setVoucherDiscount,
+      setOutOfStockProductName,
+      setRawCartItems,
+      setCartItems
+    ]
+  )
   async function submitPendingOrder(formData: FormData, finalAddress: string, phoneNumber: string) {
     if (!pendingOrder) return
 
@@ -160,7 +180,7 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
       note: getFormString(formData, 'note') || undefined,
       voucherCode: voucherCode || undefined,
       latitude: deliveryLat,
-      longitude: deliveryLng,
+      longitude: deliveryLng
     }
 
     const response = await updateOrderApi(pendingOrder.orderId, updateRequest)
@@ -188,7 +208,10 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
       shippingFee: response.data?.shippingFee ?? pendingOrder.shippingFee,
       isFreeShipping: (response.data?.shippingFee ?? pendingOrder.shippingFee) === 0,
       voucherDiscount: response.data
-        ? Math.max(0, pendingOrder.subtotal + (response.data.shippingFee ?? pendingOrder.shippingFee) - response.data.finalAmount)
+        ? Math.max(
+            0,
+            pendingOrder.subtotal + (response.data.shippingFee ?? pendingOrder.shippingFee) - response.data.finalAmount
+          )
         : pendingOrder.voucherDiscount,
       subtotal: pendingOrder.subtotal,
       finalAmount: response.data?.finalAmount || pendingOrder.finalAmount,
@@ -198,8 +221,8 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
         price: item.price,
         salePrice: item.salePrice,
         quantity: item.quantity,
-        imageUrl: item.image,
-      })),
+        imageUrl: item.image
+      }))
     }
 
     sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
@@ -214,7 +237,7 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
       voucherCode: voucherCode || undefined,
       latitude: deliveryLat,
       longitude: deliveryLng,
-      paymentMethod: selectedPaymentMethod,
+      paymentMethod: selectedPaymentMethod
     }
 
     const response = await createOrderApi(request)
@@ -248,17 +271,15 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
       isFreeShipping,
       voucherDiscount,
       subtotal,
-      finalAmount:
-        response.data?.finalAmount ||
-        subtotal + (isFreeShipping ? 0 : shippingFee) - voucherDiscount,
+      finalAmount: response.data?.finalAmount || subtotal + (isFreeShipping ? 0 : shippingFee) - voucherDiscount,
       items: rawCartItems.map((item) => ({
         productId: item.productId,
         name: item.productName,
         price: item.price,
         salePrice: item.salePrice,
         quantity: item.quantity,
-        imageUrl: item.imageUrl,
-      })),
+        imageUrl: item.imageUrl
+      }))
     }
 
     sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
@@ -270,7 +291,8 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
     lastOrderDetails: { finalAmount: number; shippingFee: number; isFreeShipping: boolean }
   ) {
     if (selectedPaymentMethod === 'CARD') {
-      let clientSecret = orderData?.clientSecret || orderData?.payment?.stripeClientSecret || pendingOrder?.clientSecret || ''
+      let clientSecret =
+        orderData?.clientSecret || orderData?.payment?.stripeClientSecret || pendingOrder?.clientSecret || ''
 
       if (!clientSecret) {
         try {
@@ -287,8 +309,8 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
           clientSecret,
           amount: lastOrderDetails.finalAmount,
           shippingFee: lastOrderDetails.shippingFee,
-          isFreeShipping: lastOrderDetails.isFreeShipping,
-        },
+          isFreeShipping: lastOrderDetails.isFreeShipping
+        }
       })
     } else if (selectedPaymentMethod === 'MOMO') {
       let momoPayUrl = orderData?.payment?.momoPayUrl
@@ -308,6 +330,25 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
         window.location.href = momoPayUrl
       } else {
         setErrorMessage('checkout.momoUrlMissing')
+      }
+    } else if (selectedPaymentMethod === 'VNPAY') {
+      let vnpayPayUrl = orderData?.payment?.vnpayPayUrl
+
+      if (!vnpayPayUrl) {
+        try {
+          const paymentRes = await getPaymentByOrderIdApi(orderId)
+          vnpayPayUrl = paymentRes.data?.vnpayPayUrl
+        } catch (payErr) {
+          console.error('Error fetching VNPAY payment URL:', payErr)
+        }
+      }
+
+      if (vnpayPayUrl) {
+        sessionStorage.setItem('pendingVnPayOrderId', String(orderId))
+        sessionStorage.removeItem('isVnPayRetry')
+        window.location.href = vnpayPayUrl
+      } else {
+        setErrorMessage('checkout.vnpayUrlMissing')
       }
     } else {
       navigate('/order-success')
@@ -335,8 +376,7 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
         productName = matchedItem.productName
         try {
           await removeCartItemApi(matchedItem.cartItemId)
-        } catch {
-        }
+        } catch {}
         setRawCartItems((prev) => prev.filter((i) => i.cartItemId !== matchedItem.cartItemId))
         setCartItems((prev) => prev.filter((i) => i.key !== matchedItem.cartItemId))
       } else if (rawCartItems.length === 1) {
@@ -344,8 +384,7 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
         productName = onlyItem.productName
         try {
           await removeCartItemApi(onlyItem.cartItemId)
-        } catch {
-        }
+        } catch {}
         setRawCartItems([])
         setCartItems([])
       }

@@ -76,21 +76,15 @@ export function ProductDetailDescription({
       <div className='rounded-xl border border-border/60 bg-card p-6 shadow-sm'>
         <div className='prose prose-sm max-w-none text-muted-foreground'>
           {activeTab === 'description' && (
-            <p className='whitespace-pre-line'>
-              {description || t('detail.description.empty.description')}
-            </p>
+            <p className='whitespace-pre-line'>{description || t('detail.description.empty.description')}</p>
           )}
 
           {activeTab === 'instructions' && (
-            <div className='whitespace-pre-line'>
-              {usageInstructions || t('detail.description.empty.instructions')}
-            </div>
+            <div className='whitespace-pre-line'>{usageInstructions || t('detail.description.empty.instructions')}</div>
           )}
 
           {activeTab === 'ingredients' && (
-            <div className='whitespace-pre-line'>
-              {ingredients || t('detail.description.empty.ingredients')}
-            </div>
+            <div className='whitespace-pre-line'>{ingredients || t('detail.description.empty.ingredients')}</div>
           )}
         </div>
 

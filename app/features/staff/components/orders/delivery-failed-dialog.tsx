@@ -6,7 +6,7 @@ import { cn } from '~/shared/lib/cn'
 import type { OrderResponse } from '~/shared/lib/order'
 import { reportDeliveryFailedApi } from '../../services/order'
 
-const MAX_FAIL_COUNT = 3
+const MAX_FAIL_COUNT = 2
 
 interface DeliveryFailedDialogProps {
   order: OrderResponse | null
@@ -25,7 +25,7 @@ export function DeliveryFailedDialog({ order, isOpen, onClose, onSuccess }: Deli
 
   const currentFailCount = order.deliveryFailCount ?? 0
   const nextFailCount = currentFailCount + 1
-  const willBeBombed = nextFailCount >= MAX_FAIL_COUNT
+  const willBeCoordinatorReview = nextFailCount >= MAX_FAIL_COUNT || Boolean(order.postCoordinatorRedelivery)
 
   async function handleSubmit() {
     if (!reason.trim()) {
@@ -81,33 +81,18 @@ export function DeliveryFailedDialog({ order, isOpen, onClose, onSuccess }: Deli
         </div>
 
         <div className='p-5 flex flex-col gap-4'>
-          {/* Fail count banner */}
-          <div
-            className={cn(
-              'flex items-start gap-3 rounded-xl px-4 py-3 border text-sm font-medium',
-              willBeBombed
-                ? 'bg-red-50 dark:bg-red-950/30 border-red-300 dark:border-red-800 text-red-700 dark:text-red-400'
-                : 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400'
-            )}
-          >
-            <MaterialIcon
-              name={willBeBombed ? 'warning' : 'info'}
-              className='text-[20px] shrink-0 mt-0.5'
-            />
-            <div>
-              <p className='font-bold'>
-                {t('deliveryFailedDialog.failCountLabel', {
-                  current: nextFailCount,
-                  max: MAX_FAIL_COUNT,
-                })}
+          {/* Info banner — coordinator review warning if applicable */}
+          {willBeCoordinatorReview && (
+            <div className='flex items-start gap-3 rounded-xl px-4 py-3 border text-sm font-medium bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400'>
+              <MaterialIcon
+                name='support_agent'
+                className='text-[20px] shrink-0 mt-0.5'
+              />
+              <p className='font-semibold'>
+                {t('deliveryFailedDialog.willBeCoordinatorReview')}
               </p>
-              {willBeBombed && (
-                <p className='mt-1 text-xs font-semibold'>
-                  {t('deliveryFailedDialog.willBeBombed')}
-                </p>
-              )}
             </div>
-          </div>
+          )}
 
           {/* Reason textarea */}
           <div className='flex flex-col gap-1.5'>
@@ -149,8 +134,8 @@ export function DeliveryFailedDialog({ order, isOpen, onClose, onSuccess }: Deli
               disabled={isSubmitting}
               className={cn(
                 'flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white transition-colors active:scale-95 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed',
-                willBeBombed
-                  ? 'bg-red-600 hover:bg-red-700'
+                willBeCoordinatorReview
+                  ? 'bg-amber-600 hover:bg-amber-700'
                   : 'bg-rose-600 hover:bg-rose-700'
               )}
             >
@@ -161,10 +146,10 @@ export function DeliveryFailedDialog({ order, isOpen, onClose, onSuccess }: Deli
                 </>
               ) : (
                 <>
-                  <MaterialIcon name={willBeBombed ? 'block' : 'replay'} className='text-[18px]' />
+                  <MaterialIcon name={willBeCoordinatorReview ? 'support_agent' : 'flag'} className='text-[18px]' />
                   <span>
-                    {willBeBombed
-                      ? t('deliveryFailedDialog.submitBombed')
+                    {willBeCoordinatorReview
+                      ? t('deliveryFailedDialog.submitCoordinatorReview')
                       : t('deliveryFailedDialog.submit')}
                   </span>
                 </>

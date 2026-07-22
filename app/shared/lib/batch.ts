@@ -4,97 +4,91 @@
  */
 
 export interface ProductBatchItem {
-    batchId: string
-    batchCode: string
-    productId: string
-    productCode: string
-    productName: string
-    stockQuantity: number
-    basePrice?: number
-    expiryDate: string
-    status: 'ACTIVE' | 'INACTIVE' | 'DELETED'
-    deletedAt: string | null
-    createdAt: string
-    updatedAt: string
+  batchId: string
+  batchCode: string
+  productId: string
+  productCode: string
+  productName: string
+  stockQuantity: number
+  basePrice?: number
+  expiryDate: string
+  status: 'ACTIVE' | 'INACTIVE' | 'DELETED'
+  deletedAt: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 export interface PagedProductBatchResponse {
-    code: number
-    message: string
-    success: boolean
-    data: {
-        totalElements: number
-        totalPages: number
-        first: boolean
-        last: boolean
-        pageable: {
-            paged: boolean
-            pageNumber: number
-            pageSize: number
-            offset: number
-            sort: {
-                sorted: boolean
-                empty: boolean
-                unsorted: boolean
-            }
-            unpaged: boolean
-        }
-        size: number
-        content: ProductBatchItem[]
-        number: number
-        sort: {
-            sorted: boolean
-            empty: boolean
-            unsorted: boolean
-        }
-        numberOfElements: number
+  code: number
+  message: string
+  success: boolean
+  data: {
+    totalElements: number
+    totalPages: number
+    first: boolean
+    last: boolean
+    pageable: {
+      paged: boolean
+      pageNumber: number
+      pageSize: number
+      offset: number
+      sort: {
+        sorted: boolean
         empty: boolean
+        unsorted: boolean
+      }
+      unpaged: boolean
     }
-    timestamp: string
+    size: number
+    content: ProductBatchItem[]
+    number: number
+    sort: {
+      sorted: boolean
+      empty: boolean
+      unsorted: boolean
+    }
+    numberOfElements: number
+    empty: boolean
+  }
+  timestamp: string
 }
 
-export type BatchSortBy =
-    | 'date_desc'
-    | 'date_asc'
-    | 'stock_asc'
-    | 'stock_desc'
-    | 'expiry_asc'
-    | 'expiry_desc'
+export type BatchSortBy = 'date_desc' | 'date_asc' | 'stock_asc' | 'stock_desc' | 'expiry_asc' | 'expiry_desc'
 
 export interface FetchProductBatchesParams {
-    keyword?: string
-    status?: 'ACTIVE' | 'INACTIVE' | 'DELETED'
-    page?: number
-    size?: number
-    sortBy?: BatchSortBy
+  keyword?: string
+  status?: 'ACTIVE' | 'INACTIVE' | 'DELETED'
+  page?: number
+  size?: number
+  sortBy?: BatchSortBy
 }
 
 export interface CreateBatchPayload {
-    stockQuantity: number
-    expiryDate: string
+  stockQuantity: number
+  expiryDate: string
 }
 
 export interface CreateBatchResponse {
-    code: number
-    message: string
-    success: boolean
-    data: ProductBatchItem
-    timestamp: string
+  code: number
+  message: string
+  success: boolean
+  data: ProductBatchItem
+  timestamp: string
 }
 
 export interface UpdateBatchPayload {
-    stockQuantity?: number
-    basePrice?: number
-    expiryDate?: string
-    status?: 'ACTIVE' | 'INACTIVE' | 'DELETED'
-    reason?: string
-    note?: string
+  stockQuantity?: number
+  basePrice?: number
+  expiryDate?: string
+  status?: 'ACTIVE' | 'INACTIVE' | 'DELETED'
+  reason?: string
+  note?: string
 }
 
 export interface UpdateBatchResponse {
-    code: number
-    message: string
-    success: boolean
-    data: ProductBatchItem
-    timestamp: string
+  code: number
+  message: string
+  success: boolean
+  data: ProductBatchItem
+  timestamp: string
 }
