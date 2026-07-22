@@ -119,7 +119,7 @@ function ShippingPolicy() {
         <p className='text-muted-foreground'>{t('contact.policies.shippingHero.description')}</p>
       </div>
 
-      <div className='grid gap-4 md:grid-cols-3'>
+      <div className='grid gap-4 md:grid-cols-2'>
         <article className='flex gap-4 rounded-lg bg-background p-4'>
           <MaterialIcon name='local_shipping' className='text-[32px] text-primary' />
           <div>
@@ -145,6 +145,17 @@ function ShippingPolicy() {
               {t('contact.policies.shippingItems.schedule.title')}
             </h4>
             <p className='text-sm text-muted-foreground'>{t('contact.policies.shippingItems.schedule.description')}</p>
+          </div>
+        </article>
+        <article className='flex gap-4 rounded-lg border border-destructive/30 bg-destructive/5 p-4'>
+          <MaterialIcon name='money_off' className='text-[32px] text-destructive' />
+          <div>
+            <h4 className='mb-1 text-lg font-semibold text-foreground'>
+              {t('contact.policies.shippingItems.missedDelivery.title')}
+            </h4>
+            <p className='text-sm text-muted-foreground'>
+              {t('contact.policies.shippingItems.missedDelivery.description')}
+            </p>
           </div>
         </article>
       </div>
