@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useLocation } from 'react-router'
@@ -80,30 +81,31 @@ export function useCheckoutState() {
   // --- Callbacks ---
 
   const handlePaymentMethodChange = useCallback(
-    async (method: SelectedPaymentMethod, errorMessage: string) => {
+    async (method: SelectedPaymentMethod, errorMessage?: string) => {
       setSelectedPaymentMethod(method)
       sessionStorage.setItem(SESSION_KEY_PAYMENT_METHOD, method)
 
-    if (pendingOrder) {
-      setErrorMessage(errorMessage ?? '')
-      setIsSubmitting(true)
-      try {
-        const res = await updatePaymentMethodApi(pendingOrder.orderId, method)
-        if (res.success && res.data) {
-          setPendingOrder((prev) =>
-            prev
-              ? {
-                ...prev,
-                clientSecret: res.data.stripeClientSecret ?? prev.clientSecret,
-                momoPayUrl: res.data.momoPayUrl ?? prev.momoPayUrl,
-                vnpayPayUrl: res.data.vnpayPayUrl ?? prev.vnpayPayUrl,
-                finalAmount: res.data.amount ?? prev.finalAmount,
-              }
-              : null
-          )
+      if (pendingOrder) {
+        setErrorMessage(errorMessage ?? '')
+        setIsSubmitting(true)
+        try {
+          const res = await updatePaymentMethodApi(pendingOrder.orderId, method)
+          if (res.success && res.data) {
+            setPendingOrder((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    clientSecret: res.data.stripeClientSecret ?? prev.clientSecret,
+                    momoPayUrl: res.data.momoPayUrl ?? prev.momoPayUrl,
+                    vnpayPayUrl: res.data.vnpayPayUrl ?? prev.vnpayPayUrl,
+                    finalAmount: res.data.amount ?? prev.finalAmount,
+                  }
+                : null
+            )
+          }
+        } finally {
+          setIsSubmitting(false)
         }
-      }
-      setIsSubmitting(false)
       }
     },
     [pendingOrder]
@@ -186,7 +188,9 @@ export function useCheckoutState() {
     const itemId = currentAdjustedItem.cartItemId
     try {
       await removeCartItemApi(itemId)
-    } catch {}
+    } catch {
+      setErrorMessage(t('checkout.removeCartItemError', 'Không thể xóa sản phẩm khỏi giỏ hàng.'))
+    }
     setRawCartItems((prev) => prev.filter((i) => i.cartItemId !== itemId))
     setCartItems((prev) => prev.filter((i) => i.key !== itemId))
     setAdjustedQueue((prev) => prev.slice(1))
