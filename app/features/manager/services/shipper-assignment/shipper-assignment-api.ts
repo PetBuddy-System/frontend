@@ -1,7 +1,3 @@
-/**
- * Manager feature — shipper assignment API service.
- */
-
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type {

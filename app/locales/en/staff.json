@@ -89,6 +89,9 @@
     "assignBtn": "Assign",
     "confirmAssignBtn": "Confirm Assignment",
     "recommendedShipper": "Area Shipper (Recommended)",
+    "farShipperBadge": "Far Distance",
+    "farWarningTitle": "Far Shipper Distance Warning",
+    "farWarningDesc": "Shipper {{name}} is far from the delivery cluster ({{distance}} km). Are you sure you want to assign this order?",
     "ordersToDeliver": "{{count}} order(s) to deliver",
     "stats": {
       "pendingPickup": "Orders to Deliver",
@@ -126,9 +129,10 @@
       "address": "Delivery Address",
       "deliveredBtn": "Mark as Delivered",
       "failedBtn": "Delivery Failed",
-      "bombedBtn": "Bombed",
       "callBtn": "Call Customer",
-      "paymentCard": "Card (Paid)"
+      "paymentCard": "Card (Paid)",
+      "paymentPaid": "Paid",
+      "paymentCod": "Collect COD"
     },
     "map": {
       "title": "Map Preview",
@@ -141,6 +145,7 @@
       "noRouteTitle": "No orders assigned",
       "noRouteDesc": "You have no delivery orders assigned for today."
     },
+    "loading": "Loading delivery route...",
     "proof": {
       "title": "Confirm Delivery",
       "desc": "Please capture and upload a photo confirming successful delivery to complete the order.",
@@ -153,7 +158,8 @@
     },
     "errors": {
       "loadFailed": "Failed to load delivery route.",
-      "updateFailed": "Failed to update delivery status."
+      "updateFailed": "Failed to update delivery status.",
+      "retry": "Retry"
     }
   },
   "deliveryHistory": {
@@ -818,6 +824,7 @@
     "paymentMethod": "Payment method",
     "paymentMethodCard": "Bank Card",
     "paymentMethodMomo": "MoMo Wallet",
+    "paymentMethodVnpay": "VNPAY Wallet",
     "paymentMethodCOD": "Cash on Delivery (COD)",
     "confirmCancelBtn": "Confirm Cancel Order",
     "processing": "Cancelling...",
@@ -862,6 +869,7 @@
     "paymentMethods": {
       "CARD": "Card",
       "MOMO": "MoMo",
+      "VNPAY": "VNPAY",
       "COD": "Cash"
     },
     "paymentStatuses": {
@@ -878,11 +886,14 @@
       "PICKING": "Picking",
       "PICKED": "Picked",
       "SHIPPING": "Shipping",
-      "DELIVERED": "Delivered (awaiting receipt)",
+      "DELIVERED": "Delivered",
+      "AWAITING_REDELIVERY": "Awaiting Redelivery",
+      "DELIVERY_FAILED": "Delivery Failed",
+      "COORDINATOR_REVIEW": "Coordinator Review",
       "COMPLETED": "Completed",
       "CANCELLED": "Cancelled",
       "CANCEL_REQUESTED": "Refund pending",
-      "BOMBED": "Customer no-show",
+      "DELIVERY_FAILED": "Delivery Failed",
       "RETURNED_TO_WAREHOUSE": "Returned to warehouse"
     },
     "actions": {
@@ -894,6 +905,7 @@
       "pickItems": "Pick items",
       "delivered": "Delivered",
       "deliveryFailed": "Delivery Failed",
+      "coordinatorReview": "Coordinator Review",
       "confirmReturnedWarehouse": "Confirm Returned to Warehouse"
     },
     "confirm": {
@@ -949,9 +961,9 @@
       "badge": "Refund pending",
       "label": "Needs confirmation"
     },
-    "bombed": {
-      "badge": "No-show",
-      "label": "Customer no-show"
+    "deliveryFailed": {
+      "badge": "Delivery Failed",
+      "label": "Failed deliveries"
     }
   },
   "staffOrderDetailPage": {
@@ -963,13 +975,13 @@
   "deliveryFailedDialog": {
     "title": "Report Delivery Failure",
     "orderCode": "Order #{{code}}",
-    "failCountLabel": "Delivery attempt {{current}} of {{max}}",
-    "willBeBombed": "This is the final attempt. After submitting, the order will be marked as \"Customer No-show\" and a refund will be initiated.",
+    "willBeCoordinatorReview": "This order will be transferred to the Coordinator for review or cancellation.",
     "reasonLabel": "Reason for failed delivery",
     "reasonPlaceholder": "e.g. Customer did not answer the phone, wrong address, no one at home...",
     "reasonRequired": "Please enter a reason.",
-    "submit": "Report & Return to Picked",
-    "submitBombed": "Confirm Customer No-show",
+    "submit": "Report",
+    "submitCoordinatorReview": "Report to Coordinator",
+    "submitDeliveryFailed": "Confirm Delivery Failed",
     "submitting": "Submitting...",
     "cancel": "Cancel",
     "submitError": "Failed to report delivery failure."
@@ -979,7 +991,7 @@
     "orderCode": "Order #{{code}}",
     "infoTitle": "Stock will be restored",
     "infoDesc": "Confirming this action will restore the stock quantities for all items in this order and mark it as returned.",
-    "bombedReason": "Reason for no-show",
+    "bombedReason": "Reason for failed delivery",
     "submit": "Confirm Returned",
     "submitting": "Confirming...",
     "cancel": "Cancel",

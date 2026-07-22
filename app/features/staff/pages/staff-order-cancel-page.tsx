@@ -22,7 +22,7 @@ const CANCEL_REASONS = [
   'Sản phẩm hết hàng / lỗi',
   'Đơn hàng trùng lặp',
   'Vi phạm chính sách cửa hàng',
-  'Khác'
+  'Khác',
 ]
 
 const CANCEL_REASON_MAP: Record<string, string> = {
@@ -32,7 +32,23 @@ const CANCEL_REASON_MAP: Record<string, string> = {
   'Sản phẩm hết hàng / lỗi': 'orderCancel.reasons.outOfStock',
   'Đơn hàng trùng lặp': 'orderCancel.reasons.duplicateOrder',
   'Vi phạm chính sách cửa hàng': 'orderCancel.reasons.policyViolation',
-  Khác: 'orderCancel.reasons.other'
+  'Khác': 'orderCancel.reasons.other',
+}
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  CARD: 'orderCancel.paymentMethodCard',
+  MOMO: 'orderCancel.paymentMethodMomo',
+  VNPAY: 'orderCancel.paymentMethodVnpay',
+  STRIPE: 'orderCancel.paymentMethodStripe',
+  COD: 'orderCancel.paymentMethodCOD',
+}
+
+const PAYMENT_METHOD_DEFAULTS: Record<string, string> = {
+  CARD: 'Thẻ ngân hàng',
+  MOMO: 'Ví MoMo',
+  VNPAY: 'VNPay',
+  STRIPE: 'Thẻ quốc tế (Stripe)',
+  COD: 'Tiền mặt (COD)',
 }
 
 export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
@@ -40,10 +56,12 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
   const { t } = useTranslation('staff')
   const [order, setOrder] = useState<OrderDetailFull | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
   const [customReason, setCustomReason] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [submittedReason, setSubmittedReason] = useState('')
 
   useEffect(() => {
     async function loadOrder() {
@@ -78,14 +96,8 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
     try {
       const res = await updateOrderStatusApi(orderId, 'CANCELLED')
       if (res.success) {
-        alert(
-          t('orderCancel.successMessage', {
-            code: order.orderCode,
-            reason: finalReason,
-            defaultValue: `Đơn hàng #${order.orderCode} đã được hủy thành công.\nLý do: ${finalReason}`
-          })
-        )
-        navigate('/staff/orders')
+        setSubmittedReason(finalReason)
+        setShowSuccessModal(true)
       } else {
         alert(res.message || t('orderCancel.submitError', 'Không thể hủy đơn hàng.'))
       }
@@ -119,9 +131,7 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
           <main className='flex-1 flex items-center justify-center p-6 text-center'>
             <div>
               <MaterialIcon name='error' className='text-[48px] text-destructive mb-3' />
-              <p className='text-muted-foreground text-sm'>
-                {error || t('orderCancel.notFound', 'Không tìm thấy đơn hàng.')}
-              </p>
+              <p className='text-muted-foreground text-sm'>{error || t('orderCancel.notFound', 'Không tìm thấy đơn hàng.')}</p>
               <button
                 onClick={() => navigate('/staff/orders')}
                 className='mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-bold text-sm'
@@ -143,6 +153,7 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
         <main className='flex-1 overflow-y-auto'>
           <div className='min-h-full bg-muted/30 flex flex-col items-center p-4 md:p-8'>
             <div className='w-full max-w-4xl flex flex-col gap-6'>
+
               {/* Header */}
               <div className='flex items-center justify-between'>
                 <h1 className='font-display text-2xl font-bold text-foreground flex items-center gap-2'>
@@ -160,10 +171,7 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
                 <div>
                   <p className='font-bold text-sm'>{t('orderCancel.warningTitle', 'Hành động không thể hoàn tác')}</p>
                   <p className='text-sm mt-1 opacity-80'>
-                    {t(
-                      'orderCancel.warningDesc',
-                      'Đơn hàng sẽ được hủy ngay lập tức (không cần chờ xác nhận). Vui lòng chọn đúng lý do.'
-                    )}
+                    {t('orderCancel.warningDesc', 'Đơn hàng sẽ được hủy ngay lập tức (không cần chờ xác nhận). Vui lòng chọn đúng lý do.')}
                   </p>
                 </div>
               </div>
@@ -179,22 +187,12 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
                     </h2>
                     <div className='flex flex-col gap-3'>
                       {order.orderDetails?.map((item) => (
-                        <div
-                          key={item.orderDetailId}
-                          className='flex gap-4 p-3 bg-muted/50 rounded-lg border border-border/40'
-                        >
+                        <div key={item.orderDetailId} className='flex gap-4 p-3 bg-muted/50 rounded-lg border border-border/40'>
                           <div className='w-16 h-16 rounded-lg overflow-hidden bg-muted shrink-0'>
-                            {item.productImage ? (
-                              <img
-                                className='w-full h-full object-cover'
-                                src={item.productImage}
-                                alt={item.productName}
-                              />
-                            ) : (
-                              <div className='w-full h-full flex items-center justify-center'>
-                                <MaterialIcon name='image' className='text-[24px] text-muted-foreground' />
-                              </div>
-                            )}
+                            {item.productImage
+                              ? <img className='w-full h-full object-cover' src={item.productImage} alt={item.productName} />
+                              : <div className='w-full h-full flex items-center justify-center'><MaterialIcon name='image' className='text-[24px] text-muted-foreground' /></div>
+                            }
                           </div>
                           <div className='flex flex-col justify-center flex-grow min-w-0'>
                             <h3 className='text-foreground font-semibold text-sm truncate'>{item.productName}</h3>
@@ -218,9 +216,7 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
                       onChange={(e) => setCancelReason(e.target.value)}
                       className='w-full rounded-xl border border-border bg-background p-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30'
                     >
-                      <option value=''>
-                        {t('orderCancel.selectReasonPlaceholder', '-- Vui lòng chọn lý do hủy --')}
-                      </option>
+                      <option value=''>{t('orderCancel.selectReasonPlaceholder', '-- Vui lòng chọn lý do hủy --')}</option>
                       {CANCEL_REASONS.map((r) => (
                         <option key={r} value={r}>
                           {t(CANCEL_REASON_MAP[r] || r, r)}
@@ -255,12 +251,11 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
                     <div className='flex justify-between text-sm mb-4'>
                       <span className='text-muted-foreground'>{t('orderCancel.paymentMethod', 'Phương thức TT')}</span>
                       <span className='font-semibold text-foreground'>
-                        {order.payment?.paymentMethod === 'CARD'
-                          ? t('orderCancel.paymentMethodCard', 'Thẻ ngân hàng')
-                          : order.payment?.paymentMethod === 'MOMO'
-                            ? t('orderCancel.paymentMethodMomo', 'Ví MoMo')
-                            : t('orderCancel.paymentMethodCOD', 'Tiền mặt (COD)')}
-                      </span>
+                      {t(
+                        PAYMENT_METHOD_LABELS[order.payment?.paymentMethod ?? 'COD'],
+                        PAYMENT_METHOD_DEFAULTS[order.payment?.paymentMethod ?? 'COD']
+                      )}
+                    </span>
                     </div>
 
                     <div className='flex flex-col gap-3 mt-4 border-t border-border pt-4'>
@@ -296,6 +291,40 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
           </div>
         </main>
       </div>
+
+      {showSuccessModal && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-fadeIn'>
+          <div className='relative w-full max-w-md rounded-2xl bg-card p-6 shadow-2xl border border-border text-center'>
+            <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'>
+              <MaterialIcon name='check_circle' className='text-[40px]' />
+            </div>
+            <h3 className='font-display text-xl font-bold text-foreground'>
+              {t('orderCancel.refundSuccessTitle', 'Đã hủy đơn hàng & Hoàn tiền thành công')}
+            </h3>
+            <p className='mt-2 text-sm text-muted-foreground'>
+              {t('orderCancel.refundSuccessDesc', { code: order?.orderCode, defaultValue: `Đơn hàng #${order?.orderCode} đã được cập nhật hủy thành công.` })}
+            </p>
+            <div className='mt-4 rounded-xl bg-muted/40 p-3.5 text-left text-xs space-y-1.5 border border-border/50'>
+              <p className='font-semibold text-foreground'>
+                <span className='text-muted-foreground'>{t('orderCancel.orderCodeLabel', 'Mã đơn:')}</span> #{order?.orderCode}
+              </p>
+              <p className='font-semibold text-foreground'>
+                <span className='text-muted-foreground'>{t('orderCancel.refundAmountLabel', 'Số tiền hoàn:')}</span> {formatPrice(order?.finalAmount ?? 0)}
+              </p>
+              <p className='font-semibold text-foreground'>
+                <span className='text-muted-foreground'>{t('orderCancel.reasonLabel', 'Lý do:')}</span> {submittedReason}
+              </p>
+            </div>
+            <button
+              type='button'
+              onClick={() => navigate('/staff/orders')}
+              className='mt-6 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-md transition-all hover:bg-primary/90 active:scale-95'
+            >
+              {t('orderCancel.confirmBtn', 'Quay về danh sách đơn hàng')}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

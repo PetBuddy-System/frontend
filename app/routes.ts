@@ -18,6 +18,7 @@ export default [
   route('services', 'routes/services.tsx'),
   route('services/:serviceId', 'routes/service-detail.tsx'),
   route('payment/momo/return', 'routes/momo-return.tsx'),
+  route('payment/vnpay/return', 'routes/vnpay-return.tsx'),
 
   // ─── Authenticated General Routes ─────────────────────────────────────────
   layout('routes/auth-layout.tsx', [

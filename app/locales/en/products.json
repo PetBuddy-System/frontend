@@ -210,6 +210,7 @@
     "title": "Checkout",
     "backToCart": "Back to cart",
     "momoUrlMissing": "MoMo payment link not found.",
+    "vnpayUrlMissing": "VNPAY payment link not found.",
     "shipping": {
       "title": "Shipping information",
       "fullName": "Full name",
@@ -236,6 +237,7 @@
       "paymentMethods": {
         "card": "International card",
         "momo": "MoMo wallet",
+        "vnpay": "VNPAY wallet",
         "cash": "Cash on delivery"
       },
       "cities": {
@@ -267,6 +269,8 @@
         "cardDesc": "Visa, Mastercard, JCB — pay via Stripe",
         "momo": "MoMo Wallet",
         "momoDesc": "Pay via MoMo e-wallet application",
+        "vnpay": "VNPAY Wallet",
+        "vnpayDesc": "Pay via VNPAY payment gateway",
         "zaloPay": "ZaloPay wallet"
       },
       "alt": {
@@ -606,6 +610,10 @@
     }
   },
   "momoReturn": {
+    "confirming": "Confirming your payment, please wait...",
+    "paymentNotCompleted": "Payment was not completed, please try again."
+  },
+  "vnpayReturn": {
     "confirming": "Confirming your payment, please wait...",
     "paymentNotCompleted": "Payment was not completed, please try again."
   }

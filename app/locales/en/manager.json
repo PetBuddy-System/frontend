@@ -45,6 +45,7 @@
       "vouchers": "Voucher Management",
       "storeLocations": "Store Locations",
       "reviews": "Review Management",
+      "auditLogs": "System Audit Logs",
       "shipperAssignment": "Shipper Assignment"
     },
     "toggle": "Toggle sidebar"

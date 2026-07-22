@@ -28,3 +28,10 @@ export async function retryMomoPaymentApi(orderId: number): Promise<ApiResponse<
     method: 'POST'
   })
 }
+
+export async function retryVnPayPaymentApi(orderId: number): Promise<ApiResponse<PaymentResponse>> {
+  return customFetch<ApiResponse<PaymentResponse>>({
+    url: `${PAYMENT_BASE_URL}/${orderId}/vnpay/retry`,
+    method: 'POST'
+  })
+}

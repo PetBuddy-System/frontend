@@ -26,6 +26,7 @@ export interface PendingOrderView {
   orderId: number
   clientSecret: string
   momoPayUrl?: string
+  vnpayPayUrl?: string
   subtotal: number
   shippingFee: number
   isFreeShipping: boolean
@@ -73,45 +74,39 @@ export function useCheckoutState() {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<SelectedPaymentMethod>(() => {
     const saved = typeof window !== 'undefined' ? sessionStorage.getItem(SESSION_KEY_PAYMENT_METHOD) : null
-    return saved === 'CASH' || saved === 'CARD' || saved === 'MOMO' ? saved : 'CASH'
+    return (saved === 'CASH' || saved === 'CARD' || saved === 'MOMO' || saved === 'VNPAY') ? saved : 'CASH'
   })
 
   // --- Callbacks ---
 
   const handlePaymentMethodChange = useCallback(
-    async (method: SelectedPaymentMethod) => {
+    async (method: SelectedPaymentMethod, errorMessage: string) => {
       setSelectedPaymentMethod(method)
       sessionStorage.setItem(SESSION_KEY_PAYMENT_METHOD, method)
 
-      if (pendingOrder) {
-        setErrorMessage('')
-        setIsSubmitting(true)
-        try {
-          const res = await updatePaymentMethodApi(pendingOrder.orderId, method)
-          if (res.success && res.data) {
-            setPendingOrder((prev) =>
-              prev
-                ? {
-                    ...prev,
-                    clientSecret: res.data.stripeClientSecret ?? prev.clientSecret,
-                    momoPayUrl: res.data.momoPayUrl ?? prev.momoPayUrl,
-                    finalAmount: res.data.amount ?? prev.finalAmount
-                  }
-                : null
-            )
-          }
-        } catch (err) {
-          setErrorMessage(
-            err instanceof Error
-              ? err.message
-              : t('checkout.updatePaymentMethodError', 'Không thể thay đổi phương thức thanh toán.')
+    if (pendingOrder) {
+      setErrorMessage(errorMessage ?? '')
+      setIsSubmitting(true)
+      try {
+        const res = await updatePaymentMethodApi(pendingOrder.orderId, method)
+        if (res.success && res.data) {
+          setPendingOrder((prev) =>
+            prev
+              ? {
+                ...prev,
+                clientSecret: res.data.stripeClientSecret ?? prev.clientSecret,
+                momoPayUrl: res.data.momoPayUrl ?? prev.momoPayUrl,
+                vnpayPayUrl: res.data.vnpayPayUrl ?? prev.vnpayPayUrl,
+                finalAmount: res.data.amount ?? prev.finalAmount,
+              }
+              : null
           )
-        } finally {
-          setIsSubmitting(false)
         }
       }
+      setIsSubmitting(false)
+      }
     },
-    [pendingOrder, t]
+    [pendingOrder]
   )
 
   const syncFromSession = useCallback(() => {
@@ -221,26 +216,25 @@ export function useCheckoutState() {
         const isFreeShippingVal = shippingFeeVal === 0
         const voucherDiscountVal = Math.max(0, subtotalVal + shippingFeeVal - order.finalAmount)
 
-        setPendingOrder({
-          orderId: order.orderId,
-          clientSecret: order.clientSecret ?? '',
-          momoPayUrl: order.payment?.momoPayUrl ?? '',
-          subtotal: subtotalVal,
-          shippingFee: shippingFeeVal,
-          isFreeShipping: isFreeShippingVal,
-          voucherDiscount: voucherDiscountVal,
-          finalAmount: order.finalAmount
-        })
-      } catch {
-        sessionStorage.removeItem(SESSION_KEY_PENDING_ORDER_ID)
-        setErrorMessage(t('checkout.loadError', 'Không thể tải thông tin đơn hàng.'))
-        await fetchCart()
-        return
-      }
-      setIsLoading(false)
-    },
-    [t, fetchCart]
-  )
+      setPendingOrder({
+        orderId: order.orderId,
+        clientSecret: order.clientSecret ?? '',
+        momoPayUrl: order.payment?.momoPayUrl ?? '',
+        vnpayPayUrl: order.payment?.vnpayPayUrl ?? '',
+        subtotal: subtotalVal,
+        shippingFee: shippingFeeVal,
+        isFreeShipping: isFreeShippingVal,
+        voucherDiscount: voucherDiscountVal,
+        finalAmount: order.finalAmount,
+      })
+    } catch {
+      sessionStorage.removeItem(SESSION_KEY_PENDING_ORDER_ID)
+      setErrorMessage(t('checkout.loadError', 'Không thể tải thông tin đơn hàng.'))
+      await fetchCart()
+      return
+    }
+    setIsLoading(false)
+  }, [t, fetchCart])
 
   const handleRetryPayment = useCallback(() => {
     if (!pendingOrder) return
