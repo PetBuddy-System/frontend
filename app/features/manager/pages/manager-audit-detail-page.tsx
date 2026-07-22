@@ -21,7 +21,7 @@ function formatDateDisplay(dateStr: string) {
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit',
+      minute: '2-digit'
     })
   } catch {
     return dateStr
@@ -30,22 +30,33 @@ function formatDateDisplay(dateStr: string) {
 
 function getActionColor(action: string) {
   switch (action) {
-    case 'CREATE': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-    case 'UPDATE': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-    case 'DELETE': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-    case 'PAY': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
-    case 'REFUND': return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
-    case 'USE': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
-    default: return 'bg-muted text-muted-foreground'
+    case 'CREATE':
+      return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+    case 'UPDATE':
+      return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+    case 'DELETE':
+      return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+    case 'PAY':
+      return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
+    case 'REFUND':
+      return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
+    case 'USE':
+      return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+    default:
+      return 'bg-muted text-muted-foreground'
   }
 }
 
 function getEntityColor(entityType: string) {
   switch (entityType) {
-    case 'PAYMENT': return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400'
-    case 'VOUCHER': return 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-400'
-    case 'VOUCHER_USAGE': return 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-400'
-    default: return 'bg-muted text-muted-foreground'
+    case 'PAYMENT':
+      return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400'
+    case 'VOUCHER':
+      return 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-400'
+    case 'VOUCHER_USAGE':
+      return 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-400'
+    default:
+      return 'bg-muted text-muted-foreground'
   }
 }
 
@@ -74,9 +85,7 @@ function ChangeItem({ change, t }: ChangeItemProps) {
       <span className='min-w-[140px] text-sm font-medium text-muted-foreground'>{fieldLabel}</span>
       <div className='flex flex-col gap-1'>
         {isCreate ? (
-          <span className='text-sm font-medium text-green-600 dark:text-green-400'>
-            {newDisplay || 'null'}
-          </span>
+          <span className='text-sm font-medium text-green-600 dark:text-green-400'>{newDisplay || 'null'}</span>
         ) : (
           <>
             <span className='text-sm text-muted-foreground line-through'>{oldDisplay || 'null'}</span>
@@ -228,9 +237,7 @@ export function ManagerAuditDetailPage() {
                   <span className='text-xs font-medium uppercase text-muted-foreground'>
                     {t('auditLogs.detail.reason', 'Lý do')}
                   </span>
-                  <p className='mt-0.5 text-sm'>
-                    {t(`auditLogs.reasonMap.${log.reason}`, log.reason || '--')}
-                  </p>
+                  <p className='mt-0.5 text-sm'>{t(`auditLogs.reasonMap.${log.reason}`, log.reason || '--')}</p>
                 </div>
                 {log.note && (
                   <div>

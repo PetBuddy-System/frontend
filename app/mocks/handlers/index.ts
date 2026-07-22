@@ -15,14 +15,15 @@ import type { RequestHandler } from 'msw'
  */
 
 // Handler viết tay (placeholder — xoá khi orval generate được)
-import { exampleHandlers } from './example.handler'
-import { shippingHandlers } from './shipping.handler'
-import { orderHandlers } from './order.handler'
 import { cartHandlers } from './cart.handler'
-import { storeLocationHandlers } from './store-location.handler'
-import { returnHandlers } from './return.handler'
-import { productReviewHandlers } from './product-review.handler'
 import { dashboardHandlers } from './dashboard.handler'
+import { exampleHandlers } from './example.handler'
+import { orderHandlers } from './order.handler'
+import { productReviewHandlers } from './product-review.handler'
+import { returnHandlers } from './return.handler'
+import { shippingHandlers } from './shipping.handler'
+import { storeLocationHandlers } from './store-location.handler'
+import { userProfileHandlers } from './user-profile.handler'
 
 // ─── Orval generated handlers (uncomment khi có swagger) ──────────────────────
 // import { getCoursesHandlers } from "~/api/operations/course-endpoints/course-endpoints.msw";
@@ -38,5 +39,5 @@ export const handlers: RequestHandler[] = [
   ...returnHandlers,
   ...productReviewHandlers,
   ...dashboardHandlers,
+  ...userProfileHandlers
 ]
-

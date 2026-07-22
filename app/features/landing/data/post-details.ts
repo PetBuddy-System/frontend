@@ -25,8 +25,7 @@ export const MOCK_POSTS: BlogPost[] = [
   {
     id: '2',
     title: 'Understanding Your Dog Body Language: A Complete Guide',
-    excerpt:
-      'Dogs communicate through body language, and learning to read their signals helps build a stronger bond.',
+    excerpt: 'Dogs communicate through body language, and learning to read their signals helps build a stronger bond.',
     category: 'training',
     categoryLabel: 'Training',
     author: 'Dr. Minh Tran',
@@ -36,8 +35,7 @@ export const MOCK_POSTS: BlogPost[] = [
   {
     id: '3',
     title: 'The Best Diet Plan for Puppies: Nutrition by Age',
-    excerpt:
-      'Puppies have different nutritional needs at every growth stage. Learn how to choose the right food.',
+    excerpt: 'Puppies have different nutritional needs at every growth stage. Learn how to choose the right food.',
     category: 'nutrition',
     categoryLabel: 'Nutrition',
     author: 'Dr. Lan Nguyen',
@@ -47,8 +45,7 @@ export const MOCK_POSTS: BlogPost[] = [
   {
     id: '4',
     title: 'Grooming at Home vs. Professional Grooming: Pros & Cons',
-    excerpt:
-      'Should you groom your pet at home or visit a professional? We break down the costs and benefits.',
+    excerpt: 'Should you groom your pet at home or visit a professional? We break down the costs and benefits.',
     category: 'grooming',
     categoryLabel: 'Grooming',
     author: 'PetBuddy Team',
@@ -58,8 +55,7 @@ export const MOCK_POSTS: BlogPost[] = [
   {
     id: '5',
     title: 'Common Health Issues in Senior Cats and How to Manage Them',
-    excerpt:
-      'As cats age, they face unique health challenges. Knowing the signs helps you provide the best care.',
+    excerpt: 'As cats age, they face unique health challenges. Knowing the signs helps you provide the best care.',
     category: 'health',
     categoryLabel: 'Health',
     author: 'Dr. Hoa Le',
@@ -80,8 +76,7 @@ export const MOCK_POSTS: BlogPost[] = [
   {
     id: '7',
     title: 'How to Introduce a New Pet to Your Existing Pets',
-    excerpt:
-      'Introducing a new pet to your household takes patience and strategy. Follow our step-by-step guide.',
+    excerpt: 'Introducing a new pet to your household takes patience and strategy. Follow our step-by-step guide.',
     category: 'training',
     categoryLabel: 'Training',
     author: 'Dr. Minh Tran',

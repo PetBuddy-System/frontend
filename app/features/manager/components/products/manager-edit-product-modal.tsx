@@ -10,7 +10,7 @@ import {
   updateProductApi,
   updateProductImagesApi,
   updateProductVideoApi,
-  fetchProductVideoApi,
+  fetchProductVideoApi
 } from '../../services/product'
 import type { CategoryData, ProductUnit } from '~/shared/lib/product'
 
@@ -20,22 +20,6 @@ export interface ManagerEditProductModalProps {
   onClose: () => void
   onSaveSuccess: () => void
 }
-
-const STATUS_OPTIONS = [
-  { value: 'ACTIVE', label: 'Đang hoạt động' },
-  { value: 'INACTIVE', label: 'Ngừng kinh doanh' },
-] as const
-
-const UNIT_OPTIONS: { value: ProductUnit; label: string }[] = [
-  { value: 'PIECE', label: 'Cái' },
-  { value: 'BAG', label: 'Túi' },
-  { value: 'BOX', label: 'Hộp' },
-  { value: 'PACK', label: 'Gói' },
-  { value: 'BOTTLE', label: 'Chai' },
-  { value: 'CAN', label: 'Lon' },
-  { value: 'TUBE', label: 'Tuýp' },
-  { value: 'SET', label: 'Bộ' },
-]
 
 export function ManagerEditProductModal({
   productId,
@@ -58,10 +42,11 @@ export function ManagerEditProductModal({
   const [ingredients, setIngredients] = useState('')
   const [usageInstructions, setUsageInstructions] = useState('')
   const [unit, setUnit] = useState<ProductUnit | ''>('')
+  const [weight, setWeight] = useState<number | ''>('')
   const [totalStock, setTotalStock] = useState(0)
   const [isDeleted, setIsDeleted] = useState(false)
 
-  // ⭐ REASON & NOTE
+  // REASON & NOTE
   const [reason, setReason] = useState('')
   const [note, setNote] = useState('')
 
@@ -76,6 +61,24 @@ export function ManagerEditProductModal({
   const [videoFile, setVideoFile] = useState<File | null>(null)
   const [deleteVideo, setDeleteVideo] = useState(false)
 
+  // Lấy unit options từ translation
+  const UNIT_OPTIONS_I18N: { value: ProductUnit; label: string }[] = [
+    { value: 'PIECE', label: t('unit.PIECE') },
+    { value: 'BAG', label: t('unit.BAG') },
+    { value: 'BOX', label: t('unit.BOX') },
+    { value: 'PACK', label: t('unit.PACK') },
+    { value: 'BOTTLE', label: t('unit.BOTTLE') },
+    { value: 'CAN', label: t('unit.CAN') },
+    { value: 'TUBE', label: t('unit.TUBE') },
+    { value: 'SET', label: t('unit.SET') }
+  ]
+
+  // Lấy status options từ translation
+  const STATUS_OPTIONS_I18N = [
+    { value: 'ACTIVE', label: t('productManagement.status.active') },
+    { value: 'INACTIVE', label: t('productManagement.status.inactive') }
+  ] as const
+
   useEffect(() => {
     if (!productId) return
 
@@ -83,7 +86,6 @@ export function ManagerEditProductModal({
 
     async function loadData() {
       setLoading(true)
-      // ⭐ Reset reason và note khi mở modal
       setReason('')
       setNote('')
 
@@ -91,11 +93,6 @@ export function ManagerEditProductModal({
         const res = await fetchProductManagementByIdApi(productId!)
         if (active && res.success) {
           const p = res.data
-
-          console.log('📦 Product data:', p)
-          console.log('📝 Description:', p.description)
-          console.log('📝 Ingredients:', p.ingredients)
-          console.log('📝 Usage Instructions:', p.usageInstructions)
 
           setName(p.name || '')
           setSalePrice(p.salePrice || 0)
@@ -107,6 +104,7 @@ export function ManagerEditProductModal({
           setIngredients(p.ingredients || '')
           setUsageInstructions(p.usageInstructions || '')
           setUnit(p.unit || '')
+          setWeight(p.weight || '')
           setTotalStock(p.totalStock || 0)
         }
 
@@ -115,13 +113,13 @@ export function ManagerEditProductModal({
           const imagesRes = await fetchProductImagesApi(productId!)
           if (active && imagesRes.success) {
             const images = imagesRes.data
-              .filter(item => item.fileType === 'IMAGE')
-              .map(item => ({
+              .filter((item) => item.fileType === 'IMAGE')
+              .map((item) => ({
                 mediaFileId: item.mediaFileId,
                 fileUrl: item.fileUrl
               }))
             setExistingImages(images)
-            setKeepImageIds(images.map(img => img.mediaFileId))
+            setKeepImageIds(images.map((img) => img.mediaFileId))
           }
         } catch {
           console.warn('Không thể tải ảnh sản phẩm')
@@ -137,43 +135,43 @@ export function ManagerEditProductModal({
           setExistingVideoUrl(null)
         }
       } catch (err) {
-        setError('Không thể tải thông tin sản phẩm')
+        setError(t('productManagement.editModal.errors.loadFailed'))
       } finally {
         setLoading(false)
       }
     }
     loadData()
-    return () => { active = false }
-  }, [productId])
+    return () => {
+      active = false
+    }
+  }, [productId, t])
 
   useEffect(() => {
-    return () => previewUrls.forEach(url => URL.revokeObjectURL(url))
+    return () => previewUrls.forEach((url) => URL.revokeObjectURL(url))
   }, [previewUrls])
 
   const toggleKeepImage = (mediaFileId: number) => {
     const isCurrentlyKept = keepImageIds.includes(mediaFileId)
     if (!isCurrentlyKept && keepImageIds.length + selectedFiles.length >= 4) {
-      setError('Chỉ được chọn tối đa 4 hình ảnh (bao gồm cả ảnh giữ lại và ảnh mới)')
+      setError(t('productManagement.editModal.errors.maxImages'))
       return
     }
     setError(null)
-    setKeepImageIds(prev =>
-      prev.includes(mediaFileId)
-        ? prev.filter(id => id !== mediaFileId)
-        : [...prev, mediaFileId]
+    setKeepImageIds((prev) =>
+      prev.includes(mediaFileId) ? prev.filter((id) => id !== mediaFileId) : [...prev, mediaFileId]
     )
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : []
     if (keepImageIds.length + files.length > 4) {
-      setError('Chỉ được chọn tối đa 4 hình ảnh (bao gồm cả ảnh giữ lại và ảnh mới)')
+      setError(t('productManagement.editModal.errors.maxImages'))
       e.target.value = ''
       return
     }
     setError(null)
     setSelectedFiles(files)
-    setPreviewUrls(files.map(f => URL.createObjectURL(f)))
+    setPreviewUrls(files.map((f) => URL.createObjectURL(f)))
     e.target.value = ''
   }
 
@@ -199,8 +197,21 @@ export function ManagerEditProductModal({
     e.preventDefault()
     if (!productId || isDeleted) return
 
+    // ✅ Validate required fields
+    if (!unit) {
+      setError(t('productManagement.editModal.errors.unitRequired'))
+      return
+    }
+    if (!weight) {
+      setError(t('productManagement.editModal.errors.weightRequired'))
+      return
+    }
+    if (Number(weight) <= 0) {
+      setError(t('productManagement.editModal.errors.weightInvalid'))
+      return
+    }
     if (keepImageIds.length + selectedFiles.length > 4) {
-      setError('Chỉ được chọn tối đa 4 hình ảnh (bao gồm cả ảnh giữ lại và ảnh mới)')
+      setError(t('productManagement.editModal.errors.maxImages'))
       return
     }
 
@@ -208,7 +219,7 @@ export function ManagerEditProductModal({
     setError(null)
 
     try {
-      // 1. Update product info (có thêm reason và note)
+      // 1. Update product info
       const updateRes = await updateProductApi(productId, {
         name,
         salePrice,
@@ -218,9 +229,10 @@ export function ManagerEditProductModal({
         description,
         ingredients,
         usageInstructions,
-        unit: unit as ProductUnit | undefined,
+        unit: unit as ProductUnit,
+        weight: Number(weight),
         reason: reason || undefined,
-        note: note || undefined,
+        note: note || undefined
       })
       if (!updateRes.success) throw new Error(updateRes.message)
 
@@ -244,7 +256,7 @@ export function ManagerEditProductModal({
       onSaveSuccess()
       onClose()
     } catch (err: any) {
-      setError(err.message || 'Cập nhật thất bại')
+      setError(err.message || t('productManagement.editModal.errors.updateFailed'))
     } finally {
       setSaving(false)
     }
@@ -258,7 +270,7 @@ export function ManagerEditProductModal({
 
       <section className='relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl'>
         <header className='flex items-center justify-between border-b border-border bg-muted/50 px-6 py-4'>
-          <h2 className='font-display text-lg font-bold'>Chỉnh sửa sản phẩm</h2>
+          <h2 className='font-display text-lg font-bold'>{t('productManagement.editModal.title')}</h2>
           <button onClick={onClose} className='p-1 rounded-full hover:bg-muted'>
             <MaterialIcon name='close' className='text-xl' />
           </button>
@@ -280,60 +292,141 @@ export function ManagerEditProductModal({
 
               {/* Status badge */}
               <div className='flex items-center gap-3 rounded-xl bg-muted/30 px-4 py-2'>
-                <span className='text-xs font-bold uppercase text-muted-foreground'>Trạng thái:</span>
-                <span className={cn(
-                  'rounded-full px-2.5 py-1 text-xs font-bold',
-                  status === 'ACTIVE' ? 'bg-success/15 text-success' : 'bg-warning/15 text-warning'
-                )}>
-                  {status === 'ACTIVE' ? 'Đang hoạt động' : 'Ngừng kinh doanh'}
+                <span className='text-xs font-bold uppercase text-muted-foreground'>
+                  {t('productManagement.editModal.statusLabel')}
+                </span>
+                <span
+                  className={cn(
+                    'rounded-full px-2.5 py-1 text-xs font-bold',
+                    status === 'ACTIVE' ? 'bg-success/15 text-success' : 'bg-warning/15 text-warning'
+                  )}
+                >
+                  {status === 'ACTIVE' ? t('productManagement.status.active') : t('productManagement.status.inactive')}
                 </span>
                 {isDeleted && (
                   <span className='rounded-full bg-destructive/15 px-2.5 py-1 text-xs font-bold text-destructive'>
-                    Đã xóa
+                    {t('productManagement.status.deleted')}
                   </span>
                 )}
               </div>
 
               {/* Form fields */}
               <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-                <InputField label='Tên sản phẩm' required value={name} onChange={setName} disabled={isDeleted} />
-                <InputField label='Giá bán' type='number' required value={salePrice} onChange={setSalePrice} disabled={isDeleted} />
-                <InputField label='Thương hiệu' required value={brandName} onChange={setBrandName} disabled={isDeleted} />
+                <InputField
+                  label={t('productManagement.editModal.name')}
+                  required
+                  value={name}
+                  onChange={setName}
+                  disabled={isDeleted}
+                />
+                <InputField
+                  label={t('productManagement.editModal.price')}
+                  type='number'
+                  required
+                  value={salePrice}
+                  onChange={setSalePrice}
+                  disabled={isDeleted}
+                />
+                <InputField
+                  label={t('productManagement.editModal.brand')}
+                  required
+                  value={brandName}
+                  onChange={setBrandName}
+                  disabled={isDeleted}
+                />
 
                 <SelectField
-                  label='Danh mục'
+                  label={t('productManagement.editModal.category')}
                   value={categoryId || ''}
                   onChange={(v) => setCategoryId(v ? Number(v) : undefined)}
                   disabled={isDeleted}
                 >
-                  <option value=''>-- Chọn danh mục --</option>
-                  {categories.map(c => <option key={c.categoryId} value={c.categoryId}>{c.name}</option>)}
+                  <option value=''>{t('productManagement.editModal.selectCategory')}</option>
+                  {categories.map((c) => (
+                    <option key={c.categoryId} value={c.categoryId}>
+                      {c.name}
+                    </option>
+                  ))}
                 </SelectField>
 
                 <SelectField
-                  label='Trạng thái'
+                  label={t('productManagement.editModal.status')}
                   value={status}
                   onChange={(v) => setStatus(v as 'ACTIVE' | 'INACTIVE')}
                   disabled={isDeleted}
                 >
-                  {STATUS_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                  {STATUS_OPTIONS_I18N.map((s) => (
+                    <option key={s.value} value={s.value}>
+                      {s.label}
+                    </option>
+                  ))}
                 </SelectField>
 
-                <InputField label='Tồn kho' type='number' value={totalStock} disabled onChange={() => { }} />
+                <InputField
+                  label={t('productManagement.editModal.stock')}
+                  type='number'
+                  value={totalStock}
+                  disabled
+                  onChange={() => {}}
+                />
+              </div>
 
-                <SelectField
-                  label='Đơn vị'
-                  value={unit}
-                  onChange={(v) => setUnit(v as ProductUnit)}
-                  disabled={isDeleted}
-                >
-                  <option value=''>-- Chọn đơn vị --</option>
-                  {UNIT_OPTIONS.map(u => <option key={u.value} value={u.value}>{u.label}</option>)}
-                </SelectField>
+              {/* Unit & Weight - 2 cột */}
+              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+                {/* Unit */}
+                <div className='flex flex-col gap-1.5'>
+                  <label className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                    {t('productManagement.editModal.unit')} <span className='text-destructive'>*</span>
+                  </label>
+                  <div className='relative'>
+                    <select
+                      value={unit}
+                      required
+                      onChange={(v) => setUnit(v.target.value as ProductUnit)}
+                      disabled={isDeleted}
+                      className={cn(
+                        'h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring cursor-pointer',
+                        isDeleted && 'opacity-60 cursor-not-allowed'
+                      )}
+                    >
+                      <option value=''>{t('productManagement.editModal.selectUnit')}</option>
+                      {UNIT_OPTIONS_I18N.map((u) => (
+                        <option key={u.value} value={u.value}>
+                          {u.label}
+                        </option>
+                      ))}
+                    </select>
+                    <MaterialIcon
+                      name='expand_more'
+                      className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
+                    />
+                  </div>
+                </div>
+
+                {/* Weight */}
+                <div className='flex flex-col gap-1.5'>
+                  <label className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                    {t('productManagement.editModal.weight')} <span className='text-destructive'>*</span>
+                  </label>
+                  <input
+                    type='number'
+                    required
+                    min='0'
+                    step='0.1'
+                    disabled={isDeleted}
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value ? Number(e.target.value) : '')}
+                    placeholder={t('productManagement.editModal.weightPlaceholder')}
+                    className={cn(
+                      'h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring',
+                      isDeleted && 'opacity-60 cursor-not-allowed'
+                    )}
+                  />
+                </div>
               </div>
 
               <TextareaField
-                label='Mô tả'
+                label={t('productManagement.editModal.description')}
                 value={description}
                 onChange={setDescription}
                 disabled={isDeleted}
@@ -341,7 +434,7 @@ export function ManagerEditProductModal({
               />
 
               <TextareaField
-                label='Thành phần'
+                label={t('productManagement.editModal.ingredients')}
                 value={ingredients}
                 onChange={setIngredients}
                 disabled={isDeleted}
@@ -349,27 +442,29 @@ export function ManagerEditProductModal({
               />
 
               <TextareaField
-                label='Hướng dẫn sử dụng'
+                label={t('productManagement.editModal.usageInstructions')}
                 value={usageInstructions}
                 onChange={setUsageInstructions}
                 disabled={isDeleted}
                 rows={4}
               />
 
-              {/* ⭐ REASON & NOTE - Thêm vào form */}
+              {/* REASON & NOTE */}
               <div className='border-t border-border pt-4 mt-2'>
                 <div className='grid grid-cols-1 gap-4'>
                   <div className='flex flex-col gap-1.5'>
                     <label className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                      Lý do thay đổi
-                      <span className='text-xs font-normal text-muted-foreground ml-1'>(không bắt buộc)</span>
+                      {t('productManagement.editModal.reason')}
+                      <span className='text-xs font-normal text-muted-foreground ml-1'>
+                        ({t('productManagement.editModal.optional')})
+                      </span>
                     </label>
                     <textarea
                       rows={2}
                       disabled={isDeleted}
                       value={reason}
                       onChange={(e) => setReason(e.target.value)}
-                      placeholder='Nhập lý do thay đổi sản phẩm...'
+                      placeholder={t('productManagement.editModal.reasonPlaceholder')}
                       className={cn(
                         'w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring resize-y min-h-[60px]',
                         isDeleted && 'opacity-60 cursor-not-allowed'
@@ -378,15 +473,17 @@ export function ManagerEditProductModal({
                   </div>
                   <div className='flex flex-col gap-1.5'>
                     <label className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                      Ghi chú
-                      <span className='text-xs font-normal text-muted-foreground ml-1'>(không bắt buộc)</span>
+                      {t('productManagement.editModal.note')}
+                      <span className='text-xs font-normal text-muted-foreground ml-1'>
+                        ({t('productManagement.editModal.optional')})
+                      </span>
                     </label>
                     <textarea
                       rows={2}
                       disabled={isDeleted}
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
-                      placeholder='Nhập ghi chú thêm...'
+                      placeholder={t('productManagement.editModal.notePlaceholder')}
                       className={cn(
                         'w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring resize-y min-h-[60px]',
                         isDeleted && 'opacity-60 cursor-not-allowed'
@@ -398,11 +495,15 @@ export function ManagerEditProductModal({
 
               {/* Images Section */}
               <div className='border-t border-border pt-4'>
-                <label className='text-xs font-bold uppercase text-muted-foreground'>Hình ảnh sản phẩm</label>
+                <label className='text-xs font-bold uppercase text-muted-foreground'>
+                  {t('productManagement.editModal.images')}
+                </label>
 
                 {existingImages.length > 0 && (
                   <div className='mt-2'>
-                    <p className='text-xs text-muted-foreground mb-2'>Ảnh hiện tại (click để chọn giữ lại):</p>
+                    <p className='text-xs text-muted-foreground mb-2'>
+                      {t('productManagement.editModal.currentImages')}
+                    </p>
                     <div className='flex flex-wrap gap-3'>
                       {existingImages.map((img) => {
                         const isKept = keepImageIds.includes(img.mediaFileId)
@@ -418,7 +519,7 @@ export function ManagerEditProductModal({
                           >
                             <img
                               src={img.fileUrl}
-                              alt="Product"
+                              alt={t('productManagement.editModal.productImage')}
                               className='w-full h-full object-cover'
                             />
                             {isKept && (
@@ -436,20 +537,26 @@ export function ManagerEditProductModal({
                       })}
                     </div>
                     <p className='text-xs text-muted-foreground mt-1'>
-                      {keepImageIds.length === 0 ? '⚠️ Tất cả ảnh sẽ bị xóa' : `Giữ ${keepImageIds.length}/${existingImages.length} ảnh`}
+                      {keepImageIds.length === 0
+                        ? `⚠️ ${t('productManagement.editModal.allImagesDeleted')}`
+                        : `${t('productManagement.editModal.keepingImages')} ${keepImageIds.length}/${existingImages.length}`}
                     </p>
                   </div>
                 )}
 
                 <div className='mt-3'>
-                  <label className='text-xs font-medium text-muted-foreground'>Thêm ảnh mới (tối đa 4 ảnh tổng cộng):</label>
+                  <label className='text-xs font-medium text-muted-foreground'>
+                    {t('productManagement.editModal.uploadNewImages')}
+                  </label>
                   <div className='mt-1'>
-                    <label className={cn(
-                      'inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card cursor-pointer hover:bg-muted transition-colors',
-                      isDeleted && 'opacity-50 cursor-not-allowed'
-                    )}>
+                    <label
+                      className={cn(
+                        'inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card cursor-pointer hover:bg-muted transition-colors',
+                        isDeleted && 'opacity-50 cursor-not-allowed'
+                      )}
+                    >
                       <MaterialIcon name='upload' className='text-lg' />
-                      <span className='text-sm font-medium'>Chọn ảnh</span>
+                      <span className='text-sm font-medium'>{t('productManagement.editModal.selectImages')}</span>
                       <input
                         type='file'
                         accept='image/*'
@@ -460,7 +567,9 @@ export function ManagerEditProductModal({
                       />
                     </label>
                     {selectedFiles.length > 0 && (
-                      <span className='ml-3 text-sm text-muted-foreground'>Đã chọn {selectedFiles.length} ảnh</span>
+                      <span className='ml-3 text-sm text-muted-foreground'>
+                        {t('productManagement.editModal.selectedImagesCount', { count: selectedFiles.length })}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -469,7 +578,11 @@ export function ManagerEditProductModal({
                   <div className='flex flex-wrap gap-3 mt-2'>
                     {previewUrls.map((url, idx) => (
                       <div key={idx} className='w-20 h-20 rounded-lg border border-border overflow-hidden'>
-                        <img src={url} alt={`Preview ${idx}`} className='w-full h-full object-cover' />
+                        <img
+                          src={url}
+                          alt={`${t('productManagement.editModal.preview')} ${idx}`}
+                          className='w-full h-full object-cover'
+                        />
                       </div>
                     ))}
                   </div>
@@ -478,13 +591,17 @@ export function ManagerEditProductModal({
 
               {/* Video Section */}
               <div className='border-t border-border pt-4'>
-                <label className='text-xs font-bold uppercase text-muted-foreground'>Video sản phẩm</label>
+                <label className='text-xs font-bold uppercase text-muted-foreground'>
+                  {t('productManagement.editModal.video')}
+                </label>
 
                 {existingVideoUrl && !deleteVideo && !videoFile && (
                   <div className='mt-2 p-3 rounded-lg bg-muted/30 border border-border'>
                     <div className='flex items-center gap-3'>
                       <MaterialIcon name='play_circle' className='text-2xl text-primary' />
-                      <span className='text-sm text-foreground flex-1 truncate'>Video hiện tại</span>
+                      <span className='text-sm text-foreground flex-1 truncate'>
+                        {t('productManagement.editModal.currentVideo')}
+                      </span>
                       {!isDeleted && (
                         <button
                           type='button'
@@ -492,7 +609,7 @@ export function ManagerEditProductModal({
                           className='text-sm text-destructive hover:underline flex items-center gap-1'
                         >
                           <MaterialIcon name='delete' className='text-base' />
-                          Xóa video
+                          {t('productManagement.editModal.deleteVideo')}
                         </button>
                       )}
                     </div>
@@ -507,13 +624,15 @@ export function ManagerEditProductModal({
                 {deleteVideo && (
                   <div className='mt-2 p-3 rounded-lg bg-destructive/10 border border-destructive/30'>
                     <div className='flex items-center justify-between'>
-                      <span className='text-sm text-destructive font-medium'>Đã đánh dấu xóa video</span>
+                      <span className='text-sm text-destructive font-medium'>
+                        {t('productManagement.editModal.videoMarkedForDeletion')}
+                      </span>
                       <button
                         type='button'
                         onClick={handleCancelDeleteVideo}
                         className='text-sm text-primary hover:underline'
                       >
-                        Hủy bỏ
+                        {t('productManagement.editModal.undo')}
                       </button>
                     </div>
                   </div>
@@ -521,11 +640,13 @@ export function ManagerEditProductModal({
 
                 {!isDeleted && (
                   <div className='mt-3'>
-                    <label className='text-xs font-medium text-muted-foreground'>Thay thế video mới:</label>
+                    <label className='text-xs font-medium text-muted-foreground'>
+                      {t('productManagement.editModal.replaceVideo')}
+                    </label>
                     <div className='mt-1'>
                       <label className='inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card cursor-pointer hover:bg-muted transition-colors'>
                         <MaterialIcon name='upload' className='text-lg' />
-                        <span className='text-sm font-medium'>Chọn video</span>
+                        <span className='text-sm font-medium'>{t('productManagement.editModal.selectVideo')}</span>
                         <input
                           type='file'
                           accept='video/*'
@@ -535,33 +656,49 @@ export function ManagerEditProductModal({
                         />
                       </label>
                       {videoFile && !deleteVideo && (
-                        <span className='ml-3 text-sm text-success'>Đã chọn: {videoFile.name}</span>
+                        <span className='ml-3 text-sm text-success'>
+                          {t('productManagement.editModal.videoSelected', { name: videoFile.name })}
+                        </span>
                       )}
                     </div>
                   </div>
                 )}
 
                 {existingVideoUrl && !deleteVideo && !videoFile && (
-                  <p className='text-xs text-muted-foreground mt-2'>✓ Đã có video. Chọn video mới để thay thế.</p>
+                  <p className='text-xs text-muted-foreground mt-2'>✓ {t('productManagement.editModal.hasVideo')}</p>
                 )}
                 {!existingVideoUrl && !videoFile && !deleteVideo && (
-                  <p className='text-xs text-muted-foreground mt-2'>Chưa có video. Chọn video để thêm mới.</p>
+                  <p className='text-xs text-muted-foreground mt-2'>{t('productManagement.editModal.noVideo')}</p>
                 )}
                 {videoFile && !deleteVideo && (
-                  <p className='text-xs text-success mt-2'>✓ Đã chọn video mới: {videoFile.name}</p>
+                  <p className='text-xs text-success mt-2'>
+                    ✓ {t('productManagement.editModal.videoSelected', { name: videoFile.name })}
+                  </p>
                 )}
               </div>
             </div>
 
             {/* Footer */}
             <footer className='flex justify-end gap-3 border-t border-border bg-muted/40 px-6 py-4'>
-              <button type='button' onClick={onClose} className='h-10 px-6 rounded-full border border-border bg-card text-sm font-bold hover:bg-muted'>
-                Hủy
+              <button
+                type='button'
+                onClick={onClose}
+                className='h-10 px-6 rounded-full border border-border bg-card text-sm font-bold hover:bg-muted'
+              >
+                {t('productManagement.editModal.cancel')}
               </button>
               {!isDeleted && (
-                <button type='submit' disabled={saving} className='h-10 px-6 rounded-full bg-primary text-sm font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50 flex items-center gap-2'>
-                  {saving ? <div className='h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' /> : <MaterialIcon name='save' className='text-lg' />}
-                  Lưu
+                <button
+                  type='submit'
+                  disabled={saving}
+                  className='h-10 px-6 rounded-full bg-primary text-sm font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50 flex items-center gap-2'
+                >
+                  {saving ? (
+                    <div className='h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
+                  ) : (
+                    <MaterialIcon name='save' className='text-lg' />
+                  )}
+                  {t('productManagement.editModal.save')}
                 </button>
               )}
             </footer>
@@ -628,7 +765,10 @@ function SelectField({ label, value, onChange, disabled, children }: SelectField
         >
           {children}
         </select>
-        <MaterialIcon name='expand_more' className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground' />
+        <MaterialIcon
+          name='expand_more'
+          className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
+        />
       </div>
     </div>
   )

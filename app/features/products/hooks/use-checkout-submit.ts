@@ -1,16 +1,16 @@
 import { useCallback } from 'react'
 import type { FormEvent } from 'react'
 import type { NavigateFunction } from 'react-router'
-import type { TFunction } from 'i18next'
-import { guestCart } from '~/shared/lib/guest-cart'
+import { useTranslation } from 'react-i18next'
+import { guestCart } from '~/shared/lib/cart'
 import {
   createOrderApi,
   updateOrderApi,
   getPaymentByOrderIdApi,
   removeCartItemApi,
-  fetchActiveVouchersApi,
+  fetchActiveVouchersApi
 } from '../services'
-import type { CreateOrderRequest, UpdateOrderRequest } from '~/shared/lib/order'
+import type { CreateOrderRequest, UpdateOrderRequest, OrderResponse } from '~/shared/lib/order'
 import type { CartItemResponse } from '~/shared/lib/cart'
 import type { CheckoutOrderItem } from '../components/checkout/checkout-order-summary'
 import type { SelectedPaymentMethod } from '../components/checkout/checkout-payment-methods'
@@ -18,7 +18,7 @@ import {
   SESSION_KEY_VOUCHER_CODE,
   SESSION_KEY_VOUCHER_NAME,
   SESSION_KEY_VOUCHER_DISCOUNT,
-  clearCheckoutSessionData,
+  clearCheckoutSessionData
 } from '../lib/checkout-storage-keys'
 import { isVoucherEligible } from '~/shared/lib/voucher'
 import type { PendingOrderView } from './use-checkout-state'
@@ -29,7 +29,7 @@ function getFormString(formData: FormData, key: string) {
 }
 
 interface UseCheckoutSubmitDeps {
-  t: TFunction
+  t: ReturnType<typeof useTranslation>['t']
   navigate: NavigateFunction
   voucherCode: string
   setVoucherCode: (v: string) => void
@@ -78,78 +78,98 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
     voucherDiscount,
     setIsSubmitting,
     setErrorMessage,
-    setOutOfStockProductName,
+    setOutOfStockProductName
   } = deps
 
-  const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const form = event.currentTarget
-    setErrorMessage('')
-    setIsSubmitting(true)
+  function getPaymentMethodLabel() {
+    if (selectedPaymentMethod === 'CARD') return t('checkout.shipping.paymentMethods.card')
+    if (selectedPaymentMethod === 'MOMO') return t('checkout.shipping.paymentMethods.momo')
+    if (selectedPaymentMethod === 'VNPAY') return t('checkout.shipping.paymentMethods.vnpay')
+    return t('checkout.shipping.paymentMethods.cash')
+  }
 
-    try {
-      // --- Validate voucher ---
-      if (voucherCode) {
-        try {
-          const voucherRes = await fetchActiveVouchersApi({ size: 100 })
-          const currentVoucher = voucherRes?.data?.content?.find((v) => v.voucherCode === voucherCode)
-          const stillEligible = currentVoucher ? isVoucherEligible(currentVoucher, subtotal) : false
+  const handleSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+      const form = event.currentTarget
+      setErrorMessage('')
+      setIsSubmitting(true)
 
-          if (!stillEligible) {
-            sessionStorage.removeItem(SESSION_KEY_VOUCHER_CODE)
-            sessionStorage.removeItem(SESSION_KEY_VOUCHER_NAME)
-            sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
-            setVoucherCode('')
-            setVoucherName('')
-            setVoucherDiscount(0)
-            setErrorMessage(t('checkout.voucherNoLongerValid', 'Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác.'))
-            return
-          }
-        } catch {
+      try {
+        if (voucherCode) {
+          try {
+            const voucherRes = await fetchActiveVouchersApi({ size: 100 })
+            const currentVoucher = voucherRes?.data?.content?.find((v) => v.voucherCode === voucherCode)
+            const stillEligible = currentVoucher ? isVoucherEligible(currentVoucher, subtotal) : false
+
+            if (!stillEligible) {
+              sessionStorage.removeItem(SESSION_KEY_VOUCHER_CODE)
+              sessionStorage.removeItem(SESSION_KEY_VOUCHER_NAME)
+              sessionStorage.removeItem(SESSION_KEY_VOUCHER_DISCOUNT)
+              setVoucherCode('')
+              setVoucherName('')
+              setVoucherDiscount(0)
+              setErrorMessage('checkout.voucherNoLongerValid')
+              return
+            }
+          } catch {}
         }
+
+        const formData = new FormData(form)
+        const finalAddress = selectedAddress || getFormString(formData, 'address')
+
+        if (!finalAddress) {
+          setErrorMessage('checkout.shipping.addressRequired')
+          return
+        }
+
+        if (!deliveryLat || !deliveryLng) {
+          setErrorMessage('checkout.shipping.addressRequiredMap')
+          return
+        }
+
+        const phoneNumber = getFormString(formData, 'phoneNumber')
+        if (!phoneNumber || !/^0\d{9}$/.test(phoneNumber)) {
+          setErrorMessage('checkout.shipping.phoneRequired')
+          return
+        }
+        if (pendingOrder) {
+          await submitPendingOrder(formData, finalAddress, phoneNumber)
+        } else {
+          await submitNewOrder(formData, finalAddress, phoneNumber)
+        }
+      } catch (error: unknown) {
+        await handleSubmitError(error)
+      } finally {
+        setIsSubmitting(false)
       }
-
-      // --- Validate form fields ---
-      const formData = new FormData(form)
-      const finalAddress = selectedAddress || getFormString(formData, 'address')
-
-      if (!finalAddress) {
-        setErrorMessage(t('checkout.addressRequired', 'Vui lòng chọn địa chỉ giao hàng.'))
-        return
-      }
-
-      if (!deliveryLat || !deliveryLng) {
-        setErrorMessage(t('checkout.addressRequired', 'Vui lòng chọn địa chỉ giao hàng trên bản đồ.'))
-        return
-      }
-
-      const phoneNumber = getFormString(formData, 'phoneNumber')
-      if (!phoneNumber || !/^0\d{9}$/.test(phoneNumber)) {
-        setErrorMessage(t('checkout.phoneRequired', 'Vui lòng nhập số điện thoại hợp lệ (10 chữ số, bắt đầu bằng số 0).'))
-        return
-      }
-
-      // --- Submit order ---
-      if (pendingOrder) {
-        await submitPendingOrder(formData, finalAddress, phoneNumber)
-      } else {
-        await submitNewOrder(formData, finalAddress, phoneNumber)
-      }
-    } catch (error: unknown) {
-      await handleSubmitError(error)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }, [
-    voucherCode, subtotal, selectedAddress, deliveryLat, deliveryLng,
-    pendingOrder, clearCheckoutSession, selectedPaymentMethod,
-    cartItems, navigate, rawCartItems, shippingFee, isFreeShipping,
-    voucherDiscount, t, setIsSubmitting, setErrorMessage, setVoucherCode,
-    setVoucherName, setVoucherDiscount, setOutOfStockProductName,
-    setRawCartItems, setCartItems,
-  ])
-
-  // --- Update existing pending order ---
+    },
+    [
+      voucherCode,
+      subtotal,
+      selectedAddress,
+      deliveryLat,
+      deliveryLng,
+      pendingOrder,
+      clearCheckoutSession,
+      selectedPaymentMethod,
+      cartItems,
+      navigate,
+      rawCartItems,
+      shippingFee,
+      isFreeShipping,
+      voucherDiscount,
+      t,
+      setIsSubmitting,
+      setErrorMessage,
+      setVoucherCode,
+      setVoucherName,
+      setVoucherDiscount,
+      setOutOfStockProductName,
+      setRawCartItems,
+      setCartItems
+    ]
+  )
   async function submitPendingOrder(formData: FormData, finalAddress: string, phoneNumber: string) {
     if (!pendingOrder) return
 
@@ -160,16 +180,21 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
       note: getFormString(formData, 'note') || undefined,
       voucherCode: voucherCode || undefined,
       latitude: deliveryLat,
-      longitude: deliveryLng,
+      longitude: deliveryLng
     }
 
     const response = await updateOrderApi(pendingOrder.orderId, updateRequest)
     const orderId = pendingOrder.orderId
-    clearCheckoutSession()
-    clearCheckoutSessionData()
-    guestCart.clear()
 
-    const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế' : 'Tiền mặt'
+    if (selectedPaymentMethod === 'CASH') {
+      clearCheckoutSession()
+      clearCheckoutSessionData()
+      guestCart.clear()
+    } else {
+      guestCart.clear()
+    }
+
+    const paymentMethodLabel = getPaymentMethodLabel()
 
     const lastOrderDetails = {
       orderId,
@@ -183,7 +208,10 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
       shippingFee: response.data?.shippingFee ?? pendingOrder.shippingFee,
       isFreeShipping: (response.data?.shippingFee ?? pendingOrder.shippingFee) === 0,
       voucherDiscount: response.data
-        ? Math.max(0, pendingOrder.subtotal + (response.data.shippingFee ?? pendingOrder.shippingFee) - response.data.finalAmount)
+        ? Math.max(
+            0,
+            pendingOrder.subtotal + (response.data.shippingFee ?? pendingOrder.shippingFee) - response.data.finalAmount
+          )
         : pendingOrder.voucherDiscount,
       subtotal: pendingOrder.subtotal,
       finalAmount: response.data?.finalAmount || pendingOrder.finalAmount,
@@ -191,16 +219,15 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
         productId: item.productId || item.key,
         name: item.title || '',
         price: item.price,
+        salePrice: item.salePrice,
         quantity: item.quantity,
-        imageUrl: item.image,
-      })),
+        imageUrl: item.image
+      }))
     }
 
     sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
-    await navigateAfterSubmit(orderId, response.data?.clientSecret || pendingOrder.clientSecret || '', lastOrderDetails)
+    await navigateAfterSubmit(orderId, response.data, lastOrderDetails)
   }
-
-  // --- Create brand new order ---
   async function submitNewOrder(formData: FormData, finalAddress: string, phoneNumber: string) {
     const request: CreateOrderRequest = {
       recipientName: getFormString(formData, 'recipientName'),
@@ -210,20 +237,26 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
       voucherCode: voucherCode || undefined,
       latitude: deliveryLat,
       longitude: deliveryLng,
-      paymentMethod: selectedPaymentMethod,
+      paymentMethod: selectedPaymentMethod
     }
 
     const response = await createOrderApi(request)
     const orderId = response.data?.orderId
-    clearCheckoutSession()
 
     if (!orderId) {
-      throw new Error('Không nhận được mã đơn hàng từ hệ thống.')
+      throw new Error(t('checkout.shipping.orderIdMissing'))
     }
 
-    clearCheckoutSessionData()
-    guestCart.clear()
-    const paymentMethodLabel = selectedPaymentMethod === 'CARD' ? 'Thẻ quốc tế' : 'Tiền mặt'
+    if (selectedPaymentMethod === 'CASH') {
+      clearCheckoutSession()
+      clearCheckoutSessionData()
+      guestCart.clear()
+    } else {
+      sessionStorage.setItem('petbuddy_checkout_pending_order_id', String(orderId))
+      guestCart.clear()
+    }
+
+    const paymentMethodLabel = getPaymentMethodLabel()
 
     const lastOrderDetails = {
       orderId,
@@ -238,37 +271,35 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
       isFreeShipping,
       voucherDiscount,
       subtotal,
-      finalAmount:
-        response.data?.finalAmount ||
-        subtotal + (isFreeShipping ? 0 : shippingFee) - voucherDiscount,
+      finalAmount: response.data?.finalAmount || subtotal + (isFreeShipping ? 0 : shippingFee) - voucherDiscount,
       items: rawCartItems.map((item) => ({
         productId: item.productId,
         name: item.productName,
         price: item.price,
+        salePrice: item.salePrice,
         quantity: item.quantity,
-        imageUrl: item.imageUrl,
-      })),
+        imageUrl: item.imageUrl
+      }))
     }
 
     sessionStorage.setItem('petbuddy_last_order', JSON.stringify(lastOrderDetails))
-    await navigateAfterSubmit(orderId, response.data?.clientSecret || '', lastOrderDetails)
+    await navigateAfterSubmit(orderId, response.data, lastOrderDetails)
   }
-
-  // --- Navigate to payment or success ---
   async function navigateAfterSubmit(
     orderId: number,
-    clientSecretHint: string,
+    orderData: OrderResponse | null | undefined,
     lastOrderDetails: { finalAmount: number; shippingFee: number; isFreeShipping: boolean }
   ) {
     if (selectedPaymentMethod === 'CARD') {
-      let clientSecret = clientSecretHint
+      let clientSecret =
+        orderData?.clientSecret || orderData?.payment?.stripeClientSecret || pendingOrder?.clientSecret || ''
 
       if (!clientSecret) {
         try {
           const paymentRes = await getPaymentByOrderIdApi(orderId)
           clientSecret = paymentRes.data?.stripeClientSecret || ''
         } catch (payErr) {
-          console.error('Lỗi lấy thông tin PaymentIntent:', payErr)
+          console.error('Error fetching PaymentIntent:', payErr)
         }
       }
 
@@ -278,13 +309,52 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
           clientSecret,
           amount: lastOrderDetails.finalAmount,
           shippingFee: lastOrderDetails.shippingFee,
-          isFreeShipping: lastOrderDetails.isFreeShipping,
-        },
+          isFreeShipping: lastOrderDetails.isFreeShipping
+        }
       })
+    } else if (selectedPaymentMethod === 'MOMO') {
+      let momoPayUrl = orderData?.payment?.momoPayUrl
+
+      if (!momoPayUrl) {
+        try {
+          const paymentRes = await getPaymentByOrderIdApi(orderId)
+          momoPayUrl = paymentRes.data?.momoPayUrl
+        } catch (payErr) {
+          console.error('Error fetching MoMo payment URL:', payErr)
+        }
+      }
+
+      if (momoPayUrl) {
+        sessionStorage.setItem('pendingMomoOrderId', String(orderId))
+        sessionStorage.removeItem('isMomoRetry')
+        window.location.href = momoPayUrl
+      } else {
+        setErrorMessage('checkout.momoUrlMissing')
+      }
+    } else if (selectedPaymentMethod === 'VNPAY') {
+      let vnpayPayUrl = orderData?.payment?.vnpayPayUrl
+
+      if (!vnpayPayUrl) {
+        try {
+          const paymentRes = await getPaymentByOrderIdApi(orderId)
+          vnpayPayUrl = paymentRes.data?.vnpayPayUrl
+        } catch (payErr) {
+          console.error('Error fetching VNPAY payment URL:', payErr)
+        }
+      }
+
+      if (vnpayPayUrl) {
+        sessionStorage.setItem('pendingVnPayOrderId', String(orderId))
+        sessionStorage.removeItem('isVnPayRetry')
+        window.location.href = vnpayPayUrl
+      } else {
+        setErrorMessage('checkout.vnpayUrlMissing')
+      }
     } else {
       navigate('/order-success')
     }
   }
+
   async function handleSubmitError(error: unknown) {
     const apiError = error as { message?: string; data?: { message?: string; code?: string | number } }
     const rawMessage = apiError?.data?.message ?? (error instanceof Error ? error.message : '')
@@ -306,8 +376,7 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
         productName = matchedItem.productName
         try {
           await removeCartItemApi(matchedItem.cartItemId)
-        } catch {
-        }
+        } catch {}
         setRawCartItems((prev) => prev.filter((i) => i.cartItemId !== matchedItem.cartItemId))
         setCartItems((prev) => prev.filter((i) => i.key !== matchedItem.cartItemId))
       } else if (rawCartItems.length === 1) {
@@ -315,14 +384,13 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
         productName = onlyItem.productName
         try {
           await removeCartItemApi(onlyItem.cartItemId)
-        } catch {
-        }
+        } catch {}
         setRawCartItems([])
         setCartItems([])
       }
-      setOutOfStockProductName(productName || 'Sản phẩm đã hết hàng')
+      setOutOfStockProductName(productName || t('checkout.shipping.outOfStockDefault'))
     } else {
-      setErrorMessage(error instanceof Error ? error.message : t('checkout.createError'))
+      setErrorMessage(error instanceof Error ? error.message : 'checkout.shipping.orderIdMissing')
     }
   }
 

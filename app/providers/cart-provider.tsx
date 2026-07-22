@@ -2,11 +2,9 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 import { axiosInstance } from '~/api/mutator/custom-fetch'
 import { env } from '~/shared/config/env'
 import { STORAGE_KEYS } from '~/shared/config/site'
-import { readStorage } from '~/shared/lib/storage'
-import { guestCart } from '~/shared/lib/guest-cart'
+import { readStorage, removeStorage } from '~/shared/lib/storage'
+import { guestCart } from '~/shared/lib/cart'
 import { useAuth } from './auth-provider'
-
-// ─── Types ──────────────────────────────────────────────────────────────────────
 
 interface CartContextValue {
   cartCount: number
@@ -16,11 +14,11 @@ interface CartContextValue {
   refetchCart: () => Promise<void>
 }
 
-// ─── Context ────────────────────────────────────────────────────────────────────
-
 const CartContext = createContext<CartContextValue | undefined>(undefined)
 
-// ─── Provider ───────────────────────────────────────────────────────────────────
+function getGuestCount() {
+  return guestCart.getAll().reduce((sum, item) => sum + item.quantity, 0)
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuth()
@@ -28,19 +26,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false)
 
   const refreshCart = useCallback(async () => {
-    // Check if token exists in localStorage (direct or via STORAGE_KEYS)
-    const token = readStorage(STORAGE_KEYS.accessToken) || localStorage.getItem('accessToken')
+    const token = readStorage(STORAGE_KEYS.accessToken)
     const isLoggedIn = isAuthenticated || !!token
 
     if (!isLoggedIn) {
-      // Guest cart: read from localStorage
-      const guestItems = guestCart.getAll()
-      const count = guestItems.reduce((sum, item) => sum + item.quantity, 0)
-      setCartCount(count)
+      setCartCount(getGuestCount())
       return
     }
 
-    // Logged-in cart: query from backend using axiosInstance
     setIsLoading(true)
     try {
       const res = await axiosInstance.get(`${env.API_CART_PATH}`)
@@ -50,6 +43,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setCartCount(count)
     } catch (err) {
       console.error('Failed to fetch cart count:', err)
+      // Token có thể đã hết hạn/không hợp lệ → xoá token rác và fallback về guest cart
+      // để tránh badge bị kẹt ở trạng thái sai
+      removeStorage(STORAGE_KEYS.accessToken)
+      setCartCount(getGuestCount())
     } finally {
       setIsLoading(false)
     }
@@ -73,8 +70,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     </CartContext.Provider>
   )
 }
-
-// ─── Hook ───────────────────────────────────────────────────────────────────────
 
 export function useCart() {
   const ctx = useContext(CartContext)

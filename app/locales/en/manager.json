@@ -5,116 +5,6 @@
     "subtitle": "Detailed inventory import/export history - District 1",
     "title": "Inventory Transaction History"
   },
-  "managerDashboard": {
-    "title": "Overview dashboard",
-    "subtitle": "Track store operations, appointments, and priority tasks at a glance.",
-    "hero": {
-      "leading": "Dashboard",
-      "middle": "control",
-      "trailing": "overview",
-      "description": "Good morning, Manager. The system is operating smoothly.",
-      "dogAlt": "Cute golden puppy portrait in warm lighting.",
-      "catAlt": "Black cat with a focused gaze on a clean light background."
-    },
-    "stats": {
-      "revenue": {
-        "change": "+12%",
-        "label": "Today's revenue",
-        "value": "42,500,000 VND"
-      },
-      "pending": {
-        "badge": "Needs action",
-        "label": "Bookings pending approval",
-        "value": "15 requests"
-      },
-      "staff": {
-        "badge": "Normal",
-        "label": "Staff on shift",
-        "value": "8 / 12 staff"
-      },
-      "stock": {
-        "badge": "Alert",
-        "label": "Products running low",
-        "value": "04 SKUs"
-      }
-    },
-    "chart": {
-      "title": "Revenue trend",
-      "subtitle": "Seven-day performance snapshot",
-      "period": "This week",
-      "days": {
-        "mon": "Mon",
-        "tue": "Tue",
-        "wed": "Wed",
-        "thu": "Thu",
-        "fri": "Fri",
-        "sat": "Sat",
-        "sun": "Sun"
-      },
-      "values": {
-        "mon": "28M",
-        "tue": "35M",
-        "thu": "42.5M"
-      }
-    },
-    "tasks": {
-      "title": "Immediate tasks",
-      "viewAll": "View all tasks",
-      "items": {
-        "shiftSwap": {
-          "title": "Review shift swap request",
-          "subtitle": "Le Van Tam • Morning shift 20/10"
-        },
-        "cancellationApproval": {
-          "title": "Approve cancellation request",
-          "subtitle": "Order #8821 • Full Grooming"
-        },
-        "restock": {
-          "title": "Routine restock intake",
-          "subtitle": "Deadline: 3:00 PM today"
-        }
-      }
-    },
-    "appointments": {
-      "title": "Latest appointments",
-      "create": "Create new appointment",
-      "view": "View appointment details",
-      "more": "More options",
-      "columns": {
-        "customer": "Customer",
-        "pet": "Pet",
-        "service": "Service",
-        "status": "Status",
-        "actions": "Actions"
-      },
-      "rows": {
-        "nguyenHoang": {
-          "initials": "NH",
-          "customerName": "Nguyen Hoang",
-          "customerPhone": "090xxxx123",
-          "pet": "Mochi (Poodle)",
-          "service": "Full grooming",
-          "status": "Completed"
-        },
-        "tranVan": {
-          "initials": "TV",
-          "customerName": "Tran Van",
-          "customerPhone": "098xxxx456",
-          "pet": "LuLu (Shiba)",
-          "service": "Rabies vaccination",
-          "status": "Pending"
-        },
-        "quocMinh": {
-          "initials": "QM",
-          "customerName": "Quoc Minh",
-          "customerPhone": "034xxxx999",
-          "pet": "Bo (British Shorthair)",
-          "service": "Deodorizing bath and dry",
-          "status": "In service"
-        }
-      }
-    }
-  },
   "filters": {
     "apply": "Apply Filters",
     "date": "Date Range",
@@ -138,6 +28,7 @@
   "sidebar": {
     "branch": "District 1 Branch",
     "brand": "Store Ops",
+    "close": "Close menu",
     "logoAlt": "PetBuddy logo",
     "logout": "Logout",
     "roleTitle": "Store Manager",
@@ -152,10 +43,11 @@
       "restock": "Restock returns",
       "disposalApprovals": "Disposal approvals",
       "promotions": "Promotions",
+      "vouchers": "Voucher Management",
       "storeLocations": "Store Locations",
       "reviews": "Review Management",
-      "shipperAssignment": "Shipper Assignment",
-      "auditLogs": "System Logs"
+      "auditLogs": "System Audit Logs",
+      "shipperAssignment": "Shipper Assignment"
     },
     "toggle": "Toggle sidebar"
   },
@@ -668,124 +560,147 @@
     "export": "Export",
     "import": "Import"
   },
-  "returnRequests": {
-    "actions": {
-      "approve": "Approve",
-      "reject": "Reject",
-      "view": "View details"
-    },
-    "breadcrumb": {
-      "current": "Request approvals",
-      "ops": "Operations"
-    },
-    "details": {
-      "approveRefund": "Approve refund",
-      "cancel": "Cancel",
-      "close": "Close request details",
-      "download": "Download document",
-      "orderInfo": "Order information",
-      "payment": "Payment method",
-      "proofAlt": "Customer proof image {{index}}",
-      "proofTitle": "Customer-provided evidence",
-      "purchaseDate": "Purchase date",
-      "reasonText": "The dog harness size guide was misleading. The customer ordered size L for a 30kg Golden Retriever, but the chest strap was still too tight even when fully extended. The finish quality is good, but the item is simply too small for the pet.",
-      "reasonTitle": "Return reason",
-      "submittedBy": "Submitted on Oct 14, 2023 by {{customer}}",
-      "title": "Return request {{code}}",
-      "totalValue": "Total value",
-      "validity": "Eligibility",
-      "validityValue": "Within 30 days"
-    },
-    "filters": {
-      "all": "All requests",
-      "filter": "Filter",
-      "pending": "Pending",
-      "resolved": "Resolved"
-    },
-    "pagination": {
-      "showing": "Showing 1-10 of 24 results"
-    },
-    "products": {
-      "bed": "Orthopedic Memory Foam pet bed",
-      "collar": "Safe LED collar (Green)",
-      "feeder": "SmartCat V2 automatic feeder",
-      "harness": "Ultima Pro dog harness (Size L)"
-    },
-    "status": {
-      "pending": "Pending review",
-      "urgent": "Urgent: Missing proof",
-      "verified": "Verified"
-    },
-    "subtitle": "Reviewing 24 pending return and warranty requests.",
-    "table": {
-      "columns": {
-        "actions": "Actions",
-        "code": "Order ID",
-        "customer": "Customer",
-        "product": "Product",
-        "status": "Status",
-        "type": "Type"
+  "productManagement": {
+    "batch": {
+      "searchPlaceholder": "Search batches...",
+      "statusAll": "Status: All",
+      "sortNewest": "Sort: Newest",
+      "sortOldest": "Sort: Oldest",
+      "sortStockDesc": "Stock: High to Low",
+      "sortStockAsc": "Stock: Low to High",
+      "sortExpiryAsc": "Expiring Soon",
+      "sortExpiryDesc": "Farthest Expiry",
+      "refresh": "Refresh",
+      "title": "Batch Management",
+      "actions": "Actions",
+      "intakeTitle": "Import Multiple Batches",
+      "addRow": "Add Row",
+      "confirmImport": "Confirm Import",
+      "stt": "No.",
+      "quantity": "Quantity",
+      "quantityPlaceholder": "0",
+      "basePrice": "Base Price",
+      "basePricePlaceholder": "0",
+      "expiryDate": "Expiry Date",
+      "batchList": "Batch List ({{count}})",
+      "importSuccess": "Batches imported successfully!",
+      "batchCode": "Batch Code",
+      "daysRemaining": "Days Remaining",
+      "status": "Status",
+      "expired": "Expired",
+      "daysCount": "{{count}} days",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "statusDeleted": "Deleted",
+      "viewDetail": "View Details",
+      "edit": "Edit",
+      "delete": "Delete",
+      "noBatches": "No batches found",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "deletedAt": "Deleted At",
+      "errors": {
+        "invalidBatch": "Please fill in all information (Quantity > 0, Base Price >= 0, Expiry Date)",
+        "submitFailed": "Failed to import batches",
+        "updateFailed": "Failed to update batch",
+        "deleteFailed": "Failed to delete batch"
       }
     },
-    "title": "Complaint Management",
-    "types": {
-      "return": "Return",
-      "warranty": "Warranty"
-    }
-  },
-  "disposalApprovals": {
-    "actions": {
-      "approve": "Approve",
-      "approveDisposal": "Approve disposal",
-      "reject": "Reject",
-      "view": "View details"
+    "deleteDialog": {
+      "close": "Close",
+      "title": "Delete product?",
+      "reason": "Reason for deletion",
+      "optional": "optional",
+      "reasonPlaceholder": "Enter reason for deletion...",
+      "note": "Note",
+      "notePlaceholder": "Enter additional notes...",
+      "cancel": "Cancel",
+      "confirm": "Confirm delete"
     },
     "detail": {
-      "code": "Code {{code}}",
-      "damageValue": "Damage value",
-      "evidence": "Evidence photos (2)",
-      "evidenceAlt": "Disposal evidence image {{index}}",
-      "kicker": "Request details",
-      "location": "Location",
-      "locationValue": "Store A - Shelf 4B",
-      "more": "Request options",
-      "note": "The product arrived with a large crack on the rear glass panel. It is unsafe to display or use for pets and was immediately moved to the quarantine area.",
-      "noteTitle": "Staff note",
-      "close": "Close request details"
-    },
-    "pendingBadge": "{{count}} pending",
-    "products": {
-      "salmonFood": "Premium salmon dry food 5kg",
-      "terrarium": "Glass terrarium size M",
-      "tunaPate": "Tuna pate for cats 80g"
-    },
-    "reasons": {
-      "damaged": "Damaged",
-      "expired": "Expired"
-    },
-    "staff": {
-      "hieuPham": "Hieu Pham",
-      "minhTran": "Minh Tran",
-      "sarahNguyen": "Sarah Nguyen"
-    },
-    "subtitle": "Review and approve disposal requests for expired or damaged products.",
-    "table": {
-      "columns": {
-        "actions": "Actions",
-        "product": "Product",
-        "quantity": "Qty",
-        "reason": "Reason",
-        "staff": "Staff"
+      "productCode": "Product Code",
+      "productName": "Product Name",
+      "status": "Status",
+      "statusUnknown": "Unknown",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "statusDeleted": "Deleted",
+      "category": "Category",
+      "brand": "Brand",
+      "salePrice": "Sale Price",
+      "totalStock": "Total Stock",
+      "totalBatches": "Total Batches",
+      "createdAt": "Created At",
+      "updatedAt": "Last Updated",
+      "title": "Product Details",
+      "backToList": "Back to list",
+      "deleteProduct": "Delete product",
+      "editProduct": "Edit",
+      "images": "Images",
+      "video": "Video",
+      "thumbnail": "Thumbnail",
+      "setThumbnail": "Set as thumbnail",
+      "thumbnailHint": "Hover over an image and click \"Set as thumbnail\" to set it as the product thumbnail",
+      "noImages": "No images for this product",
+      "noVideo": "No video for this product",
+      "videoNotSupported": "Your browser does not support video.",
+      "description": "Product Description",
+      "noDescription": "No description for this product.",
+      "ingredients": "Ingredients",
+      "usageInstructions": "Usage Instructions",
+      "errors": {
+        "loadFailed": "Failed to load product information",
+        "imagesLoadFailed": "Failed to load product images",
+        "videoLoadFailed": "Failed to load product video",
+        "thumbnailUpdateFailed": "Failed to update thumbnail",
+        "deleteFailed": "Failed to delete product"
       }
     },
-    "times": {
-      "today0915": "Today, 09:15",
-      "today1145": "Today, 11:45",
-      "yesterday1430": "Yesterday, 14:30"
+    "createModal": {
+      "title": "Add New Product",
+      "subtitle": "Please fill in the new product information below",
+      "close": "Close",
+      "name": "Product Name",
+      "namePlaceholder": "Enter product name",
+      "price": "Price (VND)",
+      "brand": "Brand",
+      "brandPlaceholder": "Whiskas, Pedigree, etc.",
+      "category": "Category",
+      "selectCategory": "-- Select category --",
+      "unit": "Unit",
+      "selectUnit": "-- Select unit --",
+      "weight": "Weight (g)",
+      "weightPlaceholder": "Enter product weight",
+      "description": "Product Description",
+      "descriptionPlaceholder": "Enter detailed product information...",
+      "ingredients": "Ingredients",
+      "ingredientsPlaceholder": "Enter product ingredients...",
+      "usageInstructions": "Usage Instructions",
+      "usagePlaceholder": "Enter usage instructions...",
+      "images": "Product Images",
+      "selectedImages": "Selected Images",
+      "previewAlt": "Preview",
+      "uploadImages": "Upload New Images",
+      "uploadImagesLabel": "Select image files to upload",
+      "uploadImagesHint": "JPG, PNG format max 5MB (Max 4 images)",
+      "video": "Product Video",
+      "uploadVideo": "Upload New Video",
+      "uploadVideoLabel": "Select video file to upload",
+      "uploadVideoHint": "MP4 format max 50MB",
+      "cancel": "Cancel",
+      "save": "Save Product",
+      "errors": {
+        "nameRequired": "Product name is required",
+        "priceInvalid": "Price cannot be negative",
+        "brandRequired": "Brand is required",
+        "categoryRequired": "Please select a category",
+        "unitRequired": "Please select a product unit",
+        "maxImages": "Maximum 4 images allowed",
+        "weightRequired": "Weight is required",
+        "weightInvalid": "Weight must be greater than 0",
+        "createFailed": "Failed to create product"
+      }
     },
-    "title": "Disposal Requests"
-  },
-  "productManagement": {
     "title": "Product Management",
     "subtitle": "Track categories, pricing, stock levels, and product availability.",
     "searchPlaceholder": "Search products...",
@@ -825,15 +740,19 @@
     "status": {
       "active": "Active",
       "inactive": "Inactive",
-      "deleted": "Deleted"
+      "deleted": "Deleted",
+      "outOfStock": "Out of Stock",
+      "lowStock": "Low Stock"
     },
     "stock": {
-      "low": "Low stock"
+      "low": "Low stock",
+      "outOfStock": "Out of Stock"
     },
     "table": {
       "columns": {
         "actions": "Actions",
         "category": "Category",
+        "code": "SKU",
         "name": "Product Name",
         "brand": "Brand",
         "price": "Price",
@@ -845,24 +764,71 @@
       "noProductsDesc": "Try adjusting your filters or keyword query"
     },
     "editModal": {
+      "weight": "Weight (kg)",
+      "weightPlaceholder": "Enter product weight",
       "title": "Edit Product",
-      "code": "Product Code",
+      "statusLabel": "Status:",
       "name": "Product Name",
-      "price": "Unit Price",
-      "brand": "Brand Name",
+      "price": "Price",
+      "brand": "Brand",
       "category": "Category",
-      "stock": "Total Stock",
+      "selectCategory": "-- Select category --",
       "status": "Status",
+      "stock": "Stock",
+      "unit": "Unit",
+      "selectUnit": "-- Select unit --",
       "description": "Description",
-      "imageUrls": "Product Images",
-      "currentImages": "Current Images",
-      "uploadNew": "Upload New Images",
-      "newImagesPreview": "New Images Preview",
-      "save": "Save Changes",
+      "ingredients": "Ingredients",
+      "usageInstructions": "Usage Instructions",
+      "reason": "Reason for change",
+      "note": "Note",
+      "optional": "optional",
+      "reasonPlaceholder": "Enter reason for product change...",
+      "notePlaceholder": "Enter additional notes...",
+      "images": "Product Images",
+      "currentImages": "Current images (click to keep):",
+      "productImage": "Product",
+      "allImagesDeleted": "All images will be deleted",
+      "keepingImages": "Keeping",
+      "uploadNewImages": "Add new images (max 4 images total):",
+      "selectImages": "Select images",
+      "selectedImagesCount": "Selected {{count}} images",
+      "preview": "Preview",
+      "video": "Product Video",
+      "currentVideo": "Current video",
+      "deleteVideo": "Delete video",
+      "videoMarkedForDeletion": "Video marked for deletion",
+      "undo": "Undo",
+      "replaceVideo": "Replace with new video:",
+      "selectVideo": "Select video",
+      "videoSelected": "Selected: {{name}}",
+      "hasVideo": "Has video. Choose new video to replace.",
+      "noVideo": "No video. Choose video to add.",
       "cancel": "Cancel",
-      "loading": "Loading product details...",
-      "success": "Product updated successfully",
-      "error": "Failed to update product"
+      "save": "Save",
+      "errors": {
+        "loadFailed": "Failed to load product information",
+        "maxImages": "Maximum 4 images allowed (including kept and new images)",
+        "updateFailed": "Failed to update product",
+        "unitRequired": "Please select a product unit",
+        "weightRequired": "Weight is required",
+        "weightInvalid": "Weight must be greater than 0"
+      }
+    },
+    "toolbar": {
+      "searchPlaceholder": "Search by product name or SKU...",
+      "categoryLabel": "Category",
+      "categoryAll": "All",
+      "statusLabel": "Status",
+      "statusAll": "All statuses",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "statusDeleted": "Deleted",
+      "sortLabel": "Sort by",
+      "sortNewest": "Newest",
+      "sortOldest": "Oldest",
+      "sortPriceHigh": "Price high → low",
+      "sortPriceLow": "Price low → high"
     }
   },
   "unit": {
@@ -953,7 +919,6 @@
     "title": "Review Management",
     "subtitle": "View, moderate and manage customer product reviews."
   },
-
   "auditLogs": {
     "title": "System Logs",
     "subtitle": "Track change logs for payments, vouchers, and voucher usages.",
@@ -1033,6 +998,64 @@
       "expiredAt": "Expiration Time",
       "userEmail": "Customer Email",
       "usedAt": "Used Time"
+    }
+  },
+  "vouchers": {
+    "title": "Voucher Management",
+    "subtitle": "Create and manage discount vouchers for customers.",
+    "actions": {
+      "create": "Create new voucher",
+      "edit": "Edit voucher"
+    },
+    "stats": {
+      "active": "Active vouchers",
+      "totalUsed": "Total redemptions"
+    },
+    "list": {
+      "title": "Voucher list"
+    },
+    "search": {
+      "placeholder": "Search voucher code..."
+    },
+    "table": {
+      "columns": {
+        "code": "Voucher code",
+        "discount": "Discount type",
+        "expiry": "Expiry",
+        "usage": "Usage",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "maxDiscount": "Max {{value}}",
+      "minOrder": "Min order: {{value}}"
+    },
+    "expiry": {
+      "expired": "Expired",
+      "daysLeft": "{{count}} days left",
+      "noExpiry": "No expiry"
+    },
+    "usage": {
+      "count": "{{used}} uses",
+      "countWithLimit": "{{used}}/{{limit}} uses"
+    },
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "expired": "Expired"
+    },
+    "empty": {
+      "title": "No vouchers found",
+      "create": "Create voucher"
+    },
+    "pagination": {
+      "loading": "Loading...",
+      "showing": "{{count}} / {{total}} vouchers",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "errors": {
+      "loadFailed": "Failed to load voucher list.",
+      "updateFailed": "Failed to update voucher status."
     }
   }
 }

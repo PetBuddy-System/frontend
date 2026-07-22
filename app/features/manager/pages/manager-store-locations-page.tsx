@@ -178,14 +178,16 @@ export function ManagerStoreLocationsPage() {
         <ManagerTopNav titleKey='storeLocations.title' subtitleKey='storeLocations.subtitle' />
         <main className='flex-1 overflow-y-auto bg-background p-4 md:p-6 pb-24'>
           <div className='mx-auto flex max-w-6xl flex-col gap-8'>
-
             {/* Title Section */}
             <div className='text-center'>
               <h1 className='font-display text-2xl font-bold text-foreground md:text-3xl mb-2'>
                 {t('storeLocations.title', 'Chọn vị trí trên bản đồ')}
               </h1>
               <p className='text-sm text-muted-foreground'>
-                {t('storeLocations.subtitle', 'Xác định chính xác vị trí cửa hàng của bạn để khách hàng dễ dàng tìm kiếm')}
+                {t(
+                  'storeLocations.subtitle',
+                  'Xác định chính xác vị trí cửa hàng của bạn để khách hàng dễ dàng tìm kiếm'
+                )}
               </p>
             </div>
 
@@ -200,10 +202,7 @@ export function ManagerStoreLocationsPage() {
             {/* Map + edit form - only visible when updating/creating */}
             {mode !== 'view' && (
               <>
-                <StoreLocationMap
-                  coords={coords}
-                  updateLocation={updateLocation}
-                />
+                <StoreLocationMap coords={coords} updateLocation={updateLocation} />
                 <StoreLocationEditForm
                   mode={mode}
                   selectedAddress={selectedAddress}
@@ -219,10 +218,7 @@ export function ManagerStoreLocationsPage() {
             )}
 
             {/* History locations */}
-            <StoreLocationHistory
-              historyLocations={historyLocations}
-            />
-
+            <StoreLocationHistory historyLocations={historyLocations} />
           </div>
         </main>
       </div>

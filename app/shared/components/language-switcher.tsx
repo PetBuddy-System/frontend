@@ -1,41 +1,23 @@
 import { useTranslation } from 'react-i18next'
 
-import { cn } from '~/shared/lib/cn'
-import { SUPPORTED_LANGUAGES, type Language } from '~/shared/lib/i18n'
+import { VN, GB } from 'country-flag-icons/react/3x2'
 
-const LABEL: Record<Language, string> = {
-  en: 'EN',
-  vi: 'VI'
-}
+import { Button } from '~/shared/ui/button'
+import { type Language } from '~/shared/lib/i18n'
 
 export function LanguageSwitcher() {
   const { i18n } = useTranslation()
   const current = (i18n.resolvedLanguage ?? 'vi') as Language
+  const nextLang: Language = current === 'vi' ? 'en' : 'vi'
 
   return (
-    <div
-      role='group'
-      aria-label='Language'
-      className='inline-flex items-center rounded-full border border-border bg-card p-0.5 text-sm'
+    <Button
+      variant='outline'
+      onClick={() => i18n.changeLanguage(nextLang)}
+      aria-label={`Chuyển sang ${nextLang === 'vi' ? 'Tiếng Việt' : 'English'}`}
+      className='h-8 w-12 rounded-full p-0'
     >
-      {SUPPORTED_LANGUAGES.map((lng) => {
-        const active = lng === current
-        return (
-          <button
-            key={lng}
-            type='button'
-            onClick={() => i18n.changeLanguage(lng)}
-            aria-pressed={active}
-            className={cn(
-              'h-8 min-w-9 rounded-full px-3 font-medium transition-colors',
-              'focus:outline-none focus:ring-2 focus:ring-ring',
-              active ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'
-            )}
-          >
-            {LABEL[lng]}
-          </button>
-        )
-      })}
-    </div>
+      {current === 'vi' ? <VN className='size-5' /> : <GB className='size-5' />}
+    </Button>
   )
 }

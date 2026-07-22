@@ -1,0 +1,92 @@
+{
+  "list": {
+    "loading": "Loading return request history...",
+    "empty": "You haven't submitted any return or warranty requests yet.",
+    "header": {
+      "orderRef": "(Order: #{{orderCode}})",
+      "type": "Request type:",
+      "createdAt": "Created at:",
+      "expectedRefund": "Expected refund",
+      "cancelRequest": "Cancel return request",
+      "loadingDetail": "Loading detail..."
+    },
+    "detail": {
+      "reason": "Return reason",
+      "description": "Detailed description",
+      "refund": {
+        "title": "Refund information",
+        "method": "Refund method:",
+        "methodStripe": "Original payment account",
+        "methodBank": "Bank transfer",
+        "status": "Refund status:",
+        "total": "Total amount:",
+        "bankName": "Bank name:",
+        "bankAccount": "Account number:",
+        "bankHolder": "Account holder:"
+      },
+      "items": {
+        "title": "Returned products ({{count}})",
+        "quantity": "Quantity:",
+        "refundAmount": "Refund amount:"
+      },
+      "media": {
+        "title": "Attached images",
+        "alt": "Attachment {{index}}"
+      },
+      "processing": {
+        "title": "Processing information",
+        "processedBy": "Processed by:",
+        "processedAt": "Processed at:",
+        "completedAt": "Completed at:",
+        "staffNote": "Note:",
+        "addressLabel": "Shipping / return address"
+      },
+      "actions": {
+        "cancel": "Cancel request"
+      }
+    }
+  },
+  "status": {
+    "PENDING": "Pending",
+    "APPROVED": "Approved",
+    "PICKING_UP": "Picking up",
+    "PICKED_UP": "Picked up",
+    "PICKUP_FAILED": "Pickup failed",
+    "RETURNED_TO_STORE": "Returned to store",
+    "READY_TO_DELIVER": "Ready to deliver",
+    "DELIVERING": "Delivering",
+    "DELIVERING_FAILED": "Delivery failed",
+    "REJECTED": "Rejected",
+    "CANCELLED": "Cancelled",
+    "COMPLETED": "Completed"
+  },
+  "type": {
+    "RETURN": "Return & refund",
+    "EXCHANGE": "Exchange"
+  },
+  "reason": {
+    "DAMAGED": "Product was severely damaged upon delivery",
+    "WRONG_PRODUCT": "Wrong product delivered",
+    "MISSING_ITEM": "Missing product",
+    "EXPIRED": "Product expired",
+    "CUSTOMER_CHANGED_MIND": "Customer changed mind",
+    "OTHER": "Other reason"
+  },
+  "refundStatus": {
+    "NOT_REQUIRED": "No refund required",
+    "PENDING": "Refund pending",
+    "SUCCESS": "Refunded",
+    "FAILED": "Refund failed"
+  },
+  "cancel": {
+    "title": "Confirm cancellation",
+    "description": "Are you sure you want to cancel this return request? This action cannot be undone.",
+    "keep": "No, keep it",
+    "confirm": "Yes, cancel",
+    "submitting": "Cancelling...",
+    "error": {
+      "generic": "Failed to cancel request",
+      "system": "System error while cancelling request"
+    }
+  }
+}

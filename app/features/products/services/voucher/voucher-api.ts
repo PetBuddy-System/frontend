@@ -1,10 +1,6 @@
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
-import type {
-  VoucherResponse,
-  ApiResponse,
-  PageResponse
-} from '~/shared/lib/voucher'
+import type { VoucherResponse, ApiResponse, PageResponse } from '~/shared/lib/voucher'
 
 const VOUCHER_BASE_URL = `${env.API_URL}${env.API_VOUCHERS_PATH}`
 
@@ -18,7 +14,7 @@ export async function fetchActiveVouchersApi(params?: {
     params: {
       page: params?.page ?? 0,
       size: params?.size ?? 100,
-      sortBy: 'createdAt',
-    },
+      sortBy: 'createdAt'
+    }
   })
 }

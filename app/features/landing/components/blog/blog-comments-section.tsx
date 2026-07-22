@@ -6,9 +6,7 @@ export function BlogCommentsSection() {
   return (
     <div className='mx-auto mt-8 max-w-4xl px-4 pb-12 md:px-6'>
       <div className='rounded-2xl border border-border/60 bg-card p-6'>
-        <h3 className='font-display text-xl font-bold text-foreground'>
-          {t('detail.comments')}
-        </h3>
+        <h3 className='font-display text-xl font-bold text-foreground'>{t('detail.comments')}</h3>
         <div className='mt-5 space-y-4'>
           <textarea
             rows={4}

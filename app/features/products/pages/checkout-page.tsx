@@ -74,17 +74,11 @@ export function CheckoutPage() {
               {t('checkout.title')}
             </h1>
 
-            {errorMessage && (
-              <div className='flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
-                <MaterialIcon name='error' className='mt-0.5 shrink-0 text-[20px]' />
-                <p>{errorMessage}</p>
-              </div>
-            )}
-
             <CheckoutShippingForm
               addressValue={selectedAddress}
               defaultName={user?.fullName}
               defaultPhone={pendingOrder ? toPhoneDisplay(sessionStorage.getItem('petbuddy_checkout_phone') ?? '') : undefined}
+              errorMessage={errorMessage}
             />
 
             <CheckoutPaymentMethods

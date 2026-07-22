@@ -14,8 +14,10 @@ import {
   createTimeSlotApi,
   fetchCatalogsApi,
   fetchTimeSlotsByCatalogApi,
+  deleteCatalogImageApi,
   updateCatalogApi,
   updateCatalogStatusApi,
+  uploadCatalogImageApi,
   toggleTimeSlotActiveApi,
   updateTimeSlotApi
 } from '../services/catalog'
@@ -86,11 +88,12 @@ export function AdminServicesPage({ sidebar, topNav }: AdminServicesPageProps = 
     }
   }, [catalogs])
 
-  async function handleCreateCatalog(payload: CatalogRequest) {
+  async function handleCreateCatalog(payload: CatalogRequest, imageFile?: File) {
     setIsSaving(true)
     try {
       const response = await createCatalogApi(payload)
-      const createdCatalog = mapCatalogResponseToAdminCatalog(response.data)
+      const imageResponse = imageFile ? await uploadCatalogImageApi(response.data.catalogId, imageFile) : null
+      const createdCatalog = mapCatalogResponseToAdminCatalog(imageResponse?.data ?? response.data)
       setCatalogs((currentCatalogs) => [createdCatalog, ...currentCatalogs])
       setIsCreateServiceOpen(false)
       setErrorMessage(null)
@@ -101,11 +104,16 @@ export function AdminServicesPage({ sidebar, topNav }: AdminServicesPageProps = 
     }
   }
 
-  async function handleUpdateCatalog(service: AdminCatalog) {
+  async function handleUpdateCatalog(service: AdminCatalog, imageFile?: File, shouldDeleteImage = false) {
     setIsSaving(true)
     try {
       const response = await updateCatalogApi(service.catalogId, mapAdminCatalogToCatalogRequest(service))
-      const updatedCatalog = mapCatalogResponseToAdminCatalog(response.data)
+      const imageResponse = imageFile
+        ? await uploadCatalogImageApi(service.catalogId, imageFile)
+        : shouldDeleteImage
+          ? await deleteCatalogImageApi(service.catalogId)
+          : null
+      const updatedCatalog = mapCatalogResponseToAdminCatalog(imageResponse?.data ?? response.data)
       setCatalogs((currentCatalogs) =>
         currentCatalogs.map((catalog) => (catalog.catalogId === updatedCatalog.catalogId ? updatedCatalog : catalog))
       )

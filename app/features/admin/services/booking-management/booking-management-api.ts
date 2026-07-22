@@ -7,8 +7,10 @@ import { readStorage } from '~/shared/lib/storage'
 export enum BookingStatus {
   PENDING_PAYMENT = 'PENDING_PAYMENT',
   FAILED = 'FAILED',
+  WAITING_STAFF = 'WAITING_STAFF',
   PENDING_ACCEPTANCE = 'PENDING_ACCEPTANCE',
   ACCEPTED = 'ACCEPTED',
+  ON_THE_WAY = 'ON_THE_WAY',
   IN_PROGRESS = 'IN_PROGRESS',
   READY_FOR_PICKUP = 'READY_FOR_PICKUP',
   COMPLETED = 'COMPLETED',
@@ -43,6 +45,16 @@ export interface BookingResponse {
   paymentDeadlineAt: string
   staffId: string
   staffName: string
+  requestedStaffId?: string
+  requestedStaffName?: string
+  assignedStaffId?: string
+  assignedStaffName?: string
+  latitude?: number
+  longitude?: number
+  addressNote?: string
+  distanceKm?: number
+  travelFee?: number
+  estimatedTravelMinute?: number
   bookingDetails: BookingDetailResponse[]
   payments: PaymentResponse[]
 }

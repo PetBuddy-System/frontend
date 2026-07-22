@@ -4,6 +4,9 @@ import { getStoredOrders } from './order.handler'
 
 const BASE = env.API_URL || ''
 const LOCAL_STORAGE_RETURNS_KEY = 'petbuddy_mock_returns_db'
+// Bump this version whenever INITIAL_RETURNS changes to bust the localStorage cache
+const RETURNS_DATA_VERSION = 'v4'
+const LOCAL_STORAGE_RETURNS_VERSION_KEY = 'petbuddy_mock_returns_version'
 
 export interface MockReturnRequest {
   returnRequestId: number
@@ -23,11 +26,37 @@ export interface MockReturnRequest {
   createdAt: string
   returnItems: {
     returnItemId: number
+    orderDetailId?: number
     productName: string
+    productImage?: string | null
     quantity: number
     refundAmount: number
   }[]
-  mediaFiles: string[]
+  mediaFiles: any[]
+  requestedBy?: any
+  processedBy?: any
+  coordinator?: any
+  shipper?: any
+  processedAt?: string | null
+  approvedAt?: string | null
+  pickingUpAt?: string | null
+  pickupFailedAt?: string | null
+  pickedUpAt?: string | null
+  returnedToStoreAt?: string | null
+  readyToDeliverAt?: string | null
+  deliveringAt?: string | null
+  deliveringFailedAt?: string | null
+  completedAt?: string | null
+  rejectedAt?: string | null
+  cancelledAt?: string | null
+  restockedAt?: string | null
+  pickupFailedCount?: number
+  deliveryFailedCount?: number
+  staffNote?: string | null
+  address?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  updatedAt?: string
 }
 
 const INITIAL_RETURNS: MockReturnRequest[] = [
@@ -50,6 +79,9 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
       email: 'user@gmail.com'
     },
     processedBy: null,
+    address: '123 Đường Sư Vạn Hạnh, Phường 12, Quận 10, TP.HCM',
+    latitude: 10.7769,
+    longitude: 106.7009,
     returnItems: [
       {
         returnItemId: 1,
@@ -72,7 +104,11 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
         fileUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=400&auto=format&fit=crop',
         fileType: 'IMAGE'
       }
-    ]
+    ],
+    returnedToStoreAt: null,
+    completedAt: null,
+    restockedAt: null,
+    staffNote: null
   },
   {
     returnRequestId: 2,
@@ -100,6 +136,9 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
     },
     processedAt: '2026-07-10T11:20:00.000Z',
     staffNote: 'Đã duyệt yêu cầu và chuẩn bị gửi hàng đổi mới',
+    address: '789 Đường Lê Lợi, Quận 1, TP.HCM',
+    latitude: 10.7725,
+    longitude: 106.6983,
     returnItems: [
       {
         returnItemId: 3,
@@ -109,14 +148,17 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
         refundAmount: 150000
       }
     ],
-    mediaFiles: []
+    mediaFiles: [],
+    returnedToStoreAt: null,
+    completedAt: null,
+    restockedAt: null
   },
   {
     returnRequestId: 3,
     returnCode: 'RTND4E5F6',
     orderId: 6,
     orderCode: 'OD391009',
-    type: 'WARRANTY',
+    type: 'RETURN',
     reason: 'OTHER',
     description: 'Máy cho ăn tự động không lên nguồn dù đã cắm điện',
     status: 'COMPLETED',
@@ -138,6 +180,10 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
     processedAt: '2026-07-09T09:00:00.000Z',
     completedAt: '2026-07-09T10:00:00.000Z',
     staffNote: 'Nhận bảo hành, đã kiểm tra lỗi bo mạch và hoàn tất hoàn tiền',
+    returnedToStoreAt: '2023-11-04T16:00:00.000Z',
+    address: '456 Phố Vọng, Hai Bà Trưng, Hà Nội',
+    latitude: 21.0031,
+    longitude: 105.8458,
     returnItems: [
       {
         returnItemId: 4,
@@ -153,7 +199,8 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
         fileUrl: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?q=80&w=400&auto=format&fit=crop',
         fileType: 'IMAGE'
       }
-    ]
+    ],
+    restockedAt: '2023-11-05T09:00:00.000Z'
   },
   {
     returnRequestId: 4,
@@ -190,12 +237,22 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
         refundAmount: 250000
       }
     ],
-    mediaFiles: []
+    mediaFiles: [],
+    returnedToStoreAt: null,
+    completedAt: null,
+    restockedAt: null
   }
 ]
 
 export function getStoredReturns(): MockReturnRequest[] {
   if (typeof window === 'undefined') return INITIAL_RETURNS
+  // Invalidate cache when data version changes
+  const storedVersion = localStorage.getItem(LOCAL_STORAGE_RETURNS_VERSION_KEY)
+  if (storedVersion !== RETURNS_DATA_VERSION) {
+    localStorage.setItem(LOCAL_STORAGE_RETURNS_KEY, JSON.stringify(INITIAL_RETURNS))
+    localStorage.setItem(LOCAL_STORAGE_RETURNS_VERSION_KEY, RETURNS_DATA_VERSION)
+    return INITIAL_RETURNS
+  }
   const raw = localStorage.getItem(LOCAL_STORAGE_RETURNS_KEY)
   if (!raw) {
     localStorage.setItem(LOCAL_STORAGE_RETURNS_KEY, JSON.stringify(INITIAL_RETURNS))
@@ -327,7 +384,11 @@ export const returnHandlers = [
         bankAccountHolder: body.bankAccountHolder || null,
         createdAt: new Date().toISOString(),
         returnItems,
-        mediaFiles: []
+        mediaFiles: [],
+        returnedToStoreAt: null,
+        completedAt: null,
+        restockedAt: null,
+        staffNote: null
       }
 
       returns.unshift(newReturn)
@@ -515,101 +576,131 @@ export const returnHandlers = [
 
   // 7. DANH SÁCH RETURN CHO STAFF: GET /api/management/returns
   http.get(`${BASE}/api/management/returns`, ({ request }) => {
-    const url = new URL(request.url)
-    const page = Number(url.searchParams.get('page') ?? 0)
-    const size = Number(url.searchParams.get('size') ?? 10)
-    const status = url.searchParams.get('status')
-    const orderCode = url.searchParams.get('orderCode')
-    const returnCode = url.searchParams.get('returnCode')
-    const refundMethod = url.searchParams.get('refundMethod')
-    const type = url.searchParams.get('type')
-    const fromDate = url.searchParams.get('fromDate')
-    const toDate = url.searchParams.get('toDate')
-    const keyword = url.searchParams.get('keyword')?.toLowerCase()
+    try {
+      const url = new URL(request.url)
+      const page = Number(url.searchParams.get('page') ?? 0)
+      const size = Number(url.searchParams.get('size') ?? 10)
+      const status = url.searchParams.get('status')
+      const orderCode = url.searchParams.get('orderCode')
+      const returnCode = url.searchParams.get('returnCode')
+      const refundMethod = url.searchParams.get('refundMethod')
+      const type = url.searchParams.get('type')
+      const fromDate = url.searchParams.get('fromDate')
+      const toDate = url.searchParams.get('toDate')
+      const keyword = url.searchParams.get('keyword')?.toLowerCase()
 
-    let returns = getStoredReturns()
+      let returns = getStoredReturns()
 
-    // Apply filters
-    if (status && status !== 'ALL') {
-      returns = returns.filter((r) => r.status === status)
-    }
-    if (orderCode) {
-      returns = returns.filter((r) => r.orderCode.toLowerCase().includes(orderCode.toLowerCase()))
-    }
-    if (returnCode) {
-      returns = returns.filter((r) => r.returnCode.toLowerCase().includes(returnCode.toLowerCase()))
-    }
-    if (refundMethod) {
-      returns = returns.filter((r) => r.refundMethod === refundMethod)
-    }
-    if (type) {
-      returns = returns.filter((r) => r.type === type)
-    }
-    if (fromDate) {
-      returns = returns.filter((r) => new Date(r.createdAt.split('T')[0]) >= new Date(fromDate))
-    }
-    if (toDate) {
-      returns = returns.filter((r) => new Date(r.createdAt.split('T')[0]) <= new Date(toDate))
-    }
-    if (keyword) {
-      returns = returns.filter((r) => {
-        const customerName = r.requestedBy?.fullName?.toLowerCase() || ''
-        const customerEmail = r.requestedBy?.email?.toLowerCase() || ''
-        const rCode = r.returnCode.toLowerCase()
-        const oCode = r.orderCode.toLowerCase()
-        return customerName.includes(keyword) || customerEmail.includes(keyword) || rCode.includes(keyword) || oCode.includes(keyword)
-      })
-    }
-
-    // Pagination
-    const start = page * size
-    const end = start + size
-    const pageReturns = returns.slice(start, end)
-
-    // Ensure formats
-    const formattedReturns = pageReturns.map(r => {
-      const mediaMapped = r.mediaFiles.map((m, idx) => {
-        if (typeof m === 'string') {
-          return { mediaFileId: 100 + idx, fileUrl: m, fileType: 'IMAGE' }
-        }
-        return m
-      })
-      return {
-        ...r,
-        requestedBy: r.requestedBy || {
-          userId: '96e782a8-13d8-48d0-a0af-0398f22e7504',
-          fullName: 'Khách Hàng Mock',
-          email: 'customer@petbuddy.vn'
-        },
-        mediaFiles: mediaMapped,
-        returnItems: r.returnItems.map((item, idx) => ({
-          ...item,
-          orderDetailId: item.orderDetailId || (11 + idx),
-          productImage: item.productImage || null
-        }))
+      // Apply filters
+      if (status && status !== 'ALL') {
+        returns = returns.filter((r) => r.status === status)
       }
-    })
+      if (orderCode) {
+        returns = returns.filter((r) => r.orderCode.toLowerCase().includes(orderCode.toLowerCase()))
+      }
+      if (returnCode) {
+        returns = returns.filter((r) => r.returnCode.toLowerCase().includes(returnCode.toLowerCase()))
+      }
+      if (refundMethod) {
+        returns = returns.filter((r) => r.refundMethod === refundMethod)
+      }
+      if (type) {
+        returns = returns.filter((r) => r.type === type)
+      }
+      if (fromDate) {
+        returns = returns.filter((r) => new Date(r.createdAt.split('T')[0]) >= new Date(fromDate))
+      }
+      if (toDate) {
+        returns = returns.filter((r) => new Date(r.createdAt.split('T')[0]) <= new Date(toDate))
+      }
+      if (keyword) {
+        returns = returns.filter((r) => {
+          const customerName = r.requestedBy?.fullName?.toLowerCase() || ''
+          const customerEmail = r.requestedBy?.email?.toLowerCase() || ''
+          const rCode = r.returnCode.toLowerCase()
+          const oCode = r.orderCode.toLowerCase()
+          return customerName.includes(keyword) || customerEmail.includes(keyword) || rCode.includes(keyword) || oCode.includes(keyword)
+        })
+      }
 
-    return HttpResponse.json({
-      code: 1000,
-      success: true,
-      message: 'All return requests retrieved successfully',
-      data: {
-        content: formattedReturns,
-        pageable: {
-          pageNumber: page,
-          pageSize: size
+      // Pagination
+      const start = page * size
+      const end = start + size
+      const pageReturns = returns.slice(start, end)
+
+      // Ensure formats — guard against stale localStorage data missing fields
+      const formattedReturns = pageReturns.map((r) => {
+        const safeMediaFiles = Array.isArray(r.mediaFiles) ? r.mediaFiles : []
+        const safeReturnItems = Array.isArray(r.returnItems) ? r.returnItems : []
+        const mediaMapped = safeMediaFiles.map((m, idx) => {
+          if (typeof m === 'string') {
+            return { mediaFileId: 100 + idx, fileUrl: m, fileType: 'IMAGE' }
+          }
+          return m
+        })
+        return {
+          ...r,
+          requestedBy: r.requestedBy || {
+            userId: '96e782a8-13d8-48d0-a0af-0398f22e7504',
+            fullName: 'Khách Hàng Mock',
+            email: 'customer@petbuddy.vn'
+          },
+          mediaFiles: mediaMapped,
+          returnItems: safeReturnItems.map((item, idx) => ({
+            ...item,
+            orderDetailId: item.orderDetailId || (11 + idx),
+            productImage: item.productImage || null
+          }))
+        }
+      })
+
+      const allStored = getStoredReturns()
+      const statistics = {
+        totalRequests: allStored.length,
+        assigned: allStored.filter((r) => r.shipper != null).length,
+        pending: allStored.filter((r) => r.status === 'PENDING').length,
+        approved: allStored.filter((r) => r.status === 'APPROVED').length,
+        completed: allStored.filter((r) => r.status === 'COMPLETED').length,
+        rejected: allStored.filter((r) => r.status === 'REJECTED').length
+      }
+
+      return HttpResponse.json({
+        code: 1000,
+        success: true,
+        message: 'All return requests retrieved successfully',
+        data: {
+          returns: {
+            content: formattedReturns,
+            pageable: {
+              pageNumber: page,
+              pageSize: size
+            },
+            totalElements: returns.length,
+            totalPages: Math.ceil(returns.length / size),
+            number: page,
+            size,
+            first: page === 0,
+            last: end >= returns.length,
+            empty: formattedReturns.length === 0,
+            numberOfElements: formattedReturns.length
+          },
+          statistics
         },
-        totalElements: returns.length,
-        totalPages: Math.ceil(returns.length / size),
-        number: page,
-        size,
-        first: page === 0,
-        last: end >= returns.length,
-        empty: formattedReturns.length === 0
-      },
-      timestamp: new Date().toISOString()
-    })
+        timestamp: new Date().toISOString()
+      })
+    } catch (err) {
+      console.error('[MSW] GET /api/management/returns error:', err)
+      return HttpResponse.json(
+        {
+          code: 500,
+          success: false,
+          message: 'Mock server error',
+          data: null,
+          timestamp: new Date().toISOString()
+        },
+        { status: 500 }
+      )
+    }
   }),
 
   // 8. CHI TIẾT RETURN CHO STAFF: GET /api/management/returns/{returnId}
@@ -648,7 +739,7 @@ export const returnHandlers = [
       mediaFiles: mediaMapped,
       returnItems: returnReq.returnItems.map((item, idx) => ({
         ...item,
-        orderDetailId: item.orderDetailId || (11 + idx),
+        orderDetailId: item.orderDetailId || 11 + idx,
         productImage: item.productImage || null
       }))
     }
@@ -689,23 +780,37 @@ export const returnHandlers = [
       returnReq.processedAt = new Date().toISOString()
       returnReq.updatedAt = new Date().toISOString()
 
-      // Assign mock staff who processed this
-      returnReq.processedBy = {
-        userId: '34d8ed7a-81af-456e-914d-f2decfd61d10',
-        email: 'staff2@gmail.com',
-        fullName: 'Cashier Staff',
-        role: 'STAFF',
-        staffTask: 'CASHIER',
-        status: 'ACTIVE'
-      }
-
-      if (body.status === 'COMPLETED') {
-        returnReq.completedAt = new Date().toISOString()
+      const nowStr = new Date().toISOString()
+      if (body.status === 'APPROVED') {
+        returnReq.approvedAt = nowStr
         returnReq.refundStatus = 'SUCCESS'
-      } else if (body.status === 'APPROVED') {
+      } else if (body.status === 'PICKING_UP') {
+        returnReq.pickingUpAt = nowStr
+      } else if (body.status === 'PICKED_UP') {
+        returnReq.pickedUpAt = nowStr
+      } else if (body.status === 'PICKUP_FAILED') {  // ✅ Thêm mới
+        returnReq.pickupFailedAt = nowStr
+        returnReq.pickupFailedCount = (returnReq.pickupFailedCount || 0) + 1
+        // Unassign shipper khi thất bại
+        returnReq.shipper = null
+      } else if (body.status === 'RETURNED_TO_STORE') {
+        returnReq.returnedToStoreAt = nowStr
+      } else if (body.status === 'READY_TO_DELIVER') {
+        returnReq.readyToDeliverAt = nowStr
+      } else if (body.status === 'DELIVERING') {
+        returnReq.deliveringAt = nowStr
+      } else if (body.status === 'DELIVERING_FAILED') {
+        returnReq.deliveringFailedAt = nowStr
+        returnReq.deliveryFailedCount = (returnReq.deliveryFailedCount || 0) + 1
+        returnReq.shipper = null
+      } else if (body.status === 'COMPLETED') {
+        returnReq.completedAt = nowStr
         returnReq.refundStatus = 'SUCCESS'
       } else if (body.status === 'REJECTED') {
+        returnReq.rejectedAt = nowStr
         returnReq.refundStatus = 'FAILED'
+      } else if (body.status === 'CANCELLED') {
+        returnReq.cancelledAt = nowStr
       }
 
       returns[idx] = returnReq
@@ -732,6 +837,178 @@ export const returnHandlers = [
         {
           code: 1001,
           message: err instanceof Error ? err.message : 'Lỗi cập nhật trạng thái',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
+    }
+  }),
+
+  // 10. SHIPPER STATUS UPDATE: PATCH /api/shipper/returns/:returnId/status
+  http.patch(`${BASE}/api/shipper/returns/:returnId/status`, async ({ params, request }) => {
+    try {
+      const returnId = Number(params.returnId)
+      const body = (await request.json()) as { status: string; staffNote: string }
+      const returns = getStoredReturns()
+      const idx = returns.findIndex((r) => r.returnRequestId === returnId)
+
+      if (idx === -1) {
+        return HttpResponse.json(
+          {
+            code: 1001,
+            message: 'Không tìm thấy yêu cầu hoàn trả',
+            success: false,
+            data: null,
+            timestamp: new Date().toISOString()
+          },
+          { status: 404 }
+        )
+      }
+
+      const returnReq = returns[idx]
+      returnReq.status = body.status
+      returnReq.staffNote = body.staffNote
+      returnReq.updatedAt = new Date().toISOString()
+
+      const nowStr = new Date().toISOString()
+      if (body.status === 'PICKING_UP') {
+        returnReq.pickingUpAt = nowStr
+      } else if (body.status === 'PICKED_UP') {
+        returnReq.pickedUpAt = nowStr
+      } else if (body.status === 'PICKUP_FAILED') {  // ✅ Thêm mới
+        returnReq.pickupFailedAt = nowStr
+        returnReq.pickupFailedCount = (returnReq.pickupFailedCount || 0) + 1
+        // Unassign shipper khi thất bại
+        returnReq.shipper = null
+      } else if (body.status === 'RETURNED_TO_STORE') {
+        returnReq.returnedToStoreAt = nowStr
+      } else if (body.status === 'DELIVERING') {
+        returnReq.deliveringAt = nowStr
+      } else if (body.status === 'DELIVERING_FAILED') {
+        returnReq.deliveringFailedAt = nowStr
+        returnReq.deliveryFailedCount = (returnReq.deliveryFailedCount || 0) + 1
+        returnReq.shipper = null
+      } else if (body.status === 'COMPLETED') {
+        returnReq.completedAt = nowStr
+        returnReq.refundStatus = 'SUCCESS'
+      }
+
+      returns[idx] = returnReq
+      saveReturns(returns)
+
+      return HttpResponse.json({
+        code: 1000,
+        success: true,
+        message: 'Shipper status updated successfully',
+        data: returnReq,
+        timestamp: new Date().toISOString()
+      })
+    } catch (err: unknown) {
+      return HttpResponse.json(
+        {
+          code: 1001,
+          message: err instanceof Error ? err.message : 'Lỗi cập nhật trạng thái',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
+    }
+  }),
+
+  // 11. DANH SÁCH SHIPPER KHẢ DỤNG: GET /api/shipper-assignment/available-shippers
+  http.get(`${BASE}/api/shipper-assignment/available-shippers`, () => {
+    return HttpResponse.json({
+      code: 1000,
+      success: true,
+      message: 'Available shippers retrieved successfully',
+      data: [
+        {
+          staffId: 'shipper-01',
+          staffName: 'Trần Văn Nam (Shipper)',
+          staffEmail: 'shipper1@petbuddy.vn',
+          activeReturnCount: 1
+        },
+        {
+          staffId: 'shipper-02',
+          staffName: 'Lê Minh Tuấn (Shipper)',
+          staffEmail: 'shipper2@petbuddy.vn',
+          activeReturnCount: 0
+        }
+      ],
+      timestamp: new Date().toISOString()
+    })
+  }),
+
+  // 12. PHÂN CÔNG SHIPPER: PATCH /api/shipper-assignment/:returnRequestId/assign-shipper
+  http.patch(`${BASE}/api/shipper-assignment/:returnRequestId/assign-shipper`, async ({ params, request }) => {
+    try {
+      const returnRequestId = Number(params.returnRequestId)
+      const body = (await request.json()) as { shipperId: string }
+      const returns = getStoredReturns()
+      const idx = returns.findIndex((r) => r.returnRequestId === returnRequestId)
+
+      if (idx === -1) {
+        return HttpResponse.json(
+          {
+            code: 1001,
+            message: 'Không tìm thấy yêu cầu hoàn trả',
+            success: false,
+            data: null,
+            timestamp: new Date().toISOString()
+          },
+          { status: 404 }
+        )
+      }
+
+      const returnReq = returns[idx]
+      const shipperName = body.shipperId === 'shipper-02' ? 'Lê Minh Tuấn (Shipper)' : 'Trần Văn Nam (Shipper)'
+      const shipperEmail = body.shipperId === 'shipper-02' ? 'shipper2@petbuddy.vn' : 'shipper1@petbuddy.vn'
+
+      returnReq.shipper = {
+        userId: body.shipperId,
+        fullName: shipperName,
+        email: shipperEmail,
+        role: 'STAFF',
+        staffTask: 'SHIPPER'
+      }
+
+      const nowStr = new Date().toISOString()
+
+      // ✅ Nếu đang ở DELIVERING_FAILED hoặc PICKUP_FAILED thì chuyển về status phù hợp
+      if (returnReq.status === 'DELIVERING_FAILED') {
+        returnReq.status = 'READY_TO_DELIVER'
+        returnReq.readyToDeliverAt = nowStr
+      } else if (returnReq.status === 'PICKUP_FAILED') {
+        returnReq.status = 'APPROVED'  // Quay lại APPROVED để bắt đầu lại quy trình lấy hàng
+      } else {
+        // Nếu đang ở APPROVED, chuyển sang READY_TO_DELIVER (cho EXCHANGE)
+        // hoặc giữ nguyên APPROVED (cho RETURN)
+        // Mock sẽ mặc định chuyển sang READY_TO_DELIVER
+        returnReq.status = 'READY_TO_DELIVER'
+        returnReq.readyToDeliverAt = nowStr
+      }
+
+      returnReq.updatedAt = nowStr
+
+      returns[idx] = returnReq
+      saveReturns(returns)
+
+      return HttpResponse.json({
+        code: 1000,
+        success: true,
+        message: 'Phân công shipper thành công',
+        data: null,
+        timestamp: new Date().toISOString()
+      })
+    } catch (err: unknown) {
+      return HttpResponse.json(
+        {
+          code: 1001,
+          message: err instanceof Error ? err.message : 'Lỗi phân công shipper',
           success: false,
           data: null,
           timestamp: new Date().toISOString()

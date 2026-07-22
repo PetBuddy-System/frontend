@@ -1,5 +1,5 @@
-import { StaffOrdersPage } from '~/features/staff'
+import { OrdersManagementPage } from '~/shared/components'
 
 export default function StaffOrders() {
-  return <StaffOrdersPage />
+  return <OrdersManagementPage />
 }

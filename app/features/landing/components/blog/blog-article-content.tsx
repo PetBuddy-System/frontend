@@ -41,12 +41,8 @@ export function BlogArticleContent({ content, className }: BlogArticleContentPro
           code: ({ children }) => (
             <code className='bg-muted px-1.5 py-0.5 rounded text-sm text-primary font-mono'>{children}</code>
           ),
-          pre: ({ children }) => (
-            <pre className='bg-muted p-4 rounded-xl overflow-x-auto my-5'>{children}</pre>
-          ),
-          img: ({ src, alt }) => (
-            <img src={src} alt={alt ?? ''} className='rounded-xl w-full my-6' loading='lazy' />
-          ),
+          pre: ({ children }) => <pre className='bg-muted p-4 rounded-xl overflow-x-auto my-5'>{children}</pre>,
+          img: ({ src, alt }) => <img src={src} alt={alt ?? ''} className='rounded-xl w-full my-6' loading='lazy' />,
           hr: () => <hr className='border-border my-8' />
         }}
       >

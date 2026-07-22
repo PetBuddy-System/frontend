@@ -9,7 +9,7 @@ import { mergeCartApi } from '~/features/products/services/cart/cart-api'
 import { getCurrentUserApi } from '~/features/profile/services/user/user-api'
 
 export const AUTH_QUERY_KEYS = {
-  currentUser: ['currentUser'] as const,
+  currentUser: ['currentUser'] as const
 }
 
 interface AuthContextValue {
@@ -33,25 +33,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const storedToken = readStorage(STORAGE_KEYS.accessToken)
     if (storedToken) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Auth state is hydrated from client storage after mount.
       setAccessToken(storedToken)
     }
     setIsMounted(true)
   }, [])
 
-  const {
-    data: userQueryData,
-    isLoading: isUserLoading,
-  } = useQuery({
+  const { data: userQueryData, isLoading: isUserLoading } = useQuery({
     queryKey: AUTH_QUERY_KEYS.currentUser,
     queryFn: async () => {
       const response = await getCurrentUserApi()
-      if (response.success && response.data) {
-        return response.data
+      const currentUser = response.data ?? response.result
+      if (currentUser) {
+        return currentUser
       }
       return null
     },
     enabled: isMounted && accessToken !== null,
-    throwOnError: false,
+    throwOnError: false
   })
 
   const user = userQueryData ?? null
@@ -64,31 +63,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser })
   }, [queryClient])
 
-  const login = useCallback(async (email: string, password: string): Promise<UserResponse | null> => {
-    const response = await loginApi({ email, password })
-    const { userResponse, accessToken: token, refreshToken } = response.data
+  const login = useCallback(
+    async (email: string, password: string): Promise<UserResponse | null> => {
+      const response = await loginApi({ email, password })
+      const { userResponse, accessToken: token, refreshToken } = response.data
 
-    writeStorage(STORAGE_KEYS.accessToken, token)
-    writeStorage(STORAGE_KEYS.refreshToken, refreshToken)
+      writeStorage(STORAGE_KEYS.accessToken, token)
+      writeStorage(STORAGE_KEYS.refreshToken, refreshToken)
 
-    setAccessToken(token)
-    queryClient.setQueryData(AUTH_QUERY_KEYS.currentUser, userResponse)
+      setAccessToken(token)
+      queryClient.setQueryData(AUTH_QUERY_KEYS.currentUser, userResponse)
 
-    try {
-      await mergeCartApi()
-    } catch (err) {
-      console.error('Merge cart failed:', err)
-    }
+      try {
+        await mergeCartApi()
+      } catch (err) {
+        console.error('Merge cart failed:', err)
+      }
 
-    return userResponse
-  }, [queryClient])
+      return userResponse
+    },
+    [queryClient]
+  )
 
   const logout = useCallback(async () => {
     const token = readStorage(STORAGE_KEYS.accessToken)
 
     if (token) {
-      await logoutApi(token).catch(() => {
-      })
+      await logoutApi(token).catch(() => {})
     }
 
     removeStorage(STORAGE_KEYS.accessToken)
@@ -101,6 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (userQueryData && userQueryData.status !== 'ACTIVE') {
       console.warn('User account is no longer ACTIVE:', userQueryData.status)
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Logging out here clears an invalid authenticated session.
       void logout().then(() => {
         if (typeof window !== 'undefined') {
           const errMsg = 'Tài khoản của bạn đã bị khóa hoặc ngừng hoạt động.'
@@ -110,14 +112,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [userQueryData, logout])
 
-  const setSession = useCallback((session: { accessToken: string; user: UserResponse | null }) => {
-    setAccessToken(session.accessToken)
-    if (session.user) {
-      queryClient.setQueryData(AUTH_QUERY_KEYS.currentUser, session.user)
-    } else {
-      void queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser })
-    }
-  }, [queryClient])
+  const setSession = useCallback(
+    (session: { accessToken: string; user: UserResponse | null }) => {
+      setAccessToken(session.accessToken)
+      if (session.user) {
+        queryClient.setQueryData(AUTH_QUERY_KEYS.currentUser, session.user)
+      } else {
+        void queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser })
+      }
+    },
+    [queryClient]
+  )
 
   return (
     <AuthContext value={{ user, accessToken, isAuthenticated, isLoading, login, logout, setSession, refetchUser }}>

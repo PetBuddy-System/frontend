@@ -154,8 +154,8 @@
         ]
       },
       "shippingHero": {
-        "title": "Miễn phí giao hàng nội thành",
-        "description": "Các đơn hàng trong khu vực trung tâm TP. HCM được hỗ trợ giao hàng miễn phí."
+        "title": "Giao hàng tận tâm, cẩn thận",
+        "description": "Mỗi đơn hàng đều được đóng gói và vận chuyển cẩn thận để đến tay thú cưng của bạn an toàn, đúng hẹn."
       },
       "shippingItems": {
         "fast": {
@@ -169,9 +169,13 @@
         "schedule": {
           "title": "Linh hoạt thời gian",
           "description": "Bạn có thể chọn khung giờ giao phù hợp với lịch sinh hoạt của mình."
+        },
+        "missedDelivery": {
+          "title": "Phí phạt không nhận hàng",
+          "description": "Nếu khách hàng không nhận hàng sau khi shipper đã giao, PetBuddy sẽ áp dụng phí xử lý 30.000đ."
         }
       },
-      "return": {
+            "return": {
         "intro": "PetBuddy cam kết mang đến sản phẩm chất lượng nhất cho thú cưng của bạn. Nếu có bất kỳ sự cố nào, chúng tôi sẵn sàng hỗ trợ đổi/trả theo quy định.",
         "applicable": {
           "title": "Được đổi/trả",
@@ -225,8 +229,7 @@
         },
         "delivery": {
           "question": "Cửa hàng có giao hàng tận nơi không?",
-          "answer": "Có. Chúng tôi hỗ trợ giao hàng tận nơi trên toàn quốc và miễn phí giao hàng với nhiều đơn trong khu vực nội thành TP. HCM theo chính sách hiện hành."
-        },
+          "answer": "Có. Chúng tôi hỗ trợ giao hàng tận nơi trên toàn quốc, đội ngũ vận chuyển luôn nỗ lực để đơn hàng đến tay bạn nhanh chóng và an toàn."        },
         "returns": {
           "question": "Chính sách đổi trả sản phẩm như thế nào?",
           "answer": "PetBuddy hỗ trợ đổi trả trong vòng 7 ngày nếu sản phẩm có lỗi từ nhà sản xuất hoặc không đúng mô tả, với điều kiện sản phẩm còn nguyên tem nhãn và chưa qua sử dụng."

@@ -305,23 +305,19 @@ export function StaffScheduleDetailPage() {
                   </div>
 
                   <div className='mt-5 grid gap-3'>
-                    {!hasCheckedIn(schedule) ? (
-                      <Button type='button' disabled={isSubmitting} onClick={() => void handleCheckIn()}>
-                        <MaterialIcon name='login' className='text-lg' />
-                        {t('staffSchedule.actions.checkIn')}
-                      </Button>
-                    ) : null}
-                    {hasCheckedIn(schedule) && !hasCheckedOut(schedule) ? (
-                      <Button
-                        type='button'
-                        variant='outline'
-                        disabled={isSubmitting}
-                        onClick={() => void handleCheckOut()}
-                      >
-                        <MaterialIcon name='logout' className='text-lg' />
-                        {t('staffSchedule.actions.checkOut')}
-                      </Button>
-                    ) : null}
+                    <Button type='button' disabled={isSubmitting} onClick={() => void handleCheckIn()}>
+                      <MaterialIcon name='login' className='text-lg' />
+                      {t('staffSchedule.actions.checkIn')}
+                    </Button>
+                    <Button
+                      type='button'
+                      variant='outline'
+                      disabled={isSubmitting}
+                      onClick={() => void handleCheckOut()}
+                    >
+                      <MaterialIcon name='logout' className='text-lg' />
+                      {t('staffSchedule.actions.checkOut')}
+                    </Button>
                   </div>
                   <p className='mt-4 text-xs leading-5 text-muted-foreground'>
                     {t('staffSchedule.detail.checkInWindow', {

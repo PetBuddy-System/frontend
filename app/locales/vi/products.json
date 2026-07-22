@@ -30,13 +30,16 @@
       "dogFood": "Thức ăn cho chó"
     },
     "product": {
-      "title": "Thức ăn hạt Royal Canin Poodle Adult 1.5kg",
-      "shortTitle": "Royal Canin Poodle Adult",
-      "imageAlt": "Thức ăn hạt Royal Canin Poodle Adult 1.5kg",
-      "ratingLabel": "Đánh giá 4.5 trên 5 sao",
-      "reviews": "(45 đánh giá)",
-      "price": "429.000đ",
-      "summary": "Thức ăn dành riêng cho giống chó Poodle trên 10 tháng tuổi. Giúp duy trì sức khỏe của bộ lông và hỗ trợ sức khỏe răng miệng."
+      "brand": "Thương hiệu",
+      "inStock": "Còn hàng:",
+      "outOfStock": "Hết hàng",
+      "stockCount": "{{count}} sản phẩm",
+      "unit": "Đơn vị",
+      "reviews": "Đánh giá"
+    },
+    "promotion": {
+      "active": "Ưu đãi đang áp dụng",
+      "deadline": "Hạn chót"
     },
     "gallery": {
       "front": "Xem mặt trước bao bì",
@@ -50,6 +53,7 @@
       "increase": "Tăng số lượng"
     },
     "actions": {
+      "quantity": "Số lượng",
       "addToCart": "Thêm vào giỏ hàng",
       "buyNow": "Mua ngay"
     },
@@ -57,15 +61,19 @@
       "description": "Mô tả sản phẩm"
     },
     "description": {
-      "highlightsTitle": "Đặc điểm nổi bật",
-      "highlights": {
-        "kibble": "Thiết kế hạt đặc biệt phù hợp với hàm răng của Poodle.",
-        "coat": "Giúp duy trì sức khỏe bộ lông xoăn độc đáo.",
-        "dental": "Hỗ trợ sức khỏe răng miệng, giảm hình thành cao răng."
+      "title": "Mô tả sản phẩm",
+      "tabs": {
+        "description": "Mô tả",
+        "instructions": "Hướng dẫn sử dụng",
+        "ingredients": "Thành phần"
       },
-      "benefitsTitle": "Lợi ích sức khỏe",
-      "benefits": "Công thức đặc biệt giúp duy trì sức khỏe của giống chó Poodle. Omega 3 EPA và DHA cùng dầu lưu ly giúp nuôi dưỡng bộ lông xoăn, hỗ trợ lông mọc liên tục với mức protein phù hợp.",
-      "specsTitle": "Thông tin sản phẩm"
+      "brand": "Thương hiệu",
+      "category": "Danh mục",
+      "empty": {
+        "description": "Chưa có mô tả cho sản phẩm này",
+        "instructions": "Chưa có hướng dẫn sử dụng",
+        "ingredients": "Chưa có thông tin thành phần"
+      }
     },
     "specs": {
       "brand": {
@@ -143,6 +151,11 @@
     "continueShopping": "Tiếp tục mua sắm",
     "categoryLabel": "Danh mục: {{category}}",
     "remove": "Xóa sản phẩm",
+    "sanpham": "Sản phẩm",
+    "dongia": "Đơn giá",
+    "soluong": "Số lượng",
+    "thanhtien": "Thành tiền",
+    "thaotac": "Thao tác",
     "quantity": {
       "decrease": "Giảm số lượng",
       "increase": "Tăng số lượng"
@@ -163,8 +176,7 @@
       "title": "Thông tin đơn hàng",
       "products": "Sản phẩm ({{count}})",
       "total": "Tổng cộng",
-      "checkout": "Thanh toán ngay",
-      "securePayment": "Thanh toán an toàn và bảo mật"
+      "checkout": "Thanh toán ngay"
     },
     "support": {
       "title": "Cần hỗ trợ?",
@@ -197,6 +209,8 @@
   "checkout": {
     "title": "Thanh toán",
     "backToCart": "Quay lại giỏ hàng",
+    "momoUrlMissing": "Không tìm thấy liên kết thanh toán MoMo.",
+    "vnpayUrlMissing": "Không tìm thấy liên kết thanh toán VNPAY.",
     "shipping": {
       "title": "Thông tin giao hàng",
       "fullName": "Họ và tên",
@@ -211,6 +225,21 @@
       "districtPlaceholder": "Chọn Quận/Huyện",
       "ward": "Phường/Xã",
       "wardPlaceholder": "Chọn Phường/Xã",
+      "addressRequired": "Vui lòng nhập địa chỉ giao hàng",
+      "addressRequiredMap": "Vui lòng chọn địa chỉ giao hàng trên bản đồ",
+      "phoneRequired": "Vui lòng nhập số điện thoại hợp lệ (10 chữ số, bắt đầu bằng số 0)",
+      "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác.",
+      "orderIdMissing": "Không nhận được mã đơn hàng từ hệ thống.",
+      "deliveryAddressLabel": "Địa chỉ giao hàng",
+      "enterAddressButton": "Nhập địa chỉ giao hàng",
+      "changeAddressButton": "Thay đổi địa chỉ giao hàng",
+      "outOfStockDefault": "Sản phẩm đã hết hàng",
+      "paymentMethods": {
+        "card": "Thẻ quốc tế",
+        "momo": "Ví MoMo",
+        "vnpay": "Ví VNPAY",
+        "cash": "Tiền mặt"
+      },
       "cities": {
         "hoChiMinh": "Hồ Chí Minh",
         "haNoi": "Hà Nội",
@@ -234,13 +263,23 @@
       "title": "Phương thức thanh toán",
       "methods": {
         "cod": "Thanh toán khi nhận hàng (COD)",
+        "codDesc": "Thanh toán khi nhận hàng",
         "bank": "Chuyển khoản ngân hàng",
+        "card": "Thẻ ngân hàng / Tín dụng",
+        "cardDesc": "Visa, Mastercard, JCB — thanh toán qua Stripe",
         "momo": "Ví MoMo",
+        "momoDesc": "Thanh toán qua ứng dụng MoMo",
+        "vnpay": "Cổng thanh toán VNPAY",
+        "vnpayDesc": "Thanh toán qua ứng dụng VNPAY hoặc tài khoản ngân hàng",
         "zaloPay": "Ví ZaloPay"
       },
       "alt": {
         "momo": "Logo MoMo",
         "zaloPay": "Logo ZaloPay"
+      },
+      "warning": {
+        "title": "Cảnh báo thanh toán quá hạn",
+        "description": "Tài khoản của bạn đã có {{streak}} lần thanh toán quá hạn. Vui lòng hoàn thành giao dịch trước khi hết thời gian chờ để tránh ảnh hưởng đến tài khoản hoặc bị hủy dịch vụ."
       }
     },
     "note": {
@@ -256,6 +295,7 @@
       "discount": "Giảm giá",
       "total": "Tổng cộng",
       "placeOrder": "Đặt hàng ngay",
+      "payNow": "Thanh toán ngay",
       "items": {
         "oliveShampoo": {
           "title": "Sữa tắm Olive Essence",
@@ -265,19 +305,15 @@
           "title": "Thức ăn hạt Royal Canin",
           "imageAlt": "Túi thức ăn hạt Royal Canin Poodle Adult"
         }
-      },
-      "trust": {
-        "secure": "Thanh toán bảo mật",
-        "returns": "Hoàn trả 7 ngày",
-        "authentic": "Cam kết chính hãng"
       }
     },
     "coupon": {
-      "title": "Mã giảm giá / Voucher",
-      "placeholder": "Nhập mã...",
-      "apply": "Áp dụng"
-    },
-    "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
+      "title": "Mã giảm giá",
+      "apply": "Áp dụng mã giảm giá",
+      "change": "Đổi",
+      "discountApplied": "Giảm {{amount}}",
+      "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
+    }
   },
   "voucherPicker": {
     "back": "Quay lại",
@@ -333,9 +369,7 @@
       "address": "123 Đường Lê Lợi, Phường Bến Thành, Quận 1, TP. Hồ Chí Minh"
     },
     "method": {
-      "title": "Phương thức vận chuyển và thanh toán",
-      "shippingLabel": "Vận chuyển",
-      "shipping": "Giao hàng nhanh (2-3 ngày)",
+      "title": "Phương thức thanh toán",
       "paymentLabel": "Thanh toán",
       "payment": "Thẻ tín dụng (Visa **** 4455)"
     },
@@ -575,5 +609,13 @@
       "PRODUCT_INACTIVE": "Sản phẩm đã ngừng kinh doanh",
       "INVALID_EXCEL_TEMPLATE": "Template Excel không hợp lệ"
     }
+  },
+  "momoReturn": {
+    "confirming": "Đang xác nhận thanh toán, vui lòng chờ trong giây lát...",
+    "paymentNotCompleted": "Thanh toán chưa hoàn tất, vui lòng thử lại."
+  },
+  "vnpayReturn": {
+    "confirming": "Đang xác nhận thanh toán VNPAY, vui lòng chờ trong giây lát...",
+    "paymentNotCompleted": "Giao dịch VNPAY không thành công, vui lòng thử lại."
   }
 }

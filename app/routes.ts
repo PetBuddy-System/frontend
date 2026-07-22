@@ -17,6 +17,8 @@ export default [
   route('products/:productId', 'routes/product-detail.tsx'),
   route('services', 'routes/services.tsx'),
   route('services/:serviceId', 'routes/service-detail.tsx'),
+  route('payment/momo/return', 'routes/momo-return.tsx'),
+  route('payment/vnpay/return', 'routes/vnpay-return.tsx'),
 
   // ─── Authenticated General Routes ─────────────────────────────────────────
   layout('routes/auth-layout.tsx', [
@@ -31,6 +33,7 @@ export default [
     route('profile/orders/:orderId/cancel', 'routes/profile-order-cancel.tsx'),
     route('profile/services', 'routes/profile-services.tsx'),
     route('my-bookings', 'routes/my-bookings.tsx'),
+    route('my-bookings/:bookingId', 'routes/my-booking-detail.tsx'),
     route('profile/returns', 'routes/profile-returns.tsx'),
     route('booking', 'routes/booking.tsx'),
     route('checkout', 'routes/checkout.tsx'),
@@ -47,6 +50,7 @@ export default [
   layout('routes/staff-layout.tsx', [
     route('staff/dashboard', 'routes/staff-dashboard.tsx'),
     route('staff/groomer-bookings', 'routes/staff-groomer-bookings.tsx'),
+    route('staff/groomer-bookings/:bookingId', 'routes/staff-groomer-booking-detail.tsx'),
     route('staff/coordinator-bookings', 'routes/staff-coordinator-bookings.tsx'),
     route('staff/attendance', 'routes/staff-attendance.tsx'),
     route('staff/disposal-request', 'routes/staff-disposal-request.tsx'),
@@ -56,8 +60,10 @@ export default [
     route('staff/add-product', 'routes/staff-add-product.tsx'),
     route('staff/orders', 'routes/staff-orders.tsx'),
     route('staff/orders/:orderId', 'routes/staff-order-detail.tsx'),
+    route('staff/orders/:orderId/cancel', 'routes/staff-order-cancel.tsx'),
     route('staff/returns', 'routes/staff-returns.tsx'),
-    route('staff/shipper-assignment', 'routes/staff-shipper-assignment.tsx')
+    route('staff/shipper-assignment', 'routes/staff-shipper-assignment.tsx'),
+    route('staff/delivery-route', 'routes/staff-delivery-route.tsx')
   ]),
 
   // ─── Admin Only Routes ────────────────────────────────────────────────────
@@ -76,6 +82,8 @@ export default [
     route('admin/users/:userId/edit', 'routes/admin-user-edit.tsx'),
     route('admin/users/:userId', 'routes/admin-user-detail.tsx'),
     route('admin/vouchers', 'routes/admin-vouchers.tsx'),
+    route('admin/orders', 'routes/admin-orders.tsx'),
+    route('admin/orders/:orderId', 'routes/admin-order-detail.tsx'),
     route('admin/shipping', 'routes/admin-shipping.tsx'),
     route('admin/audit-logs', 'routes/admin-audit-logs.tsx'),
     route('admin/audit-logs/:auditLogId', 'routes/admin-audit-detail.tsx')
@@ -83,7 +91,6 @@ export default [
 
   // ─── Manager Only Routes ──────────────────────────────────────────────────
   layout('routes/manager-layout.tsx', [
-    route('manager/dashboard', 'routes/manager-dashboard.tsx'),
     route('manager/products', 'routes/manager-products.tsx'),
     route('manager/services', 'routes/manager-services.tsx'),
     route('manager/bookings', 'routes/manager-bookings.tsx'),
@@ -105,7 +112,6 @@ export default [
     route('manager/promotions/:promotionId/edit', 'routes/manager-promotion-edit.tsx'),
     route('manager/store-locations', 'routes/manager-store-locations.tsx'),
     route('manager/reviews', 'routes/manager-reviews.tsx'),
-    route('manager/audit-logs', 'routes/manager-audit-logs.tsx'),
-    route('manager/audit-logs/:auditLogId', 'routes/manager-audit-detail.tsx')
+    route('manager/vouchers', 'routes/manager-vouchers.tsx')
   ])
 ] satisfies RouteConfig

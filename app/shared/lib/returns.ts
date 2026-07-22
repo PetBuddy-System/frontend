@@ -1,12 +1,6 @@
 export type ReturnType = 'RETURN' | 'EXCHANGE'
 
-export type ReturnReason =
-  | 'DAMAGED'
-  | 'WRONG_PRODUCT'
-  | 'MISSING_ITEM'
-  | 'EXPIRED'
-  | 'CUSTOMER_CHANGED_MIND'
-  | 'OTHER'
+export type ReturnReason = 'DAMAGED' | 'WRONG_PRODUCT' | 'MISSING_ITEM' | 'EXPIRED' | 'CUSTOMER_CHANGED_MIND' | 'OTHER'
 
 export type RefundMethod = 'STRIPE_PAYMENT' | 'BANK_TRANSFER'
 
@@ -79,9 +73,27 @@ export interface ReturnRequestResponse {
   returnItems: ReturnItemResponse[]
   mediaFiles: string[] | ReturnMediaFile[]
   processedBy?: ReturnProcessedStaff | null
+  coordinator?: ReturnProcessedStaff | null
+  shipper?: ReturnProcessedStaff | null
   processedAt?: string | null
+  approvedAt?: string | null
+  pickingUpAt?: string | null
+  pickupFailedAt?: string | null
+  pickedUpAt?: string | null
+  returnedToStoreAt?: string | null
+  readyToDeliverAt?: string | null
+  deliveringAt?: string | null
+  deliveringFailedAt?: string | null
   completedAt?: string | null
+  rejectedAt?: string | null
+  cancelledAt?: string | null
+  restockedAt?: string | null
+  pickupFailedCount?: number
+  deliveryFailedCount?: number
   staffNote?: string | null
+  address?: string | null
+  latitude?: number | null
+  longitude?: number | null
   updatedAt?: string
 }
 
@@ -124,6 +136,8 @@ export interface ManagementReturnResponse {
   orderCode: string
   requestedBy: ReturnUser
   processedBy: ReturnProcessedStaff | null
+  coordinator?: ReturnProcessedStaff | null
+  shipper?: ReturnProcessedStaff | null
   type: ReturnType
   reason: ReturnReason
   description?: string | null
@@ -137,8 +151,42 @@ export interface ManagementReturnResponse {
   bankAccountHolder?: string | null
   createdAt: string
   processedAt?: string | null
+  approvedAt?: string | null
+  pickingUpAt?: string | null
+  pickupFailedAt?: string | null
+  pickedUpAt?: string | null
+  returnedToStoreAt?: string | null
+  readyToDeliverAt?: string | null
+  deliveringAt?: string | null
+  deliveringFailedAt?: string | null
   completedAt?: string | null
+  rejectedAt?: string | null
+  cancelledAt?: string | null
+  restockedAt?: string | null
+  pickupFailedCount?: number
+  deliveryFailedCount?: number
+  address?: string | null
+  recipientName?: string | null
+  phoneNumber?: string | null
+  latitude?: number | null
+  longitude?: number | null
   updatedAt: string
   returnItems: ReturnItemDetailResponse[]
   mediaFiles: ReturnMediaFile[]
+}
+
+export interface ReturnShipperResponse {
+  staffId: string
+  staffName: string
+  staffEmail: string
+  activeReturnCount: number
+}
+
+export interface ReturnStatistics {
+  totalRequests: number
+  assigned: number
+  pending: number
+  approved: number
+  completed: number
+  rejected: number
 }

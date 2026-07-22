@@ -5,10 +5,7 @@ export interface ManagerProductImagesGalleryProps {
   imageUrls?: string[] | null
 }
 
-export function ManagerProductImagesGallery({
-  name,
-  imageUrls
-}: ManagerProductImagesGalleryProps) {
+export function ManagerProductImagesGallery({ name, imageUrls }: ManagerProductImagesGalleryProps) {
   const safeUrls = imageUrls || []
 
   return (

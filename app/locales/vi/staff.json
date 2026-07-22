@@ -49,25 +49,27 @@
   },
   "sidebar": {
     "avatarAlt": "Ảnh đại diện nhân viên",
+    "close": "Đóng menu",
     "logoAlt": "Logo PetBuddy",
     "logout": "Đăng xuất",
     "nav": {
       "groomerBookings": "Công việc của tôi",
       "coordinatorBookings": "Phân công booking",
       "orders": "Quản lý đơn hàng",
+      "deliveryRoute": "Quản lý lộ trình",
       "attendanceHistory": "Lịch sử chấm công",
       "weeklySchedule": "Ca làm việc trong tuần",
       "shiftRegistration": "Đăng ký ca làm",
       "disposalRequest": "Tạo yêu cầu hủy hàng",
       "inventory": "Quản lý kho hàng",
       "returns": "Quản lý đổi trả",
-      "shipperAssignment": "Giao việc cho shipper"
+      "shipperAssignment": "Giao việc cho shipper",
+      "deliveryHistory": "Lịch sử giao hàng"
     },
     "portalLabel": "PetBuddy Staff Portal",
     "roleTitle": "Nhân viên cửa hàng",
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
-
   "shipperAssignment": {
     "title": "Phân công Shipper",
     "subtitle": "Gom nhóm các đơn hàng ở khu vực lân cận và chỉ định nhân viên giao hàng.",
@@ -85,6 +87,12 @@
     "unknownDistance": "Khoảng cách: N/A",
     "currentLoadLabel": "Tải trọng:",
     "assignBtn": "Phân công",
+    "confirmAssignBtn": "Xác nhận phân công",
+    "recommendedShipper": "Shipper quản lý khu vực (Đề xuất)",
+    "farShipperBadge": "Khoảng cách xa",
+    "farWarningTitle": "Cảnh báo khoảng cách shipper xa",
+    "farWarningDesc": "Shipper {{name}} ở vị trí xa khu vực giao hàng ({{distance}} km). Bạn có chắc chắn muốn phân công không?",
+    "ordersToDeliver": "{{count}} đơn hàng cần giao",
     "stats": {
       "pendingPickup": "Đơn hàng chờ giao",
       "areas": "Khu vực hoạt động"
@@ -96,9 +104,85 @@
       "unknownError": "Có lỗi xảy ra."
     }
   },
-
   "staff": {
     "name": "Nguyễn Văn An"
+  },
+  "deliveryRoute": {
+    "title": "Lộ trình giao hàng",
+    "subtitle": "Theo dõi thứ tự và bản đồ giao nhận trong ngày",
+    "topNav": {
+      "title": "deliveryRoute.title",
+      "subtitle": "deliveryRoute.subtitle"
+    },
+    "stats": {
+      "currentStop": "Đang thực hiện",
+      "sequence": "Thứ tự: {{seq}}",
+      "nextStop": "Điểm tiếp theo",
+      "completed": "Đã hoàn thành",
+      "completedCount": "{{done}} / {{total}}"
+    },
+    "timeline": {
+      "title": "Trình tự giao hàng hôm nay",
+      "statusDelivering": "ĐANG GIAO",
+      "statusPending": "CHỜ GIAO",
+      "customer": "Khách hàng",
+      "address": "Địa chỉ giao hàng",
+      "deliveredBtn": "Đã giao xong",
+      "failedBtn": "Giao thất bại",
+      "callBtn": "Gọi khách",
+      "paymentCard": "Thẻ (Đã trả)",
+      "paymentPaid": "Đã thanh toán",
+      "paymentCod": "Thu tiền mặt"
+    },
+    "map": {
+      "title": "Bản đồ di chuyển",
+      "overview": "TỔNG QUAN LỘ TRÌNH",
+      "totalDistance": "Tổng quãng đường",
+      "estimatedTime": "Thời gian dự kiến",
+      "openMaps": "Mở Google Maps",
+      "currentLocation": "Vị trí hiện tại",
+      "distanceToNext": "{{dist}}km tới điểm tiếp theo",
+      "noRouteTitle": "Chưa có đơn hàng được phân công",
+      "noRouteDesc": "Bạn chưa có đơn hàng giao hàng nào được phân công hôm nay."
+    },
+    "loading": "Đang tải lộ trình giao hàng...",
+    "proof": {
+      "title": "Xác nhận đã giao hàng",
+      "desc": "Vui lòng chụp và tải lên hình ảnh xác nhận đã giao hàng thành công để hoàn tất đơn hàng.",
+      "upload": "Tải ảnh lên",
+      "uploadNote": "PNG, JPG hoặc JPEG",
+      "uploadError": "Vui lòng chọn ảnh chụp bằng chứng giao hàng.",
+      "uploadTypeError": "Vui lòng chọn file hình ảnh.",
+      "confirm": "Xác nhận đã giao",
+      "cancel": "Hủy"
+    },
+    "errors": {
+      "loadFailed": "Không thể tải lộ trình giao hàng.",
+      "updateFailed": "Không thể cập nhật trạng thái giao hàng.",
+      "retry": "Thử lại"
+    }
+  },
+  "deliveryHistory": {
+    "title": "Lịch sử giao hàng",
+    "subtitle": "Xem danh sách các đơn hàng đã hoàn thành và giao thất bại",
+    "topNav": {
+      "title": "Lịch sử giao hàng",
+      "subtitle": "Đơn đã hoàn thành và giao thất bại"
+    },
+    "heading": "Lịch sử giao hàng",
+    "subheading": "Tất cả đơn hoàn thành và giao thất bại của bạn",
+    "loading": "Đang tải lịch sử giao hàng...",
+    "retry": "Thử lại",
+    "emptyTitle": "Không tìm thấy lịch sử",
+    "emptyDesc": "Chưa có đơn hàng giao hàng nào hoàn thành hoặc giao thất bại trong bộ lọc này.",
+    "deliveryDateLabel": "Ngày dự kiến giao:",
+    "viewDetails": "Xem chi tiết",
+    "filter": {
+      "all": "Tất cả",
+      "completed": "Đã hoàn thành",
+      "failed": "Giao thất bại",
+      "dateLabel": "Ngày giao:"
+    }
   },
   "groomerBookings": {
     "title": "Công việc của tôi",
@@ -109,6 +193,7 @@
     "empty": "Không có booking được giao trong trạng thái này.",
     "status": {
       "ACCEPTED": "Chờ thực hiện",
+      "ON_THE_WAY": "Đang di chuyển",
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Chờ khách nhận",
       "COMPLETED": "Hoàn thành",
@@ -120,6 +205,7 @@
     },
     "timeline": {
       "ACCEPTED": "Đã phân công",
+      "ON_THE_WAY": "Đang di chuyển",
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Chờ khách nhận",
       "COMPLETED": "Hoàn thành"
@@ -133,16 +219,28 @@
       "type": "Loại booking",
       "minutesValue": "{{value}} phút"
     },
+    "table": {
+      "actions": "Thao tác",
+      "code": "Mã booking",
+      "customer": "Khách hàng",
+      "petAndServiceCount": "{{pets}} pet • {{services}} dịch vụ",
+      "schedule": "Lịch hẹn",
+      "status": "Trạng thái",
+      "workload": "Khối lượng"
+    },
     "actions": {
+      "backToList": "Quay lại danh sách",
       "cancelBooking": "Hủy đơn",
       "chooseAfterImage": "Chọn ảnh sau dịch vụ",
       "chooseBeforeImage": "Chọn ảnh trước dịch vụ",
       "chooseImage": "Chọn ảnh",
       "close": "Đóng",
       "complete": "Xác nhận khách đã nhận pet",
+      "completeHome": "Hoàn tất dịch vụ tại nhà",
       "confirm": "Xác nhận",
       "loading": "Đang tải...",
       "readyForPickup": "Hoàn tất và báo khách đến nhận",
+      "onTheWay": "Bắt đầu di chuyển",
       "reload": "Tải lại",
       "start": "Bắt đầu thực hiện",
       "upload": "Upload ảnh",
@@ -176,6 +274,10 @@
       "IN_PROGRESS": {
         "title": "Bắt đầu thực hiện booking này?",
         "description": "Booking sẽ chuyển từ chờ thực hiện sang đang thực hiện."
+      },
+      "ON_THE_WAY": {
+        "title": "Bắt đầu di chuyển đến nhà khách?",
+        "description": "Booking sẽ chuyển sang trạng thái nhân viên đang di chuyển."
       },
       "READY_FOR_PICKUP": {
         "title": "Đánh dấu dịch vụ đã hoàn tất?",
@@ -213,6 +315,10 @@
     "description": "Chỉ hiển thị booking đang chờ phân công. Khi chọn Groomer, booking sẽ chuyển sang trạng thái chờ thực hiện cho Groomer đó.",
     "empty": "Không có booking nào đang chờ phân công.",
     "pendingStatus": "Chờ phân công",
+    "status": {
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "WAITING_STAFF": "Chờ phân công"
+    },
     "card": {
       "customer": "Khách hàng",
       "phone": "Số điện thoại",
@@ -240,6 +346,10 @@
       "detailList": "Danh sách pet và dịch vụ",
       "note": "Ghi chú",
       "remainingAmount": "Số tiền còn lại",
+      "requestedStaff": "Groomer khách chọn",
+      "assignedStaff": "Groomer được phân công",
+      "autoAssign": "PetBuddy tự sắp xếp",
+      "notAssigned": "Chưa phân công",
       "title": "Chi tiết booking",
       "totalAmount": "Tổng tiền"
     },
@@ -482,9 +592,11 @@
   },
   "welcome": {
     "checkIn": "Chấm công ngay",
+    "deliveryHistory": "Xem lịch sử giao",
     "kicker": "Ca làm hôm nay",
     "subtitle": "Chúc bạn một ngày làm việc tràn đầy năng lượng tại PetBuddy.",
-    "title": "Chào buổi sáng, Nguyễn Văn An"
+    "title": "Chào buổi sáng, Nguyễn Văn An",
+    "titleDynamic": "Chào buổi sáng, {{name}}"
   },
   "attendance": {
     "pageTitle": "Lịch sử chấm công",
@@ -682,13 +794,43 @@
     },
     "stats": {
       "all": "Tổng số yêu cầu",
+      "totalRequests": "Tổng yêu cầu",
+      "assigned": "Đã phân công",
       "pending": "Chờ duyệt",
       "approved": "Đã duyệt",
       "rejected": "Đã từ chối",
       "completed": "Hoàn thành",
       "cancelled": "Đã hủy",
+      "pickingUp": "Đang đi lấy hàng",
       "pickedUp": "Đã lấy hàng",
-      "deliveryFailed": "Liên lạc thất bại"
+      "pickupFailed": "Lấy hàng thất bại",
+      "returnedToStore": "Đã trả về kho",
+      "readyToDeliver": "Sẵn sàng giao hàng",
+      "delivering": "Đang giao hàng",
+      "deliveryFailed": "Giao thất bại",
+      "rejectedReturnShipping": "Từ chối - Đang ship trả lại"
+    },
+    "type": {
+      "RETURN": "Trả hàng hoàn tiền",
+      "EXCHANGE": "Đổi hàng"
+    },
+    "reason": {
+      "DAMAGED": "Sản phẩm bị hư hỏng nặng khi nhận hàng",
+      "WRONG_PRODUCT": "Giao sai sản phẩm",
+      "MISSING_ITEM": "Thiếu sản phẩm",
+      "EXPIRED": "Sản phẩm hết hạn sử dụng",
+      "CUSTOMER_CHANGED_MIND": "Thay đổi ý định mua hàng",
+      "OTHER": "Lý do khác"
+    },
+    "refundStatus": {
+      "NOT_REQUIRED": "Không cần hoàn tiền",
+      "PENDING": "Chờ hoàn tiền",
+      "SUCCESS": "Đã hoàn tiền",
+      "FAILED": "Hoàn tiền thất bại"
+    },
+    "refundMethod": {
+      "STRIPE_PAYMENT": "Hoàn về tài khoản thanh toán gốc",
+      "BANK_TRANSFER": "Chuyển khoản ngân hàng"
     },
     "filters": {
       "status": "Trạng thái",
@@ -719,16 +861,29 @@
       "empty": "Không tìm thấy yêu cầu đổi trả nào."
     },
     "detail": {
+      "returnShippingBadge": "Ship trả lại",
+      "btnReturnShipping": "Ship trả lại",
+      "rejectedBannerTitle": "❌ Yêu cầu đã bị từ chối",
+      "rejectedBannerDescription": "Yêu cầu đổi trả này đã bị từ chối và không thể tiếp tục xử lý.",
+      "rejectedReturnShippingBannerTitle": "⚠️ Yêu cầu đã bị từ chối - Đang ship trả lại",
+      "rejectedReturnShippingBannerDescription": "Yêu cầu này đã bị từ chối sau khi kiểm tra hàng. Hàng đang được ship trả lại cho khách.",
+      "rejectedAt": "Thời gian từ chối",
+      "btnRetryPickup": "Thử lấy hàng lại",
       "title": "Chi tiết yêu cầu đổi trả",
       "code": "Mã yêu cầu",
       "orderCode": "Mã đơn hàng",
       "type": "Loại yêu cầu",
       "createdAt": "Thời gian gửi",
       "status": "Trạng thái",
+      "requestStatus": "Trạng thái yêu cầu",
       "customerInfo": "Thông tin khách hàng",
       "customerName": "Họ và tên",
       "customerEmail": "Email",
+      "recipientName": "Người nhận hàng",
+      "phoneNumber": "Số điện thoại",
+      "address": "Địa chỉ lấy / giao hàng",
       "reason": "Lý do đổi trả",
+      "specificReason": "Lý do cụ thể:",
       "description": "Mô tả của khách hàng",
       "refundInfo": "Thông tin hoàn tiền",
       "refundMethod": "Phương thức hoàn",
@@ -740,21 +895,271 @@
       "media": "Hình ảnh/Video đính kèm",
       "mediaEmpty": "Không có tệp đính kèm",
       "items": "Danh sách sản phẩm đổi trả",
+      "quantity": "SL:",
+      "refundBack": "Hoàn lại:",
+      "additionalInfo": "Thông tin bổ sung",
+      "updatedAt": "Cập nhật lần cuối",
       "processInfo": "Thông tin xử lý",
+      "coordinator": "Điều phối viên (Coordinator)",
+      "shipper": "Nhân viên giao nhận (Shipper)",
       "processedBy": "Người xử lý",
       "processedAt": "Thời gian xử lý",
+      "approvedAt": "Ngày duyệt",
+      "pickedUpAt": "Ngày lấy hàng",
+      "returnedToStoreAt": "Ngày về kho",
+      "restockedAt": "Ngày nhập lại kho",
       "completedAt": "Thời gian hoàn thành",
+      "staffNoteLabel": "Lý do / Ghi chú:",
       "staffNote": "Ghi chú của nhân viên",
       "actionTitle": "Xử lý yêu cầu",
       "notePlaceholder": "Nhập lý do duyệt/từ chối hoặc ghi chú bổ sung...",
+      "noteRequired": "* (bắt buộc khi từ chối hoặc giao thất bại)",
       "btnApprove": "Duyệt yêu cầu",
       "btnReject": "Từ chối",
+      "btnRejectReturnShipping": "Từ chối & Ship trả lại",
       "btnComplete": "Hoàn thành",
       "successApprove": "Đã duyệt yêu cầu thành công",
       "successReject": "Đã từ chối yêu cầu thành công",
       "successComplete": "Đã hoàn thành yêu cầu đổi trả",
       "errorUpdate": "Cập nhật trạng thái thất bại",
-      "requiredNote": "Vui lòng nhập ghi chú khi từ chối yêu cầu."
+      "requiredNote": "Vui lòng nhập ghi chú khi từ chối yêu cầu.",
+      "close": "Đóng",
+      "assignShipperTitle": "Phân công nhân viên giao hàng",
+      "loadingShippers": "Đang tải...",
+      "noShippers": "Không có shipper nào đang khả dụng",
+      "activeOrders": "Đang xử lý: {{count}} đơn",
+      "cancelBtn": "Hủy",
+      "confirmAssign": "Xác nhận phân công",
+      "saving": "Đang lưu...",
+      "assignShipper": "Phân công Shipper",
+      "btnPickingUp": "Bắt đầu lấy hàng",
+      "btnPickedUp": "Đã lấy hàng",
+      "btnPickupFailed": "Lấy hàng thất bại",
+      "btnReturnedToStore": "Đã trả về kho",
+      "btnReadyToDeliver": "Sẵn sàng giao",
+      "btnDelivering": "Bắt đầu giao",
+      "btnDelivered": "Giao hàng thành công",
+      "btnDeliveryFailed": "Giao thất bại",
+      "btnCancel": "Hủy yêu cầu",
+      "pickupFailedBadge": "Lấy hàng thất bại ({{count}})",
+      "deliveryFailedBadge": "Giao thất bại ({{count}})",
+      "errorAssign": "Lỗi khi phân công nhân viên giao hàng",
+      "errorLoadShippers": "Không thể tải danh sách shipper"
+    },
+    "pagination": {
+      "showing": "Hiển thị trang {{page}} trên tổng số {{total}} trang",
+      "prev": "Trang trước",
+      "next": "Trang sau"
     }
+  },
+  "orderCancel": {
+    "title": "Hủy đơn hàng",
+    "subtitle": "Xác nhận lý do và hủy đơn ngay lập tức",
+    "warningTitle": "Hành động không thể hoàn tác",
+    "warningDesc": "Đơn hàng sẽ được hủy ngay lập tức (không cần chờ xác nhận). Vui lòng chọn đúng lý do.",
+    "selectReasonLabel": "Lý do hủy đơn",
+    "selectReasonPlaceholder": "-- Vui lòng chọn lý do hủy --",
+    "customReasonPlaceholder": "Nhập lý do cụ thể...",
+    "summaryTitle": "Tóm tắt đơn hàng",
+    "totalAmount": "Tổng tiền",
+    "paymentMethod": "Phương thức TT",
+    "paymentMethodCard": "Thẻ ngân hàng",
+    "paymentMethodMomo": "Ví MoMo",
+    "paymentMethodVnpay": "Ví VNPAY",
+    "paymentMethodCOD": "Tiền mặt (COD)",
+    "confirmCancelBtn": "Xác nhận hủy đơn",
+    "processing": "Đang hủy...",
+    "backBtn": "Quay lại",
+    "validationError": "Vui lòng chọn hoặc nhập lý do hủy đơn hàng",
+    "successMessage": "Đơn hàng #{{code}} đã được hủy thành công.\nLý do: {{reason}}",
+    "submitError": "Không thể hủy đơn hàng.",
+    "unexpectedError": "Có lỗi xảy ra khi hủy đơn.",
+    "loadError": "Không thể tải chi tiết đơn hàng.",
+    "loadingTitle": "Hủy đơn hàng",
+    "loadingSubtitle": "Chọn lý do hủy đơn",
+    "loadingText": "Đang tải chi tiết đơn hàng...",
+    "notFound": "Không tìm thấy đơn hàng.",
+    "backToOrders": "Quay lại danh sách đơn hàng",
+    "productInfo": "Sản phẩm trong đơn",
+    "reasons": {
+      "customerRequest": "Khách hàng yêu cầu hủy",
+      "invalidAddress": "Địa chỉ giao hàng không hợp lệ",
+      "noContact": "Không liên lạc được với khách hàng",
+      "outOfStock": "Sản phẩm hết hàng / lỗi",
+      "duplicateOrder": "Đơn hàng trùng lặp",
+      "policyViolation": "Vi phạm chính sách cửa hàng",
+      "other": "Khác"
+    }
+  },
+  "staffOrdersTable": {
+    "heading": "Chi tiết đơn hàng",
+    "searchPlaceholder": "Tìm kiếm mã, tên...",
+    "clearFilters": "Xóa bộ lọc",
+    "columns": {
+      "orderCode": "Mã đơn hàng",
+      "customer": "Khách hàng",
+      "orderDate": "Ngày đặt",
+      "totalAmount": "Tổng tiền",
+      "payment": "Thanh toán",
+      "status": "Trạng thái đơn",
+      "actions": "Thao tác"
+    },
+    "loading": "Đang tải danh sách đơn hàng...",
+    "empty": "Không có đơn hàng nào khớp với điều kiện lọc.",
+    "customerFallback": "KH",
+    "paymentMethods": {
+      "CARD": "Thẻ",
+      "MOMO": "MoMo",
+      "VNPAY": "VNPAY",
+      "COD": "Tiền mặt"
+    },
+    "paymentStatuses": {
+      "PAID": "Đã thanh toán",
+      "FAILED": "Thất bại",
+      "CANCELLED": "Đã hủy",
+      "PROCESSING": "Đang xử lý",
+      "REFUNDED": "Đã hoàn tiền",
+      "UNPAID": "Chưa thanh toán"
+    },
+    "statuses": {
+      "PENDING": "Đang xử lý",
+      "CONFIRMED": "Đã xác nhận",
+      "PICKING": "Đang lấy hàng",
+      "PICKED": "Đã chuẩn bị xong",
+      "SHIPPING": "Đang giao hàng",
+      "DELIVERED": "Đã giao",
+      "AWAITING_REDELIVERY": "Đợi giao lại",
+      "DELIVERY_FAILED": "Giao thất bại",
+      "COORDINATOR_REVIEW": "Chờ Coordinator xử lý",
+      "COMPLETED": "Hoàn thành",
+      "CANCELLED": "Đã hủy",
+      "CANCEL_REQUESTED": "Chờ hoàn tiền",
+      "RETURNED_TO_WAREHOUSE": "Đã trả về kho"
+    },
+    "actions": {
+      "view": "Xem",
+      "confirmRefund": "Xác nhận hoàn tiền",
+      "approve": "Duyệt",
+      "cancel": "Hủy",
+      "startPicking": "Bắt đầu lấy hàng",
+      "pickItems": "Lấy hàng",
+      "delivered": "Đã giao",
+      "deliveryFailed": "Giao thất bại",
+      "coordinatorReview": "Xử lý Coordinator",
+      "confirmReturnedWarehouse": "Xác nhận trả về kho"
+    },
+    "confirm": {
+      "refundPrompt": "Xác nhận hoàn tiền cho đơn #{{code}}?"
+    },
+    "errors": {
+      "refundFailed": "Không thể xác nhận hoàn tiền",
+      "generic": "Có lỗi xảy ra"
+    }
+  },
+  "staffOrdersPage": {
+    "topNav": {
+      "title": "Mục đơn hàng",
+      "subtitle": "Theo dõi và xử lý các đơn hàng trong ngày"
+    },
+    "heading": "Danh sách đơn hàng",
+    "subheading": "Theo dõi và xử lý các đơn hàng của hệ thống.",
+    "suggestRoute": "Gợi ý tuyến đường",
+    "pagination": {
+      "showing": "Hiển thị {{from}}-{{to}} của {{total}} đơn hàng"
+    },
+    "errors": {
+      "updateStatusFailed": "Cập nhật trạng thái thất bại",
+      "updateStatusError": "Có lỗi xảy ra khi cập nhật trạng thái"
+    }
+  },
+  "staffOrdersStats": {
+    "pending": {
+      "badge": "Chờ xử lý",
+      "label": "Đơn hàng mới"
+    },
+    "confirmed": {
+      "badge": "Đã xác nhận",
+      "label": "Đang soạn kho"
+    },
+    "picking": {
+      "badge": "Đang lấy hàng",
+      "label": "Chờ lấy hàng"
+    },
+    "shippingDelivered": {
+      "badge": "Đang giao",
+      "label": "Trên đường giao"
+    },
+    "completed": {
+      "badge": "Hoàn thành",
+      "label": "Đã hoàn tất"
+    },
+    "cancelled": {
+      "badge": "Đã hủy",
+      "label": "Đã hủy"
+    },
+    "refundPending": {
+      "badge": "Chờ hoàn tiền",
+      "label": "Cần xác nhận"
+    },
+    "deliveryFailed": {
+      "badge": "Giao thất bại",
+      "label": "Đơn giao thất bại"
+    }
+  },
+  "staffOrderDetailPage": {
+    "topNav": {
+      "title": "Chi tiết đơn hàng",
+      "subtitle": "Xem chi tiết và xử lý đơn hàng"
+    }
+  },
+  "deliveryFailedDialog": {
+    "title": "Báo cáo giao hàng thất bại",
+    "orderCode": "Đơn hàng #{{code}}",
+    "willBeCoordinatorReview": "Đơn hàng sẽ chuyển sang Coordinator để xử lý hoặc hủy.",
+    "reasonLabel": "Lý do không giao được hàng",
+    "reasonPlaceholder": "Ví dụ: Khách không nghe máy, địa chỉ sai, không có người ở nhà...",
+    "reasonRequired": "Vui lòng nhập lý do.",
+    "submit": "Báo cáo",
+    "submitCoordinatorReview": "Báo chuyển Coordinator",
+    "submitDeliveryFailed": "Xác nhận giao thất bại",
+    "submitting": "Đang xử lý...",
+    "cancel": "Hủy",
+    "submitError": "Không thể báo cáo giao hàng thất bại."
+  },
+  "confirmReturnedWarehouseDialog": {
+    "title": "Xác nhận hàng đã trả về kho",
+    "orderCode": "Đơn hàng #{{code}}",
+    "infoTitle": "Tồn kho sẽ được cộng lại",
+    "infoDesc": "Xác nhận hành động này sẽ cộng lại số lượng tồn kho cho tất cả sản phẩm trong đơn và đánh dấu đã hoàn kho.",
+    "failedDeliveryReason": "Lý do giao thất bại",
+    "submit": "Xác nhận đã trả kho",
+    "submitting": "Đang xác nhận...",
+    "cancel": "Hủy",
+    "submitError": "Không thể xác nhận trả về kho."
+  },
+  "shippingLabel": {
+    "storeAddressError": "Chưa cấu hình vị trí cửa hàng",
+    "storeAddressLoadError": "Không thể tải vị trí cửa hàng",
+    "loadingStoreAddress": "Đang tải địa chỉ...",
+    "previewTitle": "Xem trước đơn hàng",
+    "orderCodeLabel": "Mã vận đơn:",
+    "close": "Đóng",
+    "print": "In đơn hàng",
+    "storeName": "PetBuddy Store",
+    "senderLabel": "Từ (Sender):",
+    "recipientLabel": "Đến (Recipient):",
+    "notProvided": "Chưa cung cấp",
+    "itemsLabel": "Hàng hóa (Items):",
+    "totalQuantity": "(Tổng SL: {{count}})",
+    "weightLabel": "Khối lượng:",
+    "gramUnit": "gram",
+    "noteLabel": "Ghi chú:",
+    "noNote": "Không có ghi chú",
+    "codLabel": "Tiền thu người nhận (COD):",
+    "currencyUnit": "VNĐ",
+    "paidOnline": "(Đã thanh toán trực tuyến)",
+    "signatureTitle": "Chữ ký người nhận",
+    "signatureConfirm": "Xác nhận hàng nguyên vẹn, không móp vỡ",
+    "footerText": "© {{year}} PetBuddy Logistics - Hệ thống vận hành bưu cục thông minh"
   }
 }

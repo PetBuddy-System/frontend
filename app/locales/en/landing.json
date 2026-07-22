@@ -154,23 +154,27 @@
         ]
       },
       "shippingHero": {
-        "title": "Free shipping in inner city",
-        "description": "Orders within central HCM City districts enjoy complimentary delivery."
-      },
-      "shippingItems": {
-        "fast": {
-          "title": "Fast delivery",
-          "description": "Most orders are processed and shipped within 2-4 hours after confirmation."
+          "title": "Reliable, careful delivery",
+          "description": "Every order is packed and shipped with care so it reaches your pet safely and on time."
         },
-        "safe": {
-          "title": "Safe packaging",
-          "description": "Careful packaging keeps products protected during transit."
+        "shippingItems": {
+          "fast": {
+            "title": "Fast delivery",
+            "description": "Most orders are processed and shipped within 2-4 hours after confirmation."
+          },
+          "safe": {
+            "title": "Safe packaging",
+            "description": "Careful packaging keeps products protected during transit."
+          },
+          "schedule": {
+            "title": "Flexible schedule",
+            "description": "Choose a delivery window that fits your routine."
+          },
+          "missedDelivery": {
+            "title": "Missed delivery fee",
+            "description": "If you don't receive your order after our delivery attempt, a 30,000₫ processing fee will apply."
+          }
         },
-        "schedule": {
-          "title": "Flexible schedule",
-          "description": "Choose a delivery window that fits your routine."
-        }
-      },
       "return": {
         "intro": "PetBuddy is committed to providing the best quality products for your pets. If any issues arise, we are ready to support returns and exchanges according to our policy.",
         "applicable": {
@@ -207,7 +211,10 @@
           "title": "Return process",
           "steps": [
             { "title": "Contact us", "description": "Email, call hotline, or chat directly on website" },
-            { "title": "Provide information", "description": "Order ID, photos/videos of defects, detailed description" },
+            {
+              "title": "Provide information",
+              "description": "Order ID, photos/videos of defects, detailed description"
+            },
             { "title": "PetBuddy confirms", "description": "Response within 24-48 business hours" },
             { "title": "Ship item back (if needed)", "description": "Send product to PetBuddy address" },
             { "title": "Process completed", "description": "Exchange or refund within 2 business days" }
@@ -225,8 +232,7 @@
         },
         "delivery": {
           "question": "Do you offer home delivery?",
-          "answer": "Yes. We provide nationwide delivery and complimentary shipping for many qualifying orders within inner Ho Chi Minh City under our current policy."
-        },
+          "answer": "Yes. We provide nationwide delivery, and our team works to get every order to you quickly and safely."        },
         "returns": {
           "question": "What is your product return policy?",
           "answer": "PetBuddy supports returns within 7 days for manufacturer defects or items that do not match the description, as long as the product remains unused and keeps its original labels."

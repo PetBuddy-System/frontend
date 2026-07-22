@@ -9,24 +9,21 @@ export interface ManagerProductInfoCardProps {
   formatDate: (dateStr: string) => string
 }
 
-export function ManagerProductInfoCard({
-  product,
-  formatDate
-}: ManagerProductInfoCardProps) {
+export function ManagerProductInfoCard({ product, formatDate }: ManagerProductInfoCardProps) {
   const { t } = useTranslation('manager')
 
   // ✅ Lấy unit label từ translation
   const unitLabel = product.unit ? t(`unit.${product.unit}`, product.unit.toLowerCase()) : ''
 
   const getStatusLabel = (status: string | undefined) => {
-    if (!status) return 'Không xác định'
+    if (!status) return t('productManagement.detail.statusUnknown')
     switch (status) {
       case 'ACTIVE':
-        return 'Đang hoạt động'
+        return t('productManagement.detail.statusActive')
       case 'INACTIVE':
-        return 'Ngừng kinh doanh'
+        return t('productManagement.detail.statusInactive')
       case 'DELETED':
-        return 'Đã xóa'
+        return t('productManagement.detail.statusDeleted')
       default:
         return status
     }
@@ -51,28 +48,42 @@ export function ManagerProductInfoCard({
       {/* Left Column: Properties Grid */}
       <div className='flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-8'>
         <div>
-          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Mã sản phẩm</span>
+          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>
+            {t('productManagement.detail.productCode')}
+          </span>
           <span className='text-base font-bold text-foreground block'>{product.productCode || product.productId}</span>
         </div>
         <div>
-          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Tên sản phẩm</span>
+          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>
+            {t('productManagement.detail.productName')}
+          </span>
           <span className='text-base font-bold text-foreground block'>{product.name}</span>
         </div>
         <div>
-          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Trạng thái</span>
+          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>
+            {t('productManagement.detail.status')}
+          </span>
           <div className='flex items-center gap-1.5 mt-0.5'>
-            <span className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-success' : product.status === 'DELETED' ? 'bg-destructive' : 'bg-muted-foreground'}`}></span>
-            <span className={`text-sm font-semibold ${product.status === 'ACTIVE' ? 'text-success' : product.status === 'DELETED' ? 'text-destructive' : 'text-muted-foreground'}`}>
+            <span
+              className={`w-2 h-2 rounded-full ${product.status === 'ACTIVE' ? 'bg-success' : product.status === 'DELETED' ? 'bg-destructive' : 'bg-muted-foreground'}`}
+            ></span>
+            <span
+              className={`text-sm font-semibold ${product.status === 'ACTIVE' ? 'text-success' : product.status === 'DELETED' ? 'text-destructive' : 'text-muted-foreground'}`}
+            >
               {getStatusLabel(product.status)}
             </span>
           </div>
         </div>
         <div>
-          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Danh mục</span>
+          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>
+            {t('productManagement.detail.category')}
+          </span>
           <span className='text-sm font-semibold text-muted-foreground block'>{product.categoryName || 'N/A'}</span>
         </div>
         <div>
-          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Thương hiệu</span>
+          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>
+            {t('productManagement.detail.brand')}
+          </span>
           <div className='mt-0.5'>
             <span className='bg-secondary/15 text-secondary-foreground text-xs font-semibold px-2 py-0.5 rounded'>
               {product.brandName || 'N/A'}
@@ -80,33 +91,27 @@ export function ManagerProductInfoCard({
           </div>
         </div>
         <div>
-          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Giá bán</span>
+          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>
+            {t('productManagement.detail.salePrice')}
+          </span>
           <div className='flex items-baseline gap-1 mt-0.5'>
-            <span className='text-base font-bold text-primary'>
-              {formatPrice(displayPrice)} VNĐ
-            </span>
-            {/* ⭐ Unit to hơn và đậm hơn */}
-            {unitLabel && (
-              <span className='text-sm font-semibold text-muted-foreground'>
-                /{unitLabel}
-              </span>
-            )}
+            <span className='text-base font-bold text-primary'>{formatPrice(displayPrice)} VNĐ</span>
+            {unitLabel && <span className='text-sm font-semibold text-muted-foreground'>/{unitLabel}</span>}
           </div>
         </div>
         <div>
-          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Tổng kho</span>
+          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>
+            {t('productManagement.detail.totalStock')}
+          </span>
           <div className='flex items-baseline gap-1 mt-0.5'>
             <span className='text-base font-bold text-foreground'>{product.totalStock ?? 0}</span>
-            {/* ⭐ Unit to hơn và đậm hơn */}
-            {unitLabel && (
-              <span className='text-sm font-semibold text-muted-foreground'>
-                {unitLabel}
-              </span>
-            )}
+            {unitLabel && <span className='text-sm font-semibold text-muted-foreground'>{unitLabel}</span>}
           </div>
         </div>
         <div>
-          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>Tổng lô hàng</span>
+          <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block mb-1'>
+            {t('productManagement.detail.totalBatches')}
+          </span>
           <span className='text-base font-bold text-foreground block mt-0.5'>{product.batchCount ?? 0}</span>
         </div>
       </div>
@@ -116,15 +121,23 @@ export function ManagerProductInfoCard({
         <div className='flex items-start gap-3'>
           <MaterialIcon name='calendar_month' className='text-muted-foreground text-xl mt-0.5' />
           <div>
-            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block'>Ngày tạo</span>
-            <span className='text-sm font-semibold text-muted-foreground block'>{formatDateSafe(product.createdAt)}</span>
+            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block'>
+              {t('productManagement.detail.createdAt')}
+            </span>
+            <span className='text-sm font-semibold text-muted-foreground block'>
+              {formatDateSafe(product.createdAt)}
+            </span>
           </div>
         </div>
         <div className='flex items-start gap-3 border-t border-border/50 pt-3'>
           <MaterialIcon name='history' className='text-muted-foreground text-xl mt-0.5' />
           <div>
-            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block'>Cập nhật cuối</span>
-            <span className='text-sm font-semibold text-muted-foreground block'>{formatDateSafe(product.updatedAt)}</span>
+            <span className='text-[10px] font-bold tracking-wider text-muted-foreground uppercase block'>
+              {t('productManagement.detail.updatedAt')}
+            </span>
+            <span className='text-sm font-semibold text-muted-foreground block'>
+              {formatDateSafe(product.updatedAt)}
+            </span>
           </div>
         </div>
       </div>

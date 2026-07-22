@@ -14,9 +14,9 @@ const queryClient = new QueryClient({
       // Giữ cache 5 phút sau khi không còn subscriber
       gcTime: 5 * 60 * 1000,
       // Không retry khi lỗi auth (401/403)
-      retry: false,
-    },
-  },
+      retry: false
+    }
+  }
 })
 
 /**
@@ -43,6 +43,5 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     </QueryClientProvider>
   )
 }
-
 
 export { themeInitScript } from './theme-provider'

@@ -9,8 +9,8 @@ import type { PaymentResponse } from '~/shared/lib/payment'
  * Lấy thông tin thanh toán của order
  */
 export const fetchPaymentByOrderIdApi = (orderId: number): Promise<ApiResponse<PaymentResponse>> => {
-    return customFetch<ApiResponse<PaymentResponse>>({
-        url: `${env.API_URL}/api/payments/${orderId}`,
-        method: 'GET'
-    })
+  return customFetch<ApiResponse<PaymentResponse>>({
+    url: `${env.API_URL}/api/payments/${orderId}`,
+    method: 'GET'
+  })
 }

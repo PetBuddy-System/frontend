@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '~/providers/auth-provider'
 import { useNavigate } from 'react-router'
+import { useCart } from '~/providers/cart-provider'
 
 import { OrderSuccessBanner } from '../components/order-success/order-success-banner'
 import { OrderSuccessConfetti } from '../components/order-success/order-success-confetti'
@@ -26,6 +27,7 @@ interface StoredOrderDetails {
     productId: string
     name: string
     price: number
+    salePrice?: number | null
     quantity: number
     imageUrl: string
   }[]
@@ -38,10 +40,15 @@ function formatPrice(value: number) {
 export function OrderSuccessPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { refetchCart } = useCart()
   const [order, setOrder] = useState<StoredOrderDetails | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    // Giỏ hàng đã được xoá ở backend sau khi đặt hàng thành công,
+    // cần refetch để badge số lượng trên header cập nhật lại (về 0).
+    refetchCart()
+
     const raw = sessionStorage.getItem('petbuddy_last_order')
     if (raw) {
       try {
@@ -68,10 +75,10 @@ export function OrderSuccessPage() {
       'petbuddy_checkout_subtotal',
       'petbuddy_checkout_distance',
       'petbuddy_checkout_note',
+      'petbuddy_checkout_pending_order_id'
     ]
     keysToRemove.forEach((k) => sessionStorage.removeItem(k))
   }, [])
-
 
   const userEmail = user?.email || 'customer@example.com'
 
@@ -100,11 +107,10 @@ export function OrderSuccessPage() {
           <div className='mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-warning/10 text-warning'>
             <MaterialIcon name='receipt_long' className='text-[48px]' />
           </div>
-          <h1 className='font-display text-2xl font-black text-foreground md:text-3xl mb-3'>
-            Không tìm thấy đơn hàng
-          </h1>
+          <h1 className='font-display text-2xl font-black text-foreground md:text-3xl mb-3'>Không tìm thấy đơn hàng</h1>
           <p className='text-sm text-muted-foreground mb-8'>
-            Không tìm thấy thông tin đơn hàng vừa đặt của bạn. Có thể phiên làm việc của bạn đã hết hạn hoặc chưa có đơn hàng nào được tạo gần đây.
+            Không tìm thấy thông tin đơn hàng vừa đặt của bạn. Có thể phiên làm việc của bạn đã hết hạn hoặc chưa có đơn
+            hàng nào được tạo gần đây.
           </p>
           <div className='flex w-full flex-col gap-3'>
             <button

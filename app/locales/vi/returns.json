@@ -1,0 +1,92 @@
+{
+  "list": {
+    "loading": "Đang tải lịch sử yêu cầu đổi trả...",
+    "empty": "Bạn chưa gửi yêu cầu đổi trả hay bảo hành nào.",
+    "header": {
+      "orderRef": "(Đơn hàng: #{{orderCode}})",
+      "type": "Loại yêu cầu:",
+      "createdAt": "Ngày tạo:",
+      "expectedRefund": "Hoàn tiền dự kiến",
+      "cancelRequest": "Hủy yêu cầu đổi trả",
+      "loadingDetail": "Đang tải chi tiết..."
+    },
+    "detail": {
+      "reason": "Lý do đổi trả",
+      "description": "Mô tả chi tiết",
+      "refund": {
+        "title": "Thông tin hoàn tiền",
+        "method": "Phương thức hoàn:",
+        "methodStripe": "Tài khoản gốc thanh toán",
+        "methodBank": "Chuyển khoản ngân hàng",
+        "status": "Trạng thái hoàn tiền:",
+        "total": "Tổng số tiền:",
+        "bankName": "Tên ngân hàng:",
+        "bankAccount": "Số tài khoản:",
+        "bankHolder": "Chủ tài khoản:"
+      },
+      "items": {
+        "title": "Danh sách sản phẩm hoàn trả ({{count}})",
+        "quantity": "Số lượng:",
+        "refundAmount": "Số tiền hoàn:"
+      },
+      "media": {
+        "title": "Hình ảnh đính kèm",
+        "alt": "Minh họa {{index}}"
+      },
+      "processing": {
+        "title": "Thông tin xử lý",
+        "processedBy": "Người xử lý:",
+        "processedAt": "Thời gian xử lý:",
+        "completedAt": "Thời gian hoàn thành:",
+        "staffNote": "Ghi chú:",
+        "addressLabel": "Địa chỉ lấy / giao hàng"
+      },
+      "actions": {
+        "cancel": "Hủy yêu cầu đổi trả"
+      }
+    }
+  },
+  "status": {
+    "PENDING": "Chờ duyệt",
+    "APPROVED": "Đã chấp thuận",
+    "PICKING_UP": "Đang đi lấy hàng",
+    "PICKED_UP": "Đã lấy hàng",
+    "PICKUP_FAILED": "Lấy hàng thất bại",
+    "RETURNED_TO_STORE": "Đã trả về kho",
+    "READY_TO_DELIVER": "Sẵn sàng giao hàng",
+    "DELIVERING": "Đang giao hàng",
+    "DELIVERING_FAILED": "Giao hàng thất bại",
+    "REJECTED": "Từ chối",
+    "CANCELLED": "Đã hủy",
+    "COMPLETED": "Hoàn thành"
+  },
+  "type": {
+    "RETURN": "Trả hàng hoàn tiền",
+    "EXCHANGE": "Đổi hàng"
+  },
+  "reason": {
+    "DAMAGED": "Sản phẩm bị hư hỏng nặng khi nhận hàng",
+    "WRONG_PRODUCT": "Giao sai sản phẩm",
+    "MISSING_ITEM": "Thiếu sản phẩm",
+    "EXPIRED": "Sản phẩm hết hạn sử dụng",
+    "CUSTOMER_CHANGED_MIND": "Thay đổi ý định mua hàng",
+    "OTHER": "Lý do khác"
+  },
+  "refundStatus": {
+    "NOT_REQUIRED": "Không cần hoàn tiền",
+    "PENDING": "Chờ hoàn tiền",
+    "SUCCESS": "Đã hoàn tiền",
+    "FAILED": "Hoàn tiền thất bại"
+  },
+  "cancel": {
+    "title": "Xác nhận hủy yêu cầu",
+    "description": "Bạn có chắc chắn muốn hủy yêu cầu đổi trả này không? Hành động này không thể hoàn tác.",
+    "keep": "Không, giữ lại",
+    "confirm": "Đồng ý hủy",
+    "submitting": "Đang hủy...",
+    "error": {
+      "generic": "Hủy yêu cầu thất bại",
+      "system": "Lỗi hệ thống khi hủy yêu cầu"
+    }
+  }
+}

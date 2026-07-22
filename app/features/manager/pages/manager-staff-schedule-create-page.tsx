@@ -8,11 +8,7 @@ import type { UserResponse } from '~/shared/lib/auth'
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
 import { WorkScheduleStaffSelect } from '../components/staff-schedule/work-schedule-staff-select'
-import {
-  workScheduleApi,
-  type WorkScheduleCreationRequest,
-  type WorkScheduleShiftType
-} from '../services'
+import { workScheduleApi, type WorkScheduleCreationRequest, type WorkScheduleShiftType } from '../services'
 import { getWorkScheduleErrorMessage } from '../lib/work-schedule-error'
 
 const SHIFT_TYPES: WorkScheduleShiftType[] = ['MORNING', 'AFTERNOON', 'EVENING', 'FULL_DAY', 'CUSTOM']
@@ -104,12 +100,7 @@ export function ManagerStaffScheduleCreatePage() {
     } catch (error) {
       setMessage({
         type: 'error',
-        text: getWorkScheduleErrorMessage(
-          error,
-          t,
-          'staffSchedule.workSchedules.messages.createFailed',
-          'create'
-        )
+        text: getWorkScheduleErrorMessage(error, t, 'staffSchedule.workSchedules.messages.createFailed', 'create')
       })
     } finally {
       setIsSubmitting(false)

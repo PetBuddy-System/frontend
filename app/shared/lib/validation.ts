@@ -28,9 +28,7 @@ export const isStrongPassword = (password: string): boolean => {
   return hasUpperCase && hasLowerCase && hasNumber
 }
 
-export const validateEmail = (
-  email: string,
-): { valid: boolean; message?: string } => {
+export const validateEmail = (email: string): { valid: boolean; message?: string } => {
   const trimmed = email.trim()
 
   if (!trimmed) {
@@ -44,10 +42,7 @@ export const validateEmail = (
   return { valid: true }
 }
 
-export const validatePassword = (
-  password: string,
-  _email?: string,
-): { valid: boolean; message?: string } => {
+export const validatePassword = (password: string, _email?: string): { valid: boolean; message?: string } => {
   if (!password) {
     return { valid: false, message: 'Mật khẩu không được để trống' }
   }
@@ -60,17 +55,14 @@ export const validatePassword = (
   if (password.length < PASSWORD_MIN_LENGTH) {
     return {
       valid: false,
-      message: `Mật khẩu phải có ít nhất ${PASSWORD_MIN_LENGTH} ký tự`,
+      message: `Mật khẩu phải có ít nhất ${PASSWORD_MIN_LENGTH} ký tự`
     }
   }
 
   return { valid: true }
 }
 
-export const validateStrongPassword = (
-  password: string,
-  _email?: string,
-): { valid: boolean; message?: string } => {
+export const validateStrongPassword = (password: string, _email?: string): { valid: boolean; message?: string } => {
   if (!password) {
     return { valid: false, message: 'Mật khẩu không được để trống' }
   }
@@ -83,15 +75,14 @@ export const validateStrongPassword = (
   if (password.length < PASSWORD_MIN_LENGTH) {
     return {
       valid: false,
-      message: `Mật khẩu phải có ít nhất ${PASSWORD_MIN_LENGTH} ký tự`,
+      message: `Mật khẩu phải có ít nhất ${PASSWORD_MIN_LENGTH} ký tự`
     }
   }
 
   if (!isStrongPassword(password)) {
     return {
       valid: false,
-      message:
-        'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số',
+      message: 'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số'
     }
   }
 
@@ -100,7 +91,7 @@ export const validateStrongPassword = (
 
 export const validateConfirmPassword = (
   password: string,
-  confirmPassword: string,
+  confirmPassword: string
 ): { valid: boolean; message?: string } => {
   if (!confirmPassword) {
     return { valid: false, message: 'Vui lòng xác nhận mật khẩu' }
@@ -113,9 +104,7 @@ export const validateConfirmPassword = (
   return { valid: true }
 }
 
-export const validateFullName = (
-  fullName: string,
-): { valid: boolean; message?: string } => {
+export const validateFullName = (fullName: string): { valid: boolean; message?: string } => {
   const trimmed = fullName.trim()
 
   if (!trimmed) {

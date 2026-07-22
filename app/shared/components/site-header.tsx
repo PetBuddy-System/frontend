@@ -9,7 +9,6 @@ import { MaterialIcon } from '~/shared/ui'
 import { LanguageSwitcher } from './language-switcher'
 import { ThemeToggle } from './theme-toggle'
 
-
 const NAV_ITEMS = [
   { key: 'store', href: '/' },
   { key: 'services', href: '/services' },
@@ -40,7 +39,6 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
   const [isLangOpen, setIsLangOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const langRef = useRef<HTMLDivElement>(null)
-  
 
   // Đóng dropdown khi click bên ngoài
   useEffect(() => {
@@ -68,8 +66,8 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
 
   return (
     <header className='sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 shadow-sm backdrop-blur'>
-      <div className='mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 md:px-6'>
-        <a className='flex items-center gap-3' href='/'>
+      <div className='mx-auto flex w-full max-w-6xl items-center gap-4 px-4 py-3 md:px-6'>
+        <a className='shrink-0' href='/'>
           <img
             src='/petbuddy-logo-cropped.png'
             alt={t('brand.logoAlt')}
@@ -78,7 +76,7 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
           <span className='sr-only'>{t('brand.name')}</span>
         </a>
 
-        <nav className='hidden items-center gap-4 md:flex'>
+        <nav className='hidden flex-1 items-center justify-center gap-1 md:flex'>
           {NAV_ITEMS.map((navItem) => (
             <a
               key={navItem.key}
@@ -95,7 +93,7 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
           ))}
         </nav>
 
-        <div className='flex items-center gap-2'>
+        <div className='flex shrink-0 items-center gap-2'>
           {/* ─── Theme Toggle ─── */}
           <ThemeToggle />
 
@@ -122,6 +120,20 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
             )}
           </div>
 
+          {/* ─── Cart icon ─── */}
+          <a
+            href='/cart'
+            aria-label={t('actions.cart')}
+            className='relative inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted'
+          >
+            <MaterialIcon name='shopping_cart' className='text-[22px]' />
+            {cartCount > 0 && (
+              <span className='absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground animate-in zoom-in duration-200'>
+                {cartCount}
+              </span>
+            )}
+          </a>
+
           {/* ─── Auth state: loading → skeleton, logged in → avatar, guest → login/register ─── */}
           {isLoading ? (
             /* Skeleton placeholder — tránh nhấp nháy layout khi đang đọc localStorage */
@@ -144,7 +156,10 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
                 </span>
                 <MaterialIcon
                   name='expand_more'
-                  className={cn('hidden text-[18px] text-muted-foreground transition-transform md:block', isMenuOpen && 'rotate-180')}
+                  className={cn(
+                    'hidden text-[18px] text-muted-foreground transition-transform md:block',
+                    isMenuOpen && 'rotate-180'
+                  )}
                 />
               </button>
 
@@ -195,21 +210,6 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
               </a>
             </div>
           )}
-
-          {/* ─── Cart icon ─── */}
-          <a
-            href='/cart'
-            aria-label={t('actions.cart')}
-            className='relative inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted'
-          >
-            <MaterialIcon name='shopping_cart' className='text-[22px]' />
-            {cartCount > 0 && (
-              <span className='absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground animate-in zoom-in duration-200'>
-                {cartCount}
-              </span>
-            )}
-          </a>
-
 
           {/* ─── Mobile: Auth + Menu button ─── */}
           <div className='flex items-center md:hidden'>

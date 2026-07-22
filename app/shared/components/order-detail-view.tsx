@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { fetchOrderDetailApi, updateOrderStatusApi } from '~/features/profile/services/order/order-api'
+import { retryMomoPaymentApi, retryVnPayPaymentApi } from '~/features/products/services/payment/payment-api'
 import type { OrderDetailFull } from '~/shared/lib/order'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
@@ -15,28 +16,18 @@ import { OrderShippingInfo } from './order-detail/order-shipping-info'
 import { OrderProductList } from './order-detail/order-product-list'
 import { OrderPaymentDetail } from './order-detail/order-payment-detail'
 import { OrderActionButtons } from './order-detail/order-action-buttons'
+import { StaffOrderPickingDialog } from '~/features/staff/components/orders/staff-order-picking-dialog'
+import { formatDateOnly, formatTimeOnly } from '~/shared/lib/date'
 
 interface OrderDetailViewProps {
   orderId: number
   isStaff: boolean
+  isAdmin?: boolean
 }
 
 function formatPrice(value: number) {
   if (value == null || isNaN(Number(value))) return '0đ'
   return `${new Intl.NumberFormat('vi-VN').format(Number(value))}đ`
-}
-
-function formatDateTime(dateStr: string) {
-  if (!dateStr) return '—'
-  const normalized = dateStr.includes('Z') || dateStr.includes('+') ? dateStr : dateStr + 'Z'
-  const d = new Date(normalized)
-  if (isNaN(d.getTime())) return dateStr
-  return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}/${d.getFullYear()} ${d.getHours().toString().padStart(2, '0')}:${d
-      .getMinutes()
-      .toString()
-      .padStart(2, '0')}`
 }
 
 function getSecondsUntil(isoStr?: string): number {
@@ -53,7 +44,7 @@ function formatCountdown(totalSeconds: number): string {
   return [h, m, s].map((v) => String(v).padStart(2, '0')).join(':')
 }
 
-export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
+export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDetailViewProps) {
   const { t } = useTranslation('profile')
   const [order, setOrder] = useState<OrderDetailFull | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -63,6 +54,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
   const [countdown, setCountdown] = useState(0)
   const [isProofOpen, setIsProofOpen] = useState(false)
   const [isRouteOpen, setIsRouteOpen] = useState(false)
+  const [isPickingOpen, setIsPickingOpen] = useState(false)
   const { user } = useAuth()
   const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
   const isCoordinator = user?.role === 'STAFF' && user?.staffTask === 'COORDINATOR'
@@ -70,13 +62,18 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
 
   const isCountdownExpired =
     order?.status === 'PENDING' &&
-    order?.payment?.paymentMethod === 'CARD' &&
+    (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO' || order?.payment?.paymentMethod === 'VNPAY') &&
     order?.payment?.status !== 'PAID' &&
     countdown === 0 &&
     Boolean(order?.paymentExpiredAt)
 
-  // REFUND_PENDING là trạng thái của payment, không phải order — check đúng field
   const isRefundPending = order?.status === 'CANCEL_REQUESTED'
+
+  // Ảnh xác nhận giao hàng được BE gắn mediaPurpose = 'SHIPPING'.
+  // Chỉ lấy các file còn active (phòng trường hợp BE soft-delete).
+  const deliveryProofUrl = order?.mediaFiles?.find(
+    (m) => m.mediaPurpose === 'SHIPPING' && m.mediaStatus !== 'DELETED'
+  )?.fileUrl
 
   const loadDetail = useCallback(async () => {
     setIsLoading(true)
@@ -115,13 +112,17 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
 
 
   async function handleCancelOrder() {
-    // Khách hàng thanh toán bằng CARD (đã trả tiền) -> phải gửi yêu cầu hủy để staff xác nhận hoàn tiền
-    if (!isStaff && order?.payment?.paymentMethod === 'CARD') {
+    // Staff redirects to a cancel reason page that directly cancels (no refund flow)
+    if (isStaff) {
+      navigate(`/staff/orders/${orderId}/cancel`)
+      return
+    }
+
+    if (!isStaff && (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO' || order?.payment?.paymentMethod === 'VNPAY')) {
       navigate(`/profile/orders/${orderId}/cancel`)
       return
     }
 
-    // Còn lại (staff, hoặc khách hàng thanh toán CASH chưa trả tiền) -> chỉ cần popup confirm rồi hủy trực tiếp
     if (!window.confirm(t('orderDetail.cancelConfirm', 'Bạn có chắc chắn muốn hủy đơn hàng này không?'))) return
     setIsCanceling(true)
     try {
@@ -138,8 +139,41 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
     }
   }
 
-  function handleRetryPayment() {
-    if (!order?.clientSecret) return
+  async function handleRetryPayment() {
+    if (!order) return
+    if (order.payment?.paymentMethod === 'MOMO') {
+      try {
+        const res = await retryMomoPaymentApi(order.orderId)
+        if (res.success && res.data?.momoPayUrl) {
+          sessionStorage.setItem('pendingMomoOrderId', String(order.orderId))
+          sessionStorage.setItem('isMomoRetry', 'true')
+          window.location.href = res.data.momoPayUrl
+        } else {
+          alert(res.message || t('orderDetail.momoUrlMissing', 'Không tìm thấy liên kết thanh toán MoMo.'))
+        }
+      } catch (err) {
+        alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      }
+      return
+    }
+
+    if (order.payment?.paymentMethod === 'VNPAY') {
+      try {
+        const res = await retryVnPayPaymentApi(order.orderId)
+        if (res.success && res.data?.vnpayPayUrl) {
+          sessionStorage.setItem('pendingVnPayOrderId', String(order.orderId))
+          sessionStorage.setItem('isVnPayRetry', 'true')
+          window.location.href = res.data.vnpayPayUrl
+        } else {
+          alert(res.message || t('orderDetail.vnpayUrlMissing', 'Không tìm thấy liên kết thanh toán VNPAY.'))
+        }
+      } catch (err) {
+        alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      }
+      return
+    }
+
+    if (!order.clientSecret) return
     navigate('/payment', {
       state: {
         orderId: order.orderId,
@@ -147,15 +181,35 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
         amount: order.finalAmount,
         shippingFee: order.shippingFee ?? 0,
         isFreeShipping: false,
+        isRetry: true,
       },
     })
   }
 
+  const STATUS_LABEL_FALLBACK: Record<string, string> = {
+  PENDING: 'Chờ xác nhận',
+  CONFIRMED: 'Đã xác nhận',
+  PICKING: 'Đang lấy hàng',
+  PICKED: 'Đã lấy hàng',
+  SHIPPING: 'Đang giao hàng',
+  DELIVERED: 'Đã giao hàng',
+  AWAITING_REDELIVERY: 'Chờ giao lại',
+  DELIVERY_FAILED: 'Giao hàng thất bại',
+  COORDINATOR_REVIEW: 'Điều phối viên đang xử lý',
+  RETURNED_TO_WAREHOUSE: 'Đã trả về kho',
+  COMPLETED: 'Hoàn tất',
+  CANCELLED: 'Đã hủy',
+  CANCEL_REQUESTED: 'Chờ hoàn tiền',
+  EXPIRED: 'Hết hạn',
+}
+
   function getStatusLabel(status: string) {
     const key = status.toLowerCase()
-    return t(`orderDetail.status.${key}`, status)
+    return t(`orderDetail.status.${key}`, STATUS_LABEL_FALLBACK[status] ?? status)
   }
 
+  
+  const isInternalReturnStatus = order?.status === 'RETURNED_TO_WAREHOUSE' || order?.status === 'COORDINATOR_REVIEW'
   const subtotal = order?.orderDetails?.reduce((sum, item) => sum + item.totalPrice, 0) ?? 0
   const shippingFee = order?.shippingFee ?? (subtotal > 500000 ? 0 : 30000)
   const hasVoucher = Boolean(order?.voucherCode || order?.voucher)
@@ -165,6 +219,16 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
   const discount = rawDiscount > subtotal ? subtotal : rawDiscount
 
   const isExpired = order?.status === 'EXPIRED' || isCountdownExpired
+
+
+  const displayStatusLabel = (() => {
+      if (isExpired && order?.status === 'PENDING') return t('orderDetail.status.expired', 'Hết hạn')
+      if (isRefundPending) return t('orderDetail.status.cancel_requested', 'Chờ hoàn tiền')
+      if (!isStaff && !isAdmin && isInternalReturnStatus) {
+        return t('orderDetail.deliveryFailedTitle', 'Giao hàng thất bại')
+      }
+      return order ? getStatusLabel(order.status) : ''
+ })()
 
   const canCancel = (() => {
     if (!order) return false
@@ -195,7 +259,8 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
   const canRetryPayment =
     !isStaff &&
     order?.status === 'PENDING' &&
-    order?.payment?.paymentMethod === 'CARD' &&
+    (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO' || order?.payment?.paymentMethod === 'VNPAY') &&
+    order?.payment?.status !== 'PAID' &&
     !isExpired
 
   const isTerminal = order?.status === 'CANCELLED' || order?.status === 'EXPIRED'
@@ -212,7 +277,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           </div>
         )}
 
-        {order && order.status === 'PENDING' && order.payment?.paymentMethod === 'CARD' && order.payment?.status !== 'PAID' && !isExpired && !isLoading && (
+        {order && order.status === 'PENDING' && (order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO' || order.payment?.paymentMethod === 'VNPAY') && order.payment?.status !== 'PAID' && !isExpired && !isLoading && (
           <div className="flex items-center gap-3 rounded-xl border border-warning/40 bg-warning/10 px-5 py-4 text-warning">
             <MaterialIcon name="schedule" className="text-[22px] shrink-0" />
             <p className="font-semibold text-sm">
@@ -225,25 +290,85 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           <div className="flex items-center gap-3 rounded-xl border border-amber-400/40 bg-amber-50 dark:bg-amber-950/20 px-5 py-4 text-amber-700 dark:text-amber-400">
             <MaterialIcon name="hourglass_top" className="text-[22px] shrink-0 animate-pulse" />
             <div>
-              <p className="font-bold text-base">Yêu cầu hoàn tiền đang chờ xác nhận</p>
+              <p className="font-bold text-base">{t('orderDetail.refundPendingTitle', 'Yêu cầu hoàn tiền đang chờ xác nhận')}</p>
               {isStaff ? (
                 <p className="text-sm font-medium opacity-90 mt-1.5">
-                  <span className="font-semibold">Lý do khách hủy:</span>{' '}
-                  {order.payment?.cancelReason || 'Khách hàng không cung cấp lý do'}
+                  <span className="font-semibold">{t('orderDetail.cancelReasonLabel', 'Lý do khách hủy:')}</span>{' '}
+                  {order.payment?.cancelReason || t('orderDetail.noCancelReason', 'Khách hàng không cung cấp lý do')}
                 </p>
               ) : (
                 <p className="text-sm font-medium opacity-80 mt-1">
-                  Nhân viên sẽ xem xét và xác nhận hoàn tiền cho bạn sớm nhất có thể.
+                  {t('orderDetail.refundPendingDesc', 'Nhân viên sẽ xem xét và xác nhận hoàn tiền cho bạn sớm nhất có thể.')}
                 </p>
               )}
             </div>
           </div>
         )}
 
+        {order && order.status === 'CANCELLED' && !isLoading && (
+          <div className="flex items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/10 px-5 py-4 text-destructive">
+            <MaterialIcon name="cancel" className="text-[22px] shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold text-base">
+                {t('orderDetail.cancelledTitle', 'Đơn hàng đã bị hủy')}
+              </p>
+              <p className="text-sm font-medium opacity-90 mt-1">
+                <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span>{' '}
+                {order.cancelReason || order.payment?.cancelReason || order.note || t('orderDetail.noCancelReason', 'Không có lý do cụ thể')}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {order && (order.status === 'DELIVERY_FAILED' || order.status === 'AWAITING_REDELIVERY') && !isLoading && (
+          <div className="flex items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/10 px-5 py-4 text-destructive">
+            <MaterialIcon name="error_outline" className="text-[22px] shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold text-base">
+                {t('orderDetail.deliveryFailedTitle', 'Giao hàng thất bại')}
+              </p>
+              <p className="text-sm font-medium opacity-90 mt-1">
+                <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span>{' '}
+                {order.cancelReason || order.note || t('orderDetail.defaultDeliveryFailedReason', 'Giao hàng không thành công')}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {order && (order.status === 'RETURNED_TO_WAREHOUSE' || order.status === 'COORDINATOR_REVIEW') && !isLoading && (
+          isStaff || isAdmin ? (
+            <div className="flex items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-5 py-4 text-amber-700 dark:text-amber-400">
+              <MaterialIcon name="inventory_2" className="text-[22px] shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-base">
+                  {t('orderDetail.returnedToWarehouseTitle', 'Đơn hàng đã chuyển về kho / Chờ xử lý điều phối')}
+                </p>
+                <p className="text-sm font-medium opacity-90 mt-1">
+                  <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span>{' '}
+                  {order.cancelReason || order.note || t('orderDetail.returnedToWarehouseReason', 'Đơn hàng giao thất bại và đã được chuyển về kho cho nhân viên điều phối xử lý.')}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/10 px-5 py-4 text-destructive">
+              <MaterialIcon name="error_outline" className="text-[22px] shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-base">
+                  {t('orderDetail.deliveryFailedTitle', 'Giao hàng thất bại')}
+                </p>
+                <p className="text-sm font-medium opacity-90 mt-1">
+                  <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span>{' '}
+                  {order.cancelReason || order.note || t('orderDetail.defaultDeliveryFailedReason', 'Giao hàng không thành công')}
+                </p>
+              </div>
+            </div>
+          )
+        )}
+
         <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
           <div className="flex items-center justify-between">
             <button
-              onClick={() => navigate(isStaff ? '/staff/orders' : '/profile/orders')}
+              onClick={() => navigate(isAdmin ? '/admin/orders' : isStaff ? '/staff/orders' : '/profile/orders')}
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group"
             >
               <MaterialIcon name="chevron_left" className="text-[20px]" />
@@ -262,14 +387,11 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                       order.status === 'CANCELLED' ? 'text-destructive' :
                         order.status === 'EXPIRED' || isExpired ? 'text-destructive' :
                           isRefundPending ? 'text-amber-600 dark:text-amber-400' :
-                            'text-primary'
+                            (!isStaff && !isAdmin && isInternalReturnStatus) ? 'text-destructive' :
+                              'text-primary'
                   )}
                 >
-                  {isExpired && order.status === 'PENDING'
-                    ? t('orderDetail.status.expired', 'Hết hạn')
-                    : isRefundPending
-                      ? 'Chờ hoàn tiền'
-                      : getStatusLabel(order.status)}
+                  {displayStatusLabel}
                 </span>
               )}
             </div>
@@ -296,11 +418,19 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                   ? t('orderDetail.expiredBanner')
                   : t('orderDetail.cancelledMessage', 'Đơn hàng đã bị hủy')}
               </p>
-              <p className="text-xs text-muted-foreground">{formatDateTime(order.updatedAt || order.createdAt)}</p>
+              {order.status === 'CANCELLED' && order.cancelReason && (
+                <p className="text-sm text-destructive/80 font-medium mt-1 text-center max-w-md">
+                  <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span> {order.cancelReason}
+                </p>
+              )}
+              <div className="flex flex-col items-center text-xs text-muted-foreground">
+                <span>{formatDateOnly(order.updatedAt || order.createdAt)}</span>
+                <span>{formatTimeOnly(order.updatedAt || order.createdAt)}</span>
+              </div>
             </div>
-          ) : (
+          ) : (order.status === 'DELIVERY_FAILED' || order.status === 'RETURNED_TO_WAREHOUSE' || order.status === 'COORDINATOR_REVIEW' || order.status === 'AWAITING_REDELIVERY') ? null : (
             <div className="mt-12 px-2 pb-4">
-              <OrderStatusSteps order={order} formatDateTime={formatDateTime} />
+              <OrderStatusSteps order={order} formatDate={formatDateOnly} formatTime={formatTimeOnly} />
             </div>
           )}
         </div>
@@ -309,7 +439,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           <>
             <OrderShippingInfo order={order} />
 
-            <OrderProductList order={order} formatPrice={formatPrice} />
+            <OrderProductList order={order} formatPrice={formatPrice} isShipper={isShipper} />
 
             <OrderPaymentDetail
               order={order}
@@ -317,9 +447,30 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
               subtotal={subtotal}
               shippingFee={shippingFee}
               discount={discount}
+              isShipper={isShipper}
             />
 
-            {(isStaff || showCancelButton || canRetryPayment) && (
+            {/* Delivery Proof Image — only visible to staff/admin (customer never receives it from BE) */}
+            {(isStaff || isAdmin) && deliveryProofUrl && (
+              <div className='rounded-xl border border-border bg-card p-5 shadow-sm'>
+                <div className='flex items-center gap-2 mb-4 border-b border-border pb-3'>
+                  <div className='w-8 h-8 rounded-full bg-success/10 flex items-center justify-center shrink-0'>
+                    <MaterialIcon name='photo_camera' className='text-success text-[18px]' />
+                  </div>
+                  <h2 className='font-bold text-base text-foreground'>{t('orderDetail.deliveryProofImage', 'Ảnh xác nhận giao hàng')}</h2>
+                </div>
+                <div className='w-full max-w-md max-h-96 rounded-xl border border-border overflow-hidden'>
+                  <img
+                    src={deliveryProofUrl}
+                    alt={t('orderDetail.deliveryProofImage', 'Ảnh xác nhận giao hàng')}
+                    className='w-full h-full object-contain'
+                    onError={(e) => { e.currentTarget.parentElement?.style.setProperty('display', 'none') }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {(isStaff || showCancelButton || canRetryPayment) && !isAdmin && (
               <OrderActionButtons
                 order={order}
                 isStaff={isStaff}
@@ -331,6 +482,7 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
                 isCanceling={isCanceling}
                 onPrint={() => setIsPrintOpen(true)}
                 onProofOpen={() => setIsProofOpen(true)}
+                onOpenPicking={() => setIsPickingOpen(true)}
                 onRetryPayment={handleRetryPayment}
                 onCancelOrder={handleCancelOrder}
                 onStatusUpdate={() => void loadDetail()}
@@ -365,6 +517,13 @@ export function OrderDetailView({ orderId, isStaff }: OrderDetailViewProps) {
           staffId={user?.userId ?? ''}
           isOpen={isRouteOpen}
           onClose={() => setIsRouteOpen(false)}
+        />
+      )}
+      {order && isPickingOpen && (
+        <StaffOrderPickingDialog
+          order={order}
+          onClose={() => setIsPickingOpen(false)}
+          onSuccess={() => void loadDetail()}
         />
       )}
     </div>

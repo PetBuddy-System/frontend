@@ -49,7 +49,8 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
         quantity: 1,
         productName: product.name,
         price: product.salePrice ?? product.price ?? 0,
-        imageUrl: product.imageUrls?.[0] || product.thumbnail,
+        salePrice: product.hasActivePromotion ? (product.promotionPrice ?? null) : null,
+        imageUrl: product.imageUrls?.[0] || product.thumbnailUrl || product.thumbnail // 👈 thêm thumbnailUrl
       })
       await refreshCart()
       setShowSuccessToast(true)
@@ -70,7 +71,10 @@ export function ProductsGrid({ products, isLoading = false }: ProductsGridProps)
     return (
       <div className='grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-3 xl:grid-cols-4'>
         {Array.from({ length: 8 }).map((_, idx) => (
-          <div key={idx} className='flex flex-col rounded-2xl border border-border/60 bg-card p-4 shadow-sm animate-pulse'>
+          <div
+            key={idx}
+            className='flex flex-col rounded-2xl border border-border/60 bg-card p-4 shadow-sm animate-pulse'
+          >
             <div className='aspect-square w-full rounded-xl bg-muted' />
             <div className='mt-4 h-4 w-2/3 bg-muted rounded' />
             <div className='mt-2 h-4 w-full bg-muted rounded' />

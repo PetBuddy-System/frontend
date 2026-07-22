@@ -55,9 +55,34 @@ export async function updateCatalogStatusApi(
   })
 }
 
+export async function uploadCatalogImageApi(catalogId: number, file: File): Promise<ApiResponse<CatalogResponse>> {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  return customFetch<ApiResponse<CatalogResponse>>({
+    url: `${CATALOGS_BASE_URL}/${catalogId}/image`,
+    method: 'PUT',
+    data: formData
+  })
+}
+
+export async function deleteCatalogImageApi(catalogId: number): Promise<ApiResponse<CatalogResponse>> {
+  return customFetch<ApiResponse<CatalogResponse>>({
+    url: `${CATALOGS_BASE_URL}/${catalogId}/image`,
+    method: 'DELETE'
+  })
+}
+
 export async function fetchTimeSlotsByCatalogApi(catalogId: number): Promise<ApiResponse<TimeSlotResponse[]>> {
   return customFetch<ApiResponse<TimeSlotResponse[]>>({
     url: `${CATALOG_TIME_SLOTS_BASE_URL}/catalogs/${catalogId}`,
+    method: 'GET'
+  })
+}
+
+export async function fetchTimeSlotByIdApi(timeSlotId: number): Promise<ApiResponse<TimeSlotResponse>> {
+  return customFetch<ApiResponse<TimeSlotResponse>>({
+    url: `${CATALOG_TIME_SLOTS_BASE_URL}/${timeSlotId}`,
     method: 'GET'
   })
 }
@@ -70,6 +95,17 @@ export async function fetchTimeSlotsByCatalogAndDayApi(
     url: `${CATALOG_TIME_SLOTS_BASE_URL}/catalogs/${catalogId}/day`,
     method: 'GET',
     params: { dayOfWeek }
+  })
+}
+
+export async function fetchAvailableTimeSlotsByDateApi(
+  catalogId: number,
+  selectedDate: string
+): Promise<ApiResponse<TimeSlotResponse[]>> {
+  return customFetch<ApiResponse<TimeSlotResponse[]>>({
+    url: `${CATALOG_TIME_SLOTS_BASE_URL}/catalogs/${catalogId}/available`,
+    method: 'GET',
+    params: { selectedDate }
   })
 }
 

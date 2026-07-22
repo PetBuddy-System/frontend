@@ -11,12 +11,7 @@ export interface CartOrderSummaryProps {
   isMutating?: boolean
 }
 
-export function CartOrderSummary({
-  itemCount,
-  subtotal,
-  formatPrice,
-  isMutating = false,
-}: CartOrderSummaryProps) {
+export function CartOrderSummary({ itemCount, subtotal, formatPrice, isMutating = false }: CartOrderSummaryProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
   const isEmpty = itemCount === 0
@@ -30,9 +25,7 @@ export function CartOrderSummary({
     <aside className='space-y-6 lg:col-span-4 lg:sticky lg:top-28'>
       <section className='rounded-xl border border-border/60 bg-card p-6 shadow-sm md:p-8'>
         <div className='mb-6 flex items-start justify-between gap-4'>
-          <h2 className='font-display text-2xl font-semibold text-foreground'>
-            {t('cart.summary.title')}
-          </h2>
+          <h2 className='font-display text-2xl font-semibold text-foreground'>{t('cart.summary.title')}</h2>
         </div>
 
         <div className='mb-6 space-y-4'>
@@ -45,9 +38,7 @@ export function CartOrderSummary({
         <div className='mb-6 border-t border-border pt-6'>
           <div className='flex items-end justify-between gap-4'>
             <span className='text-lg text-foreground'>{t('cart.summary.total')}</span>
-            <span className='font-display text-3xl font-bold text-primary'>
-              {formatPrice(subtotal)}
-            </span>
+            <span className='font-display text-3xl font-bold text-primary'>{formatPrice(subtotal)}</span>
           </div>
         </div>
 
@@ -64,11 +55,6 @@ export function CartOrderSummary({
           {t('cart.summary.checkout')}
           <MaterialIcon name='arrow_forward' className='text-[22px]' />
         </button>
-
-        <div className='mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground'>
-          <MaterialIcon name='verified_user' className='text-[20px] text-success' />
-          {t('cart.summary.securePayment')}
-        </div>
       </section>
 
       <section className='relative overflow-hidden rounded-xl bg-primary p-6 text-primary-foreground shadow-lg'>
@@ -76,13 +62,9 @@ export function CartOrderSummary({
           <MaterialIcon name='support_agent' className='text-[120px]' />
         </div>
 
-        <h3 className='mb-2 font-display text-2xl font-semibold'>
-          {t('cart.support.title')}
-        </h3>
+        <h3 className='mb-2 font-display text-2xl font-semibold'>{t('cart.support.title')}</h3>
 
-        <p className='mb-4 max-w-xs text-sm text-primary-foreground/80'>
-          {t('cart.support.description')}
-        </p>
+        <p className='mb-4 max-w-xs text-sm text-primary-foreground/80'>{t('cart.support.description')}</p>
 
         <a
           className='inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 font-bold text-primary transition-colors hover:bg-secondary hover:text-secondary-foreground'

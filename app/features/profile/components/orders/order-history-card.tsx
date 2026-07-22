@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router'
 
 import { cn } from '~/shared/lib/cn'
 import { updateOrderStatusApi } from '~/features/profile/services'
-import { getPaymentByOrderIdApi } from '~/features/products/services/payment/payment-api'
+import { getPaymentByOrderIdApi, retryMomoPaymentApi, retryVnPayPaymentApi } from '~/features/products/services/payment/payment-api'
 import type { VoucherResponse } from '~/shared/lib/voucher'
+import { formatDateOnly, formatTimeOnly } from '~/shared/lib/date'
 
 export interface OrderHistoryCardProps {
   order: {
@@ -57,7 +58,16 @@ function getStatusBadgeClassName(status: string) {
   return STATUS_BADGE_STYLE[status] || 'bg-muted text-muted-foreground'
 }
 
-function getStatusLabel(status: string) {
+function getStatusLabel(status: string, t: (key: string) => string) {
+  const key = status.toLowerCase()
+  // Using the translations defined in orderDetail.status
+  const translated = t(`orderDetail.status.${key}`)
+  
+  if (translated && !translated.startsWith('orderDetail.status')) {
+    return translated
+  }
+
+  // Fallback map if translation is missing
   switch (status) {
     case 'PENDING':
       return 'Chờ xử lý'
@@ -68,7 +78,6 @@ function getStatusLabel(status: string) {
     case 'SHIPPING':
       return 'Đang giao'
     case 'DELIVERED':
-      return 'Đã giao (Chờ nhận)'
     case 'COMPLETED':
       return 'Đã giao'
     case 'CANCELLED':
@@ -77,6 +86,11 @@ function getStatusLabel(status: string) {
       return 'Hết hạn'
     case 'CANCEL_REQUESTED':
       return 'Chờ hoàn tiền'
+    case 'DELIVERY_FAILED':
+    case 'RETURNED_TO_WAREHOUSE':
+    case 'AWAITING_REDELIVERY':
+    case 'COORDINATOR_REVIEW':
+      return t('orderDetail.status.delivery_failed') || 'Giao thất bại'
     default:
       return status
   }
@@ -97,7 +111,10 @@ function formatDate(dateString: string) {
   return `${dd}/${mm}/${yyyy}`
 }
 
+import { useTranslation } from 'react-i18next'
+
 export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
+  const { t } = useTranslation('profile')
   const navigate = useNavigate()
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
@@ -120,13 +137,18 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
     }
   }
 
-  const isCard = order.payment?.paymentMethod === 'CARD' || order.paymentMethod === 'CARD'
+  const isOnlinePayment =
+    order.payment?.paymentMethod === 'CARD' ||
+    order.payment?.paymentMethod === 'MOMO' ||
+    order.payment?.paymentMethod === 'VNPAY' ||
+    order.paymentMethod === 'CARD' ||
+    order.paymentMethod === 'MOMO' ||
+    order.paymentMethod === 'VNPAY'
   const isPaid = order.payment?.status === 'PAID' || order.paymentStatus === 'PAID'
   const canPayAgain =
-    isCard &&
+    isOnlinePayment &&
     !isPaid &&
-    order.status !== 'CANCELLED' &&
-    order.status !== 'EXPIRED'
+    order.status === 'PENDING'
 
   return (
     <>
@@ -134,7 +156,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
         onClick={() => navigate(`/profile/orders/${order.orderId}`)}
         className={cn(
           'order-card flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer',
-          (order.status === 'CANCELLED' || order.status === 'EXPIRED') && 'opacity-75'
+          (order.status === 'CANCELLED' || order.status === 'EXPIRED' || order.status === 'DELIVERY_FAILED' || order.status === 'RETURNED_TO_WAREHOUSE') && 'opacity-75'
         )}
       >
         <div className="flex flex-col gap-1">
@@ -146,15 +168,16 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 getStatusBadgeClassName(order.status)
               )}
             >
-              {getStatusLabel(order.status)} | {order.status}
+              {getStatusLabel(order.status, t)}
             </span>
           </div>
-          <p className="text-sm text-muted-foreground">Ngày đặt: {formatDate(order.createdAt)}</p>
+          <span>{t('orderHistory.orderDate', { date: formatDateOnly(order.createdAt) })}</span>
+          <span className='text-xs text-muted-foreground'>{formatTimeOnly(order.createdAt)}</span>
         </div>
 
         <div className="flex items-center justify-between gap-6 md:justify-end md:gap-8 w-full md:w-auto">
           <div className="text-left md:text-right">
-            <p className="text-xs text-muted-foreground">Tổng thanh toán</p>
+            <p className="text-xs text-muted-foreground">{t('orderDetail.totalOrder', { defaultValue: 'Tổng thanh toán' })}</p>
             <p className="text-xl font-extrabold text-primary">{formatPrice(order.finalAmount)}</p>
           </div>
 
@@ -167,7 +190,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
               }}
               className="rounded-lg border-2 border-primary px-6 py-2.5 text-sm font-bold text-primary transition-all hover:bg-primary hover:text-primary-foreground active:scale-95"
             >
-              Xem chi tiết
+              {t('orderHistory.actions.viewDetails')}
             </button>
 
             {canPayAgain && (
@@ -177,22 +200,50 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                   e.stopPropagation()
                   setIsLoadingPayment(true)
                   try {
-                    const res = await getPaymentByOrderIdApi(order.orderId)
-                    if (res.success && res.data) {
-                      const clientSecret = res.data.stripeClientSecret || ''
-                      const orderShippingFee = order.shippingFee ?? 0
-                      const orderIsFreeShipping = orderShippingFee === 0
-                      navigate('/payment', {
-                        state: {
-                          orderId: order.orderId,
-                          clientSecret,
-                          amount: order.finalAmount,
-                          shippingFee: orderShippingFee,
-                          isFreeShipping: orderIsFreeShipping
-                        }
-                      })
+                    const isMomo =
+                      order.payment?.paymentMethod === 'MOMO' ||
+                      order.paymentMethod === 'MOMO'
+                    const isVnPay =
+                      order.payment?.paymentMethod === 'VNPAY' ||
+                      order.paymentMethod === 'VNPAY'
+
+                    if (isMomo) {
+                      const res = await retryMomoPaymentApi(order.orderId)
+                      if (res.success && res.data?.momoPayUrl) {
+                        sessionStorage.setItem('pendingMomoOrderId', String(order.orderId))
+                        sessionStorage.setItem('isMomoRetry', 'true')
+                        window.location.href = res.data.momoPayUrl
+                      } else {
+                        alert(res.message || 'Không tìm thấy liên kết thanh toán MoMo.')
+                      }
+                    } else if (isVnPay) {
+                      const res = await retryVnPayPaymentApi(order.orderId)
+                      if (res.success && res.data?.vnpayPayUrl) {
+                        sessionStorage.setItem('pendingVnPayOrderId', String(order.orderId))
+                        sessionStorage.setItem('isVnPayRetry', 'true')
+                        window.location.href = res.data.vnpayPayUrl
+                      } else {
+                        alert(res.message || 'Không tìm thấy liên kết thanh toán VNPAY.')
+                      }
                     } else {
-                      alert(res.message || 'Không thể lấy thông tin thanh toán.')
+                      const res = await getPaymentByOrderIdApi(order.orderId)
+                      if (res.success && res.data) {
+                        const clientSecret = res.data.stripeClientSecret || ''
+                        const orderShippingFee = order.shippingFee ?? 0
+                        const orderIsFreeShipping = orderShippingFee === 0
+                        navigate('/payment', {
+                          state: {
+                            orderId: order.orderId,
+                            clientSecret,
+                            amount: order.finalAmount,
+                            shippingFee: orderShippingFee,
+                            isFreeShipping: orderIsFreeShipping,
+                            isRetry: true,
+                          }
+                        })
+                      } else {
+                        alert(res.message || 'Không thể lấy thông tin thanh toán.')
+                      }
                     }
                   } catch {
                     alert('Có lỗi xảy ra khi lấy thông tin thanh toán.')
@@ -203,7 +254,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 disabled={isLoadingPayment}
                 className="rounded-lg bg-success px-4 py-2.5 text-sm font-bold text-success-foreground shadow-sm transition-colors hover:opacity-90 active:scale-95 disabled:opacity-50"
               >
-                {isLoadingPayment ? 'Đang tải...' : 'Thanh toán lại'}
+                {isLoadingPayment ? t('orderCancel.loading', { defaultValue: 'Đang tải...' }) : t('orderDetail.payAgain', { defaultValue: 'Thanh toán lại' })}
               </button>
             )}
 
@@ -216,7 +267,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 }}
                 className="rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground shadow-sm transition-colors hover:opacity-90 active:scale-95"
               >
-                Đã nhận được hàng
+                {t('orderDetail.confirmDelivered', { defaultValue: 'Đã nhận được hàng' })}
               </button>
             )}
           </div>
@@ -226,7 +277,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-            <h4 className="font-display text-lg font-bold text-foreground mb-2">Xác nhận nhận hàng</h4>
+            <h4 className="font-display text-lg font-bold text-foreground mb-2">{t('orderDetail.deliveryProofTitle', { defaultValue: 'Xác nhận nhận hàng' })}</h4>
             <p className="text-sm text-muted-foreground mb-6">
               Bạn xác nhận đã nhận đầy đủ sản phẩm và muốn hoàn tất đơn hàng?
             </p>
@@ -236,7 +287,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 onClick={() => setShowConfirmModal(false)}
                 className="rounded-lg border border-border px-4 py-2 text-xs font-semibold hover:bg-muted"
               >
-                Hủy
+                {t('orderDetail.cancel', { defaultValue: 'Hủy' })}
               </button>
               <button
                 type="button"
@@ -244,7 +295,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 disabled={isConfirming}
                 className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:opacity-90 disabled:opacity-50"
               >
-                Xác nhận
+                {t('orderDetail.confirm', { defaultValue: 'Xác nhận' })}
               </button>
             </div>
           </div>
