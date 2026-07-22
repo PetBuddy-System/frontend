@@ -36,10 +36,7 @@ export async function fetchMyProductReviewApi(productId: string): Promise<Produc
   })
 }
 
-export async function createProductReviewApi(
-  productId: string,
-  payload: CreateProductReviewPayload
-): Promise<any> {
+export async function createProductReviewApi(productId: string, payload: CreateProductReviewPayload): Promise<any> {
   return customFetch<any>({
     url: `${env.API_URL}/api/products/${productId}/reviews`,
     method: 'POST',
@@ -47,10 +44,7 @@ export async function createProductReviewApi(
   })
 }
 
-export async function updateProductReviewApi(
-  reviewId: string,
-  payload: CreateProductReviewPayload
-): Promise<any> {
+export async function updateProductReviewApi(reviewId: string, payload: CreateProductReviewPayload): Promise<any> {
   return customFetch<any>({
     url: `${env.API_URL}/api/reviews/${reviewId}`,
     method: 'PUT',

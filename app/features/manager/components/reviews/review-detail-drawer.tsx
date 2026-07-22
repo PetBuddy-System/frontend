@@ -35,11 +35,7 @@ function DrawerSkeleton() {
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className='mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground'>
-      {children}
-    </p>
-  )
+  return <p className='mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground'>{children}</p>
 }
 
 interface DrawerContentProps {
@@ -84,18 +80,14 @@ function DrawerContent({ detail }: DrawerContentProps) {
               )}
             </div>
             <span className='block text-sm text-muted-foreground'>{detail.userEmail}</span>
-            <span className='mt-1 block font-mono text-[11px] text-muted-foreground/60'>
-              ID: {detail.userId}
-            </span>
+            <span className='mt-1 block font-mono text-[11px] text-muted-foreground/60'>ID: {detail.userId}</span>
           </div>
         </div>
       </div>
 
       {/* Product / Order Card - SỬA: Hiển thị Order nếu là Order Review */}
       <div className='rounded-xl border border-border/60 bg-background p-4'>
-        <SectionLabel>
-          {isOrderReview ? 'Đơn hàng được đánh giá' : 'Sản phẩm được đánh giá'}
-        </SectionLabel>
+        <SectionLabel>{isOrderReview ? 'Đơn hàng được đánh giá' : 'Sản phẩm được đánh giá'}</SectionLabel>
 
         {isOrderReview ? (
           // Order Review
@@ -107,9 +99,7 @@ function DrawerContent({ detail }: DrawerContentProps) {
                   #{detail.orderCode}
                 </span>
                 {detail.orderId && (
-                  <span className='font-mono text-[11px] text-muted-foreground/60'>
-                    ID: {detail.orderId}
-                  </span>
+                  <span className='font-mono text-[11px] text-muted-foreground/60'>ID: {detail.orderId}</span>
                 )}
               </div>
             )}
@@ -122,9 +112,7 @@ function DrawerContent({ detail }: DrawerContentProps) {
               <span className='rounded bg-muted px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground'>
                 {detail.productCode}
               </span>
-              <span className='font-mono text-[11px] text-muted-foreground/60'>
-                {detail.productId}
-              </span>
+              <span className='font-mono text-[11px] text-muted-foreground/60'>{detail.productId}</span>
             </div>
           </div>
         )}
@@ -138,23 +126,16 @@ function DrawerContent({ detail }: DrawerContentProps) {
           <span
             className={cn(
               'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold',
-              detail.status === 'HIDDEN'
-                ? 'bg-destructive/10 text-destructive'
-                : 'bg-success/10 text-success'
+              detail.status === 'HIDDEN' ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success'
             )}
           >
             <span
-              className={cn(
-                'h-1.5 w-1.5 rounded-full',
-                detail.status === 'HIDDEN' ? 'bg-destructive' : 'bg-success'
-              )}
+              className={cn('h-1.5 w-1.5 rounded-full', detail.status === 'HIDDEN' ? 'bg-destructive' : 'bg-success')}
             />
             {detail.status === 'HIDDEN' ? 'Đang ẩn' : 'Đang hiển thị'}
           </span>
         </div>
-        <p className='whitespace-pre-wrap text-sm leading-relaxed text-foreground/90'>
-          {detail.content}
-        </p>
+        <p className='whitespace-pre-wrap text-sm leading-relaxed text-foreground/90'>{detail.content}</p>
       </div>
 
       {/* Timestamps */}
@@ -164,9 +145,7 @@ function DrawerContent({ detail }: DrawerContentProps) {
           { label: 'Cập nhật lần cuối', date: detail.updatedAt }
         ].map(({ label, date }) => (
           <div key={label} className='rounded-lg border border-border/60 bg-background p-3'>
-            <p className='text-[10px] font-bold uppercase tracking-wider text-muted-foreground'>
-              {label}
-            </p>
+            <p className='text-[10px] font-bold uppercase tracking-wider text-muted-foreground'>{label}</p>
             <p className='mt-1 text-sm font-semibold text-foreground'>
               {new Date(date).toLocaleDateString('vi-VN', {
                 day: '2-digit',
@@ -183,21 +162,14 @@ function DrawerContent({ detail }: DrawerContentProps) {
 
       {/* Review ID */}
       <div className='rounded-lg border border-border/40 bg-muted/30 p-3'>
-        <p className='text-[10px] font-bold uppercase tracking-wider text-muted-foreground'>
-          Review ID
-        </p>
+        <p className='text-[10px] font-bold uppercase tracking-wider text-muted-foreground'>Review ID</p>
         <p className='mt-1 break-all font-mono text-xs text-muted-foreground'>{detail.reviewId}</p>
       </div>
     </div>
   )
 }
 
-export function ReviewDetailDrawer({
-  reviewId,
-  onClose,
-  onToggleStatus,
-  onDelete
-}: ReviewDetailDrawerProps) {
+export function ReviewDetailDrawer({ reviewId, onClose, onToggleStatus, onDelete }: ReviewDetailDrawerProps) {
   const [detail, setDetail] = useState<ManagerReviewItem | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 

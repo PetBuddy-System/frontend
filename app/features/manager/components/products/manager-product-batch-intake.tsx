@@ -11,10 +11,7 @@ export interface ManagerProductBatchIntakeProps {
   onSuccess: () => void
 }
 
-export function ManagerProductBatchIntake({
-  productId,
-  onSuccess
-}: ManagerProductBatchIntakeProps) {
+export function ManagerProductBatchIntake({ productId, onSuccess }: ManagerProductBatchIntakeProps) {
   const { t } = useTranslation('manager')
   const [newBatches, setNewBatches] = useState<{ quantity: number; basePrice: number; expiryDate: string }[]>([
     { quantity: 0, basePrice: 0, expiryDate: '' }

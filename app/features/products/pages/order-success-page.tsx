@@ -75,11 +75,10 @@ export function OrderSuccessPage() {
       'petbuddy_checkout_subtotal',
       'petbuddy_checkout_distance',
       'petbuddy_checkout_note',
-      'petbuddy_checkout_pending_order_id',
+      'petbuddy_checkout_pending_order_id'
     ]
     keysToRemove.forEach((k) => sessionStorage.removeItem(k))
   }, [])
-
 
   const userEmail = user?.email || 'customer@example.com'
 
@@ -108,11 +107,10 @@ export function OrderSuccessPage() {
           <div className='mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-warning/10 text-warning'>
             <MaterialIcon name='receipt_long' className='text-[48px]' />
           </div>
-          <h1 className='font-display text-2xl font-black text-foreground md:text-3xl mb-3'>
-            Không tìm thấy đơn hàng
-          </h1>
+          <h1 className='font-display text-2xl font-black text-foreground md:text-3xl mb-3'>Không tìm thấy đơn hàng</h1>
           <p className='text-sm text-muted-foreground mb-8'>
-            Không tìm thấy thông tin đơn hàng vừa đặt của bạn. Có thể phiên làm việc của bạn đã hết hạn hoặc chưa có đơn hàng nào được tạo gần đây.
+            Không tìm thấy thông tin đơn hàng vừa đặt của bạn. Có thể phiên làm việc của bạn đã hết hạn hoặc chưa có đơn
+            hàng nào được tạo gần đây.
           </p>
           <div className='flex w-full flex-col gap-3'>
             <button

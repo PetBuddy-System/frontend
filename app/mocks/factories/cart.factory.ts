@@ -13,7 +13,7 @@ export function createCartItem(overrides: Partial<CartItemResponse> = {}): CartI
     price,
     quantity,
     subtotal: price * quantity,
-    ...overrides,
+    ...overrides
   }
 }
 
@@ -23,6 +23,6 @@ export function createCart(overrides: Partial<CartResponse> = {}): CartResponse 
   return {
     userId: faker.string.uuid(),
     cartItems: Array.from({ length: itemCount }, () => createCartItem()),
-    ...overrides,
+    ...overrides
   }
 }

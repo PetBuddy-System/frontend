@@ -21,7 +21,7 @@ export interface ShipperSuggestionResponse {
   staffId: string
   staffEmail: string
   staffName: string
-  staffTask: string 
+  staffTask: string
   currentLoad: number
   maxCapacity: number
   distanceToClusterKm: number | null
@@ -61,7 +61,6 @@ export interface PageableParams {
   sort?: string
 }
 
-
 export interface CreateOrderRequest {
   recipientName: string
   phoneNumber: string
@@ -96,7 +95,6 @@ export interface OrderDetailResponse {
   createdAt: string
 }
 
-
 export interface OrderDetailFull {
   orderId: number
   orderCode: string
@@ -114,7 +112,7 @@ export interface OrderDetailFull {
   estimatedDeliveryAt?: string
   paymentExpiredAt?: string
   orderDetails: OrderDetailResponse[]
-  payment?: PaymentResponse  
+  payment?: PaymentResponse
   voucherCode?: string
   voucher?: VoucherResponse
   shippingFee?: number

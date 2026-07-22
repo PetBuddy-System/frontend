@@ -13,14 +13,14 @@ export function OrderStatusSteps({ order, formatDate, formatTime }: OrderStatusS
   const { t } = useTranslation('profile')
 
   const statusLevels: Record<string, number> = {
-    'PENDING': 0,
-    'CONFIRMED': 1,
-    'PICKING': 2,
-    'PICKED': 2,
-    'SHIPPING': 3,
-    'DELIVERED': 4,
-    'COMPLETED': 5,
-    'CANCEL_REQUESTED': 1,
+    PENDING: 0,
+    CONFIRMED: 1,
+    PICKING: 2,
+    PICKED: 2,
+    SHIPPING: 3,
+    DELIVERED: 4,
+    COMPLETED: 5,
+    CANCEL_REQUESTED: 1
   }
   const currentLevel = statusLevels[order.status] ?? 0
 
@@ -29,42 +29,42 @@ export function OrderStatusSteps({ order, formatDate, formatTime }: OrderStatusS
       icon: 'receipt_long',
       label: t('orderDetail.steps.ordered', 'Đã đặt hàng'),
       rawTime: order.createdAt,
-      show: true,
+      show: true
     },
     {
       icon: 'payments',
       label: t('orderDetail.steps.confirmed', 'Xác nhận đơn hàng'),
       rawTime: order.updatedAt || order.createdAt,
-      show: currentLevel >= 1,
+      show: currentLevel >= 1
     },
     {
       icon: 'inventory_2',
       label: t('orderDetail.steps.picking', 'Giao xuất kho'),
       rawTime: order.updatedAt || order.createdAt,
-      show: currentLevel >= 2,
+      show: currentLevel >= 2
     },
     {
       icon: 'local_shipping',
       label: t('orderDetail.steps.onTheWay', 'Đang giao'),
       rawTime: order.updatedAt || order.createdAt,
-      show: currentLevel >= 3,
+      show: currentLevel >= 3
     },
     {
       icon: 'move_to_inbox',
       label: t('orderDetail.steps.delivered', 'Đã giao hàng'),
       rawTime: order.updatedAt || order.createdAt,
-      show: currentLevel >= 4,
+      show: currentLevel >= 4
     },
     {
       icon: 'grade',
       label: t('orderDetail.steps.completed', 'Hoàn thành'),
       rawTime: order.updatedAt || order.createdAt,
-      show: currentLevel >= 5,
-    },
+      show: currentLevel >= 5
+    }
   ]
 
   return (
-    <div className="flex items-start">
+    <div className='flex items-start'>
       {steps.map((step, i) => {
         const isDone = i < currentLevel
         const isCurrent = i === currentLevel
@@ -73,7 +73,7 @@ export function OrderStatusSteps({ order, formatDate, formatTime }: OrderStatusS
 
         return (
           <div key={step.label} className={cn('flex items-center', !isLast && 'flex-1')}>
-            <div className="flex flex-col items-center gap-2 flex-shrink-0 w-20 sm:w-24">
+            <div className='flex flex-col items-center gap-2 flex-shrink-0 w-20 sm:w-24'>
               <div
                 className={cn(
                   'w-11 h-11 rounded-full flex items-center justify-center transition-colors',
@@ -82,24 +82,19 @@ export function OrderStatusSteps({ order, formatDate, formatTime }: OrderStatusS
                   isUpcoming && 'bg-muted border-2 border-dashed border-border text-muted-foreground/40'
                 )}
               >
-                <MaterialIcon name={isDone ? 'check' : step.icon} className="text-[20px]" />
+                <MaterialIcon name={isDone ? 'check' : step.icon} className='text-[20px]' />
               </div>
-              <div className="text-center">
-                <p
-                  className={cn(
-                    'text-xs font-bold',
-                    isUpcoming ? 'text-muted-foreground/50' : 'text-foreground'
-                  )}
-                >
+              <div className='text-center'>
+                <p className={cn('text-xs font-bold', isUpcoming ? 'text-muted-foreground/50' : 'text-foreground')}>
                   {step.label}
                 </p>
                 {step.show ? (
-                  <div className="flex flex-col text-[10px] text-muted-foreground mt-0.5">
+                  <div className='flex flex-col text-[10px] text-muted-foreground mt-0.5'>
                     <span>{formatDate(step.rawTime)}</span>
                     <span>{formatTime(step.rawTime)}</span>
                   </div>
                 ) : (
-                  <p className="text-[10px] text-muted-foreground mt-0.5">—</p>
+                  <p className='text-[10px] text-muted-foreground mt-0.5'>—</p>
                 )}
               </div>
             </div>

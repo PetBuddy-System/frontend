@@ -12,9 +12,7 @@ export function ReturnRefundSection({ detail }: ReturnRefundSectionProps) {
 
   // Section chỉ render cho RETURN — caller chịu trách nhiệm check.
   const method =
-    detail.refundMethod === 'STRIPE_PAYMENT'
-      ? t('list.detail.refund.methodStripe')
-      : t('list.detail.refund.methodBank')
+    detail.refundMethod === 'STRIPE_PAYMENT' ? t('list.detail.refund.methodStripe') : t('list.detail.refund.methodBank')
 
   return (
     <div className='rounded-xl border border-border bg-card p-4 space-y-3'>
@@ -43,8 +41,7 @@ export function ReturnRefundSection({ detail }: ReturnRefundSectionProps) {
       {detail.refundMethod === 'BANK_TRANSFER' && (detail.bankName || detail.bankAccountNumber) ? (
         <div className='mt-2 pt-2 border-t border-border/60 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-muted-foreground bg-muted/20 p-2.5 rounded-lg'>
           <div>
-            {t('list.detail.refund.bankName')}{' '}
-            <strong className='text-foreground'>{detail.bankName || 'N/A'}</strong>
+            {t('list.detail.refund.bankName')} <strong className='text-foreground'>{detail.bankName || 'N/A'}</strong>
           </div>
           <div>
             {t('list.detail.refund.bankAccount')}{' '}

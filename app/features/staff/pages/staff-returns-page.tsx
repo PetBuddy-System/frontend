@@ -208,9 +208,7 @@ export function StaffReturnsPage() {
                 <MaterialIcon name='chevron_right' className='text-sm' />
                 <span className='text-primary'>{t('returns.breadcrumb.current')}</span>
               </div>
-              <h1 className='font-display text-2xl font-bold text-card-foreground md:text-3xl'>
-                {t('returns.title')}
-              </h1>
+              <h1 className='font-display text-2xl font-bold text-card-foreground md:text-3xl'>{t('returns.title')}</h1>
               <p className='text-muted-foreground text-sm'>{t('returns.subtitle')}</p>
             </section>
 
@@ -313,7 +311,10 @@ export function StaffReturnsPage() {
                     <select
                       id='filter-status'
                       value={statusFilter}
-                      onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(0); }}
+                      onChange={(e) => {
+                        setStatusFilter(e.target.value)
+                        setCurrentPage(0)
+                      }}
                       className='w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none'
                     >
                       <option value='ALL'>{t('returns.filters.all')}</option>
@@ -333,7 +334,10 @@ export function StaffReturnsPage() {
                     <select
                       id='filter-type'
                       value={typeFilter}
-                      onChange={(e) => { setTypeFilter(e.target.value); setCurrentPage(0); }}
+                      onChange={(e) => {
+                        setTypeFilter(e.target.value)
+                        setCurrentPage(0)
+                      }}
                       className='w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none'
                     >
                       <option value='ALL'>{t('returns.filters.all')}</option>
@@ -350,7 +354,10 @@ export function StaffReturnsPage() {
                     <select
                       id='filter-refund'
                       value={refundMethodFilter}
-                      onChange={(e) => { setRefundMethodFilter(e.target.value); setCurrentPage(0); }}
+                      onChange={(e) => {
+                        setRefundMethodFilter(e.target.value)
+                        setCurrentPage(0)
+                      }}
                       className='w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none'
                     >
                       <option value='ALL'>{t('returns.filters.all')}</option>
@@ -387,9 +394,7 @@ export function StaffReturnsPage() {
                   Đang tải danh sách yêu cầu đổi trả...
                 </div>
               ) : returnRequests.length === 0 ? (
-                <div className='p-12 text-center text-muted-foreground font-semibold'>
-                  {t('returns.table.empty')}
-                </div>
+                <div className='p-12 text-center text-muted-foreground font-semibold'>{t('returns.table.empty')}</div>
               ) : (
                 <div className='overflow-x-auto'>
                   <table className='w-full min-w-[1000px] border-collapse text-left text-sm'>
@@ -416,15 +421,11 @@ export function StaffReturnsPage() {
                             </p>
                             <p className='text-xs text-muted-foreground'>{req.requestedBy?.email}</p>
                           </td>
-                          <td className='px-6 py-4 font-semibold text-card-foreground'>
-                            {getTypeLabel(req.type)}
-                          </td>
+                          <td className='px-6 py-4 font-semibold text-card-foreground'>{getTypeLabel(req.type)}</td>
                           <td className='px-6 py-4'>
                             {req.type === 'RETURN' ? (
                               <>
-                                <p className='font-semibold text-card-foreground'>
-                                  {formatPrice(req.refundAmount)}
-                                </p>
+                                <p className='font-semibold text-card-foreground'>{formatPrice(req.refundAmount)}</p>
                                 <p className='text-xs text-muted-foreground'>
                                   {getRefundMethodLabel(req.refundMethod)}
                                 </p>
@@ -443,9 +444,7 @@ export function StaffReturnsPage() {
                               {getStatusLabel(req.status)}
                             </span>
                           </td>
-                          <td className='px-6 py-4 text-xs text-muted-foreground'>
-                            {formatDate(req.createdAt)}
-                          </td>
+                          <td className='px-6 py-4 text-xs text-muted-foreground'>{formatDate(req.createdAt)}</td>
                           <td className='px-6 py-4 text-right'>
                             <button
                               type='button'

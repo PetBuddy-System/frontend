@@ -130,21 +130,21 @@ export function ReturnWarrantyForm({ orderId, onSuccess, onCancel }: ReturnWarra
 
   // Map order items to product list for ReturnOrderProducts
   // Tính giá sau giảm từ totalPrice / quantity
-  const orderItems = order?.orderDetails?.map((item: any) => {
-    // Giá sau giảm = totalPrice / quantity
-    const finalPrice = (item.totalPrice && item.quantity)
-      ? item.totalPrice / item.quantity
-      : item.unitPrice || item.price || 0
+  const orderItems =
+    order?.orderDetails?.map((item: any) => {
+      // Giá sau giảm = totalPrice / quantity
+      const finalPrice =
+        item.totalPrice && item.quantity ? item.totalPrice / item.quantity : item.unitPrice || item.price || 0
 
-    return {
-      id: String(item.orderDetailId || item.id || ''),
-      productId: String(item.productId || ''),
-      name: item.productName || item.name || 'Sản phẩm',
-      quantity: item.quantity || 1,
-      price: formatPrice(finalPrice),  // ← Giá sau giảm
-      image: item.productImage || item.imageUrl || item.thumbnail || ''
-    }
-  }) || []
+      return {
+        id: String(item.orderDetailId || item.id || ''),
+        productId: String(item.productId || ''),
+        name: item.productName || item.name || 'Sản phẩm',
+        quantity: item.quantity || 1,
+        price: formatPrice(finalPrice), // ← Giá sau giảm
+        image: item.productImage || item.imageUrl || item.thumbnail || ''
+      }
+    }) || []
 
   // Calculate refund when selected items, quantity, or reason changes
   useEffect(() => {
@@ -425,9 +425,7 @@ export function ReturnWarrantyForm({ orderId, onSuccess, onCancel }: ReturnWarra
                   <tr key={item.orderDetailId} className='text-foreground'>
                     <td className='py-2.5 pr-4 font-medium'>{item.productName}</td>
                     <td className='py-2.5 pr-4 text-center text-muted-foreground'>x{item.quantity}</td>
-                    <td className='py-2.5 text-right font-semibold text-primary'>
-                      {formatPrice(item.refundAmount)}
-                    </td>
+                    <td className='py-2.5 text-right font-semibold text-primary'>{formatPrice(item.refundAmount)}</td>
                   </tr>
                 ))}
               </tbody>

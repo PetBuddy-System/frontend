@@ -4,12 +4,7 @@ import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
-import {
-  fetchAllVouchersApi,
-  updateVoucherApi,
-  type VoucherResponse,
-  type VoucherRequest,
-} from '~/shared/lib/voucher'
+import { fetchAllVouchersApi, updateVoucherApi, type VoucherResponse, type VoucherRequest } from '~/shared/lib/voucher'
 import { VoucherModal } from '~/shared/components/vouchers/voucher-modal'
 
 const PAGE_SIZE = 10
@@ -109,12 +104,10 @@ export function ManagerVouchersPage() {
         perUserLimit: voucher.perUserLimit,
         startAt: voucher.startAt,
         expiredAt: voucher.expiredAt,
-        status: newStatus,
+        status: newStatus
       }
       await updateVoucherApi(voucher.voucherId, payload)
-      setVouchers((prev) =>
-        prev.map((v) => (v.voucherId === voucher.voucherId ? { ...v, status: newStatus } : v))
-      )
+      setVouchers((prev) => prev.map((v) => (v.voucherId === voucher.voucherId ? { ...v, status: newStatus } : v)))
     } catch {
       setError(t('vouchers.errors.updateFailed'))
     }
@@ -132,9 +125,7 @@ export function ManagerVouchersPage() {
 
   function handleModalSuccess(updatedVoucher: VoucherResponse) {
     if (editingVoucher) {
-      setVouchers((prev) =>
-        prev.map((v) => (v.voucherId === updatedVoucher.voucherId ? updatedVoucher : v))
-      )
+      setVouchers((prev) => prev.map((v) => (v.voucherId === updatedVoucher.voucherId ? updatedVoucher : v)))
     } else {
       void loadVouchers(currentPage)
     }
@@ -166,16 +157,11 @@ export function ManagerVouchersPage() {
 
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
-
             {/* Header + Create button */}
             <section className='flex flex-col gap-4 md:flex-row md:items-end md:justify-between'>
               <div>
-                <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
-                  {t('vouchers.title')}
-                </h1>
-                <p className='mt-1 text-sm text-muted-foreground'>
-                  {t('vouchers.subtitle')}
-                </p>
+                <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>{t('vouchers.title')}</h1>
+                <p className='mt-1 text-sm text-muted-foreground'>{t('vouchers.subtitle')}</p>
               </div>
               <button
                 type='button'
@@ -215,10 +201,15 @@ export function ManagerVouchersPage() {
                 <h2 className='flex items-center gap-2 font-display text-lg font-bold text-card-foreground'>
                   <MaterialIcon name='list_alt' className='text-primary' />
                   {t('vouchers.list.title')}
-                  {totalElements > 0 && <span className='text-sm font-normal text-muted-foreground'>({totalElements})</span>}
+                  {totalElements > 0 && (
+                    <span className='text-sm font-normal text-muted-foreground'>({totalElements})</span>
+                  )}
                 </h2>
                 <div className='relative min-w-0 flex-1 sm:w-64'>
-                  <MaterialIcon name='search' className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground' />
+                  <MaterialIcon
+                    name='search'
+                    className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'
+                  />
                   <input
                     type='search'
                     value={searchQuery}
@@ -263,7 +254,10 @@ export function ManagerVouchersPage() {
                       ) : filteredVouchers.length === 0 ? (
                         <tr>
                           <td colSpan={6} className='py-12 text-center text-sm text-muted-foreground'>
-                            <MaterialIcon name='confirmation_number' className='mx-auto mb-2 text-[36px] text-muted-foreground/50' />
+                            <MaterialIcon
+                              name='confirmation_number'
+                              className='mx-auto mb-2 text-[36px] text-muted-foreground/50'
+                            />
                             <p className='mb-3'>{t('vouchers.empty.title')}</p>
                             <button
                               type='button'
@@ -283,13 +277,15 @@ export function ManagerVouchersPage() {
                           return (
                             <tr
                               key={voucher.voucherId}
-                              className={cn(
-                                'transition-colors hover:bg-muted/50',
-                                !isActive && 'opacity-60'
-                              )}
+                              className={cn('transition-colors hover:bg-muted/50', !isActive && 'opacity-60')}
                             >
                               <td className='px-4 py-4'>
-                                <p className={cn('font-bold', isActive ? 'text-primary' : 'text-muted-foreground line-through')}>
+                                <p
+                                  className={cn(
+                                    'font-bold',
+                                    isActive ? 'text-primary' : 'text-muted-foreground line-through'
+                                  )}
+                                >
                                   {voucher.voucherCode}
                                 </p>
                                 <p className='text-xs italic text-muted-foreground'>{voucher.voucherName}</p>
@@ -298,14 +294,16 @@ export function ManagerVouchersPage() {
                                 <p className='text-sm font-semibold text-foreground'>{getDiscountLabel(voucher)}</p>
                                 <p className='text-xs text-muted-foreground'>
                                   {t('vouchers.table.minOrder', {
-                                    value: voucher.minOrderValue ? formatPrice(voucher.minOrderValue) : formatPrice(0),
+                                    value: voucher.minOrderValue ? formatPrice(voucher.minOrderValue) : formatPrice(0)
                                   })}
                                 </p>
                               </td>
                               <td className='px-4 py-4'>
                                 <p className='text-sm font-medium text-foreground'>{formatDate(voucher.expiredAt)}</p>
                                 {voucher.status === 'EXPIRED' ? (
-                                  <p className='text-xs font-semibold text-destructive'>{t('vouchers.expiry.expired')}</p>
+                                  <p className='text-xs font-semibold text-destructive'>
+                                    {t('vouchers.expiry.expired')}
+                                  </p>
                                 ) : daysLeft !== null && daysLeft > 0 ? (
                                   <p className='text-xs font-semibold text-success'>
                                     {t('vouchers.expiry.daysLeft', { count: daysLeft })}
@@ -319,7 +317,7 @@ export function ManagerVouchersPage() {
                                   {voucher.usageLimit
                                     ? t('vouchers.usage.countWithLimit', {
                                         used: voucher.usedCount ?? 0,
-                                        limit: voucher.usageLimit,
+                                        limit: voucher.usageLimit
                                       })
                                     : t('vouchers.usage.count', { used: voucher.usedCount ?? 0 })}
                                 </p>

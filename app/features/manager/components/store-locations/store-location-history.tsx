@@ -47,12 +47,8 @@ export function StoreLocationHistory({ historyLocations }: StoreLocationHistoryP
             ) : (
               historyLocations.map((loc) => (
                 <tr key={loc.id} className='hover:bg-muted/5 transition-colors'>
-                  <td className='px-6 py-4 font-medium text-foreground max-w-md truncate'>
-                    {loc.address}
-                  </td>
-                  <td className='px-6 py-4 text-xs text-muted-foreground'>
-                    {formatDate(loc.createdAt)}
-                  </td>
+                  <td className='px-6 py-4 font-medium text-foreground max-w-md truncate'>{loc.address}</td>
+                  <td className='px-6 py-4 text-xs text-muted-foreground'>{formatDate(loc.createdAt)}</td>
                   <td className='px-6 py-4'>
                     {loc.active ? (
                       <span className='inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-700 dark:bg-green-950/40 dark:text-green-400'>

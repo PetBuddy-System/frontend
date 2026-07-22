@@ -65,17 +65,12 @@ export function DeliveryFailedDialog({ order, isOpen, onClose, onSuccess }: Deli
             <MaterialIcon name='local_shipping' className='text-[22px]' />
           </div>
           <div>
-            <h2 className='font-bold text-base text-foreground'>
-              {t('deliveryFailedDialog.title')}
-            </h2>
+            <h2 className='font-bold text-base text-foreground'>{t('deliveryFailedDialog.title')}</h2>
             <p className='text-xs text-muted-foreground'>
               {t('deliveryFailedDialog.orderCode', { code: order.orderCode })}
             </p>
           </div>
-          <button
-            onClick={handleClose}
-            className='ml-auto rounded-full p-1.5 hover:bg-muted transition-colors'
-          >
+          <button onClick={handleClose} className='ml-auto rounded-full p-1.5 hover:bg-muted transition-colors'>
             <MaterialIcon name='close' className='text-[18px] text-muted-foreground' />
           </button>
         </div>
@@ -90,22 +85,15 @@ export function DeliveryFailedDialog({ order, isOpen, onClose, onSuccess }: Deli
                 : 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-400'
             )}
           >
-            <MaterialIcon
-              name={willBeBombed ? 'warning' : 'info'}
-              className='text-[20px] shrink-0 mt-0.5'
-            />
+            <MaterialIcon name={willBeBombed ? 'warning' : 'info'} className='text-[20px] shrink-0 mt-0.5' />
             <div>
               <p className='font-bold'>
                 {t('deliveryFailedDialog.failCountLabel', {
                   current: nextFailCount,
-                  max: MAX_FAIL_COUNT,
+                  max: MAX_FAIL_COUNT
                 })}
               </p>
-              {willBeBombed && (
-                <p className='mt-1 text-xs font-semibold'>
-                  {t('deliveryFailedDialog.willBeBombed')}
-                </p>
-              )}
+              {willBeBombed && <p className='mt-1 text-xs font-semibold'>{t('deliveryFailedDialog.willBeBombed')}</p>}
             </div>
           </div>
 
@@ -128,9 +116,7 @@ export function DeliveryFailedDialog({ order, isOpen, onClose, onSuccess }: Deli
                 error ? 'border-destructive' : 'border-border'
               )}
             />
-            {error && (
-              <p className='text-xs text-destructive font-medium'>{error}</p>
-            )}
+            {error && <p className='text-xs text-destructive font-medium'>{error}</p>}
           </div>
 
           {/* Actions */}
@@ -149,9 +135,7 @@ export function DeliveryFailedDialog({ order, isOpen, onClose, onSuccess }: Deli
               disabled={isSubmitting}
               className={cn(
                 'flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white transition-colors active:scale-95 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed',
-                willBeBombed
-                  ? 'bg-red-600 hover:bg-red-700'
-                  : 'bg-rose-600 hover:bg-rose-700'
+                willBeBombed ? 'bg-red-600 hover:bg-red-700' : 'bg-rose-600 hover:bg-rose-700'
               )}
             >
               {isSubmitting ? (
@@ -163,9 +147,7 @@ export function DeliveryFailedDialog({ order, isOpen, onClose, onSuccess }: Deli
                 <>
                   <MaterialIcon name={willBeBombed ? 'block' : 'replay'} className='text-[18px]' />
                   <span>
-                    {willBeBombed
-                      ? t('deliveryFailedDialog.submitBombed')
-                      : t('deliveryFailedDialog.submit')}
+                    {willBeBombed ? t('deliveryFailedDialog.submitBombed') : t('deliveryFailedDialog.submit')}
                   </span>
                 </>
               )}

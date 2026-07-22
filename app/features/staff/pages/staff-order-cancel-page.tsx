@@ -22,7 +22,7 @@ const CANCEL_REASONS = [
   'Sản phẩm hết hàng / lỗi',
   'Đơn hàng trùng lặp',
   'Vi phạm chính sách cửa hàng',
-  'Khác',
+  'Khác'
 ]
 
 const CANCEL_REASON_MAP: Record<string, string> = {
@@ -32,7 +32,7 @@ const CANCEL_REASON_MAP: Record<string, string> = {
   'Sản phẩm hết hàng / lỗi': 'orderCancel.reasons.outOfStock',
   'Đơn hàng trùng lặp': 'orderCancel.reasons.duplicateOrder',
   'Vi phạm chính sách cửa hàng': 'orderCancel.reasons.policyViolation',
-  'Khác': 'orderCancel.reasons.other',
+  Khác: 'orderCancel.reasons.other'
 }
 
 export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
@@ -78,17 +78,14 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
     try {
       const res = await updateOrderStatusApi(orderId, 'CANCELLED')
       if (res.success) {
-      alert(
-        t(
-          'orderCancel.successMessage',
-          {
+        alert(
+          t('orderCancel.successMessage', {
             code: order.orderCode,
             reason: finalReason,
-            defaultValue: `Đơn hàng #${order.orderCode} đã được hủy thành công.\nLý do: ${finalReason}`,
-          }
+            defaultValue: `Đơn hàng #${order.orderCode} đã được hủy thành công.\nLý do: ${finalReason}`
+          })
         )
-      )
-      navigate('/staff/orders')
+        navigate('/staff/orders')
       } else {
         alert(res.message || t('orderCancel.submitError', 'Không thể hủy đơn hàng.'))
       }
@@ -122,7 +119,9 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
           <main className='flex-1 flex items-center justify-center p-6 text-center'>
             <div>
               <MaterialIcon name='error' className='text-[48px] text-destructive mb-3' />
-              <p className='text-muted-foreground text-sm'>{error || t('orderCancel.notFound', 'Không tìm thấy đơn hàng.')}</p>
+              <p className='text-muted-foreground text-sm'>
+                {error || t('orderCancel.notFound', 'Không tìm thấy đơn hàng.')}
+              </p>
               <button
                 onClick={() => navigate('/staff/orders')}
                 className='mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-bold text-sm'
@@ -144,7 +143,6 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
         <main className='flex-1 overflow-y-auto'>
           <div className='min-h-full bg-muted/30 flex flex-col items-center p-4 md:p-8'>
             <div className='w-full max-w-4xl flex flex-col gap-6'>
-
               {/* Header */}
               <div className='flex items-center justify-between'>
                 <h1 className='font-display text-2xl font-bold text-foreground flex items-center gap-2'>
@@ -162,7 +160,10 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
                 <div>
                   <p className='font-bold text-sm'>{t('orderCancel.warningTitle', 'Hành động không thể hoàn tác')}</p>
                   <p className='text-sm mt-1 opacity-80'>
-                    {t('orderCancel.warningDesc', 'Đơn hàng sẽ được hủy ngay lập tức (không cần chờ xác nhận). Vui lòng chọn đúng lý do.')}
+                    {t(
+                      'orderCancel.warningDesc',
+                      'Đơn hàng sẽ được hủy ngay lập tức (không cần chờ xác nhận). Vui lòng chọn đúng lý do.'
+                    )}
                   </p>
                 </div>
               </div>
@@ -178,12 +179,22 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
                     </h2>
                     <div className='flex flex-col gap-3'>
                       {order.orderDetails?.map((item) => (
-                        <div key={item.orderDetailId} className='flex gap-4 p-3 bg-muted/50 rounded-lg border border-border/40'>
+                        <div
+                          key={item.orderDetailId}
+                          className='flex gap-4 p-3 bg-muted/50 rounded-lg border border-border/40'
+                        >
                           <div className='w-16 h-16 rounded-lg overflow-hidden bg-muted shrink-0'>
-                            {item.productImage
-                              ? <img className='w-full h-full object-cover' src={item.productImage} alt={item.productName} />
-                              : <div className='w-full h-full flex items-center justify-center'><MaterialIcon name='image' className='text-[24px] text-muted-foreground' /></div>
-                            }
+                            {item.productImage ? (
+                              <img
+                                className='w-full h-full object-cover'
+                                src={item.productImage}
+                                alt={item.productName}
+                              />
+                            ) : (
+                              <div className='w-full h-full flex items-center justify-center'>
+                                <MaterialIcon name='image' className='text-[24px] text-muted-foreground' />
+                              </div>
+                            )}
                           </div>
                           <div className='flex flex-col justify-center flex-grow min-w-0'>
                             <h3 className='text-foreground font-semibold text-sm truncate'>{item.productName}</h3>
@@ -207,7 +218,9 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
                       onChange={(e) => setCancelReason(e.target.value)}
                       className='w-full rounded-xl border border-border bg-background p-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30'
                     >
-                      <option value=''>{t('orderCancel.selectReasonPlaceholder', '-- Vui lòng chọn lý do hủy --')}</option>
+                      <option value=''>
+                        {t('orderCancel.selectReasonPlaceholder', '-- Vui lòng chọn lý do hủy --')}
+                      </option>
                       {CANCEL_REASONS.map((r) => (
                         <option key={r} value={r}>
                           {t(CANCEL_REASON_MAP[r] || r, r)}
@@ -242,8 +255,11 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
                     <div className='flex justify-between text-sm mb-4'>
                       <span className='text-muted-foreground'>{t('orderCancel.paymentMethod', 'Phương thức TT')}</span>
                       <span className='font-semibold text-foreground'>
-                        {order.payment?.paymentMethod === 'CARD' ? t('orderCancel.paymentMethodCard', 'Thẻ ngân hàng') :
-                         order.payment?.paymentMethod === 'MOMO' ? t('orderCancel.paymentMethodMomo', 'Ví MoMo') : t('orderCancel.paymentMethodCOD', 'Tiền mặt (COD)')}
+                        {order.payment?.paymentMethod === 'CARD'
+                          ? t('orderCancel.paymentMethodCard', 'Thẻ ngân hàng')
+                          : order.payment?.paymentMethod === 'MOMO'
+                            ? t('orderCancel.paymentMethodMomo', 'Ví MoMo')
+                            : t('orderCancel.paymentMethodCOD', 'Tiền mặt (COD)')}
                       </span>
                     </div>
 

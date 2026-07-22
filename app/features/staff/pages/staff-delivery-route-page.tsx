@@ -188,7 +188,9 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
         <div className='grid grid-cols-1 gap-3 text-sm md:grid-cols-2'>
           <div>
             <p className='text-xs text-muted-foreground mb-0.5'>{t('deliveryRoute.timeline.customer')}</p>
-            <p className='font-semibold text-foreground'>{stop.recipientName} — {stop.phoneNumber}</p>
+            <p className='font-semibold text-foreground'>
+              {stop.recipientName} — {stop.phoneNumber}
+            </p>
           </div>
           <div>
             <p className='text-xs text-muted-foreground mb-0.5'>{t('deliveryRoute.timeline.address')}</p>
@@ -196,7 +198,9 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
           </div>
           {stop.estimatedDeliveryAt && (
             <div>
-              <p className='text-xs text-muted-foreground mb-0.5'>{t('orderDetail.estimatedDeliveryAt', 'Dự kiến giao hàng', { ns: 'profile' })}</p>
+              <p className='text-xs text-muted-foreground mb-0.5'>
+                {t('orderDetail.estimatedDeliveryAt', 'Dự kiến giao hàng', { ns: 'profile' })}
+              </p>
               <p className='font-semibold text-foreground flex items-center gap-1'>
                 <MaterialIcon name='event' className='text-primary text-[16px]' />
                 {formatDateTime(stop.estimatedDeliveryAt)}
@@ -221,9 +225,7 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
               onClick={() => onMarkFailed(stop)}
               className={cn(
                 'flex-1 min-w-[120px] rounded-xl py-2.5 text-sm font-bold transition-opacity hover:opacity-90',
-                (stop.deliveryFailCount ?? 0) >= 3
-                  ? 'bg-destructive text-white'
-                  : 'bg-rose-600 text-white'
+                (stop.deliveryFailCount ?? 0) >= 3 ? 'bg-destructive text-white' : 'bg-rose-600 text-white'
               )}
             >
               {(stop.deliveryFailCount ?? 0) >= 3
@@ -268,7 +270,9 @@ export function StaffDeliveryRoutePage() {
     }
   }
 
-  useEffect(() => { void loadRoute() }, [user?.userId])
+  useEffect(() => {
+    void loadRoute()
+  }, [user?.userId])
 
   async function handleConfirmDelivered(file: File) {
     if (!proofTarget) return
@@ -314,10 +318,7 @@ export function StaffDeliveryRoutePage() {
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
       <StaffSidebar activeItem='deliveryRoute' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <StaffTopNav
-          titleKey='deliveryRoute.title'
-          subtitleKey='deliveryRoute.subtitle'
-        />
+        <StaffTopNav titleKey='deliveryRoute.title' subtitleKey='deliveryRoute.subtitle' />
         <main className='flex-1 overflow-y-auto p-4 pb-20 md:p-6'>
           <div className='mx-auto max-w-7xl'>
             {isLoading && (
@@ -419,8 +420,12 @@ export function StaffDeliveryRoutePage() {
                             </p>
                           )}
                         </div>
-                        <div className='absolute inset-0 opacity-10 pointer-events-none'
-                          style={{ backgroundImage: 'repeating-linear-gradient(0deg, var(--color-border) 0, var(--color-border) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, var(--color-border) 0, var(--color-border) 1px, transparent 1px, transparent 40px)' }}
+                        <div
+                          className='absolute inset-0 opacity-10 pointer-events-none'
+                          style={{
+                            backgroundImage:
+                              'repeating-linear-gradient(0deg, var(--color-border) 0, var(--color-border) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, var(--color-border) 0, var(--color-border) 1px, transparent 1px, transparent 40px)'
+                          }}
                         />
                       </div>
                       <div className='p-5 space-y-4'>

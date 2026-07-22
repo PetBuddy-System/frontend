@@ -584,7 +584,12 @@ export const returnHandlers = [
         const customerEmail = r.requestedBy?.email?.toLowerCase() || ''
         const rCode = r.returnCode.toLowerCase()
         const oCode = r.orderCode.toLowerCase()
-        return customerName.includes(keyword) || customerEmail.includes(keyword) || rCode.includes(keyword) || oCode.includes(keyword)
+        return (
+          customerName.includes(keyword) ||
+          customerEmail.includes(keyword) ||
+          rCode.includes(keyword) ||
+          oCode.includes(keyword)
+        )
       })
     }
 
@@ -594,7 +599,7 @@ export const returnHandlers = [
     const pageReturns = returns.slice(start, end)
 
     // Ensure formats
-    const formattedReturns = pageReturns.map(r => {
+    const formattedReturns = pageReturns.map((r) => {
       const mediaMapped = r.mediaFiles.map((m, idx) => {
         if (typeof m === 'string') {
           return { mediaFileId: 100 + idx, fileUrl: m, fileType: 'IMAGE' }
@@ -611,7 +616,7 @@ export const returnHandlers = [
         mediaFiles: mediaMapped,
         returnItems: r.returnItems.map((item, idx) => ({
           ...item,
-          orderDetailId: item.orderDetailId || (11 + idx),
+          orderDetailId: item.orderDetailId || 11 + idx,
           productImage: item.productImage || null
         }))
       }
@@ -675,7 +680,7 @@ export const returnHandlers = [
       mediaFiles: mediaMapped,
       returnItems: returnReq.returnItems.map((item, idx) => ({
         ...item,
-        orderDetailId: item.orderDetailId || (11 + idx),
+        orderDetailId: item.orderDetailId || 11 + idx,
         productImage: item.productImage || null
       }))
     }

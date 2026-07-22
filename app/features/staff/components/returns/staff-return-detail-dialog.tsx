@@ -18,11 +18,7 @@ export interface StaffReturnDetailDialogProps {
   onSuccess: () => void
 }
 
-export function StaffReturnDetailDialog({
-  returnRequest,
-  onClose,
-  onSuccess
-}: StaffReturnDetailDialogProps) {
+export function StaffReturnDetailDialog({ returnRequest, onClose, onSuccess }: StaffReturnDetailDialogProps) {
   const { t } = useTranslation('staff')
   const { user } = useAuth()
   const staffTask = user?.staffTask
@@ -158,9 +154,7 @@ export function StaffReturnDetailDialog({
     }
   }
 
-  async function handleUpdateStatus(
-    nextStatus: string
-  ) {
+  async function handleUpdateStatus(nextStatus: string) {
     if (nextStatus === 'ASSIGN_SHIPPER') {
       loadShippers()
       return
@@ -212,15 +206,11 @@ export function StaffReturnDetailDialog({
       }
 
       if (status === 'APPROVED' && !shipper) {
-        actions.push(
-          { value: 'ASSIGN_SHIPPER', label: t('returns.detail.assignShipper'), variant: 'primary' }
-        )
+        actions.push({ value: 'ASSIGN_SHIPPER', label: t('returns.detail.assignShipper'), variant: 'primary' })
       }
 
       if (status === 'RETURNED_TO_STORE') {
-        actions.push(
-          { value: 'COMPLETED', label: t('returns.stats.completed'), variant: 'success' }
-        )
+        actions.push({ value: 'COMPLETED', label: t('returns.stats.completed'), variant: 'success' })
       }
 
       return actions
@@ -236,7 +226,11 @@ export function StaffReturnDetailDialog({
           actions.push({ value: 'PICKED_UP', label: t('returns.detail.btnPickedUp'), variant: 'primary' })
         }
         if (status === 'PICKED_UP') {
-          actions.push({ value: 'RETURNED_TO_STORE', label: t('returns.detail.btnReturnedToStore'), variant: 'primary' })
+          actions.push({
+            value: 'RETURNED_TO_STORE',
+            label: t('returns.detail.btnReturnedToStore'),
+            variant: 'primary'
+          })
         }
       }
 
@@ -305,12 +299,8 @@ export function StaffReturnDetailDialog({
                   <h4 className='text-xs font-bold uppercase text-muted-foreground tracking-wider mb-2'>
                     {t('returns.detail.customerInfo')}
                   </h4>
-                  <p className='font-bold text-card-foreground'>
-                    {returnRequest.requestedBy.fullName}
-                  </p>
-                  <p className='text-sm text-muted-foreground'>
-                    {returnRequest.requestedBy.email}
-                  </p>
+                  <p className='font-bold text-card-foreground'>{returnRequest.requestedBy.fullName}</p>
+                  <p className='text-sm text-muted-foreground'>{returnRequest.requestedBy.email}</p>
                   {returnRequest.recipientName && (
                     <p className='text-sm text-muted-foreground mt-1'>
                       <span className='font-medium text-foreground'>{t('returns.detail.recipientName')}:</span>{' '}
@@ -346,15 +336,17 @@ export function StaffReturnDetailDialog({
 
               {/* Timeline */}
               <div className='rounded-xl border border-border bg-card p-4 sm:px-6'>
-                <h4 className='text-sm font-bold border-b border-border pb-3 mb-2'>{t('returns.detail.requestStatus')}</h4>
-                <ReturnTimeline 
-                  type={returnRequest.type} 
-                  status={returnRequest.status} 
-                  createdAt={returnRequest.createdAt} 
-                  approvedAt={returnRequest.approvedAt} 
-                  pickedUpAt={returnRequest.pickedUpAt} 
-                  returnedToStoreAt={returnRequest.returnedToStoreAt} 
-                  completedAt={returnRequest.completedAt} 
+                <h4 className='text-sm font-bold border-b border-border pb-3 mb-2'>
+                  {t('returns.detail.requestStatus')}
+                </h4>
+                <ReturnTimeline
+                  type={returnRequest.type}
+                  status={returnRequest.status}
+                  createdAt={returnRequest.createdAt}
+                  approvedAt={returnRequest.approvedAt}
+                  pickedUpAt={returnRequest.pickedUpAt}
+                  returnedToStoreAt={returnRequest.returnedToStoreAt}
+                  completedAt={returnRequest.completedAt}
                 />
               </div>
 
@@ -474,14 +466,14 @@ export function StaffReturnDetailDialog({
                   <div className='space-y-2 text-sm'>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>{t('returns.detail.refundMethod')}:</span>
-                      <strong className='text-foreground'>
-                        {getRefundMethodLabel(returnRequest.refundMethod)}
-                      </strong>
+                      <strong className='text-foreground'>{getRefundMethodLabel(returnRequest.refundMethod)}</strong>
                     </div>
                     {returnRequest.refundStatus && (
                       <div className='flex justify-between'>
                         <span className='text-muted-foreground'>{t('returns.detail.refundStatus')}:</span>
-                        <span className='font-semibold text-primary'>{getRefundStatusLabel(returnRequest.refundStatus)}</span>
+                        <span className='font-semibold text-primary'>
+                          {getRefundStatusLabel(returnRequest.refundStatus)}
+                        </span>
                       </div>
                     )}
                     <div className='flex justify-between border-t border-border pt-2 text-base'>
@@ -490,19 +482,23 @@ export function StaffReturnDetailDialog({
                     </div>
                   </div>
 
-                  {returnRequest.refundMethod === 'BANK_TRANSFER' && (returnRequest.bankName || returnRequest.bankAccountNumber) && (
-                    <div className='rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground space-y-1.5 border border-border/50'>
-                      <div>
-                        {t('returns.detail.bankName')}: <strong className='text-foreground'>{returnRequest.bankName || '—'}</strong>
+                  {returnRequest.refundMethod === 'BANK_TRANSFER' &&
+                    (returnRequest.bankName || returnRequest.bankAccountNumber) && (
+                      <div className='rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground space-y-1.5 border border-border/50'>
+                        <div>
+                          {t('returns.detail.bankName')}:{' '}
+                          <strong className='text-foreground'>{returnRequest.bankName || '—'}</strong>
+                        </div>
+                        <div>
+                          {t('returns.detail.bankAccountNumber')}:{' '}
+                          <strong className='text-foreground'>{returnRequest.bankAccountNumber || '—'}</strong>
+                        </div>
+                        <div>
+                          {t('returns.detail.bankAccountHolder')}:{' '}
+                          <strong className='text-foreground'>{returnRequest.bankAccountHolder || '—'}</strong>
+                        </div>
                       </div>
-                      <div>
-                        {t('returns.detail.bankAccountNumber')}: <strong className='text-foreground'>{returnRequest.bankAccountNumber || '—'}</strong>
-                      </div>
-                      <div>
-                        {t('returns.detail.bankAccountHolder')}: <strong className='text-foreground'>{returnRequest.bankAccountHolder || '—'}</strong>
-                      </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               )}
 
@@ -549,7 +545,7 @@ export function StaffReturnDetailDialog({
                       <span className='font-semibold text-foreground'>{returnRequest.processedBy.fullName}</span>
                     </div>
                   )}
-                  
+
                   {returnRequest.processedAt && (
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>{t('returns.detail.processedAt')}:</span>
@@ -624,12 +620,14 @@ export function StaffReturnDetailDialog({
 
                   <div className='flex flex-col gap-2'>
                     {availableActions.map((action) => {
-                      let className = 'inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm hover:opacity-90 active:scale-98 disabled:opacity-50 transition-all'
+                      let className =
+                        'inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm hover:opacity-90 active:scale-98 disabled:opacity-50 transition-all'
 
                       if (action.variant === 'primary') {
                         className += ' bg-primary text-white'
                       } else if (action.variant === 'danger') {
-                        className += ' bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/20 dark:border-rose-900/50 dark:text-rose-400 dark:hover:bg-rose-950/40'
+                        className +=
+                          ' bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/20 dark:border-rose-900/50 dark:text-rose-400 dark:hover:bg-rose-950/40'
                       } else if (action.variant === 'success') {
                         className += ' bg-emerald-600 text-white dark:bg-emerald-700'
                       } else {
@@ -650,7 +648,9 @@ export function StaffReturnDetailDialog({
                           {action.value === 'PICKING_UP' && <MaterialIcon name='directions_car' className='text-lg' />}
                           {action.value === 'PICKED_UP' && <MaterialIcon name='local_shipping' className='text-lg' />}
                           {action.value === 'RETURNED_TO_STORE' && <MaterialIcon name='store' className='text-lg' />}
-                          {action.value === 'READY_TO_DELIVER' && <MaterialIcon name='inventory_2' className='text-lg' />}
+                          {action.value === 'READY_TO_DELIVER' && (
+                            <MaterialIcon name='inventory_2' className='text-lg' />
+                          )}
                           {action.value === 'DELIVERING' && <MaterialIcon name='local_shipping' className='text-lg' />}
                           {action.value === 'COMPLETED' && <MaterialIcon name='done_all' className='text-lg' />}
                           {action.value === 'DELIVERY_FAILED' && <MaterialIcon name='error' className='text-lg' />}
@@ -687,14 +687,14 @@ export function StaffReturnDetailDialog({
                 <MaterialIcon name='close' className='text-xl' />
               </button>
             </div>
-            
+
             {isLoadingShippers ? (
               <div className='py-8 text-center text-muted-foreground'>{t('returns.detail.loadingShippers')}</div>
             ) : availableShippers.length === 0 ? (
               <div className='py-8 text-center text-muted-foreground'>{t('returns.detail.noShippers')}</div>
             ) : (
               <div className='space-y-4 max-h-[60vh] overflow-y-auto'>
-                {availableShippers.map(shipper => (
+                {availableShippers.map((shipper) => (
                   <label
                     key={shipper.staffId}
                     className={cn(

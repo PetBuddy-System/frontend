@@ -9,7 +9,11 @@ export function LandingHero() {
       id='hero'
       className='relative flex min-h-[420px] items-center justify-center overflow-hidden bg-muted md:min-h-[600px]'
     >
-      <div className='absolute inset-0 bg-cover bg-center' style={{ backgroundImage: `url(${dogTrust})` }} aria-hidden />
+      <div
+        className='absolute inset-0 bg-cover bg-center'
+        style={{ backgroundImage: `url(${dogTrust})` }}
+        aria-hidden
+      />
       <div className='absolute inset-0 bg-black/40' aria-hidden />
       <div className='relative z-10 mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-4 py-16 md:px-6'>
         <h1 className='max-w-2xl text-3xl font-bold text-white md:text-5xl font-display'>{t('hero.title')}</h1>

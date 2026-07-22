@@ -57,18 +57,9 @@ export function ProductDetailGallery({ imageUrls, productName, videoUrl }: Produ
       {/* Main display - Image hoặc Video */}
       <div className='relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-border/60 bg-card p-8 shadow-sm'>
         {activeTab === 'video' && videoUrl ? (
-          <video
-            src={videoUrl}
-            controls
-            autoPlay
-            className='h-full w-full object-contain'
-          />
+          <video src={videoUrl} controls autoPlay className='h-full w-full object-contain' />
         ) : (
-          <img
-            src={defaultImage}
-            alt={productName}
-            className='h-full w-full object-contain drop-shadow-md'
-          />
+          <img src={defaultImage} alt={productName} className='h-full w-full object-contain drop-shadow-md' />
         )}
       </div>
 
@@ -87,11 +78,7 @@ export function ProductDetailGallery({ imageUrls, productName, videoUrl }: Produ
                   : 'border-border/60 opacity-70 hover:border-primary hover:opacity-100'
               )}
             >
-              <img
-                src={url}
-                alt={`${productName} thumbnail ${index + 1}`}
-                className='h-full w-full object-contain'
-              />
+              <img src={url} alt={`${productName} thumbnail ${index + 1}`} className='h-full w-full object-contain' />
             </button>
           ))}
         </div>

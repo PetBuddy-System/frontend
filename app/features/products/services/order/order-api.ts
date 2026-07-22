@@ -27,9 +27,7 @@ export async function updateOrderApi(orderId: number, data: UpdateOrderRequest):
   })
 }
 
-export async function fetchMyOrdersApi(
-  params: PageableParams = {}
-): Promise<ApiResponse<PageResponse<OrderResponse>>> {
+export async function fetchMyOrdersApi(params: PageableParams = {}): Promise<ApiResponse<PageResponse<OrderResponse>>> {
   const { page, size, sort } = params
 
   return customFetch<ApiResponse<PageResponse<OrderResponse>>>({

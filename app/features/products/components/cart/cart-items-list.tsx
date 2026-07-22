@@ -33,14 +33,7 @@ interface CartItemCardProps {
   isMutating: boolean
 }
 
-function CartItemCard({
-  item,
-  formatPrice,
-  onDecrease,
-  onIncrease,
-  onRemove,
-  isMutating
-}: CartItemCardProps) {
+function CartItemCard({ item, formatPrice, onDecrease, onIncrease, onRemove, isMutating }: CartItemCardProps) {
   const { t } = useTranslation('products')
   const hasSale = item.salePrice !== undefined && item.salePrice !== null && item.salePrice < item.price
   const effectivePrice = hasSale ? item.salePrice! : item.price
@@ -54,9 +47,7 @@ function CartItemCard({
         </div>
         <div className='flex-1 min-w-0'>
           <h3 className='font-bold text-foreground text-sm leading-snug line-clamp-2'>{item.title}</h3>
-          {hasSale && (
-            <p className='text-xs text-muted-foreground line-through mt-0.5'>{formatPrice(item.price)}</p>
-          )}
+          {hasSale && <p className='text-xs text-muted-foreground line-through mt-0.5'>{formatPrice(item.price)}</p>}
           <p className='font-medium text-primary text-sm mt-0.5'>{formatPrice(effectivePrice)}</p>
         </div>
         <button
@@ -124,8 +115,7 @@ export function CartItemsList({
             </thead>
             <tbody className='divide-y divide-border'>
               {items.map((item) => {
-                const hasSale =
-                  item.salePrice !== undefined && item.salePrice !== null && item.salePrice < item.price
+                const hasSale = item.salePrice !== undefined && item.salePrice !== null && item.salePrice < item.price
                 const effectivePrice = hasSale ? item.salePrice! : item.price
                 const effectiveSubtotal = effectivePrice * item.quantity
                 const isMutating = mutatingItemId === item.key
@@ -145,10 +135,7 @@ export function CartItemsList({
                             {item.title}
                           </h3>
                           {item.description && (
-                            <p
-                              title={item.description}
-                              className='text-sm mt-1 line-clamp-2 text-muted-foreground'
-                            >
+                            <p title={item.description} className='text-sm mt-1 line-clamp-2 text-muted-foreground'>
                               {item.description}
                             </p>
                           )}
@@ -158,17 +145,13 @@ export function CartItemsList({
                     <td className='px-4 py-5 text-center align-middle'>
                       {hasSale ? (
                         <div className='flex flex-col items-center'>
-                          <span className='text-xs text-muted-foreground line-through'>
-                            {formatPrice(item.price)}
-                          </span>
+                          <span className='text-xs text-muted-foreground line-through'>{formatPrice(item.price)}</span>
                           <span className='font-medium text-foreground whitespace-nowrap'>
                             {formatPrice(item.salePrice!)}
                           </span>
                         </div>
                       ) : (
-                        <span className='font-medium text-foreground whitespace-nowrap'>
-                          {formatPrice(item.price)}
-                        </span>
+                        <span className='font-medium text-foreground whitespace-nowrap'>{formatPrice(item.price)}</span>
                       )}
                     </td>
                     <td className='px-4 py-5 text-center align-middle'>

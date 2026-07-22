@@ -3,7 +3,12 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { StaffSidebar, StaffTopNav } from '~/features/staff/components/layout'
-import { AddProductForm, ProductPreviewList, AddProductImageUpload, type ProductFormData } from '~/features/staff/components/add-product'
+import {
+  AddProductForm,
+  ProductPreviewList,
+  AddProductImageUpload,
+  type ProductFormData
+} from '~/features/staff/components/add-product'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
@@ -133,10 +138,7 @@ export function StaffAddProductPage() {
                   <AddProductImageUpload />
 
                   {/* Product Preview List */}
-                  <ProductPreviewList
-                    products={addedProducts}
-                    onRemove={handleRemoveProduct}
-                  />
+                  <ProductPreviewList products={addedProducts} onRemove={handleRemoveProduct} />
                 </div>
               </div>
 
@@ -194,12 +196,8 @@ export function StaffAddProductPage() {
         <div className='fixed bottom-4 right-4 left-4 z-50 mx-auto flex max-w-sm items-center gap-3 rounded-xl bg-card px-4 py-3 shadow-xl ring-1 ring-border sm:left-auto sm:max-w-md sm:px-6 sm:py-4'>
           <MaterialIcon name='check_circle' filled className='text-xl text-success sm:text-2xl' />
           <div className='min-w-0 flex-1'>
-            <p className='font-bold text-foreground'>
-              {t('addProduct.toast.successTitle')}
-            </p>
-            <p className='truncate text-sm text-muted-foreground'>
-              {t('addProduct.toast.successMessage')}
-            </p>
+            <p className='font-bold text-foreground'>{t('addProduct.toast.successTitle')}</p>
+            <p className='truncate text-sm text-muted-foreground'>{t('addProduct.toast.successMessage')}</p>
           </div>
         </div>
       )}

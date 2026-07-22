@@ -21,7 +21,7 @@ export interface VoucherResponse {
   usageLimit: number | null
   usedCount: number
   perUserLimit: number | null
-  usedByCurrentUser?: number | null   
+  usedByCurrentUser?: number | null
   startAt: string
   expiredAt: string
   status: 'ACTIVE' | 'INACTIVE' | 'EXPIRED' | string
@@ -71,17 +71,20 @@ export function getIneligibleReason(
   hasPromotionProduct?: boolean,
   t?: any
 ): string {
-  const translate = t || ((key: string) => {
-    if (key === 'voucherPicker.reasons.hasPromotion') return 'Đang có sản phẩm trong chương trình giảm giá'
-    if (key === 'voucherPicker.reasons.inactive') return 'Voucher không còn hiệu lực'
-    if (key === 'voucherPicker.reasons.limitExceeded') return 'Voucher đã hết lượt sử dụng'
-    if (key === 'voucherPicker.reasons.ineligible') return 'Chưa đủ điều kiện'
-    return 'Chưa đủ điều kiện'
-  })
+  const translate =
+    t ||
+    ((key: string) => {
+      if (key === 'voucherPicker.reasons.hasPromotion') return 'Đang có sản phẩm trong chương trình giảm giá'
+      if (key === 'voucherPicker.reasons.inactive') return 'Voucher không còn hiệu lực'
+      if (key === 'voucherPicker.reasons.limitExceeded') return 'Voucher đã hết lượt sử dụng'
+      if (key === 'voucherPicker.reasons.ineligible') return 'Chưa đủ điều kiện'
+      return 'Chưa đủ điều kiện'
+    })
 
   if (hasPromotionProduct) return translate('voucherPicker.reasons.hasPromotion')
   if (voucher.status !== 'ACTIVE') return translate('voucherPicker.reasons.inactive')
-  if (voucher.usageLimit && voucher.usedCount >= voucher.usageLimit) return translate('voucherPicker.reasons.limitExceeded')
+  if (voucher.usageLimit && voucher.usedCount >= voucher.usageLimit)
+    return translate('voucherPicker.reasons.limitExceeded')
   if (voucher.minOrderValue && orderSubtotal < voucher.minOrderValue) {
     const missing = voucher.minOrderValue - orderSubtotal
     if (t) {
@@ -116,29 +119,24 @@ export async function fetchAllVouchersApi(params?: {
     params: {
       page: params?.page ?? 0,
       size: params?.size ?? 20,
-      sortBy: params?.sortBy ?? 'createdAt',
-    },
+      sortBy: params?.sortBy ?? 'createdAt'
+    }
   })
 }
 
-export async function createVoucherApi(
-  data: VoucherRequest
-): Promise<ApiResponse<VoucherResponse>> {
+export async function createVoucherApi(data: VoucherRequest): Promise<ApiResponse<VoucherResponse>> {
   return customFetch<ApiResponse<VoucherResponse>>({
     url: VOUCHER_BASE_URL,
     method: 'POST',
-    data,
+    data
   })
 }
 
-export async function updateVoucherApi(
-  id: string,
-  data: VoucherRequest
-): Promise<ApiResponse<VoucherResponse>> {
+export async function updateVoucherApi(id: string, data: VoucherRequest): Promise<ApiResponse<VoucherResponse>> {
   return customFetch<ApiResponse<VoucherResponse>>({
     url: `${VOUCHER_BASE_URL}/${id}`,
     method: 'PUT',
-    data,
+    data
   })
 }
 

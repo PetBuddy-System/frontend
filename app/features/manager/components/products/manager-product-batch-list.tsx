@@ -85,13 +85,21 @@ export function ManagerProductBatchList({
       }
     }
     void loadBatches()
-  }, [productId, search, status, page, sortBy, refreshKey, localRefreshKey, onExpiringSoonCountChange, getDaysRemaining])
+  }, [
+    productId,
+    search,
+    status,
+    page,
+    sortBy,
+    refreshKey,
+    localRefreshKey,
+    onExpiringSoonCountChange,
+    getDaysRemaining
+  ])
 
   // ─── Handlers ───────────────────────────────────────────
   const handleToggleExpand = (batchId: string) => {
-    setExpandedBatchIds(prev =>
-      prev.includes(batchId) ? prev.filter(id => id !== batchId) : [...prev, batchId]
-    )
+    setExpandedBatchIds((prev) => (prev.includes(batchId) ? prev.filter((id) => id !== batchId) : [...prev, batchId]))
   }
 
   const handleOpenEditDialog = (batch: ProductBatchItem) => {
@@ -131,7 +139,7 @@ export function ManagerProductBatchList({
       if (response.success) {
         setEditDialogOpen(false)
         setEditingBatch(null)
-        setLocalRefreshKey(prev => prev + 1)
+        setLocalRefreshKey((prev) => prev + 1)
         onBatchChange()
       } else {
         setEditError(response.message || t('productManagement.batch.errors.updateFailed'))
@@ -165,7 +173,7 @@ export function ManagerProductBatchList({
       if (response.success) {
         setDeleteDialogOpen(false)
         setDeletingBatchId(null)
-        setLocalRefreshKey(prev => prev + 1)
+        setLocalRefreshKey((prev) => prev + 1)
         onBatchChange()
       } else {
         setDeleteError(response.message || t('productManagement.batch.errors.deleteFailed'))
@@ -194,11 +202,20 @@ export function ManagerProductBatchList({
 
       <ManagerProductBatchToolbar
         searchValue={search}
-        onSearchChange={(val) => { setSearch(val); setPage(0) }}
+        onSearchChange={(val) => {
+          setSearch(val)
+          setPage(0)
+        }}
         statusValue={status}
-        onStatusChange={(val) => { setStatus(val); setPage(0) }}
+        onStatusChange={(val) => {
+          setStatus(val)
+          setPage(0)
+        }}
         sortByValue={sortBy}
-        onSortChange={(val) => { setSortBy(val); setPage(0) }}
+        onSortChange={(val) => {
+          setSortBy(val)
+          setPage(0)
+        }}
         onReset={handleReset}
       />
 
@@ -219,11 +236,7 @@ export function ManagerProductBatchList({
             onDelete={handleDeleteBatch}
           />
 
-          <ManagerProductBatchPagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
+          <ManagerProductBatchPagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
         </>
       )}
 

@@ -12,13 +12,7 @@ interface DeliveryProofDialogProps {
   onSuccess: () => void
 }
 
-export function DeliveryProofDialog({
-  orderId,
-  orderCode,
-  isOpen,
-  onClose,
-  onSuccess
-}: DeliveryProofDialogProps) {
+export function DeliveryProofDialog({ orderId, orderCode, isOpen, onClose, onSuccess }: DeliveryProofDialogProps) {
   const { t } = useTranslation('profile')
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -72,7 +66,9 @@ export function DeliveryProofDialog({
               <MaterialIcon name='photo_camera' className='text-[22px]' />
             </div>
             <div>
-              <h3 className='font-bold text-foreground'>{t('orderDetail.deliveryProofTitle', 'Xác nhận đã giao hàng')}</h3>
+              <h3 className='font-bold text-foreground'>
+                {t('orderDetail.deliveryProofTitle', 'Xác nhận đã giao hàng')}
+              </h3>
               <p className='text-xs text-muted-foreground'>Đơn #{orderCode}</p>
             </div>
           </div>
@@ -88,13 +84,16 @@ export function DeliveryProofDialog({
         {/* Body */}
         <div className='p-6 space-y-4'>
           <p className='text-sm text-muted-foreground leading-relaxed font-medium'>
-            {t('orderDetail.deliveryProofDesc', 'Vui lòng chụp và tải lên hình ảnh xác nhận đã giao hàng thành công để hoàn tất đơn hàng.')}
+            {t(
+              'orderDetail.deliveryProofDesc',
+              'Vui lòng chụp và tải lên hình ảnh xác nhận đã giao hàng thành công để hoàn tất đơn hàng.'
+            )}
           </p>
 
           <div className='relative flex flex-col items-center justify-center border-2 border-dashed border-border rounded-xl p-6 hover:border-primary/50 transition-colors bg-muted/10 min-h-[160px]'>
             {previewUrl ? (
               <div className='relative w-full max-h-48 rounded-lg overflow-hidden border border-border'>
-                <img src={previewUrl} alt="Preview proof" className='w-full h-full object-cover' />
+                <img src={previewUrl} alt='Preview proof' className='w-full h-full object-cover' />
                 <button
                   type='button'
                   onClick={() => {
@@ -109,14 +108,13 @@ export function DeliveryProofDialog({
             ) : (
               <label className='flex flex-col items-center justify-center cursor-pointer w-full py-4 text-center'>
                 <MaterialIcon name='cloud_upload' className='text-4xl text-primary mb-2' />
-                <span className='text-sm font-semibold text-foreground'>{t('orderDetail.uploadProof', 'Tải ảnh lên')}</span>
-                <span className='text-xs text-muted-foreground mt-1'>{t('orderDetail.uploadProofNote', 'PNG, JPG hoặc JPEG')}</span>
-                <input
-                  type='file'
-                  accept='image/*'
-                  onChange={handleFileChange}
-                  className='hidden'
-                />
+                <span className='text-sm font-semibold text-foreground'>
+                  {t('orderDetail.uploadProof', 'Tải ảnh lên')}
+                </span>
+                <span className='text-xs text-muted-foreground mt-1'>
+                  {t('orderDetail.uploadProofNote', 'PNG, JPG hoặc JPEG')}
+                </span>
+                <input type='file' accept='image/*' onChange={handleFileChange} className='hidden' />
               </label>
             )}
           </div>

@@ -10,9 +10,7 @@ export function BlogMarkdownTips() {
       <section className='rounded-3xl bg-primary p-6 text-primary-foreground shadow-sm'>
         <MaterialIcon name='lightbulb' className='text-2xl' />
         <h3 className='mt-3 text-base font-extrabold'>{t('blogManagement.create.tip.title')}</h3>
-        <p className='mt-2 text-sm leading-relaxed text-primary-foreground/90'>
-          {t('blogManagement.create.tip.text')}
-        </p>
+        <p className='mt-2 text-sm leading-relaxed text-primary-foreground/90'>{t('blogManagement.create.tip.text')}</p>
       </section>
 
       <section className='rounded-3xl border border-border bg-card p-6 shadow-sm'>
@@ -24,9 +22,7 @@ export function BlogMarkdownTips() {
             <p className='text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground'>
               {t('blogManagement.create.accent.label')}
             </p>
-            <h3 className='text-lg font-extrabold text-card-foreground'>
-              {t('blogManagement.create.accent.title')}
-            </h3>
+            <h3 className='text-lg font-extrabold text-card-foreground'>{t('blogManagement.create.accent.title')}</h3>
           </div>
         </div>
         <p className='mt-4 text-sm text-muted-foreground'>{t('blogManagement.create.accent.text')}</p>

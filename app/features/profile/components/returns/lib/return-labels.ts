@@ -14,13 +14,7 @@ export type ReturnStatus =
 
 export type ReturnType = 'RETURN' | 'EXCHANGE'
 
-export type ReturnReason =
-  | 'DAMAGED'
-  | 'WRONG_PRODUCT'
-  | 'MISSING_ITEM'
-  | 'EXPIRED'
-  | 'CUSTOMER_CHANGED_MIND'
-  | 'OTHER'
+export type ReturnReason = 'DAMAGED' | 'WRONG_PRODUCT' | 'MISSING_ITEM' | 'EXPIRED' | 'CUSTOMER_CHANGED_MIND' | 'OTHER'
 
 export type RefundStatus = 'NOT_REQUIRED' | 'PENDING' | 'SUCCESS' | 'FAILED'
 
@@ -39,9 +33,7 @@ export const RETURN_STATUS_BADGE_STYLE: Record<ReturnStatus, string> = {
 }
 
 export function getStatusBadgeClassName(status: string): string {
-  return (
-    RETURN_STATUS_BADGE_STYLE[status as ReturnStatus] ?? 'bg-muted text-muted-foreground'
-  )
+  return RETURN_STATUS_BADGE_STYLE[status as ReturnStatus] ?? 'bg-muted text-muted-foreground'
 }
 
 export function formatPrice(value: number | null | undefined): string {

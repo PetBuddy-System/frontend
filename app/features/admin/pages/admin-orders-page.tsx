@@ -22,7 +22,10 @@ const getStatusInfo = (status: string, t: TFunction) => {
     COMPLETED: { label: t('profile:orderDetail.status.completed', 'Hoàn thành'), color: 'text-success' },
     CANCELLED: { label: t('profile:orderDetail.status.cancelled', 'Đã hủy'), color: 'text-destructive' },
     EXPIRED: { label: t('profile:orderDetail.status.expired', 'Hết hạn'), color: 'text-destructive' },
-    CANCEL_REQUESTED: { label: t('profile:orderDetail.status.cancel_requested', 'Chờ hoàn tiền'), color: 'text-amber-600' },
+    CANCEL_REQUESTED: {
+      label: t('profile:orderDetail.status.cancel_requested', 'Chờ hoàn tiền'),
+      color: 'text-amber-600'
+    }
   }
   return map[status] ?? { label: status, color: 'text-muted-foreground' }
 }
@@ -34,8 +37,11 @@ function formatPrice(value: number) {
 function formatDate(iso: string) {
   try {
     return new Date(iso).toLocaleDateString('vi-VN', {
-      day: '2-digit', month: '2-digit', year: 'numeric',
-      hour: '2-digit', minute: '2-digit'
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     })
   } catch {
     return iso
@@ -75,11 +81,12 @@ export function AdminOrdersPage() {
     void loadOrders(currentPage)
   }, [currentPage, loadOrders])
 
-  const filteredOrders = orders.filter((o) =>
-    !searchQuery ||
-    o.orderCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    o.recipientName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    o.phoneNumber?.includes(searchQuery)
+  const filteredOrders = orders.filter(
+    (o) =>
+      !searchQuery ||
+      o.orderCode?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      o.recipientName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      o.phoneNumber?.includes(searchQuery)
   )
 
   const pageNumbers = Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i)
@@ -88,24 +95,49 @@ export function AdminOrdersPage() {
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
       <AdminSidebar activeItem='orders' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <AdminTopNav
-          titleKey='orderManagement.title'
-          subtitleKey='orderManagement.subtitle'
-        />
+        <AdminTopNav titleKey='orderManagement.title' subtitleKey='orderManagement.subtitle' />
 
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
-
             {/* Stats */}
             <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
               {[
-                { label: t('orders.stats.total', 'Tổng đơn'), value: totalElements, icon: 'receipt_long', color: 'text-primary' },
-                { label: t('orders.stats.processing', 'Đang xử lý'), value: orders.filter(o => !['COMPLETED','CANCELLED','EXPIRED','DELIVERED'].includes(o.status)).length, icon: 'pending_actions', color: 'text-amber-500' },
-                { label: t('orders.stats.completed', 'Đã hoàn thành'), value: orders.filter(o => o.status === 'COMPLETED' || o.status === 'DELIVERED').length, icon: 'check_circle', color: 'text-success' },
-                { label: t('orders.stats.cancelled', 'Đã hủy'), value: orders.filter(o => o.status === 'CANCELLED').length, icon: 'cancel', color: 'text-destructive' },
+                {
+                  label: t('orders.stats.total', 'Tổng đơn'),
+                  value: totalElements,
+                  icon: 'receipt_long',
+                  color: 'text-primary'
+                },
+                {
+                  label: t('orders.stats.processing', 'Đang xử lý'),
+                  value: orders.filter((o) => !['COMPLETED', 'CANCELLED', 'EXPIRED', 'DELIVERED'].includes(o.status))
+                    .length,
+                  icon: 'pending_actions',
+                  color: 'text-amber-500'
+                },
+                {
+                  label: t('orders.stats.completed', 'Đã hoàn thành'),
+                  value: orders.filter((o) => o.status === 'COMPLETED' || o.status === 'DELIVERED').length,
+                  icon: 'check_circle',
+                  color: 'text-success'
+                },
+                {
+                  label: t('orders.stats.cancelled', 'Đã hủy'),
+                  value: orders.filter((o) => o.status === 'CANCELLED').length,
+                  icon: 'cancel',
+                  color: 'text-destructive'
+                }
               ].map((stat) => (
-                <div key={stat.label} className='flex items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm'>
-                  <div className={cn('flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-muted', stat.color)}>
+                <div
+                  key={stat.label}
+                  className='flex items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm'
+                >
+                  <div
+                    className={cn(
+                      'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-muted',
+                      stat.color
+                    )}
+                  >
                     <MaterialIcon name={stat.icon} filled className='text-[24px]' />
                   </div>
                   <div>
@@ -125,7 +157,10 @@ export function AdminOrdersPage() {
                   {t('orders.listTitle', 'Danh sách tất cả đơn hàng')}
                 </h2>
                 <div className='relative w-full sm:w-72'>
-                  <MaterialIcon name='search' className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-[18px]' />
+                  <MaterialIcon
+                    name='search'
+                    className='absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-[18px]'
+                  />
                   <input
                     type='search'
                     value={searchQuery}
@@ -178,14 +213,9 @@ export function AdminOrdersPage() {
                       filteredOrders.map((order) => {
                         const statusInfo = getStatusInfo(order.status, t)
                         return (
-                          <tr
-                            key={order.orderId}
-                            className='transition-colors hover:bg-muted/40'
-                          >
+                          <tr key={order.orderId} className='transition-colors hover:bg-muted/40'>
                             <td className='px-4 py-3'>
-                              <span className='font-mono text-sm font-bold text-primary'>
-                                #{order.orderCode}
-                              </span>
+                              <span className='font-mono text-sm font-bold text-primary'>#{order.orderCode}</span>
                             </td>
                             <td className='px-4 py-3'>
                               <p className='text-sm font-semibold text-foreground'>{order.recipientName || '—'}</p>
@@ -195,13 +225,19 @@ export function AdminOrdersPage() {
                               <span className='flex items-center gap-1.5 text-sm text-foreground'>
                                 <MaterialIcon
                                   name={
-                                    order.payment?.paymentMethod === 'CARD' ? 'credit_card' :
-                                    order.payment?.paymentMethod === 'MOMO' ? 'qr_code_2' : 'payments'
+                                    order.payment?.paymentMethod === 'CARD'
+                                      ? 'credit_card'
+                                      : order.payment?.paymentMethod === 'MOMO'
+                                        ? 'qr_code_2'
+                                        : 'payments'
                                   }
                                   className='text-[16px] text-muted-foreground'
                                 />
-                                {order.payment?.paymentMethod === 'CARD' ? t('orders.paymentMethod.card', 'Thẻ') :
-                                 order.payment?.paymentMethod === 'MOMO' ? t('orders.paymentMethod.momo', 'MoMo') : t('orders.paymentMethod.cash', 'Tiền mặt')}
+                                {order.payment?.paymentMethod === 'CARD'
+                                  ? t('orders.paymentMethod.card', 'Thẻ')
+                                  : order.payment?.paymentMethod === 'MOMO'
+                                    ? t('orders.paymentMethod.momo', 'MoMo')
+                                    : t('orders.paymentMethod.cash', 'Tiền mặt')}
                               </span>
                             </td>
                             <td className='px-4 py-3'>
@@ -209,9 +245,7 @@ export function AdminOrdersPage() {
                                 {formatPrice(order.finalAmount)}
                               </span>
                             </td>
-                            <td className='px-4 py-3 text-sm text-muted-foreground'>
-                              {formatDate(order.createdAt)}
-                            </td>
+                            <td className='px-4 py-3 text-sm text-muted-foreground'>{formatDate(order.createdAt)}</td>
                             <td className='px-4 py-3'>
                               <span className={cn('text-xs font-bold uppercase', statusInfo.color)}>
                                 {statusInfo.label}

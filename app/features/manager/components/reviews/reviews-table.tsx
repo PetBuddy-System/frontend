@@ -58,12 +58,7 @@ function ReviewRow({ review, onViewDetail, onToggleStatus, onDelete }: ReviewRow
   const isOrderReview = !review.productId
 
   return (
-    <tr
-      className={cn(
-        'transition-all hover:bg-muted/10',
-        isHidden && 'bg-muted/30 opacity-60 grayscale-[10%]'
-      )}
-    >
+    <tr className={cn('transition-all hover:bg-muted/10', isHidden && 'bg-muted/30 opacity-60 grayscale-[10%]')}>
       {/* Sản phẩm / Đơn hàng */}
       <td className='px-6 py-4 max-w-[200px]'>
         {isOrderReview ? (
@@ -100,18 +95,14 @@ function ReviewRow({ review, onViewDetail, onToggleStatus, onDelete }: ReviewRow
           </div>
           <div className='min-w-0'>
             <div className='flex items-center gap-1.5'>
-              <span className='block font-bold text-foreground truncate max-w-[120px]'>
-                {review.userFullName}
-              </span>
+              <span className='block font-bold text-foreground truncate max-w-[120px]'>{review.userFullName}</span>
               {review.anonymous && (
                 <span className='rounded bg-accent/15 px-1 py-0.5 text-[9px] font-extrabold text-accent uppercase tracking-wider'>
                   Ẩn danh
                 </span>
               )}
             </div>
-            <span className='block text-xs text-muted-foreground truncate max-w-[180px]'>
-              {review.userEmail}
-            </span>
+            <span className='block text-xs text-muted-foreground truncate max-w-[180px]'>{review.userEmail}</span>
           </div>
         </div>
       </td>
@@ -124,9 +115,7 @@ function ReviewRow({ review, onViewDetail, onToggleStatus, onDelete }: ReviewRow
             {new Date(review.createdAt).toLocaleDateString('vi-VN')}
           </span>
         </div>
-        <p className='mt-1.5 text-sm text-foreground/90 line-clamp-2 leading-relaxed'>
-          {review.content}
-        </p>
+        <p className='mt-1.5 text-sm text-foreground/90 line-clamp-2 leading-relaxed'>{review.content}</p>
       </td>
 
       {/* Trạng thái */}
@@ -137,12 +126,7 @@ function ReviewRow({ review, onViewDetail, onToggleStatus, onDelete }: ReviewRow
             isHidden ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success'
           )}
         >
-          <span
-            className={cn(
-              'h-1.5 w-1.5 rounded-full',
-              isHidden ? 'bg-destructive' : 'bg-success'
-            )}
-          />
+          <span className={cn('h-1.5 w-1.5 rounded-full', isHidden ? 'bg-destructive' : 'bg-success')} />
           {isHidden ? 'Đang ẩn' : 'Hiển thị'}
         </span>
       </td>

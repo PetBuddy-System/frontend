@@ -24,13 +24,7 @@ export async function fetchProductBatchesApi(
   productId: string,
   params: FetchProductBatchesParams = {}
 ): Promise<PagedProductBatchResponse> {
-  const {
-    keyword,
-    status,
-    page = 0,
-    size = 10,
-    sortBy = 'date_desc'
-  } = params
+  const { keyword, status, page = 0, size = 10, sortBy = 'date_desc' } = params
 
   return customFetch<PagedProductBatchResponse>({
     url: `${PRODUCTS_BASE_URL}/${productId}/batches`,
@@ -45,10 +39,7 @@ export async function fetchProductBatchesApi(
   })
 }
 
-export async function createBatchesApi(
-  productId: string,
-  payload: CreateBatchPayload[]
-): Promise<CreateBatchResponse> {
+export async function createBatchesApi(productId: string, payload: CreateBatchPayload[]): Promise<CreateBatchResponse> {
   return customFetch<CreateBatchResponse>({
     url: `${PRODUCTS_BASE_URL}/${productId}/batches`,
     method: 'POST',
@@ -56,10 +47,7 @@ export async function createBatchesApi(
   })
 }
 
-export async function updateBatchApi(
-  batchId: string,
-  payload: UpdateBatchPayload
-): Promise<UpdateBatchResponse> {
+export async function updateBatchApi(batchId: string, payload: UpdateBatchPayload): Promise<UpdateBatchResponse> {
   return customFetch<UpdateBatchResponse>({
     url: `${BATCHES_BASE_URL}/${batchId}`,
     method: 'PATCH',

@@ -9,13 +9,13 @@ import {
   isVoucherEligible,
   getIneligibleReason,
   calculateVoucherDiscount,
-  type VoucherResponse,
+  type VoucherResponse
 } from '~/shared/lib/voucher'
 import {
   SESSION_KEY_VOUCHER_CODE,
   SESSION_KEY_VOUCHER_NAME,
   SESSION_KEY_VOUCHER_DISCOUNT,
-  SESSION_KEY_SUBTOTAL,
+  SESSION_KEY_SUBTOTAL
 } from '../lib/checkout-storage-keys'
 
 function formatPrice(value: number) {
@@ -45,7 +45,8 @@ export function VoucherPickerPage() {
   const [selectedCode, setSelectedCode] = useState<string>('')
 
   const orderSubtotal = parseInt(sessionStorage.getItem(SESSION_KEY_SUBTOTAL) ?? '0', 10)
-  const hasPromotionProduct = typeof window !== 'undefined' && sessionStorage.getItem('petbuddy_checkout_has_promotion_product') === 'true'
+  const hasPromotionProduct =
+    typeof window !== 'undefined' && sessionStorage.getItem('petbuddy_checkout_has_promotion_product') === 'true'
 
   useEffect(() => {
     const savedCode = sessionStorage.getItem(SESSION_KEY_VOUCHER_CODE) ?? ''
@@ -95,9 +96,7 @@ export function VoucherPickerPage() {
     return t('voucherPicker.discountBadgeFixed', 'Giảm {{value}}', { value: formatPrice(voucher.discountValue) })
   }
 
-  const visibleVouchers = vouchers.filter(
-    (v) => !(v.perUserLimit && (v.usedByCurrentUser ?? 0) >= v.perUserLimit)
-  )
+  const visibleVouchers = vouchers.filter((v) => !(v.perUserLimit && (v.usedByCurrentUser ?? 0) >= v.perUserLimit))
 
   const eligibleVouchers = visibleVouchers.filter((v) => isVoucherEligible(v, orderSubtotal, hasPromotionProduct))
   const ineligibleVouchers = visibleVouchers.filter((v) => !isVoucherEligible(v, orderSubtotal, hasPromotionProduct))
@@ -137,10 +136,7 @@ export function VoucherPickerPage() {
         {isLoading ? (
           <div className='flex flex-col gap-4'>
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className='h-28 animate-pulse rounded-xl border border-border bg-muted'
-              />
+              <div key={i} className='h-28 animate-pulse rounded-xl border border-border bg-muted' />
             ))}
           </div>
         ) : (
@@ -162,24 +158,23 @@ export function VoucherPickerPage() {
                     }}
                   />
                   <div
-                    className={`flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-md md:p-5 ${isSelected
-                      ? 'border-primary bg-primary/5 ring-2 ring-primary/10'
-                      : 'border-border bg-card'
+                    className={`flex items-center gap-4 rounded-xl border p-4 transition-all hover:shadow-md md:p-5 ${
+                      isSelected ? 'border-primary bg-primary/5 ring-2 ring-primary/10' : 'border-border bg-card'
                     }`}
                   >
                     {/* Radio indicator */}
                     <div
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${isSelected ? 'border-primary' : 'border-muted-foreground'
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+                        isSelected ? 'border-primary' : 'border-muted-foreground'
                       }`}
                     >
-                      {isSelected && (
-                        <div className='h-2.5 w-2.5 rounded-full bg-primary' />
-                      )}
+                      {isSelected && <div className='h-2.5 w-2.5 rounded-full bg-primary' />}
                     </div>
 
                     {/* Icon */}
                     <div
-                      className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-xl ${isSelected ? 'bg-primary/10' : 'bg-accent'
+                      className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-xl ${
+                        isSelected ? 'bg-primary/10' : 'bg-accent'
                       }`}
                     >
                       <MaterialIcon
@@ -191,17 +186,19 @@ export function VoucherPickerPage() {
                     {/* Info */}
                     <div className='min-w-0 flex-1'>
                       <div className='flex items-start justify-between gap-2'>
-                        <h3 className='font-semibold text-foreground leading-snug'>
-                          {voucher.voucherName}
-                        </h3>
+                        <h3 className='font-semibold text-foreground leading-snug'>{voucher.voucherName}</h3>
                         <span className='shrink-0 rounded-md bg-secondary/20 px-2 py-0.5 text-xs font-bold text-primary'>
                           {getDiscountBadgeText(voucher)}
                         </span>
                       </div>
                       {voucher.minOrderValue && (
                         <p className='mt-0.5 text-xs text-muted-foreground'>
-                          {t('voucherPicker.minOrder', 'Đơn tối thiểu {{min}}', { min: formatPrice(voucher.minOrderValue) })}
-                          {voucher.maxDiscount ? ` · ${t('voucherPicker.maxDiscount', 'Giảm tối đa {{max}}', { max: formatPrice(voucher.maxDiscount) })}` : ''}
+                          {t('voucherPicker.minOrder', 'Đơn tối thiểu {{min}}', {
+                            min: formatPrice(voucher.minOrderValue)
+                          })}
+                          {voucher.maxDiscount
+                            ? ` · ${t('voucherPicker.maxDiscount', 'Giảm tối đa {{max}}', { max: formatPrice(voucher.maxDiscount) })}`
+                            : ''}
                         </p>
                       )}
                       <div className='mt-1.5 flex items-center gap-1 text-xs text-muted-foreground'>
@@ -210,7 +207,9 @@ export function VoucherPickerPage() {
                       </div>
                       {orderSubtotal > 0 && discount > 0 && (
                         <p className='mt-1 text-xs font-semibold text-success'>
-                          {t('voucherPicker.savings', 'Tiết kiệm: {{savings}}', { savings: formatPrice(Math.round(discount)) })}
+                          {t('voucherPicker.savings', 'Tiết kiệm: {{savings}}', {
+                            savings: formatPrice(Math.round(discount))
+                          })}
                         </p>
                       )}
                     </div>
@@ -240,7 +239,9 @@ export function VoucherPickerPage() {
                       <h3 className='font-semibold text-foreground leading-snug'>{voucher.voucherName}</h3>
                       {voucher.minOrderValue && (
                         <p className='mt-0.5 text-xs text-muted-foreground'>
-                          {t('voucherPicker.minOrder', 'Đơn tối thiểu {{min}}', { min: formatPrice(voucher.minOrderValue) })}
+                          {t('voucherPicker.minOrder', 'Đơn tối thiểu {{min}}', {
+                            min: formatPrice(voucher.minOrderValue)
+                          })}
                         </p>
                       )}
                       <div className='mt-1.5 flex items-center gap-1 text-xs text-destructive'>
@@ -256,7 +257,9 @@ export function VoucherPickerPage() {
             {vouchers.length === 0 && (
               <div className='py-16 text-center'>
                 <MaterialIcon name='local_offer' className='mx-auto mb-3 text-[48px] text-muted-foreground' />
-                <p className='text-sm text-muted-foreground'>{t('voucherPicker.hasNoVouchers', 'Hiện không có mã giảm giá nào')}</p>
+                <p className='text-sm text-muted-foreground'>
+                  {t('voucherPicker.hasNoVouchers', 'Hiện không có mã giảm giá nào')}
+                </p>
               </div>
             )}
 
@@ -268,7 +271,9 @@ export function VoucherPickerPage() {
                     <p className='truncate text-sm font-bold text-primary'>{selectedVoucher.voucherName}</p>
                   </>
                 ) : (
-                  <p className='text-sm text-muted-foreground'>{t('voucherPicker.noSelectedLabel', 'Chưa chọn mã giảm giá')}</p>
+                  <p className='text-sm text-muted-foreground'>
+                    {t('voucherPicker.noSelectedLabel', 'Chưa chọn mã giảm giá')}
+                  </p>
                 )}
               </div>
               <div className='flex shrink-0 items-center gap-2'>

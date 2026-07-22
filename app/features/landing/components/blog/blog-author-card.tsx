@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/shared/lib/cn'
 
-
 interface AuthorCardProps {
   author: string
   authorRole?: string
@@ -13,12 +12,7 @@ export function AuthorCard({ author, authorRole, className }: AuthorCardProps) {
   const { t } = useTranslation('blog')
 
   return (
-    <div
-      className={cn(
-        'flex items-center gap-4 rounded-2xl border border-border/60 bg-card p-5 shadow-sm',
-        className
-      )}
-    >
+    <div className={cn('flex items-center gap-4 rounded-2xl border border-border/60 bg-card p-5 shadow-sm', className)}>
       <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground'>
         <span className='font-display text-lg font-bold'>{author.charAt(0)}</span>
       </div>

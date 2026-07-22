@@ -43,9 +43,7 @@ export function CheckoutPage() {
       <div className='flex min-h-screen flex-col bg-background text-foreground'>
         <SiteHeader />
         <main className='mx-auto flex w-full max-w-6xl flex-1 items-center justify-center px-4 py-10 pb-24 md:px-6 md:py-12'>
-          <p className='text-sm text-muted-foreground'>
-            {t('checkout.loading', 'Đang tải thông tin thanh toán...')}
-          </p>
+          <p className='text-sm text-muted-foreground'>{t('checkout.loading', 'Đang tải thông tin thanh toán...')}</p>
         </main>
         <SiteFooter />
         <SiteBottomNav />
@@ -70,9 +68,7 @@ export function CheckoutPage() {
 
         <form className='grid grid-cols-1 gap-8 lg:grid-cols-12' onSubmit={handleSubmit}>
           <div className='flex flex-col gap-8 lg:col-span-8'>
-            <h1 className='font-display text-3xl font-bold text-primary md:text-5xl'>
-              {t('checkout.title')}
-            </h1>
+            <h1 className='font-display text-3xl font-bold text-primary md:text-5xl'>{t('checkout.title')}</h1>
 
             {errorMessage && (
               <div className='flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
@@ -84,13 +80,12 @@ export function CheckoutPage() {
             <CheckoutShippingForm
               addressValue={selectedAddress}
               defaultName={user?.fullName}
-              defaultPhone={pendingOrder ? toPhoneDisplay(sessionStorage.getItem('petbuddy_checkout_phone') ?? '') : undefined}
+              defaultPhone={
+                pendingOrder ? toPhoneDisplay(sessionStorage.getItem('petbuddy_checkout_phone') ?? '') : undefined
+              }
             />
 
-            <CheckoutPaymentMethods
-              selectedMethod={selectedPaymentMethod}
-              onMethodChange={handlePaymentMethodChange}
-            />
+            <CheckoutPaymentMethods selectedMethod={selectedPaymentMethod} onMethodChange={handlePaymentMethodChange} />
 
             <CheckoutNote />
           </div>
@@ -116,10 +111,7 @@ export function CheckoutPage() {
       <SiteBottomNav />
       <SiteFab />
       {outOfStockProductName && (
-        <OutOfStockModal
-          productName={outOfStockProductName}
-          onClose={() => setOutOfStockProductName(null)}
-        />
+        <OutOfStockModal productName={outOfStockProductName} onClose={() => setOutOfStockProductName(null)} />
       )}
       {currentAdjustedItem && (
         <AdjustedQuantityModal

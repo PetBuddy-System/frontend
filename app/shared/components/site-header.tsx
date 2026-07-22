@@ -9,7 +9,6 @@ import { MaterialIcon } from '~/shared/ui'
 import { LanguageSwitcher } from './language-switcher'
 import { ThemeToggle } from './theme-toggle'
 
-
 const NAV_ITEMS = [
   { key: 'store', href: '/' },
   { key: 'services', href: '/services' },
@@ -40,7 +39,6 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
   const [isLangOpen, setIsLangOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const langRef = useRef<HTMLDivElement>(null)
-  
 
   // Đóng dropdown khi click bên ngoài
   useEffect(() => {
@@ -158,7 +156,10 @@ export function SiteHeader({ activeItem = 'store' }: SiteHeaderProps) {
                 </span>
                 <MaterialIcon
                   name='expand_more'
-                  className={cn('hidden text-[18px] text-muted-foreground transition-transform md:block', isMenuOpen && 'rotate-180')}
+                  className={cn(
+                    'hidden text-[18px] text-muted-foreground transition-transform md:block',
+                    isMenuOpen && 'rotate-180'
+                  )}
                 />
               </button>
 

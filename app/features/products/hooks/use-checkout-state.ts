@@ -4,12 +4,7 @@ import { useNavigate, useLocation } from 'react-router'
 import { STORAGE_KEYS } from '~/shared/config/site'
 import { useAuth } from '~/providers/auth-provider'
 import { readStorage } from '~/shared/lib/storage'
-import {
-  updatePaymentMethodApi,
-  getCartApi,
-  removeCartItemApi,
-  fetchOrderByIdApi,
-} from '../services'
+import { updatePaymentMethodApi, getCartApi, removeCartItemApi, fetchOrderByIdApi } from '../services'
 import type { CartItemResponse } from '~/shared/lib/cart'
 import type { CheckoutOrderItem } from '../components/checkout/checkout-order-summary'
 import type { SelectedPaymentMethod } from '../components/checkout/checkout-payment-methods'
@@ -24,7 +19,7 @@ import {
   SESSION_KEY_VOUCHER_DISCOUNT,
   SESSION_KEY_PAYMENT_METHOD,
   SESSION_KEY_SUBTOTAL,
-  SESSION_KEY_PENDING_ORDER_ID,
+  SESSION_KEY_PENDING_ORDER_ID
 } from '../lib/checkout-storage-keys'
 
 export interface PendingOrderView {
@@ -78,39 +73,46 @@ export function useCheckoutState() {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<SelectedPaymentMethod>(() => {
     const saved = typeof window !== 'undefined' ? sessionStorage.getItem(SESSION_KEY_PAYMENT_METHOD) : null
-    return (saved === 'CASH' || saved === 'CARD' || saved === 'MOMO') ? saved : 'CASH'
+    return saved === 'CASH' || saved === 'CARD' || saved === 'MOMO' ? saved : 'CASH'
   })
 
   // --- Callbacks ---
 
-  const handlePaymentMethodChange = useCallback(async (method: SelectedPaymentMethod) => {
-    setSelectedPaymentMethod(method)
-    sessionStorage.setItem(SESSION_KEY_PAYMENT_METHOD, method)
+  const handlePaymentMethodChange = useCallback(
+    async (method: SelectedPaymentMethod) => {
+      setSelectedPaymentMethod(method)
+      sessionStorage.setItem(SESSION_KEY_PAYMENT_METHOD, method)
 
-    if (pendingOrder) {
-      setErrorMessage('')
-      setIsSubmitting(true)
-      try {
-        const res = await updatePaymentMethodApi(pendingOrder.orderId, method)
-        if (res.success && res.data) {
-          setPendingOrder((prev) =>
-            prev
-              ? {
-                ...prev,
-                clientSecret: res.data.stripeClientSecret ?? prev.clientSecret,
-                momoPayUrl: res.data.momoPayUrl ?? prev.momoPayUrl,
-                finalAmount: res.data.amount ?? prev.finalAmount,
-              }
-              : null
+      if (pendingOrder) {
+        setErrorMessage('')
+        setIsSubmitting(true)
+        try {
+          const res = await updatePaymentMethodApi(pendingOrder.orderId, method)
+          if (res.success && res.data) {
+            setPendingOrder((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    clientSecret: res.data.stripeClientSecret ?? prev.clientSecret,
+                    momoPayUrl: res.data.momoPayUrl ?? prev.momoPayUrl,
+                    finalAmount: res.data.amount ?? prev.finalAmount
+                  }
+                : null
+            )
+          }
+        } catch (err) {
+          setErrorMessage(
+            err instanceof Error
+              ? err.message
+              : t('checkout.updatePaymentMethodError', 'Không thể thay đổi phương thức thanh toán.')
           )
+        } finally {
+          setIsSubmitting(false)
         }
-      } catch (err) {
-        setErrorMessage(err instanceof Error ? err.message : t('checkout.updatePaymentMethodError', 'Không thể thay đổi phương thức thanh toán.'))
-      } finally {
-        setIsSubmitting(false)
       }
-    }
-  }, [pendingOrder, t])
+    },
+    [pendingOrder, t]
+  )
 
   const syncFromSession = useCallback(() => {
     setSelectedAddress(sessionStorage.getItem(SESSION_KEY_ADDRESS) ?? '')
@@ -166,7 +168,7 @@ export function useCheckoutState() {
           price: item.price,
           salePrice: item.salePrice ?? item.price,
           quantity: item.quantity,
-          title: item.productName,
+          title: item.productName
         }))
       )
       const adjustedItems = items.filter((item) => item.adjusted)
@@ -189,54 +191,56 @@ export function useCheckoutState() {
     const itemId = currentAdjustedItem.cartItemId
     try {
       await removeCartItemApi(itemId)
-    } catch {
-    }
+    } catch {}
     setRawCartItems((prev) => prev.filter((i) => i.cartItemId !== itemId))
     setCartItems((prev) => prev.filter((i) => i.key !== itemId))
     setAdjustedQueue((prev) => prev.slice(1))
   }, [currentAdjustedItem])
 
-  const fetchPendingOrder = useCallback(async (orderId: number) => {
-    try {
-      const res = await fetchOrderByIdApi(orderId)
-      const order = res.data
-      const details = order.orderDetails ?? []
+  const fetchPendingOrder = useCallback(
+    async (orderId: number) => {
+      try {
+        const res = await fetchOrderByIdApi(orderId)
+        const order = res.data
+        const details = order.orderDetails ?? []
 
-      setCartItems(
-        details.map((d) => ({
-          key: String(d.orderDetailId),
-          image: d.productImage ?? '',
-          price: d.unitPrice,
-          salePrice: d.salePrice ?? d.unitPrice,
-          quantity: d.quantity,
-          title: d.productName,
-          productId: d.productId,
-        }))
-      )
+        setCartItems(
+          details.map((d) => ({
+            key: String(d.orderDetailId),
+            image: d.productImage ?? '',
+            price: d.unitPrice,
+            salePrice: d.salePrice ?? d.unitPrice,
+            quantity: d.quantity,
+            title: d.productName,
+            productId: d.productId
+          }))
+        )
 
-      const subtotalVal = details.reduce((sum, d) => sum + d.totalPrice, 0)
-      const shippingFeeVal = order.shippingFee ?? 0
-      const isFreeShippingVal = shippingFeeVal === 0
-      const voucherDiscountVal = Math.max(0, subtotalVal + shippingFeeVal - order.finalAmount)
+        const subtotalVal = details.reduce((sum, d) => sum + d.totalPrice, 0)
+        const shippingFeeVal = order.shippingFee ?? 0
+        const isFreeShippingVal = shippingFeeVal === 0
+        const voucherDiscountVal = Math.max(0, subtotalVal + shippingFeeVal - order.finalAmount)
 
-      setPendingOrder({
-        orderId: order.orderId,
-        clientSecret: order.clientSecret ?? '',
-        momoPayUrl: order.payment?.momoPayUrl ?? '',
-        subtotal: subtotalVal,
-        shippingFee: shippingFeeVal,
-        isFreeShipping: isFreeShippingVal,
-        voucherDiscount: voucherDiscountVal,
-        finalAmount: order.finalAmount,
-      })
-    } catch {
-      sessionStorage.removeItem(SESSION_KEY_PENDING_ORDER_ID)
-      setErrorMessage(t('checkout.loadError', 'Không thể tải thông tin đơn hàng.'))
-      await fetchCart()
-      return
-    }
-    setIsLoading(false)
-  }, [t, fetchCart])
+        setPendingOrder({
+          orderId: order.orderId,
+          clientSecret: order.clientSecret ?? '',
+          momoPayUrl: order.payment?.momoPayUrl ?? '',
+          subtotal: subtotalVal,
+          shippingFee: shippingFeeVal,
+          isFreeShipping: isFreeShippingVal,
+          voucherDiscount: voucherDiscountVal,
+          finalAmount: order.finalAmount
+        })
+      } catch {
+        sessionStorage.removeItem(SESSION_KEY_PENDING_ORDER_ID)
+        setErrorMessage(t('checkout.loadError', 'Không thể tải thông tin đơn hàng.'))
+        await fetchCart()
+        return
+      }
+      setIsLoading(false)
+    },
+    [t, fetchCart]
+  )
 
   const handleRetryPayment = useCallback(() => {
     if (!pendingOrder) return
@@ -246,8 +250,8 @@ export function useCheckoutState() {
         clientSecret: pendingOrder.clientSecret,
         amount: pendingOrder.finalAmount,
         shippingFee: pendingOrder.shippingFee,
-        isFreeShipping: pendingOrder.isFreeShipping,
-      },
+        isFreeShipping: pendingOrder.isFreeShipping
+      }
     })
   }, [pendingOrder, navigate])
 
@@ -260,7 +264,8 @@ export function useCheckoutState() {
   }, [pendingOrderId, fetchPendingOrder, fetchCart])
 
   const subtotal = useMemo(
-    () => pendingOrder ? pendingOrder.subtotal : rawCartItems.reduce((total, item) => total + item.subtotal, 0), [rawCartItems, pendingOrder]
+    () => (pendingOrder ? pendingOrder.subtotal : rawCartItems.reduce((total, item) => total + item.subtotal, 0)),
+    [rawCartItems, pendingOrder]
   )
 
   const hasPromotionProduct = useMemo(
@@ -312,6 +317,6 @@ export function useCheckoutState() {
     handleAdjustedDecline,
     handleRetryPayment,
     clearCheckoutSession,
-    subtotal,
+    subtotal
   }
 }
