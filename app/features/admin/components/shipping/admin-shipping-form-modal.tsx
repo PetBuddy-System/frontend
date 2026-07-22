@@ -1,4 +1,4 @@
-import { useState } from 'react'
+
 import { MaterialIcon } from '~/shared/ui'
 import type { ShippingRule } from '~/shared/lib/shipping'
 
@@ -19,7 +19,6 @@ interface AdminShippingFormModalProps {
 
 export function AdminShippingFormModal({
     mode,
-    initialData,
     isSubmitting,
     error,
     onClose,

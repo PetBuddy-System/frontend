@@ -43,6 +43,31 @@
     "goldMember": "Gold member",
     "memberSince": "Joined January 2023 • 150 reward points",
     "edit": "Edit",
+    "editProfile": {
+      "title": "Edit personal information",
+      "subtitle": "Update your information. Note: Email cannot be changed.",
+      "avatarLabel": "Avatar",
+      "avatarHint": "Click the camera icon to change photo",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "Enter your full name",
+      "emailLabel": "Email",
+      "emailHint": "Email cannot be changed",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "Enter phone number",
+      "dateOfBirthLabel": "Date of birth",
+      "genderLabel": "Gender",
+      "genderOptions": {
+        "MALE": "Male",
+        "FEMALE": "Female",
+        "OTHER": "Other"
+      },
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "saving": "Saving...",
+      "loadError": "Failed to load personal information. Please try again.",
+      "updateSuccess": "Information updated successfully!",
+      "updateError": "Failed to update information. Please try again."
+    },
     "fields": {
       "fullName": {
         "label": "Full name",

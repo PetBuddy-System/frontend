@@ -59,19 +59,14 @@ export async function fetchOrderDetailApi(orderId: number): Promise<ApiResponse<
   })
 }
 
-export async function confirmRefundApi(
-  orderId: number
-): Promise<ApiResponse<any>> {
+export async function confirmRefundApi(orderId: number): Promise<ApiResponse<any>> {
   return customFetch<ApiResponse<any>>({
     url: `${ORDER_BASE_URL}/${orderId}/cancel-confirm`,
     method: 'POST'
   })
 }
 
-export async function reportDeliveryFailedApi(
-  orderId: number,
-  reason: string
-): Promise<ApiResponse<any>> {
+export async function reportDeliveryFailedApi(orderId: number, reason: string): Promise<ApiResponse<any>> {
   return customFetch<ApiResponse<any>>({
     url: `${ORDER_BASE_URL}/${orderId}/delivery-failed`,
     method: 'POST',
@@ -79,9 +74,7 @@ export async function reportDeliveryFailedApi(
   })
 }
 
-export async function confirmReturnedToWarehouseApi(
-  orderId: number
-): Promise<ApiResponse<any>> {
+export async function confirmReturnedToWarehouseApi(orderId: number): Promise<ApiResponse<any>> {
   return customFetch<ApiResponse<any>>({
     url: `${ORDER_BASE_URL}/${orderId}/returned-to-warehouse`,
     method: 'POST'

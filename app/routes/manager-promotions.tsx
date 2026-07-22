@@ -2,5 +2,5 @@
 import { ManagerPromotionsPage } from '~/features/manager'
 
 export default function ManagerPromotionsRoute() {
-    return <ManagerPromotionsPage />
+  return <ManagerPromotionsPage />
 }

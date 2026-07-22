@@ -24,7 +24,8 @@ function mapToBlogPost(blog: BlogResponse): BlogPost & { markdownContent: string
       month: '2-digit',
       year: 'numeric'
     }),
-    imageUrl: blog.mediaFiles?.[0]?.fileUrl || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80',
+    imageUrl:
+      blog.mediaFiles?.[0]?.fileUrl || 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&q=80',
     isPublished: true,
     views: 0,
     markdownContent: blog.content || ''
@@ -96,9 +97,7 @@ export function AdminBlogManagementPage() {
       )
 
       if (res.success && res.data) {
-        setPosts((prev) =>
-          prev.map((p) => (p.id === editingPost.id ? mapToBlogPost(res.data) : p))
-        )
+        setPosts((prev) => prev.map((p) => (p.id === editingPost.id ? mapToBlogPost(res.data) : p)))
         setIsModalOpen(false)
         setEditingPost(null)
       }
@@ -181,15 +180,15 @@ export function AdminBlogManagementPage() {
         initialData={
           editingPost
             ? {
-              title: editingPost.title,
-              excerpt: editingPost.excerpt,
-              label: editingPost.label,
-              author: editingPost.author,
-              imageFiles: [],
-              existingImageUrl: editingPost.imageUrl,
-              markdownContent: editingPost.markdownContent,
-              isPublished: true
-            }
+                title: editingPost.title,
+                excerpt: editingPost.excerpt,
+                label: editingPost.label,
+                author: editingPost.author,
+                imageFiles: [],
+                existingImageUrl: editingPost.imageUrl,
+                markdownContent: editingPost.markdownContent,
+                isPublished: true
+              }
             : undefined
         }
       />

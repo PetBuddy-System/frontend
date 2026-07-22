@@ -1,8 +1,7 @@
 import type { PetProfileResponse } from '../services'
 
 const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
-const DATE_TIME_PATTERN =
-  /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?$/
+const DATE_TIME_PATTERN = /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?$/
 const VIETNAM_TIME_ZONE = 'Asia/Ho_Chi_Minh'
 const VIETNAM_UTC_OFFSET_HOURS = 7
 

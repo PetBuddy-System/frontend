@@ -71,7 +71,6 @@ export interface PageableParams {
   sort?: string
 }
 
-
 export interface CreateOrderRequest {
   recipientName: string
   phoneNumber: string
@@ -105,7 +104,6 @@ export interface OrderDetailResponse {
   totalPrice: number
   createdAt: string
 }
-
 
 export interface OrderDetailFull {
   orderId: number

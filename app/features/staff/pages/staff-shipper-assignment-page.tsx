@@ -153,9 +153,9 @@ export function StaffShipperAssignmentPage() {
                   paddingRight: '2.5rem'
                 }}
               >
-                <option value="ALL">{t('shipperAssignment.region.all', 'Tất cả khu vực')}</option>
-                <option value="HCM">{t('shipperAssignment.region.hcm', 'Nội thành (TP. HCM)')}</option>
-                <option value="OTHER">{t('shipperAssignment.region.other', 'Ngoại thành')}</option>
+                <option value='ALL'>{t('shipperAssignment.region.all', 'Tất cả khu vực')}</option>
+                <option value='HCM'>{t('shipperAssignment.region.hcm', 'Nội thành (TP. HCM)')}</option>
+                <option value='OTHER'>{t('shipperAssignment.region.other', 'Ngoại thành')}</option>
               </select>
             </div>
 
@@ -180,7 +180,10 @@ export function StaffShipperAssignmentPage() {
                   {t('shipperAssignment.noOrdersTitle', 'Không có đơn hàng cần phân công')}
                 </h3>
                 <p className='text-sm text-muted-foreground max-w-md mx-auto px-4'>
-                  {t('shipperAssignment.noOrdersDesc', 'Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị để phân công shipper.')}
+                  {t(
+                    'shipperAssignment.noOrdersDesc',
+                    'Hiện không có đơn hàng nào ở trạng thái Đã chuẩn bị để phân công shipper.'
+                  )}
                 </p>
               </div>
             ) : (

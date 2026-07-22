@@ -47,14 +47,16 @@ const INITIAL_ORDERS: MockOrder[] = [
         name: 'Sữa tắm Olive Essence (Lông nâu)',
         price: 250000,
         quantity: 1,
-        imageUrl: 'https://lh3.googleusercontent.com/aida/ADBb0uh6WztLsYERJyTaVYarWvnGp7PviF99OFqmiQwLP1f4tKtx45N_yHkRFHRtfl8FMOmuJnU1DAy1qxWM49q2mu6G00N36QX-lk0RNB87VcKiyvkK2b4tJB5o1ldxwKCNdzLWi878nkSVQJ00oROLzqE3EyHH-Q1bBSzi67sW1gVLLsq6gZPdSQoba3UWhihAiRHva6cJTS0vOcsHMVghw205rxK8XAhnMWn25w9LTKA2deXxbwotRK2GUG0'
+        imageUrl:
+          'https://lh3.googleusercontent.com/aida/ADBb0uh6WztLsYERJyTaVYarWvnGp7PviF99OFqmiQwLP1f4tKtx45N_yHkRFHRtfl8FMOmuJnU1DAy1qxWM49q2mu6G00N36QX-lk0RNB87VcKiyvkK2b4tJB5o1ldxwKCNdzLWi878nkSVQJ00oROLzqE3EyHH-Q1bBSzi67sW1gVLLsq6gZPdSQoba3UWhihAiRHva6cJTS0vOcsHMVghw205rxK8XAhnMWn25w9LTKA2deXxbwotRK2GUG0'
       },
       {
         productId: 'prod-2',
         name: 'Thức ăn hạt Royal Canin (Medium Adult)',
         price: 500000,
         quantity: 2,
-        imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCjZgGezGzKb8CJs5q-9lrcFr5_7fo7bk8DlMU8iJwhQqmcxRPWnIiMrOxNnewcXbfFu3F2N0YIM3soj0TWqqG3qC2SO6efI_uYWn3VdjmLDx0AS261VBoNGTGhgDyBPuITl_4esVLpatKrtm-msM2dmC98EaeE4Gv7GV4sbYeirdnKFRwp6x-Tr6zaC4K1eGIYCI_CQJduR_GHvqiZrUNiAQANLbxXB9U-gsy1Hf8jM9zJDemFqUmzyYeWdzJQ5eJcndmPd_Bt2f0'
+        imageUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCjZgGezGzKb8CJs5q-9lrcFr5_7fo7bk8DlMU8iJwhQqmcxRPWnIiMrOxNnewcXbfFu3F2N0YIM3soj0TWqqG3qC2SO6efI_uYWn3VdjmLDx0AS261VBoNGTGhgDyBPuITl_4esVLpatKrtm-msM2dmC98EaeE4Gv7GV4sbYeirdnKFRwp6x-Tr6zaC4K1eGIYCI_CQJduR_GHvqiZrUNiAQANLbxXB9U-gsy1Hf8jM9zJDemFqUmzyYeWdzJQ5eJcndmPd_Bt2f0'
       }
     ]
   },
@@ -75,7 +77,8 @@ const INITIAL_ORDERS: MockOrder[] = [
         name: 'Thức ăn hạt cao cấp cho chó trưởng thành',
         price: 450000,
         quantity: 1,
-        imageUrl: 'https://lh3.googleusercontent.com/aida/ADBb0uifyciLtOf41cCMEjWdvIny__fSd_mCekw3D66AomlUIUDWxAl10w6qXwjx5sjucTPqsrDUaCjs5nlzG1AaNMwDzbTXZzCbNWf4n4P0ABkDTjFl5k96tQcB_Xr8IsHeNBWlyK57S6JUw-g3jMLFAvkiKf68zt4b-J2CKek0ib842v4nMCMu3HWT3JpPLmy9v-yegvMU6gQ5kkmk2BmN9z8DwBT_ypTYfotaAknGFH1YtoCBfYFTaRy2vg'
+        imageUrl:
+          'https://lh3.googleusercontent.com/aida/ADBb0uifyciLtOf41cCMEjWdvIny__fSd_mCekw3D66AomlUIUDWxAl10w6qXwjx5sjucTPqsrDUaCjs5nlzG1AaNMwDzbTXZzCbNWf4n4P0ABkDTjFl5k96tQcB_Xr8IsHeNBWlyK57S6JUw-g3jMLFAvkiKf68zt4b-J2CKek0ib842v4nMCMu3HWT3JpPLmy9v-yegvMU6gQ5kkmk2BmN9z8DwBT_ypTYfotaAknGFH1YtoCBfYFTaRy2vg'
       }
     ]
   },
@@ -96,14 +99,16 @@ const INITIAL_ORDERS: MockOrder[] = [
         name: 'Cát đậu nành Cature Tofu dành cho mèo',
         price: 185000,
         quantity: 15,
-        imageUrl: 'https://lh3.googleusercontent.com/aida/ADBb0uio3yhORq1HxGnDHRDl3K1tbAslOGzxMCESj2lUcheAh1b-83fsuGGfcUj3g96-5sFYzgewrKvc0Hc5935JsAEUPchtsgUSZB8dJDd91s1ERQ5iGrFrnJFh5aYAVASMnFuxVE8XapXYUdL_9ke1o613b3bpD8VaI3reVeT7aYSNMquvqJEtNJgtQevBwtdGNC9EMnBCXPVGgf_Q7mvwLoKybk5d5ZUya2vd3vPv95pO-qe74DBdMbrVrxs'
+        imageUrl:
+          'https://lh3.googleusercontent.com/aida/ADBb0uio3yhORq1HxGnDHRDl3K1tbAslOGzxMCESj2lUcheAh1b-83fsuGGfcUj3g96-5sFYzgewrKvc0Hc5935JsAEUPchtsgUSZB8dJDd91s1ERQ5iGrFrnJFh5aYAVASMnFuxVE8XapXYUdL_9ke1o613b3bpD8VaI3reVeT7aYSNMquvqJEtNJgtQevBwtdGNC9EMnBCXPVGgf_Q7mvwLoKybk5d5ZUya2vd3vPv95pO-qe74DBdMbrVrxs'
       },
       {
         productId: 'prod-5',
         name: 'Đồ chơi dây thừng cho thú cưng',
         price: 25000,
         quantity: 1,
-        imageUrl: 'https://lh3.googleusercontent.com/aida/ADBb0uifyciLtOf41cCMEjWdvIny__fSd_mCekw3D66AomlUIUDWxAl10w6qXwjx5sjucTPqsrDUaCjs5nlzG1AaNMwDzbTXZzCbNWf4n4P0ABkDTjFl5k96tQcB_Xr8IsHeNBWlyK57S6JUw-g3jMLFAvkiKf68zt4b-J2CKek0ib842v4nMCMu3HWT3JpPLmy9v-yegvMU6gQ5kkmk2BmN9z8DwBT_ypTYfotaAknGFH1YtoCBfYFTaRy2vg'
+        imageUrl:
+          'https://lh3.googleusercontent.com/aida/ADBb0uifyciLtOf41cCMEjWdvIny__fSd_mCekw3D66AomlUIUDWxAl10w6qXwjx5sjucTPqsrDUaCjs5nlzG1AaNMwDzbTXZzCbNWf4n4P0ABkDTjFl5k96tQcB_Xr8IsHeNBWlyK57S6JUw-g3jMLFAvkiKf68zt4b-J2CKek0ib842v4nMCMu3HWT3JpPLmy9v-yegvMU6gQ5kkmk2BmN9z8DwBT_ypTYfotaAknGFH1YtoCBfYFTaRy2vg'
       }
     ]
   },
@@ -124,7 +129,8 @@ const INITIAL_ORDERS: MockOrder[] = [
         name: 'Sữa tắm Hello cho chó mèo 280g',
         price: 150000,
         quantity: 1,
-        imageUrl: 'https://lh3.googleusercontent.com/aida/ADBb0uiD2iNUbQz2Hs_xHergS9X6TBN_RLOdfzCsTQyFr6mPAI-q3PGlxKrEMWRS2mZ6NW5BIkBX-Zwmjrxk3CaHaHVNRCBreBxbANzRZjr6NDa5HAh66eUX-SlKemHGRcmR_oQWLH6UM8Cx6etWFvrzC_Zx7Ik9t1KFjGCBvXF-f5CrDF0NKIcL2T-AIK1gNaPoq4OK1LWnzv-OI2BejbgO7sGLwh9HNHuYMAvDK00LoTsZwkVJulKsabSdbqs'
+        imageUrl:
+          'https://lh3.googleusercontent.com/aida/ADBb0uiD2iNUbQz2Hs_xHergS9X6TBN_RLOdfzCsTQyFr6mPAI-q3PGlxKrEMWRS2mZ6NW5BIkBX-Zwmjrxk3CaHaHVNRCBreBxbANzRZjr6NDa5HAh66eUX-SlKemHGRcmR_oQWLH6UM8Cx6etWFvrzC_Zx7Ik9t1KFjGCBvXF-f5CrDF0NKIcL2T-AIK1gNaPoq4OK1LWnzv-OI2BejbgO7sGLwh9HNHuYMAvDK00LoTsZwkVJulKsabSdbqs'
       }
     ]
   },
@@ -145,14 +151,16 @@ const INITIAL_ORDERS: MockOrder[] = [
         name: 'Sữa tắm Hello cho chó mèo 280g',
         price: 120000,
         quantity: 2,
-        imageUrl: 'https://lh3.googleusercontent.com/aida/ADBb0uiD2iNUbQz2Hs_xHergS9X6TBN_RLOdfzCsTQyFr6mPAI-q3PGlxKrEMWRS2mZ6NW5BIkBX-Zwmjrxk3CaHaHVNRCBreBxbANzRZjr6NDa5HAh66eUX-SlKemHGRcmR_oQWLH6UM8Cx6etWFvrzC_Zx7Ik9t1KFjGCBvXF-f5CrDF0NKIcL2T-AIK1gNaPoq4OK1LWnzv-OI2BejbgO7sGLwh9HNHuYMAvDK00LoTsZwkVJulKsabSdbqs'
+        imageUrl:
+          'https://lh3.googleusercontent.com/aida/ADBb0uiD2iNUbQz2Hs_xHergS9X6TBN_RLOdfzCsTQyFr6mPAI-q3PGlxKrEMWRS2mZ6NW5BIkBX-Zwmjrxk3CaHaHVNRCBreBxbANzRZjr6NDa5HAh66eUX-SlKemHGRcmR_oQWLH6UM8Cx6etWFvrzC_Zx7Ik9t1KFjGCBvXF-f5CrDF0NKIcL2T-AIK1gNaPoq4OK1LWnzv-OI2BejbgO7sGLwh9HNHuYMAvDK00LoTsZwkVJulKsabSdbqs'
       },
       {
         productId: 'prod-3',
         name: 'Thức ăn hạt cao cấp cho chó trưởng thành',
         price: 430000,
         quantity: 1,
-        imageUrl: 'https://lh3.googleusercontent.com/aida/ADBb0uifyciLtOf41cCMEjWdvIny__fSd_mCekw3D66AomlUIUDWxAl10w6qXwjx5sjucTPqsrDUaCjs5nlzG1AaNMwDzbTXZzCbNWf4n4P0ABkDTjFl5k96tQcB_Xr8IsHeNBWlyK57S6JUw-g3jMLFAvkiKf68zt4b-J2CKek0ib842v4nMCMu3HWT3JpPLmy9v-yegvMU6gQ5kkmk2BmN9z8DwBT_ypTYfotaAknGFH1YtoCBfYFTaRy2vg'
+        imageUrl:
+          'https://lh3.googleusercontent.com/aida/ADBb0uifyciLtOf41cCMEjWdvIny__fSd_mCekw3D66AomlUIUDWxAl10w6qXwjx5sjucTPqsrDUaCjs5nlzG1AaNMwDzbTXZzCbNWf4n4P0ABkDTjFl5k96tQcB_Xr8IsHeNBWlyK57S6JUw-g3jMLFAvkiKf68zt4b-J2CKek0ib842v4nMCMu3HWT3JpPLmy9v-yegvMU6gQ5kkmk2BmN9z8DwBT_ypTYfotaAknGFH1YtoCBfYFTaRy2vg'
       }
     ]
   },
@@ -173,7 +181,8 @@ const INITIAL_ORDERS: MockOrder[] = [
         name: 'Đồ chơi dây thừng cho thú cưng',
         price: 50000,
         quantity: 1,
-        imageUrl: 'https://lh3.googleusercontent.com/aida/ADBb0uifyciLtOf41cCMEjWdvIny__fSd_mCekw3D66AomlUIUDWxAl10w6qXwjx5sjucTPqsrDUaCjs5nlzG1AaNMwDzbTXZzCbNWf4n4P0ABkDTjFl5k96tQcB_Xr8IsHeNBWlyK57S6JUw-g3jMLFAvkiKf68zt4b-J2CKek0ib842v4nMCMu3HWT3JpPLmy9v-yegvMU6gQ5kkmk2BmN9z8DwBT_ypTYfotaAknGFH1YtoCBfYFTaRy2vg'
+        imageUrl:
+          'https://lh3.googleusercontent.com/aida/ADBb0uifyciLtOf41cCMEjWdvIny__fSd_mCekw3D66AomlUIUDWxAl10w6qXwjx5sjucTPqsrDUaCjs5nlzG1AaNMwDzbTXZzCbNWf4n4P0ABkDTjFl5k96tQcB_Xr8IsHeNBWlyK57S6JUw-g3jMLFAvkiKf68zt4b-J2CKek0ib842v4nMCMu3HWT3JpPLmy9v-yegvMU6gQ5kkmk2BmN9z8DwBT_ypTYfotaAknGFH1YtoCBfYFTaRy2vg'
       }
     ]
   }
@@ -220,15 +229,15 @@ export const orderHandlers = [
       const orderCode = `PET-${newId}`
 
       // For mock items, we need name and image. If not provided, fallback to dummy items.
-      const items: MockOrderItem[] = (body.items || [
-        { productId: 'prod-1', price: 250000, quantity: 1 }
-      ]).map((item, idx) => ({
-        productId: item.productId,
-        name: `Sản phẩm PetCare #${idx + 1}`,
-        price: item.price,
-        quantity: item.quantity,
-        imageUrl: 'https://placehold.co/300x300?text=PetBuddy'
-      }))
+      const items: MockOrderItem[] = (body.items || [{ productId: 'prod-1', price: 250000, quantity: 1 }]).map(
+        (item, idx) => ({
+          productId: item.productId,
+          name: `Sản phẩm PetCare #${idx + 1}`,
+          price: item.price,
+          quantity: item.quantity,
+          imageUrl: 'https://placehold.co/300x300?text=PetBuddy'
+        })
+      )
 
       const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
       const shippingFee = subtotal > 500000 ? 0 : 30000
@@ -271,13 +280,16 @@ export const orderHandlers = [
         timestamp: new Date().toISOString()
       })
     } catch (err: unknown) {
-      return HttpResponse.json({
-        code: 400,
-        message: err instanceof Error ? err.message : 'Lỗi tạo đơn hàng',
-        success: false,
-        data: null,
-        timestamp: new Date().toISOString()
-      }, { status: 400 })
+      return HttpResponse.json(
+        {
+          code: 400,
+          message: err instanceof Error ? err.message : 'Lỗi tạo đơn hàng',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
     }
   }),
 
@@ -291,7 +303,7 @@ export const orderHandlers = [
 
     const start = page * size
     const end = start + size
-    const pageOrders = orders.slice(start, end).map(o => ({
+    const pageOrders = orders.slice(start, end).map((o) => ({
       orderId: o.orderId,
       orderCode: o.orderCode,
       status: o.status,
@@ -329,7 +341,7 @@ export const orderHandlers = [
 
     const start = page * size
     const end = start + size
-    const pageOrders = orders.slice(start, end).map(o => ({
+    const pageOrders = orders.slice(start, end).map((o) => ({
       orderId: o.orderId,
       orderCode: o.orderCode,
       recipientName: o.userName,
@@ -368,13 +380,16 @@ export const orderHandlers = [
     const order = orders.find((o) => o.orderId === orderId)
 
     if (!order) {
-      return HttpResponse.json({
-        code: 404,
-        message: 'Không tìm thấy đơn hàng',
-        success: false,
-        data: null,
-        timestamp: new Date().toISOString()
-      }, { status: 404 })
+      return HttpResponse.json(
+        {
+          code: 404,
+          message: 'Không tìm thấy đơn hàng',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        },
+        { status: 404 }
+      )
     }
 
     const MOCK_WEIGHTS_BY_PRODUCT: Record<string, number> = {
@@ -437,26 +452,32 @@ export const orderHandlers = [
     const status = url.searchParams.get('status')
 
     if (!status) {
-      return HttpResponse.json({
-        code: 400,
-        message: 'Trạng thái không hợp lệ',
-        success: false,
-        data: null,
-        timestamp: new Date().toISOString()
-      }, { status: 400 })
+      return HttpResponse.json(
+        {
+          code: 400,
+          message: 'Trạng thái không hợp lệ',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        },
+        { status: 400 }
+      )
     }
 
     const orders = getStoredOrders()
     const orderIndex = orders.findIndex((o) => o.orderId === orderId)
 
     if (orderIndex === -1) {
-      return HttpResponse.json({
-        code: 404,
-        message: 'Không tìm thấy đơn hàng',
-        success: false,
-        data: null,
-        timestamp: new Date().toISOString()
-      }, { status: 404 })
+      return HttpResponse.json(
+        {
+          code: 404,
+          message: 'Không tìm thấy đơn hàng',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        },
+        { status: 404 }
+      )
     }
 
     const nextStatus = status.toUpperCase()
@@ -478,13 +499,16 @@ export const orderHandlers = [
       }
 
       if (!hasProofImage) {
-        return HttpResponse.json({
-          code: 400,
-          message: 'Yêu cầu ảnh chụp bằng chứng khi giao hàng thành công.',
-          success: false,
-          data: null,
-          timestamp: new Date().toISOString()
-        }, { status: 400 })
+        return HttpResponse.json(
+          {
+            code: 400,
+            message: 'Yêu cầu ảnh chụp bằng chứng khi giao hàng thành công.',
+            success: false,
+            data: null,
+            timestamp: new Date().toISOString()
+          },
+          { status: 400 }
+        )
       }
     }
 
@@ -518,13 +542,16 @@ export const orderHandlers = [
     const orderIndex = orders.findIndex((o) => o.orderId === orderId)
 
     if (orderIndex === -1) {
-      return HttpResponse.json({
-        code: 404,
-        message: 'Không tìm thấy đơn hàng',
-        success: false,
-        data: null,
-        timestamp: new Date().toISOString()
-      }, { status: 404 })
+      return HttpResponse.json(
+        {
+          code: 404,
+          message: 'Không tìm thấy đơn hàng',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        },
+        { status: 404 }
+      )
     }
 
     orders[orderIndex].status = 'CANCELLED'
@@ -563,13 +590,16 @@ export const orderHandlers = [
     const order = orders.find((o) => o.orderId === orderId)
 
     if (!order) {
-      return HttpResponse.json({
-        code: 404,
-        message: 'Không tìm thấy đơn hàng',
-        success: false,
-        data: null,
-        timestamp: new Date().toISOString()
-      }, { status: 404 })
+      return HttpResponse.json(
+        {
+          code: 404,
+          message: 'Không tìm thấy đơn hàng',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        },
+        { status: 404 }
+      )
     }
 
     // Generate picking items from order items
@@ -731,13 +761,16 @@ export const orderHandlers = [
     const orderIndex = orders.findIndex((o) => o.orderId === orderId)
 
     if (orderIndex === -1) {
-      return HttpResponse.json({
-        code: 404,
-        message: 'Không tìm thấy đơn hàng',
-        success: false,
-        data: null,
-        timestamp: new Date().toISOString()
-      }, { status: 404 })
+      return HttpResponse.json(
+        {
+          code: 404,
+          message: 'Không tìm thấy đơn hàng',
+          success: false,
+          data: null,
+          timestamp: new Date().toISOString()
+        },
+        { status: 404 }
+      )
     }
 
     const currentCount = orders[orderIndex].deliveryFailCount ?? 0

@@ -24,19 +24,14 @@ export async function fetchAllOrdersApi(
   })
 }
 
-export async function getShipperSuggestionsApi(
-  orderId: number
-): Promise<ApiResponse<ShipperSuggestionResponse[]>> {
+export async function getShipperSuggestionsApi(orderId: number): Promise<ApiResponse<ShipperSuggestionResponse[]>> {
   return customFetch<ApiResponse<ShipperSuggestionResponse[]>>({
     url: `${SHIPPER_ASSIGNMENT_BASE_URL}/${orderId}/shipper-suggestions`,
     method: 'GET'
   })
 }
 
-export async function assignShipperApi(
-  orderId: number,
-  staffId: string
-): Promise<ApiResponse<void>> {
+export async function assignShipperApi(orderId: number, staffId: string): Promise<ApiResponse<void>> {
   return customFetch<ApiResponse<void>>({
     url: `${SHIPPER_ASSIGNMENT_BASE_URL}/${orderId}/assign-shipper`,
     method: 'POST',
@@ -44,9 +39,7 @@ export async function assignShipperApi(
   })
 }
 
-export async function suggestDeliveryRouteApi(
-  staffId: string
-): Promise<ApiResponse<DeliveryStopResponse[]>> {
+export async function suggestDeliveryRouteApi(staffId: string): Promise<ApiResponse<DeliveryStopResponse[]>> {
   return customFetch<ApiResponse<DeliveryStopResponse[]>>({
     url: `${SHIPPER_ASSIGNMENT_BASE_URL}/${staffId}/delivery-route`,
     method: 'GET',

@@ -43,10 +43,7 @@ function getLanguageBucket(language?: string) {
   return language?.startsWith('vi') ? 'vi' : 'en'
 }
 
-export function ManagerImportProductsModal({
-  onClose,
-  onImportSuccess
-}: ManagerImportProductsModalProps) {
+export function ManagerImportProductsModal({ onClose, onImportSuccess }: ManagerImportProductsModalProps) {
   const { t, i18n } = useTranslation('manager')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -71,7 +68,9 @@ export function ManagerImportProductsModal({
       file.type === 'application/vnd.ms-excel'
 
     if (!isExcel) {
-      setApiError(languageBucket === 'vi' ? 'Chỉ chấp nhận file .xlsx hoặc .xls' : 'Only .xlsx or .xls files are supported')
+      setApiError(
+        languageBucket === 'vi' ? 'Chỉ chấp nhận file .xlsx hoặc .xls' : 'Only .xlsx or .xls files are supported'
+      )
       return
     }
 
@@ -114,7 +113,9 @@ export function ManagerImportProductsModal({
         errors: data.errors || []
       })
     } catch (error: unknown) {
-      setApiError(error instanceof Error ? error.message : languageBucket === 'vi' ? 'Nhập dữ liệu thất bại' : 'Import failed')
+      setApiError(
+        error instanceof Error ? error.message : languageBucket === 'vi' ? 'Nhập dữ liệu thất bại' : 'Import failed'
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -167,13 +168,7 @@ export function ManagerImportProductsModal({
             className='flex min-h-[220px] cursor-pointer select-none flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted/20 p-8 text-center transition-all hover:border-primary/50 hover:bg-muted/30'
             onClick={() => fileInputRef.current?.click()}
           >
-            <input
-              ref={fileInputRef}
-              type='file'
-              accept='.xlsx,.xls'
-              className='hidden'
-              onChange={handleFileChange}
-            />
+            <input ref={fileInputRef} type='file' accept='.xlsx,.xls' className='hidden' onChange={handleFileChange} />
 
             <div className='mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted'>
               <MaterialIcon name='cloud_upload' className='text-3xl text-muted-foreground' />
@@ -203,7 +198,8 @@ export function ManagerImportProductsModal({
 
           {result && (
             <div className='space-y-4 rounded-2xl border border-border bg-muted/20 p-4'>
-              <div className='flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold'
+              <div
+                className='flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold'
                 style={{
                   backgroundColor: result.success ? 'rgba(34,197,94,0.12)' : 'rgba(245,158,11,0.12)',
                   color: result.success ? 'rgb(22,163,74)' : 'rgb(217,119,6)'
@@ -253,7 +249,10 @@ export function ManagerImportProductsModal({
                 ) : (
                   <ul className='space-y-2'>
                     {readableErrors.map((item) => (
-                      <li key={`${item.row}-${item.message}`} className='rounded-lg bg-muted/40 px-3 py-2 text-sm text-foreground'>
+                      <li
+                        key={`${item.row}-${item.message}`}
+                        className='rounded-lg bg-muted/40 px-3 py-2 text-sm text-foreground'
+                      >
                         <span className='font-bold text-destructive'>
                           {languageBucket === 'vi' ? 'Dòng' : 'Row'} {item.row}:
                         </span>{' '}

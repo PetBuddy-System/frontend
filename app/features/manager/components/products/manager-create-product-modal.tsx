@@ -26,11 +26,7 @@ interface ManagerCreateProductModalProps {
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export function ManagerCreateProductModal({
-  categories,
-  onClose,
-  onSuccess
-}: ManagerCreateProductModalProps) {
+export function ManagerCreateProductModal({ categories, onClose, onSuccess }: ManagerCreateProductModalProps) {
   const { t } = useTranslation('manager')
 
   const [form, setForm] = useState<CreateProductFormData>({
@@ -42,7 +38,7 @@ export function ManagerCreateProductModal({
     ingredients: '',
     usageInstructions: '',
     unit: '',
-    weight: '',
+    weight: ''
   })
   const [images, setImages] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
@@ -60,7 +56,7 @@ export function ManagerCreateProductModal({
     { value: 'BOTTLE', label: t('unit.BOTTLE') },
     { value: 'CAN', label: t('unit.CAN') },
     { value: 'TUBE', label: t('unit.TUBE') },
-    { value: 'SET', label: t('unit.SET') },
+    { value: 'SET', label: t('unit.SET') }
   ]
 
   // Cleanup previews on unmount
@@ -219,9 +215,7 @@ export function ManagerCreateProductModal({
             <h2 className='font-display text-lg font-bold text-card-foreground'>
               {t('productManagement.createModal.title')}
             </h2>
-            <p className='text-xs text-muted-foreground mt-0.5'>
-              {t('productManagement.createModal.subtitle')}
-            </p>
+            <p className='text-xs text-muted-foreground mt-0.5'>{t('productManagement.createModal.subtitle')}</p>
           </div>
           <button
             type='button'
@@ -245,7 +239,10 @@ export function ManagerCreateProductModal({
             {/* Name & Price */}
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
               <div className='flex flex-col gap-1.5'>
-                <label htmlFor='create-name' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                <label
+                  htmlFor='create-name'
+                  className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+                >
                   {t('productManagement.createModal.name')} <span className='text-destructive'>*</span>
                 </label>
                 <input
@@ -260,7 +257,10 @@ export function ManagerCreateProductModal({
               </div>
 
               <div className='flex flex-col gap-1.5'>
-                <label htmlFor='create-price' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                <label
+                  htmlFor='create-price'
+                  className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+                >
                   {t('productManagement.createModal.price')} <span className='text-destructive'>*</span>
                 </label>
                 <input
@@ -278,7 +278,10 @@ export function ManagerCreateProductModal({
             {/* Brand & Category */}
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
               <div className='flex flex-col gap-1.5'>
-                <label htmlFor='create-brand' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                <label
+                  htmlFor='create-brand'
+                  className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+                >
                   {t('productManagement.createModal.brand')} <span className='text-destructive'>*</span>
                 </label>
                 <input
@@ -293,7 +296,10 @@ export function ManagerCreateProductModal({
               </div>
 
               <div className='flex flex-col gap-1.5'>
-                <label htmlFor='create-category' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                <label
+                  htmlFor='create-category'
+                  className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+                >
                   {t('productManagement.createModal.category')} <span className='text-destructive'>*</span>
                 </label>
                 <div className='relative'>
@@ -301,7 +307,9 @@ export function ManagerCreateProductModal({
                     id='create-category'
                     required
                     value={form.categoryId || ''}
-                    onChange={(e) => setForm((prev) => ({ ...prev, categoryId: e.target.value ? Number(e.target.value) : undefined }))}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, categoryId: e.target.value ? Number(e.target.value) : undefined }))
+                    }
                     className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
                   >
                     <option value=''>{t('productManagement.createModal.selectCategory')}</option>
@@ -323,13 +331,16 @@ export function ManagerCreateProductModal({
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
               {/* Unit */}
               <div className='flex flex-col gap-1.5'>
-                <label htmlFor='create-unit' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                <label
+                  htmlFor='create-unit'
+                  className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+                >
                   {t('productManagement.createModal.unit')} <span className='text-destructive'>*</span>
                 </label>
                 <div className='relative'>
                   <select
                     id='create-unit'
-                    required  // ✅ Thêm required
+                    required // ✅ Thêm required
                     value={form.unit}
                     onChange={(e) => setForm((prev) => ({ ...prev, unit: e.target.value as ProductUnit }))}
                     className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
@@ -350,7 +361,10 @@ export function ManagerCreateProductModal({
 
               {/* Weight */}
               <div className='flex flex-col gap-1.5'>
-                <label htmlFor='create-weight' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                <label
+                  htmlFor='create-weight'
+                  className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+                >
                   {t('productManagement.createModal.weight')} <span className='text-destructive'>*</span>
                 </label>
                 <input
@@ -361,7 +375,9 @@ export function ManagerCreateProductModal({
                   step='0.1'
                   placeholder={t('productManagement.createModal.weightPlaceholder')}
                   value={form.weight}
-                  onChange={(e) => setForm((prev) => ({ ...prev, weight: e.target.value ? Number(e.target.value) : '' }))}
+                  onChange={(e) =>
+                    setForm((prev) => ({ ...prev, weight: e.target.value ? Number(e.target.value) : '' }))
+                  }
                   className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
                 />
               </div>
@@ -385,7 +401,10 @@ export function ManagerCreateProductModal({
             {/* Ingredients & Usage Instructions - 2 cột */}
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
               <div className='flex flex-col gap-1.5'>
-                <label htmlFor='create-ingredients' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                <label
+                  htmlFor='create-ingredients'
+                  className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+                >
                   {t('productManagement.createModal.ingredients')}
                 </label>
                 <textarea
@@ -399,7 +418,10 @@ export function ManagerCreateProductModal({
               </div>
 
               <div className='flex flex-col gap-1.5'>
-                <label htmlFor='create-usage' className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                <label
+                  htmlFor='create-usage'
+                  className='text-xs font-bold uppercase tracking-wider text-muted-foreground'
+                >
                   {t('productManagement.createModal.usageInstructions')}
                 </label>
                 <textarea
@@ -427,7 +449,10 @@ export function ManagerCreateProductModal({
                   </span>
                   <div className='flex flex-wrap gap-2'>
                     {imagePreviews.map((url, idx) => (
-                      <div key={idx} className='relative group h-16 w-16 rounded-xl border border-border bg-muted overflow-hidden shadow-sm'>
+                      <div
+                        key={idx}
+                        className='relative group h-16 w-16 rounded-xl border border-border bg-muted overflow-hidden shadow-sm'
+                      >
                         <img
                           src={url}
                           alt={t('productManagement.createModal.previewAlt')}
@@ -461,13 +486,7 @@ export function ManagerCreateProductModal({
                       {t('productManagement.createModal.uploadImagesHint')}
                     </p>
                   </div>
-                  <input
-                    type='file'
-                    multiple
-                    accept='image/*'
-                    className='hidden'
-                    onChange={handleImageChange}
-                  />
+                  <input type='file' multiple accept='image/*' className='hidden' onChange={handleImageChange} />
                 </label>
               </div>
             </div>
@@ -481,11 +500,7 @@ export function ManagerCreateProductModal({
               {/* Video preview */}
               {videoPreview && (
                 <div className='relative rounded-xl border border-border overflow-hidden bg-black/5'>
-                  <video
-                    src={videoPreview}
-                    controls
-                    className='w-full max-h-[200px] object-contain'
-                  />
+                  <video src={videoPreview} controls className='w-full max-h-[200px] object-contain' />
                   <button
                     type='button'
                     onClick={handleRemoveVideo}
@@ -511,12 +526,7 @@ export function ManagerCreateProductModal({
                       {t('productManagement.createModal.uploadVideoHint')}
                     </p>
                   </div>
-                  <input
-                    type='file'
-                    accept='video/*'
-                    className='hidden'
-                    onChange={handleVideoChange}
-                  />
+                  <input type='file' accept='video/*' className='hidden' onChange={handleVideoChange} />
                 </label>
               </div>
             </div>

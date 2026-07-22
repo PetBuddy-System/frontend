@@ -38,16 +38,7 @@ export async function fetchProductByIdApi(productId: string): Promise<ProductDet
 export async function fetchProductsManagementApi(
   params: FetchProductsManagementParams = {}
 ): Promise<PagedProductManagementResponse> {
-  const {
-    keyword,
-    categoryId,
-    brandName,
-    status,
-    sortBy,
-    page = 0,
-    size = 10,
-    nearExpiredDays
-  } = params
+  const { keyword, categoryId, brandName, status, sortBy, page = 0, size = 10, nearExpiredDays } = params
 
   const queryParams: Record<string, string | number> = {
     page,
@@ -82,9 +73,7 @@ export async function fetchProductsManagementApi(
   })
 }
 
-export async function fetchProductManagementByIdApi(
-  productId: string
-): Promise<ProductDetailResponse> {
+export async function fetchProductManagementByIdApi(productId: string): Promise<ProductDetailResponse> {
   return customFetch<ProductDetailResponse>({
     url: `${PRODUCTS_BASE_URL}/management/${productId}`,
     method: 'GET'
@@ -92,9 +81,7 @@ export async function fetchProductManagementByIdApi(
 }
 
 // ─── Product Video API ────────────────────────────────────────────────────
-export async function fetchProductVideoApi(
-  productId: string
-): Promise<ProductVideoResponse> {
+export async function fetchProductVideoApi(productId: string): Promise<ProductVideoResponse> {
   return customFetch<ProductVideoResponse>({
     url: `${PRODUCTS_BASE_URL}/${productId}/video`,
     method: 'GET'
@@ -102,9 +89,7 @@ export async function fetchProductVideoApi(
 }
 
 // ─── Product Images API ───────────────────────────────────────────────────
-export async function fetchProductImagesApi(
-  productId: string
-): Promise<ProductImagesResponse> {
+export async function fetchProductImagesApi(productId: string): Promise<ProductImagesResponse> {
   return customFetch<ProductImagesResponse>({
     url: `${PRODUCTS_BASE_URL}/${productId}/images`,
     method: 'GET'
@@ -175,9 +160,7 @@ export async function fetchCategoriesApi(): Promise<ListCategoryResponse> {
 
 // ─── Create / Update / Import ─────────────────────────────────────────────
 
-export async function createProductApi(
-  payload: CreateProductPayload
-): Promise<CreateProductResponse> {
+export async function createProductApi(payload: CreateProductPayload): Promise<CreateProductResponse> {
   return customFetch<CreateProductResponse>({
     url: PRODUCTS_BASE_URL,
     method: 'POST',
@@ -214,10 +197,7 @@ export async function updateProductApi(
   })
 }
 
-export async function importProductsApi(
-  file: File,
-  confirm: boolean = false
-): Promise<ImportProductsResponse> {
+export async function importProductsApi(file: File, confirm: boolean = false): Promise<ImportProductsResponse> {
   const formData = new FormData()
   formData.append('file', file)
 
@@ -244,7 +224,7 @@ export async function fetchProductStatsApi(
     status: params.status,
     nearExpiredDays: params.nearExpiredDays,
     page: 0,
-    size: 1,
+    size: 1
   })
 
   if (!response.success) {

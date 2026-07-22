@@ -67,7 +67,10 @@ export function WorkScheduleStaffSelect({
             ? t('staffSchedule.workSchedules.staffSelect.selected', { count: selectedStaffIds.length })
             : t('staffSchedule.workSchedules.staffSelect.placeholder')}
         </span>
-        <MaterialIcon name='expand_more' className='text-lg text-muted-foreground transition-transform group-open:rotate-180' />
+        <MaterialIcon
+          name='expand_more'
+          className='text-lg text-muted-foreground transition-transform group-open:rotate-180'
+        />
       </summary>
 
       <div className='max-h-80 overflow-y-auto border-t border-border p-3'>

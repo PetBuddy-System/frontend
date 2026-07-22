@@ -1,8 +1,7 @@
 const VIETNAM_TIME_ZONE = 'Asia/Ho_Chi_Minh'
 const VIETNAM_UTC_OFFSET_HOURS = 7
 const DATE_ONLY_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
-const JAVA_LOCAL_DATE_TIME_PATTERN =
-  /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?$/
+const JAVA_LOCAL_DATE_TIME_PATTERN = /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?$/
 
 const localDateFormatter = new Intl.DateTimeFormat('vi-VN', {
   day: '2-digit',
@@ -32,14 +31,7 @@ function buildLocalDate(year: string, month: string, day: string) {
   return new Date(Number(year), Number(month) - 1, Number(day))
 }
 
-function buildVietnamDateTime(
-  year: string,
-  month: string,
-  day: string,
-  hour: string,
-  minute: string,
-  second = '0'
-) {
+function buildVietnamDateTime(year: string, month: string, day: string, hour: string, minute: string, second = '0') {
   return new Date(
     Date.UTC(
       Number(year),

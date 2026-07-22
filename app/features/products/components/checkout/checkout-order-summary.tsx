@@ -6,7 +6,7 @@ import { MaterialIcon } from '~/shared/ui'
 const TRUST_BADGES = [
   { key: 'secure', icon: 'verified_user' },
   { key: 'returns', icon: 'replay' },
-  { key: 'authentic', icon: 'verified' },
+  { key: 'authentic', icon: 'verified' }
 ] as const
 
 export interface CheckoutOrderItem {
@@ -44,7 +44,7 @@ export function CheckoutOrderSummary({
   isSubmitting = false,
   mode = 'checkout',
   onRetryPayment,
-  paymentMethod = 'CASH',
+  paymentMethod = 'CASH'
 }: CheckoutOrderSummaryProps) {
   const { t } = useTranslation('products')
   const navigate = useNavigate()
@@ -61,8 +61,7 @@ export function CheckoutOrderSummary({
 
         <div className='mb-6 flex max-h-[300px] flex-col gap-4 overflow-y-auto pr-2'>
           {items.map((item) => {
-            const hasPromotion =
-              item.price != null && item.price > item.salePrice
+            const hasPromotion = item.price != null && item.price > item.salePrice
 
             return (
               <article key={item.key} className='flex gap-4'>
@@ -115,12 +114,8 @@ export function CheckoutOrderSummary({
             </div>
           )}
           <div className='mt-2 flex items-center justify-between pt-2'>
-            <span className='font-display text-2xl font-semibold text-foreground'>
-              {t('checkout.summary.total')}
-            </span>
-            <span className='font-display text-3xl font-bold text-primary'>
-              {formatPrice(Math.max(0, total))}
-            </span>
+            <span className='font-display text-2xl font-semibold text-foreground'>{t('checkout.summary.total')}</span>
+            <span className='font-display text-3xl font-bold text-primary'>{formatPrice(Math.max(0, total))}</span>
           </div>
         </div>
 
@@ -143,19 +138,16 @@ export function CheckoutOrderSummary({
             filled={!isSubmitting}
             className={isSubmitting ? 'animate-spin text-[20px]' : 'text-[20px]'}
           />
-          {!isSubmitting && (
-            paymentMethod === 'CARD' || paymentMethod === 'MOMO'
+          {!isSubmitting &&
+            (paymentMethod === 'CARD' || paymentMethod === 'MOMO'
               ? t('checkout.summary.payNow', 'Thanh toán ngay')
-              : t('checkout.summary.placeOrder', 'Đặt hàng ngay')
-          )}
+              : t('checkout.summary.placeOrder', 'Đặt hàng ngay'))}
         </button>
       </section>
 
       {/* Voucher section */}
       <section className='rounded-xl border border-border/60 bg-card p-6 shadow-sm'>
-        <p className='mb-3 text-sm font-semibold text-foreground'>
-          {t('checkout.coupon.title')}
-        </p>
+        <p className='mb-3 text-sm font-semibold text-foreground'>{t('checkout.coupon.title')}</p>
 
         {voucherName ? (
           /* Applied voucher display */

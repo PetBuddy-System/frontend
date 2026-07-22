@@ -115,9 +115,7 @@ function ShippingPolicy() {
   return (
     <div className='space-y-8'>
       <div className='rounded-lg border border-border bg-background p-6'>
-        <h3 className='mb-2 text-xl font-semibold text-foreground'>
-          {t('contact.policies.shippingHero.title')}
-        </h3>
+        <h3 className='mb-2 text-xl font-semibold text-foreground'>{t('contact.policies.shippingHero.title')}</h3>
         <p className='text-muted-foreground'>{t('contact.policies.shippingHero.description')}</p>
       </div>
 
@@ -183,12 +181,14 @@ function ReturnPolicy() {
             <h4 className='font-semibold text-foreground'>{t('contact.policies.return.notApplicable.title')}</h4>
           </div>
           <ul className='space-y-1.5 text-sm text-muted-foreground'>
-            {(t('contact.policies.return.notApplicable.items', { returnObjects: true }) as string[]).map((item, idx) => (
-              <li key={idx} className='flex items-start gap-2'>
-                <span className='mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground' />
-                <span>{item}</span>
-              </li>
-            ))}
+            {(t('contact.policies.return.notApplicable.items', { returnObjects: true }) as string[]).map(
+              (item, idx) => (
+                <li key={idx} className='flex items-start gap-2'>
+                  <span className='mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground' />
+                  <span>{item}</span>
+                </li>
+              )
+            )}
           </ul>
         </div>
       </div>
@@ -197,12 +197,20 @@ function ReturnPolicy() {
         <h4 className='mb-3 font-semibold text-foreground'>{t('contact.policies.return.fees.title')}</h4>
         <div className='grid gap-4 md:grid-cols-2'>
           <div>
-            <p className='mb-2 text-sm font-medium text-foreground'>{t('contact.policies.return.fees.petbuddyFault.title')}</p>
-            <p className='text-sm text-muted-foreground'>{t('contact.policies.return.fees.petbuddyFault.description')}</p>
+            <p className='mb-2 text-sm font-medium text-foreground'>
+              {t('contact.policies.return.fees.petbuddyFault.title')}
+            </p>
+            <p className='text-sm text-muted-foreground'>
+              {t('contact.policies.return.fees.petbuddyFault.description')}
+            </p>
           </div>
           <div>
-            <p className='mb-2 text-sm font-medium text-foreground'>{t('contact.policies.return.fees.customerFault.title')}</p>
-            <p className='text-sm text-muted-foreground'>{t('contact.policies.return.fees.customerFault.description')}</p>
+            <p className='mb-2 text-sm font-medium text-foreground'>
+              {t('contact.policies.return.fees.customerFault.title')}
+            </p>
+            <p className='text-sm text-muted-foreground'>
+              {t('contact.policies.return.fees.customerFault.description')}
+            </p>
           </div>
         </div>
       </div>
@@ -210,19 +218,22 @@ function ReturnPolicy() {
       <div className='rounded-lg border border-border bg-background p-5'>
         <h4 className='mb-3 font-semibold text-foreground'>{t('contact.policies.return.process.title')}</h4>
         <div className='space-y-3'>
-          {(t('contact.policies.return.process.steps', { returnObjects: true }) as { title: string; description: string }[]).map(
-            (step, idx) => (
-              <div key={idx} className='flex gap-3'>
-                <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground'>
-                  {idx + 1}
-                </div>
-                <div>
-                  <p className='text-sm font-medium text-foreground'>{step.title}</p>
-                  <p className='text-sm text-muted-foreground'>{step.description}</p>
-                </div>
+          {(
+            t('contact.policies.return.process.steps', { returnObjects: true }) as {
+              title: string
+              description: string
+            }[]
+          ).map((step, idx) => (
+            <div key={idx} className='flex gap-3'>
+              <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground'>
+                {idx + 1}
               </div>
-            )
-          )}
+              <div>
+                <p className='text-sm font-medium text-foreground'>{step.title}</p>
+                <p className='text-sm text-muted-foreground'>{step.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

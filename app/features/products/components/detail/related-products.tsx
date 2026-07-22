@@ -12,11 +12,7 @@ export interface RelatedProductsProps {
   limit?: number
 }
 
-export function RelatedProducts({
-  productId,
-  categoryId,
-  limit = 4
-}: RelatedProductsProps) {
+export function RelatedProducts({ productId, categoryId, limit = 4 }: RelatedProductsProps) {
   const { t } = useTranslation('products')
   const [products, setProducts] = useState<ProductResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -102,9 +98,7 @@ export function RelatedProducts({
     return (
       <section className='mb-16'>
         <div className='mb-8 flex items-end justify-between'>
-          <h2 className='text-2xl font-semibold text-foreground font-display'>
-            {t('detail.related.title')}
-          </h2>
+          <h2 className='text-2xl font-semibold text-foreground font-display'>{t('detail.related.title')}</h2>
         </div>
         <div className='grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4 animate-pulse'>
           {[...Array(limit)].map((_, i) => (
@@ -127,9 +121,7 @@ export function RelatedProducts({
   return (
     <section className='mb-16'>
       <div className='mb-8 flex items-end justify-between'>
-        <h2 className='text-2xl font-semibold text-foreground font-display'>
-          {t('detail.related.title')}
-        </h2>
+        <h2 className='text-2xl font-semibold text-foreground font-display'>{t('detail.related.title')}</h2>
         <Link
           className='flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:opacity-80'
           to='/products'
@@ -143,12 +135,9 @@ export function RelatedProducts({
         {products.map((product) => {
           const badgeLabel = getBadgeLabel(product)
           const badgeStyle = getBadgeStyle(product)
-          const displayPrice = product.hasActivePromotion && product.promotionPrice
-            ? product.promotionPrice
-            : product.salePrice
-          const originalPrice = product.hasActivePromotion && product.promotionPrice
-            ? product.salePrice
-            : undefined
+          const displayPrice =
+            product.hasActivePromotion && product.promotionPrice ? product.promotionPrice : product.salePrice
+          const originalPrice = product.hasActivePromotion && product.promotionPrice ? product.salePrice : undefined
 
           return (
             <Link
@@ -159,10 +148,7 @@ export function RelatedProducts({
               <div className='relative aspect-square bg-muted p-6'>
                 {badgeLabel && badgeStyle && (
                   <span
-                    className={cn(
-                      'absolute left-2 top-2 z-10 rounded-full px-2 py-1 text-xs font-bold',
-                      badgeStyle
-                    )}
+                    className={cn('absolute left-2 top-2 z-10 rounded-full px-2 py-1 text-xs font-bold', badgeStyle)}
                   >
                     {badgeLabel}
                   </span>
@@ -181,17 +167,11 @@ export function RelatedProducts({
                 )}
               </div>
               <div className='flex flex-col gap-2 p-4'>
-                <h3 className='min-h-12 line-clamp-2 text-sm text-foreground'>
-                  {product.name}
-                </h3>
+                <h3 className='min-h-12 line-clamp-2 text-sm text-foreground'>{product.name}</h3>
                 <div className='flex items-center gap-2'>
-                  <span className='text-lg font-bold text-primary font-display'>
-                    {formatPrice(displayPrice)}
-                  </span>
+                  <span className='text-lg font-bold text-primary font-display'>{formatPrice(displayPrice)}</span>
                   {originalPrice && (
-                    <span className='text-sm line-through text-muted-foreground'>
-                      {formatPrice(originalPrice)}
-                    </span>
+                    <span className='text-sm line-through text-muted-foreground'>{formatPrice(originalPrice)}</span>
                   )}
                 </div>
                 <button

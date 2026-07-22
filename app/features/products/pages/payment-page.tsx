@@ -7,7 +7,7 @@ import {
   CardExpiryElement,
   CardCvcElement,
   useStripe,
-  useElements,
+  useElements
 } from '@stripe/react-stripe-js'
 
 import { env } from '~/shared/config/env'
@@ -27,16 +27,16 @@ const stripeElementStyle = {
     fontSize: '15px',
     color: '#191c1d',
     '::placeholder': { color: '#aab7c4' },
-    fontFamily: 'inherit',
+    fontFamily: 'inherit'
   },
-  invalid: { color: '#ba1a1a' },
+  invalid: { color: '#ba1a1a' }
 }
 
 function CheckoutForm({
   clientSecret,
   orderId,
   amount,
-  onPaymentSuccess,
+  onPaymentSuccess
 }: {
   clientSecret: string
   orderId: number
@@ -48,9 +48,7 @@ function CheckoutForm({
   const navigate = useNavigate()
   const [isProcessing, setIsProcessing] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [cardHolderName, setCardHolderName] = useState(
-    () => sessionStorage.getItem(SESSION_KEY_CARDHOLDER) ?? ''
-  )
+  const [cardHolderName, setCardHolderName] = useState(() => sessionStorage.getItem(SESSION_KEY_CARDHOLDER) ?? '')
 
   function handleCardHolderChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value.toUpperCase()
@@ -80,9 +78,9 @@ function CheckoutForm({
       payment_method: {
         card: cardNumberElement,
         billing_details: {
-          name: cardHolderName,
-        },
-      },
+          name: cardHolderName
+        }
+      }
     })
 
     if (error) {
@@ -122,9 +120,7 @@ function CheckoutForm({
       </div>
 
       <div className='flex flex-col gap-2'>
-        <label className='text-sm font-semibold text-foreground'>
-          Thông tin thẻ tín dụng/ghi nợ
-        </label>
+        <label className='text-sm font-semibold text-foreground'>Thông tin thẻ tín dụng/ghi nợ</label>
         <div className='overflow-hidden rounded-xl border border-border bg-background shadow-inner'>
           <div className='flex items-center gap-2 border-b border-border px-4 py-3'>
             <div className='flex-1'>
@@ -257,9 +253,7 @@ export function PaymentPage() {
         <main className='mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center p-6 text-center'>
           <MaterialIcon name='error' className='text-[64px] text-destructive mb-4' />
           <h2 className='text-2xl font-bold mb-2'>Lỗi tải trang thanh toán</h2>
-          <p className='text-sm text-muted-foreground mb-6'>
-            Mã đơn hàng hoặc thông tin thanh toán không hợp lệ.
-          </p>
+          <p className='text-sm text-muted-foreground mb-6'>Mã đơn hàng hoặc thông tin thanh toán không hợp lệ.</p>
           <button
             onClick={() => navigate('/products')}
             className='rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow transition hover:opacity-90'
@@ -278,7 +272,6 @@ export function PaymentPage() {
     <div className='flex min-h-screen flex-col bg-[#f8f9fa] dark:bg-[#0b1220] text-foreground'>
       <SiteHeader />
       <main className='mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 md:py-16'>
-
         <section className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between rounded-2xl bg-white dark:bg-[#111a2e] border border-border/40 p-6 shadow-sm'>
           <div>
             <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
@@ -294,9 +287,7 @@ export function PaymentPage() {
               className={`text-[24px] ${timeLeft < 60 ? 'animate-pulse text-destructive' : ''}`}
             />
             <div className='flex flex-col'>
-              <span className='text-[10px] font-bold uppercase tracking-wider opacity-85'>
-                Thời gian còn lại
-              </span>
+              <span className='text-[10px] font-bold uppercase tracking-wider opacity-85'>Thời gian còn lại</span>
               <span className={`font-mono text-xl font-bold ${timeLeft < 60 ? 'text-destructive' : ''}`}>
                 {formattedTime}
               </span>
@@ -331,9 +322,7 @@ export function PaymentPage() {
           </section>
 
           <section className='md:col-span-5 flex flex-col gap-6 rounded-2xl bg-white dark:bg-[#111a2e] border border-border/40 p-6 shadow-sm h-fit'>
-            <h3 className='font-display text-base font-bold border-b border-border/50 pb-3'>
-              Chi tiết thanh toán
-            </h3>
+            <h3 className='font-display text-base font-bold border-b border-border/50 pb-3'>Chi tiết thanh toán</h3>
             <div className='flex flex-col gap-4'>
               <div className='flex items-center justify-between text-sm'>
                 <span className='text-muted-foreground'>Số tiền đơn hàng</span>
@@ -350,9 +339,7 @@ export function PaymentPage() {
               <hr className='border-border/50' />
               <div className='flex items-center justify-between'>
                 <span className='font-bold'>Tổng cộng</span>
-                <span className='font-display text-xl font-bold text-[#004d99]'>
-                  {formatPrice(amount)}
-                </span>
+                <span className='font-display text-xl font-bold text-[#004d99]'>{formatPrice(amount)}</span>
               </div>
             </div>
           </section>

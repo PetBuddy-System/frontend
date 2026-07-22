@@ -9,8 +9,8 @@ interface ReviewsFilterBarProps {
   onStatusChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
   ratingFilter: number | undefined
   onRatingChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  reviewTypeFilter: 'ALL' | 'PRODUCT' | 'ORDER'  // ← THÊM
-  onReviewTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void  // ← THÊM
+  reviewTypeFilter: 'ALL' | 'PRODUCT' | 'ORDER' // ← THÊM
+  onReviewTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void // ← THÊM
   sortKey: string
   onSortChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }
@@ -22,8 +22,8 @@ export function ReviewsFilterBar({
   onStatusChange,
   ratingFilter,
   onRatingChange,
-  reviewTypeFilter,      // ← THÊM
-  onReviewTypeChange,    // ← THÊM
+  reviewTypeFilter, // ← THÊM
+  onReviewTypeChange, // ← THÊM
   sortKey,
   onSortChange
 }: ReviewsFilterBarProps) {

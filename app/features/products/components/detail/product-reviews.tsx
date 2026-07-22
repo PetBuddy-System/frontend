@@ -232,14 +232,10 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
       <div className='border-b border-border/60 pb-6'>
         <div className='flex flex-col justify-between gap-6 md:flex-row md:items-center'>
           <div>
-            <h2 className='text-2xl font-bold text-foreground font-display'>
-              {t('detail.reviews.title')}
-            </h2>
+            <h2 className='text-2xl font-bold text-foreground font-display'>{t('detail.reviews.title')}</h2>
             <div className='mt-2 flex flex-wrap items-center gap-4'>
               <div className='flex items-center gap-1.5'>
-                <span className='text-3xl font-extrabold text-foreground font-display'>
-                  {averageRating}
-                </span>
+                <span className='text-3xl font-extrabold text-foreground font-display'>{averageRating}</span>
                 <span className='text-sm text-muted-foreground'>/ 5</span>
               </div>
               <div className='flex items-center text-secondary'>
@@ -263,7 +259,8 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
           </div>
 
           {isAuthenticated ? (
-            !myReview && !showForm && (
+            !myReview &&
+            !showForm && (
               <Button
                 variant='primary'
                 onClick={handleOpenWrite}
@@ -274,9 +271,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
               </Button>
             )
           ) : (
-            <p className='text-sm italic text-muted-foreground'>
-              {t('detail.reviews.loginRequired')}
-            </p>
+            <p className='text-sm italic text-muted-foreground'>{t('detail.reviews.loginRequired')}</p>
           )}
         </div>
       </div>
@@ -290,16 +285,12 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
           </h3>
           <form onSubmit={handleSubmitReview} className='mt-4 space-y-4'>
             {formError && (
-              <div className='rounded-lg bg-destructive/10 p-3 text-sm text-destructive font-medium'>
-                {formError}
-              </div>
+              <div className='rounded-lg bg-destructive/10 p-3 text-sm text-destructive font-medium'>{formError}</div>
             )}
 
             {/* Rating Stars Selector */}
             <div className='space-y-1.5'>
-              <label className='block text-sm font-semibold text-foreground'>
-                Đánh giá số sao
-              </label>
+              <label className='block text-sm font-semibold text-foreground'>Đánh giá số sao</label>
               <div className='flex items-center gap-1 text-secondary'>
                 {Array.from({ length: 5 }).map((_, idx) => {
                   const ratingValue = idx + 1
@@ -389,7 +380,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
           <div className='flex items-start justify-between gap-3'>
             <div className='flex items-center gap-3'>
               <div className='flex h-10 w-10 items-center justify-center rounded-full bg-muted font-bold text-primary font-display'>
-                {myReview.anonymous ? 'A' : (myReview.fullName?.charAt(0) || 'U')}
+                {myReview.anonymous ? 'A' : myReview.fullName?.charAt(0) || 'U'}
               </div>
               <div>
                 <span className='block font-bold text-foreground'>
@@ -402,7 +393,10 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                         key={idx}
                         name='star'
                         filled={idx < myReview.rating}
-                        className={cn('text-[16px]', idx < myReview.rating ? 'text-secondary' : 'text-muted-foreground/30')}
+                        className={cn(
+                          'text-[16px]',
+                          idx < myReview.rating ? 'text-secondary' : 'text-muted-foreground/30'
+                        )}
                       />
                     ))}
                   </div>
@@ -430,9 +424,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
               </button>
             </div>
           </div>
-          <p className='mt-3 italic text-muted-foreground text-sm pl-1'>
-            "{myReview.content}"
-          </p>
+          <p className='mt-3 italic text-muted-foreground text-sm pl-1'>"{myReview.content}"</p>
         </div>
       )}
 
@@ -508,9 +500,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
           /* Empty State */
           <div className='flex flex-col items-center justify-center py-12 text-center'>
             <MaterialIcon name='rate_review' className='text-5xl text-muted-foreground/40' />
-            <p className='mt-3 text-sm font-semibold text-muted-foreground'>
-              {t('detail.reviews.empty')}
-            </p>
+            <p className='mt-3 text-sm font-semibold text-muted-foreground'>{t('detail.reviews.empty')}</p>
           </div>
         ) : (
           /* Reviews Content List */
@@ -527,7 +517,7 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                 <div className='flex items-start justify-between gap-3'>
                   <div className='flex items-center gap-3'>
                     <div className='flex h-10 w-10 items-center justify-center rounded-full bg-muted font-bold text-primary font-display'>
-                      {review.anonymous ? 'A' : (review.fullName?.charAt(0) || 'U')}
+                      {review.anonymous ? 'A' : review.fullName?.charAt(0) || 'U'}
                     </div>
                     <div>
                       <span className='block font-bold text-foreground flex items-center gap-1.5'>
@@ -545,7 +535,10 @@ export function ProductReviews({ productId }: ProductReviewsProps) {
                               key={idx}
                               name='star'
                               filled={idx < review.rating}
-                              className={cn('text-[15px]', idx < review.rating ? 'text-secondary' : 'text-muted-foreground/30')}
+                              className={cn(
+                                'text-[15px]',
+                                idx < review.rating ? 'text-secondary' : 'text-muted-foreground/30'
+                              )}
                             />
                           ))}
                         </div>

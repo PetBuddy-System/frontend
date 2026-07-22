@@ -850,7 +850,7 @@
       "other": "Other"
     }
   },
-    "staffOrdersTable": {
+  "staffOrdersTable": {
     "heading": "Order details",
     "searchPlaceholder": "Search code, name...",
     "clearFilters": "Clear filters",
@@ -916,7 +916,7 @@
       "generic": "Something went wrong"
     }
   },
-    "staffOrdersPage": {
+  "staffOrdersPage": {
     "topNav": {
       "title": "Order management",
       "subtitle": "Track and process today's orders"
@@ -932,7 +932,7 @@
       "updateStatusError": "An error occurred while updating the status"
     }
   },
-    "staffOrdersStats": {
+  "staffOrdersStats": {
     "pending": {
       "badge": "Pending",
       "label": "New orders"
@@ -966,7 +966,7 @@
       "label": "Failed deliveries"
     }
   },
-    "staffOrderDetailPage": {
+  "staffOrderDetailPage": {
     "topNav": {
       "title": "Order detail",
       "subtitle": "View and process order details"

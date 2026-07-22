@@ -74,13 +74,7 @@ function toPayload(form: PetProfileFormState): PetProfilePayload {
   }
 }
 
-export function PetProfileForm({
-  initialPet,
-  isSubmitting,
-  submitLabel,
-  onCancel,
-  onSubmit
-}: PetProfileFormProps) {
+export function PetProfileForm({ initialPet, isSubmitting, submitLabel, onCancel, onSubmit }: PetProfileFormProps) {
   const { t } = useTranslation('profile')
   const [form, setForm] = useState<PetProfileFormState>(() => toFormState(initialPet))
   const [avatarImage, setAvatarImage] = useState<File | null>(null)

@@ -4,11 +4,7 @@ import { useNavigate } from 'react-router'
 
 import { Button, MaterialIcon } from '~/shared/ui'
 
-import {
-  workScheduleApi,
-  type WorkScheduleResponse,
-  type WorkScheduleShiftType
-} from '../../services'
+import { workScheduleApi, type WorkScheduleResponse, type WorkScheduleShiftType } from '../../services'
 import { formatWorkScheduleDate } from '../../lib/work-schedule-format'
 import { getWorkScheduleErrorMessage } from '../../lib/work-schedule-error'
 
@@ -228,12 +224,24 @@ export function ManagerWorkScheduleWorkspace() {
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, index) => (
                   <tr key={index} className='animate-pulse'>
-                    <td className='px-4 py-4'><div className='h-4 w-24 rounded bg-muted' /></td>
-                    <td className='px-4 py-4'><div className='h-4 w-32 rounded bg-muted' /></td>
-                    <td className='px-4 py-4'><div className='h-6 w-24 rounded-full bg-muted' /></td>
-                    <td className='px-4 py-4'><div className='h-4 w-16 rounded bg-muted' /></td>
-                    <td className='px-4 py-4'><div className='h-4 w-56 rounded bg-muted' /></td>
-                    <td className='px-4 py-4'><div className='ml-auto h-8 w-24 rounded bg-muted' /></td>
+                    <td className='px-4 py-4'>
+                      <div className='h-4 w-24 rounded bg-muted' />
+                    </td>
+                    <td className='px-4 py-4'>
+                      <div className='h-4 w-32 rounded bg-muted' />
+                    </td>
+                    <td className='px-4 py-4'>
+                      <div className='h-6 w-24 rounded-full bg-muted' />
+                    </td>
+                    <td className='px-4 py-4'>
+                      <div className='h-4 w-16 rounded bg-muted' />
+                    </td>
+                    <td className='px-4 py-4'>
+                      <div className='h-4 w-56 rounded bg-muted' />
+                    </td>
+                    <td className='px-4 py-4'>
+                      <div className='ml-auto h-8 w-24 rounded bg-muted' />
+                    </td>
                   </tr>
                 ))
               ) : schedules.length > 0 ? (
@@ -250,9 +258,7 @@ export function ManagerWorkScheduleWorkspace() {
                         {t(`staffSchedule.workSchedules.shiftTypes.${schedule.shiftType}`)}
                       </span>
                     </td>
-                    <td className='px-4 py-4 text-sm text-card-foreground'>
-                      {schedule.assignedStaffs?.length ?? 0}
-                    </td>
+                    <td className='px-4 py-4 text-sm text-card-foreground'>{schedule.assignedStaffs?.length ?? 0}</td>
                     <td className='max-w-80 px-4 py-4 text-sm text-muted-foreground'>
                       <span className='line-clamp-2'>{schedule.note || '-'}</span>
                     </td>

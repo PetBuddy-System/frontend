@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import type { OrderResponse, OrderStatus } from '~/shared/lib/order'
@@ -82,9 +83,7 @@ export function StaffOrdersTable({
     onViewDetail,
     onTransition,
     onOpenPicking,
-    onTransitionToShipped,
     onRefresh,
-    onDeliveryFailed,
     onConfirmReturnedWarehouse,
     onOpenCoordinatorReview,
     onCancelOrder,

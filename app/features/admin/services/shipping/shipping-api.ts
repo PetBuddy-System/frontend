@@ -5,12 +5,7 @@
 
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
-import type {
-  ShippingRule,
-  ShippingRuleRequest,
-  ShippingRuleResponse,
-  ApiResponse
-} from '~/shared/lib/shipping'
+import type { ShippingRule, ShippingRuleRequest, ShippingRuleResponse, ApiResponse } from '~/shared/lib/shipping'
 
 const SHIPPING_BASE_URL = `${env.API_URL}${env.API_SHIPPING_PATH}`
 
@@ -29,7 +24,10 @@ export async function createShippingRuleApi(data: ShippingRuleRequest): Promise<
   })
 }
 
-export async function updateShippingRuleApi(id: number, data: ShippingRuleRequest): Promise<ApiResponse<ShippingRuleResponse>> {
+export async function updateShippingRuleApi(
+  id: number,
+  data: ShippingRuleRequest
+): Promise<ApiResponse<ShippingRuleResponse>> {
   return customFetch<ApiResponse<ShippingRuleResponse>>({
     url: `${SHIPPING_BASE_URL}/${id}`,
     method: 'PUT',

@@ -32,7 +32,7 @@ export const cartHandlers = [
       const newItem: CartItemResponse = createCartItem({
         cartItemId: crypto.randomUUID(),
         productId: body.productId,
-        quantity: body.quantity,
+        quantity: body.quantity
       })
       mockCart.cartItems.push(newItem)
     }
@@ -47,10 +47,7 @@ export const cartHandlers = [
 
     const item = mockCart.cartItems.find((i) => i.cartItemId === cartItemId)
     if (!item) {
-      return HttpResponse.json(
-        { success: false, message: 'Cart item not found', data: null },
-        { status: 404 }
-      )
+      return HttpResponse.json({ success: false, message: 'Cart item not found', data: null }, { status: 404 })
     }
 
     item.quantity = body.quantity
@@ -66,10 +63,7 @@ export const cartHandlers = [
     mockCart.cartItems = mockCart.cartItems.filter((i) => i.cartItemId !== cartItemId)
 
     if (mockCart.cartItems.length === before) {
-      return HttpResponse.json(
-        { success: false, message: 'Cart item not found', data: null },
-        { status: 404 }
-      )
+      return HttpResponse.json({ success: false, message: 'Cart item not found', data: null }, { status: 404 })
     }
 
     return ok<null>(null)
@@ -95,12 +89,12 @@ export const cartHandlers = [
           createCartItem({
             cartItemId: crypto.randomUUID(),
             productId: guestItem.productId,
-            quantity: guestItem.quantity,
+            quantity: guestItem.quantity
           })
         )
       }
     }
 
     return ok(mockCart)
-  }),
+  })
 ]

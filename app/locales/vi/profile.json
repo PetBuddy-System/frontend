@@ -43,6 +43,31 @@
     "goldMember": "Thành viên Vàng",
     "memberSince": "Tham gia từ tháng 1, 2023 • 150 điểm thưởng",
     "edit": "Chỉnh sửa",
+    "editProfile": {
+      "title": "Chỉnh sửa thông tin cá nhân",
+      "subtitle": "Cập nhật thông tin của bạn. Lưu ý: Email không thể thay đổi.",
+      "avatarLabel": "Ảnh đại diện",
+      "avatarHint": "Nhấn vào biểu tượng máy ảnh để thay đổi ảnh",
+      "fullNameLabel": "Họ và tên",
+      "fullNamePlaceholder": "Nhập họ và tên của bạn",
+      "emailLabel": "Email",
+      "emailHint": "Email không thể thay đổi",
+      "phoneLabel": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại",
+      "dateOfBirthLabel": "Ngày sinh",
+      "genderLabel": "Giới tính",
+      "genderOptions": {
+        "MALE": "Nam",
+        "FEMALE": "Nữ",
+        "OTHER": "Khác"
+      },
+      "cancel": "Hủy",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "loadError": "Không thể tải thông tin cá nhân. Vui lòng thử lại.",
+      "updateSuccess": "Cập nhật thông tin thành công!",
+      "updateError": "Cập nhật thông tin thất bại. Vui lòng thử lại."
+    },
     "fields": {
       "fullName": {
         "label": "Họ và tên",

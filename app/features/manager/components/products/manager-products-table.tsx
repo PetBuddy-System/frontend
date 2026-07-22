@@ -108,13 +108,27 @@ export function ManagerProductsTable({
                       </div>
                     </div>
                   </td>
-                  <td className='px-4 py-4'><div className='h-4 w-20 bg-muted rounded' /></td>
-                  <td className='px-4 py-4'><div className='h-6 w-20 bg-muted rounded' /></td>
-                  <td className='px-4 py-4'><div className='h-6 w-16 bg-muted rounded' /></td>
-                  <td className='px-4 py-4'><div className='h-6 w-10 bg-muted rounded mx-auto' /></td>
-                  <td className='px-4 py-4'><div className='h-6 w-16 bg-muted rounded' /></td>
-                  <td className='px-4 py-4'><div className='h-6 w-24 bg-muted rounded' /></td>
-                  <td className='px-4 py-4'><div className='h-8 w-16 bg-muted rounded ml-auto' /></td>
+                  <td className='px-4 py-4'>
+                    <div className='h-4 w-20 bg-muted rounded' />
+                  </td>
+                  <td className='px-4 py-4'>
+                    <div className='h-6 w-20 bg-muted rounded' />
+                  </td>
+                  <td className='px-4 py-4'>
+                    <div className='h-6 w-16 bg-muted rounded' />
+                  </td>
+                  <td className='px-4 py-4'>
+                    <div className='h-6 w-10 bg-muted rounded mx-auto' />
+                  </td>
+                  <td className='px-4 py-4'>
+                    <div className='h-6 w-16 bg-muted rounded' />
+                  </td>
+                  <td className='px-4 py-4'>
+                    <div className='h-6 w-24 bg-muted rounded' />
+                  </td>
+                  <td className='px-4 py-4'>
+                    <div className='h-8 w-16 bg-muted rounded ml-auto' />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -131,9 +145,7 @@ export function ManagerProductsTable({
         <p className='mt-4 text-lg font-semibold text-foreground font-display'>
           {t('productManagement.table.noProducts')}
         </p>
-        <p className='text-sm text-muted-foreground mt-1'>
-          {t('productManagement.table.noProductsDesc')}
-        </p>
+        <p className='text-sm text-muted-foreground mt-1'>{t('productManagement.table.noProductsDesc')}</p>
       </section>
     )
   }
@@ -178,9 +190,7 @@ export function ManagerProductsTable({
                         className='h-14 w-14 shrink-0 rounded-xl border border-border bg-muted object-cover'
                       />
                       <div className='min-w-0'>
-                        <p className='font-bold text-card-foreground line-clamp-1'>
-                          {product.name}
-                        </p>
+                        <p className='font-bold text-card-foreground line-clamp-1'>{product.name}</p>
                       </div>
                     </div>
                   </td>
@@ -194,12 +204,14 @@ export function ManagerProductsTable({
                       {product.brandName || 'N/A'}
                     </span>
                   </td>
-                  <td className='px-4 py-4 font-bold text-primary'>
-                    {formatPrice(product.salePrice || 0)}
-                  </td>
+                  <td className='px-4 py-4 font-bold text-primary'>{formatPrice(product.salePrice || 0)}</td>
                   <td className='px-4 py-4 text-center'>
                     <div className='flex flex-col items-center'>
-                      <span className={product.totalStock === 0 ? 'font-bold text-destructive' : 'font-semibold text-foreground'}>
+                      <span
+                        className={
+                          product.totalStock === 0 ? 'font-bold text-destructive' : 'font-semibold text-foreground'
+                        }
+                      >
                         {product.totalStock}
                       </span>
                       {product.totalStock === 0 && (
@@ -215,10 +227,7 @@ export function ManagerProductsTable({
                     </div>
                   </td>
                   <td className='px-4 py-4 text-center'>
-                    <span className={cn(
-                      'inline-flex rounded-full px-2.5 py-1 text-xs font-bold',
-                      status.className
-                    )}>
+                    <span className={cn('inline-flex rounded-full px-2.5 py-1 text-xs font-bold', status.className)}>
                       {status.label}
                     </span>
                   </td>

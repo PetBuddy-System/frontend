@@ -15,7 +15,7 @@ export function MomoReturnPage() {
 
   useEffect(() => {
     if (status === 'paid' || status === 'failed' || status === 'timeout') {
-      sessionStorage.removeItem('pendingMomoOrderId') 
+      sessionStorage.removeItem('pendingMomoOrderId')
       sessionStorage.removeItem('isMomoRetry')
     }
     if (status === 'paid') {
@@ -26,7 +26,7 @@ export function MomoReturnPage() {
       } else {
         navigate('/checkout', {
           state: { paymentError: t('momoReturn.paymentNotCompleted') },
-          replace: true,
+          replace: true
         })
       }
     }
@@ -43,11 +43,9 @@ export function MomoReturnPage() {
   }, [orderId, isMomoRetry, navigate])
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background">
-      <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      <p className="text-sm font-semibold text-muted-foreground">
-        {t('momoReturn.confirming')}
-      </p>
+    <div className='flex min-h-screen flex-col items-center justify-center gap-4 bg-background'>
+      <div className='h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent' />
+      <p className='text-sm font-semibold text-muted-foreground'>{t('momoReturn.confirming')}</p>
     </div>
   )
 }

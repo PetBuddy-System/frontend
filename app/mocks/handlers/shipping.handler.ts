@@ -23,19 +23,16 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   const dLon = ((lon2 - lon1) * Math.PI) / 180
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2)
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
   return 6371 * c // Earth radius in km
 }
 
 function isInsideHCM(lat: number, lon: number): boolean {
   const MIN_LAT = 10.35
-  const MIN_LON = 106.30
-  const MAX_LAT = 11.20
-  const MAX_LON = 107.10
+  const MIN_LON = 106.3
+  const MAX_LAT = 11.2
+  const MAX_LON = 107.1
   return lat >= MIN_LAT && lat <= MAX_LAT && lon >= MIN_LON && lon <= MAX_LON
 }
 
@@ -56,20 +53,14 @@ export const shippingHandlers = [
     const lonParam = url.searchParams.get('longitude')
 
     if (!latParam || !lonParam) {
-      return HttpResponse.json(
-        { success: false, message: 'Thiếu tọa độ kinh độ hoặc vĩ độ.' },
-        { status: 400 }
-      )
+      return HttpResponse.json({ success: false, message: 'Thiếu tọa độ kinh độ hoặc vĩ độ.' }, { status: 400 })
     }
 
     const lat = parseFloat(latParam)
     const lon = parseFloat(lonParam)
 
     if (isNaN(lat) || lat < -90 || lat > 90 || isNaN(lon) || lon < -180 || lon > 180) {
-      return HttpResponse.json(
-        { success: false, message: 'Tọa độ kinh độ hoặc vĩ độ không hợp lệ.' },
-        { status: 400 }
-      )
+      return HttpResponse.json({ success: false, message: 'Tọa độ kinh độ hoặc vĩ độ không hợp lệ.' }, { status: 400 })
     }
 
     if (!isInsideHCM(lat, lon)) {
@@ -94,9 +85,7 @@ export const shippingHandlers = [
     }
 
     // Match rules from DB
-    const matchedRule = mockShippingRules.find(
-      (rule) => distance >= rule.minDistance && distance <= rule.maxDistance
-    )
+    const matchedRule = mockShippingRules.find((rule) => distance >= rule.minDistance && distance <= rule.maxDistance)
 
     if (!matchedRule) {
       // Fallback rule if no overlapping distance matches, e.g. distance is too far

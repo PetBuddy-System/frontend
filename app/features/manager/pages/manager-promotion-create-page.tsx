@@ -96,7 +96,7 @@ export function ManagerPromotionCreatePage() {
           page: currentPage,
           size: PAGE_SIZE,
           sortBy: 'date_desc',
-          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays),
+          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays)
         }
 
         // ⭐ Chỉ thêm categoryId khi có giá trị hợp lệ
@@ -187,10 +187,12 @@ export function ManagerPromotionCreatePage() {
   }
 
   const getProductDiscount = (productId: string): ProductDiscountState => {
-    return selectedProductMap.get(productId) || {
-      promotionType: 'PERCENTAGE',
-      discountValue: DEFAULT_DISCOUNT_VALUE
-    }
+    return (
+      selectedProductMap.get(productId) || {
+        promotionType: 'PERCENTAGE',
+        discountValue: DEFAULT_DISCOUNT_VALUE
+      }
+    )
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -266,12 +268,10 @@ export function ManagerPromotionCreatePage() {
     }
   }
 
-
   const handleNearExpiredChange = (value: string) => {
     setNearExpiredDays(value)
     setCurrentPage(0) // Reset về trang đầu khi đổi filter
   }
-
 
   // ⭐ Reset page khi đổi filter
   const handleCategoryChange = (categoryId: string) => {
@@ -338,7 +338,9 @@ export function ManagerPromotionCreatePage() {
                 </div>
                 <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
                   <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Tên khuyến mãi</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Tên khuyến mãi
+                    </span>
                     <input
                       value={form.name}
                       onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
@@ -347,7 +349,9 @@ export function ManagerPromotionCreatePage() {
                     />
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày bắt đầu</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Ngày bắt đầu
+                    </span>
                     <input
                       type='datetime-local'
                       value={form.startDate}
@@ -356,7 +360,9 @@ export function ManagerPromotionCreatePage() {
                     />
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày kết thúc</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Ngày kết thúc
+                    </span>
                     <input
                       type='datetime-local'
                       value={form.endDate}
@@ -386,7 +392,9 @@ export function ManagerPromotionCreatePage() {
                     </select>
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lọc gần hết hạn</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      Lọc gần hết hạn
+                    </span>
                     <select
                       value={nearExpiredDays}
                       onChange={(e) => handleNearExpiredChange(e.target.value)}
@@ -580,7 +588,13 @@ export function ManagerPromotionCreatePage() {
                               {/* ⭐ Cột Tồn kho - giống manager products table */}
                               <td className='px-4 py-3'>
                                 <div className='flex flex-col items-center'>
-                                  <span className={product.totalStock === 0 ? 'font-bold text-destructive' : 'font-semibold text-foreground'}>
+                                  <span
+                                    className={
+                                      product.totalStock === 0
+                                        ? 'font-bold text-destructive'
+                                        : 'font-semibold text-foreground'
+                                    }
+                                  >
                                     {product.totalStock}
                                   </span>
                                   {product.totalStock === 0 && (
@@ -622,11 +636,7 @@ export function ManagerPromotionCreatePage() {
                                     min={0}
                                     value={discount.discountValue}
                                     onChange={(e) =>
-                                      updateProductDiscount(
-                                        product.productId,
-                                        'discountValue',
-                                        Number(e.target.value)
-                                      )
+                                      updateProductDiscount(product.productId, 'discountValue', Number(e.target.value))
                                     }
                                     className='h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                                   />
@@ -649,7 +659,9 @@ export function ManagerPromotionCreatePage() {
                       {keyword ? (
                         <>Kết quả tìm kiếm: {totalElements} sản phẩm</>
                       ) : (
-                        <>Hiển thị {products.length} trên {totalElements} sản phẩm</>
+                        <>
+                          Hiển thị {products.length} trên {totalElements} sản phẩm
+                        </>
                       )}
                     </div>
                     <div className='flex items-center gap-2'>
@@ -691,7 +703,9 @@ export function ManagerPromotionCreatePage() {
                   disabled={!canSubmit}
                   className='inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-secondary px-6 text-sm font-bold text-secondary-foreground shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50'
                 >
-                  {isSubmitting && <span className='h-4 w-4 animate-spin rounded-full border-2 border-secondary-foreground border-t-transparent' />}
+                  {isSubmitting && (
+                    <span className='h-4 w-4 animate-spin rounded-full border-2 border-secondary-foreground border-t-transparent' />
+                  )}
                   Tạo khuyến mãi
                 </button>
               </div>

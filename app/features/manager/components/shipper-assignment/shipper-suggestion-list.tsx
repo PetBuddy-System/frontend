@@ -74,7 +74,9 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
     return (
       <div className='flex items-center gap-3 py-6 px-4 justify-center text-muted-foreground'>
         <div className='h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent' />
-        <span className='text-sm font-medium'>{t('shipperAssignment.loadingSuggestions', 'Đang tải gợi ý shipper...')}</span>
+        <span className='text-sm font-medium'>
+          {t('shipperAssignment.loadingSuggestions', 'Đang tải gợi ý shipper...')}
+        </span>
       </div>
     )
   }
@@ -92,7 +94,9 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
     return (
       <div className='text-center py-8 text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border/80'>
         <MaterialIcon name='sentiment_dissatisfied' className='text-3xl mb-1 opacity-55' />
-        <p className='text-sm font-semibold'>{t('shipperAssignment.noSuggestions', 'Không tìm thấy shipper nào hoạt động trong hôm nay.')}</p>
+        <p className='text-sm font-semibold'>
+          {t('shipperAssignment.noSuggestions', 'Không tìm thấy shipper nào hoạt động trong hôm nay.')}
+        </p>
       </div>
     )
   }
@@ -172,7 +176,9 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
 
                 <div className='space-y-1'>
                   <div className='flex items-center justify-between text-xs font-semibold'>
-                    <span className='text-muted-foreground'>{t('shipperAssignment.currentLoadLabel', 'Tải trọng:')}</span>
+                    <span className='text-muted-foreground'>
+                      {t('shipperAssignment.currentLoadLabel', 'Tải trọng:')}
+                    </span>
                     <span className={isFull ? 'text-destructive font-bold' : 'text-primary'}>
                       {shipper.currentLoad} / {shipper.maxCapacity} đơn
                     </span>
@@ -207,7 +213,11 @@ export function ShipperSuggestionList({ orderId, onAssignSuccess }: ShipperSugge
                 ) : (
                   <MaterialIcon name={hasWarning ? 'warning' : 'assignment_ind'} className='text-[16px]' />
                 )}
-                <span>{isFirst ? t('shipperAssignment.confirmAssignBtn', 'Xác nhận phân công') : t('shipperAssignment.assignBtn', 'Phân công')}</span>
+                <span>
+                  {isFirst
+                    ? t('shipperAssignment.confirmAssignBtn', 'Xác nhận phân công')
+                    : t('shipperAssignment.assignBtn', 'Phân công')}
+                </span>
               </button>
             </div>
           )

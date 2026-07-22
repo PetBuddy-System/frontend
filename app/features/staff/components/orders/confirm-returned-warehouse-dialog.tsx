@@ -16,7 +16,7 @@ export function ConfirmReturnedWarehouseDialog({
   order,
   isOpen,
   onClose,
-  onSuccess,
+  onSuccess
 }: ConfirmReturnedWarehouseDialogProps) {
   const { t } = useTranslation('staff')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -51,9 +51,7 @@ export function ConfirmReturnedWarehouseDialog({
             <MaterialIcon name='warehouse' className='text-[22px]' />
           </div>
           <div>
-            <h2 className='font-bold text-base text-foreground'>
-              {t('confirmReturnedWarehouseDialog.title')}
-            </h2>
+            <h2 className='font-bold text-base text-foreground'>{t('confirmReturnedWarehouseDialog.title')}</h2>
             <p className='text-xs text-muted-foreground'>
               {t('confirmReturnedWarehouseDialog.orderCode', { code: order.orderCode })}
             </p>
@@ -72,9 +70,7 @@ export function ConfirmReturnedWarehouseDialog({
           <div className='flex items-start gap-3 rounded-xl bg-muted/60 border border-border px-4 py-3 text-sm'>
             <MaterialIcon name='info' className='text-[20px] text-muted-foreground shrink-0 mt-0.5' />
             <div className='text-muted-foreground'>
-              <p className='font-semibold text-foreground mb-1'>
-                {t('confirmReturnedWarehouseDialog.infoTitle')}
-              </p>
+              <p className='font-semibold text-foreground mb-1'>{t('confirmReturnedWarehouseDialog.infoTitle')}</p>
               <p>{t('confirmReturnedWarehouseDialog.infoDesc')}</p>
               {order.cancelReason && (
                 <p className='mt-2 text-foreground'>

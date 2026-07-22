@@ -46,13 +46,10 @@ export function AdminVouchersPage() {
 
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
-
             {/* Header */}
             <section className='flex flex-col gap-4 md:flex-row md:items-end md:justify-between'>
               <div>
-                <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
-                  Thống kê Voucher
-                </h1>
+                <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>Thống kê Voucher</h1>
                 <p className='mt-1 text-sm text-muted-foreground'>
                   Theo dõi hiệu quả sử dụng mã giảm giá theo thời gian.
                 </p>
@@ -64,16 +61,10 @@ export function AdminVouchersPage() {
               {/* Active vouchers */}
               <div className='group flex items-center gap-6 rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:border-primary'>
                 <div className='flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition group-hover:scale-110'>
-                  <MaterialIcon
-                    name='confirmation_number'
-                    filled
-                    className='text-[32px] text-primary'
-                  />
+                  <MaterialIcon name='confirmation_number' filled className='text-[32px] text-primary' />
                 </div>
                 <div>
-                  <p className='text-sm font-semibold text-muted-foreground'>
-                    Voucher đang hoạt động
-                  </p>
+                  <p className='text-sm font-semibold text-muted-foreground'>Voucher đang hoạt động</p>
                   <div className='flex items-baseline gap-2'>
                     <span className='font-display text-4xl font-bold text-foreground'>
                       {isStatsLoading ? (
@@ -89,16 +80,10 @@ export function AdminVouchersPage() {
               {/* Total used */}
               <div className='group flex items-center gap-6 rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:border-secondary'>
                 <div className='flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-secondary/10 transition group-hover:scale-110'>
-                  <MaterialIcon
-                    name='stars'
-                    filled
-                    className='text-[32px] text-secondary'
-                  />
+                  <MaterialIcon name='stars' filled className='text-[32px] text-secondary' />
                 </div>
                 <div>
-                  <p className='text-sm font-semibold text-muted-foreground'>
-                    Tổng lượt sử dụng
-                  </p>
+                  <p className='text-sm font-semibold text-muted-foreground'>Tổng lượt sử dụng</p>
                   <div className='flex items-baseline gap-2'>
                     <span className='font-display text-4xl font-bold text-foreground'>
                       {isStatsLoading ? (

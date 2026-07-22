@@ -18,9 +18,7 @@ export interface DeliveryStop {
   deliveryFailCount?: number
 }
 
-export async function fetchDeliveryRouteApi(
-  staffId: number | string
-): Promise<ApiResponse<DeliveryStop[]>> {
+export async function fetchDeliveryRouteApi(staffId: number | string): Promise<ApiResponse<DeliveryStop[]>> {
   return customFetch<ApiResponse<DeliveryStop[]>>({
     url: `${env.API_URL}/api/shipper-assignment/${staffId}/delivery-route`,
     method: 'GET'

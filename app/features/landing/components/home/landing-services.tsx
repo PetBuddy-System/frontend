@@ -5,8 +5,7 @@ import { MaterialIcon } from '~/shared/ui'
 const SERVICES = [
   {
     key: 'bath',
-    imageUrl:
-      'https://doraemonpet.com/wp-content/uploads/2022/06/ky-nang-tam-cho-thu-cung.jpg',
+    imageUrl: 'https://doraemonpet.com/wp-content/uploads/2022/06/ky-nang-tam-cho-thu-cung.jpg',
     icon: 'check_circle'
   },
   {

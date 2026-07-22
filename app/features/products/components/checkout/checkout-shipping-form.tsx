@@ -119,8 +119,9 @@ export function CheckoutShippingForm({ addressValue, defaultName, defaultPhone, 
           <input
             id='phone'
             name='phoneNumber'
-            className={`w-full rounded-xl border bg-background px-4 py-3 text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${phoneError ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
-              }`}
+            className={`w-full rounded-xl border bg-background px-4 py-3 text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${
+              phoneError ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
+            }`}
             placeholder={t('checkout.shipping.phonePlaceholder')}
             required
             type='tel'

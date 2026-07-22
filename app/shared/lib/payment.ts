@@ -1,13 +1,6 @@
 export type PaymentMethod = 'CASH' | 'CARD' | 'MOMO' | 'VNPAY'
 
-export type PaymentStatus =
-  | 'PENDING'
-  | 'PROCESSING'
-  | 'PAID'
-  | 'FAILED'
-  | 'CANCELLED'
-  | 'REFUNDED'
-  | (string & {})
+export type PaymentStatus = 'PENDING' | 'PROCESSING' | 'PAID' | 'FAILED' | 'CANCELLED' | 'REFUNDED' | (string & {})
 
 export interface PaymentResponse {
   paymentId: number

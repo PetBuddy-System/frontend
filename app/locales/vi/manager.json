@@ -44,6 +44,7 @@
       "vouchers": "Quản lý Voucher",
       "storeLocations": "Địa chỉ chi nhánh",
       "reviews": "Quản lý đánh giá",
+      "auditLogs": "Lịch sử hệ thống",
       "shipperAssignment": "Phân công Shipper"
     },
     "toggle": "Thu gọn/mở rộng thanh bên"
