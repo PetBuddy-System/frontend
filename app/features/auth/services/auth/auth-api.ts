@@ -14,7 +14,7 @@ import type {
   UserResponse
 } from '~/shared/lib/auth'
 
-const AUTH_BASE_URL = `${env.API_AUTH_PATH}`
+const AUTH_BASE_URL = `${env.API_URL}${env.API_AUTH_PATH}`
 
 export async function loginApi(data: AuthenticationRequest): Promise<ApiResponse<AuthenticationResponse>> {
   return customFetch<ApiResponse<AuthenticationResponse>>({

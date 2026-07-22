@@ -6,7 +6,7 @@ import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type { ApiResponse, OtpRequest, ResetOtpResponse, VerifyEmailRequest } from '~/shared/lib/auth'
 
-const AUTH_BASE_URL = `${env.API_AUTH_PATH}`
+const AUTH_BASE_URL = `${env.API_URL}${env.API_AUTH_PATH}`
 
 export async function verifyEmailApi(data: VerifyEmailRequest): Promise<ApiResponse<void>> {
   return customFetch<ApiResponse<void>>({
