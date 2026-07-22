@@ -193,6 +193,7 @@
     "empty": "No assigned bookings in this status.",
     "status": {
       "ACCEPTED": "Pending start",
+      "ON_THE_WAY": "On the way",
       "IN_PROGRESS": "In progress",
       "READY_FOR_PICKUP": "Ready for pickup",
       "COMPLETED": "Completed",
@@ -204,6 +205,7 @@
     },
     "timeline": {
       "ACCEPTED": "Assigned",
+      "ON_THE_WAY": "On the way",
       "IN_PROGRESS": "In progress",
       "READY_FOR_PICKUP": "Ready for pickup",
       "COMPLETED": "Completed"
@@ -217,16 +219,28 @@
       "type": "Type",
       "minutesValue": "{{value}} minutes"
     },
+    "table": {
+      "actions": "Actions",
+      "code": "Booking code",
+      "customer": "Customer",
+      "petAndServiceCount": "{{pets}} pets • {{services}} services",
+      "schedule": "Schedule",
+      "status": "Status",
+      "workload": "Workload"
+    },
     "actions": {
+      "backToList": "Back to list",
       "cancelBooking": "Cancel booking",
       "chooseAfterImage": "Choose after-service image",
       "chooseBeforeImage": "Choose before-service image",
       "chooseImage": "Choose image",
       "close": "Close",
       "complete": "Confirm customer picked up pet",
+      "completeHome": "Complete at-home service",
       "confirm": "Confirm",
       "loading": "Loading...",
       "readyForPickup": "Complete service and notify pickup",
+      "onTheWay": "Start traveling",
       "reload": "Reload",
       "start": "Start service",
       "upload": "Upload image",
@@ -260,6 +274,10 @@
       "IN_PROGRESS": {
         "title": "Start this service?",
         "description": "The booking will move from pending start to in progress."
+      },
+      "ON_THE_WAY": {
+        "title": "Start traveling to the customer's home?",
+        "description": "The booking will move to staff on the way."
       },
       "READY_FOR_PICKUP": {
         "title": "Mark service as ready for pickup?",
@@ -297,6 +315,10 @@
     "description": "Only pending acceptance bookings are shown here. Assigning a groomer moves the booking to accepted for that groomer.",
     "empty": "No bookings are waiting for assignment.",
     "pendingStatus": "Pending acceptance",
+    "status": {
+      "PENDING_ACCEPTANCE": "Pending acceptance",
+      "WAITING_STAFF": "Waiting for groomer"
+    },
     "card": {
       "customer": "Customer",
       "phone": "Phone",
@@ -324,6 +346,10 @@
       "detailList": "Pets and services",
       "note": "Note",
       "remainingAmount": "Remaining",
+      "requestedStaff": "Requested groomer",
+      "assignedStaff": "Assigned groomer",
+      "autoAssign": "PetBuddy will assign automatically",
+      "notAssigned": "Not assigned yet",
       "title": "Booking detail",
       "totalAmount": "Total amount"
     },

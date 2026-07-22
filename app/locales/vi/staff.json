@@ -194,6 +194,7 @@
     "empty": "Không có booking được giao trong trạng thái này.",
     "status": {
       "ACCEPTED": "Chờ thực hiện",
+      "ON_THE_WAY": "Đang di chuyển",
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Chờ khách nhận",
       "COMPLETED": "Hoàn thành",
@@ -205,6 +206,7 @@
     },
     "timeline": {
       "ACCEPTED": "Đã phân công",
+      "ON_THE_WAY": "Đang di chuyển",
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Chờ khách nhận",
       "COMPLETED": "Hoàn thành"
@@ -218,16 +220,28 @@
       "type": "Loại booking",
       "minutesValue": "{{value}} phút"
     },
+    "table": {
+      "actions": "Thao tác",
+      "code": "Mã booking",
+      "customer": "Khách hàng",
+      "petAndServiceCount": "{{pets}} pet • {{services}} dịch vụ",
+      "schedule": "Lịch hẹn",
+      "status": "Trạng thái",
+      "workload": "Khối lượng"
+    },
     "actions": {
+      "backToList": "Quay lại danh sách",
       "cancelBooking": "Hủy đơn",
       "chooseAfterImage": "Chọn ảnh sau dịch vụ",
       "chooseBeforeImage": "Chọn ảnh trước dịch vụ",
       "chooseImage": "Chọn ảnh",
       "close": "Đóng",
       "complete": "Xác nhận khách đã nhận pet",
+      "completeHome": "Hoàn tất dịch vụ tại nhà",
       "confirm": "Xác nhận",
       "loading": "Đang tải...",
       "readyForPickup": "Hoàn tất và báo khách đến nhận",
+      "onTheWay": "Bắt đầu di chuyển",
       "reload": "Tải lại",
       "start": "Bắt đầu thực hiện",
       "upload": "Upload ảnh",
@@ -261,6 +275,10 @@
       "IN_PROGRESS": {
         "title": "Bắt đầu thực hiện booking này?",
         "description": "Booking sẽ chuyển từ chờ thực hiện sang đang thực hiện."
+      },
+      "ON_THE_WAY": {
+        "title": "Bắt đầu di chuyển đến nhà khách?",
+        "description": "Booking sẽ chuyển sang trạng thái nhân viên đang di chuyển."
       },
       "READY_FOR_PICKUP": {
         "title": "Đánh dấu dịch vụ đã hoàn tất?",
@@ -298,6 +316,10 @@
     "description": "Chỉ hiển thị booking đang chờ phân công. Khi chọn Groomer, booking sẽ chuyển sang trạng thái chờ thực hiện cho Groomer đó.",
     "empty": "Không có booking nào đang chờ phân công.",
     "pendingStatus": "Chờ phân công",
+    "status": {
+      "PENDING_ACCEPTANCE": "Chờ xác nhận",
+      "WAITING_STAFF": "Chờ phân công"
+    },
     "card": {
       "customer": "Khách hàng",
       "phone": "Số điện thoại",
@@ -325,6 +347,10 @@
       "detailList": "Danh sách pet và dịch vụ",
       "note": "Ghi chú",
       "remainingAmount": "Số tiền còn lại",
+      "requestedStaff": "Groomer khách chọn",
+      "assignedStaff": "Groomer được phân công",
+      "autoAssign": "PetBuddy tự sắp xếp",
+      "notAssigned": "Chưa phân công",
       "title": "Chi tiết booking",
       "totalAmount": "Tổng tiền"
     },

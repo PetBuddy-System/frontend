@@ -23,8 +23,10 @@ const BOOKING_STATUS_TABS: BookingStatusTab[] = [
   'ALL',
   BookingStatus.PENDING_PAYMENT,
   BookingStatus.FAILED,
+  BookingStatus.WAITING_STAFF,
   BookingStatus.PENDING_ACCEPTANCE,
   BookingStatus.ACCEPTED,
+  BookingStatus.ON_THE_WAY,
   BookingStatus.IN_PROGRESS,
   BookingStatus.READY_FOR_PICKUP,
   BookingStatus.COMPLETED,
@@ -34,8 +36,10 @@ const BOOKING_STATUS_TABS: BookingStatusTab[] = [
 const STATUS_BADGE_CLASS: Record<BookingStatus, string> = {
   [BookingStatus.PENDING_PAYMENT]: 'bg-warning/10 text-warning border-warning/30',
   [BookingStatus.FAILED]: 'bg-destructive/10 text-destructive border-destructive/30',
+  [BookingStatus.WAITING_STAFF]: 'bg-warning/10 text-warning border-warning/30',
   [BookingStatus.PENDING_ACCEPTANCE]: 'bg-secondary text-secondary-foreground border-secondary',
   [BookingStatus.ACCEPTED]: 'bg-primary/10 text-primary border-primary/30',
+  [BookingStatus.ON_THE_WAY]: 'bg-info/10 text-info border-info/30',
   [BookingStatus.IN_PROGRESS]: 'bg-info/10 text-info border-info/30',
   [BookingStatus.READY_FOR_PICKUP]: 'bg-warning/10 text-warning border-warning/30',
   [BookingStatus.COMPLETED]: 'bg-success/10 text-success border-success/30',
@@ -43,8 +47,10 @@ const STATUS_BADGE_CLASS: Record<BookingStatus, string> = {
 }
 
 const STATUS_ACTIONS: Partial<Record<BookingStatus, BookingStatus[]>> = {
+  [BookingStatus.WAITING_STAFF]: [BookingStatus.CANCELLED],
   [BookingStatus.PENDING_ACCEPTANCE]: [BookingStatus.ACCEPTED, BookingStatus.CANCELLED],
   [BookingStatus.ACCEPTED]: [BookingStatus.IN_PROGRESS, BookingStatus.CANCELLED],
+  [BookingStatus.ON_THE_WAY]: [BookingStatus.IN_PROGRESS, BookingStatus.CANCELLED],
   [BookingStatus.IN_PROGRESS]: [BookingStatus.READY_FOR_PICKUP, BookingStatus.CANCELLED],
   [BookingStatus.READY_FOR_PICKUP]: [BookingStatus.COMPLETED, BookingStatus.CANCELLED]
 }
@@ -307,6 +313,7 @@ function BookingStatsGrid({ stats, activeStatus, onStatusChange }: BookingStatsG
   const featuredTabs: BookingStatusTab[] = [
     'ALL',
     BookingStatus.PENDING_ACCEPTANCE,
+    BookingStatus.WAITING_STAFF,
     BookingStatus.IN_PROGRESS,
     BookingStatus.COMPLETED
   ]
@@ -821,8 +828,10 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 function getStatusIcon(status: BookingStatus): string {
   if (status === BookingStatus.PENDING_PAYMENT) return 'payments'
   if (status === BookingStatus.FAILED) return 'error'
+  if (status === BookingStatus.WAITING_STAFF) return 'assignment_ind'
   if (status === BookingStatus.PENDING_ACCEPTANCE) return 'pending_actions'
   if (status === BookingStatus.ACCEPTED) return 'event_available'
+  if (status === BookingStatus.ON_THE_WAY) return 'directions_bike'
   if (status === BookingStatus.IN_PROGRESS) return 'spa'
   if (status === BookingStatus.READY_FOR_PICKUP) return 'inventory_2'
   if (status === BookingStatus.COMPLETED) return 'task_alt'

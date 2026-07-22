@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import {
@@ -20,16 +20,20 @@ import { readStorage, removeStorage, writeStorage } from '~/shared/lib/storage'
 import { Button, MaterialIcon } from '~/shared/ui'
 import { useAuth } from '~/providers/auth-provider'
 
+import { BookingAddressMap } from '../components/booking-address-map'
 import {
   createBooking,
   getAvailableGroomers,
   getAvailableCatalogTimeSlots,
+  getBookingDetail,
   getCatalogs,
   getMyBookings,
   getPets,
+  previewBooking,
   retryBookingPayment,
   type AvailableGroomerResponse,
   type BookingCreationRequest,
+  type BookingPreviewResponse,
   type BookingResponse,
   type CatalogResponse,
   type PaymentResponse,
@@ -40,7 +44,7 @@ import {
 type BookingStep = 1 | 2 | 3 | 4
 type BookingType = 'AT_STORE' | 'AT_HOME'
 type StaffAssignmentMode = 'AUTO' | 'SELECTED'
-type CheckoutPhase = 'summary' | 'payment' | 'success' | 'failed'
+type CheckoutPhase = 'summary' | 'payment' | 'syncing' | 'success' | 'failed'
 type ToastState = { type: 'success' | 'error'; message: string } | null
 type BookingApiError = Error & { apiCode?: number | string; status?: number }
 type BookingDraft = {
@@ -53,6 +57,10 @@ type BookingDraft = {
   customerName: string
   customerPhone: string
   address: string
+  latitude: string
+  longitude: string
+  addressNote: string
+  homeServiceRequirementsAccepted: boolean
   note: string
   assignmentMode: StaffAssignmentMode
   requestedStaffId: string
@@ -76,6 +84,7 @@ const BOOKING_STATUS_KEYS = [
   'PENDING_PAYMENT',
   'PENDING_ACCEPTANCE',
   'ACCEPTED',
+  'ON_THE_WAY',
   'IN_PROGRESS',
   'READY_FOR_PICKUP',
   'COMPLETED',
@@ -83,7 +92,20 @@ const BOOKING_STATUS_KEYS = [
   'FAILED',
   'WAITING_STAFF'
 ] as const
+const BACKEND_CONFIRMED_PAYMENT_STATUSES = new Set<string>([
+  'PENDING_ACCEPTANCE',
+  'WAITING_STAFF',
+  'ACCEPTED',
+  'ON_THE_WAY',
+  'IN_PROGRESS',
+  'READY_FOR_PICKUP',
+  'COMPLETED'
+])
+const PAYMENT_SYNC_ATTEMPTS = 6
+const PAYMENT_SYNC_DELAY_MS = 1200
 const BOOKING_API_ERROR_KEYS = [
+  '9031',
+  '5408',
   'BOOKING_NOT_FOUND',
   'BOOKING_DETAIL_NOT_FOUND',
   'BOOKING_ALREADY_CANCELLED',
@@ -98,6 +120,8 @@ const BOOKING_API_ERROR_KEYS = [
   'TIME_SLOT_FULL',
   'PET_NOT_FOUND',
   'PET_INACTIVE',
+  'PET_SPECIES_MISMATCH',
+  'STORE_LOCATION_NOT_FOUND',
   'PAYMENT_FAILED',
   'PAYMENT_NOT_FOUND',
   'PAYMENT_ALREADY_PAID',
@@ -105,6 +129,12 @@ const BOOKING_API_ERROR_KEYS = [
   'UNAUTHENTICATED',
   'FORBIDDEN'
 ] as const
+const BOOKING_API_ERROR_ALIAS_BY_CODE: Record<string, (typeof BOOKING_API_ERROR_KEYS)[number]> = {
+  PET_SPECIES_DOES_NOT_MATCH_THE_SERVICE: 'PET_SPECIES_MISMATCH',
+  PET_SPECIES_NOT_MATCH_THE_SERVICE: 'PET_SPECIES_MISMATCH',
+  CATALOG_SPECIES_DOES_NOT_MATCH_PET: 'PET_SPECIES_MISMATCH',
+  STORE_LOCATION_NOT_FOUND: 'STORE_LOCATION_NOT_FOUND'
+}
 
 const stripeElementStyle = {
   base: {
@@ -114,6 +144,10 @@ const stripeElementStyle = {
     fontFamily: 'inherit'
   },
   invalid: { color: '#ba1a1a' }
+}
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => window.setTimeout(resolve, ms))
 }
 
 function formatCurrency(value: number): string {
@@ -134,6 +168,23 @@ function formatSlotTime(value: string): string {
   return value.slice(0, 5)
 }
 
+function parseTimeSlotDateTime(dateValue: string, timeValue: string): Date | null {
+  const [hours = 0, minutes = 0, seconds = 0] = timeValue.split(':').map(Number)
+  const slotDate = new Date(`${dateValue}T00:00:00`)
+
+  if (Number.isNaN(slotDate.getTime()) || Number.isNaN(hours) || Number.isNaN(minutes) || Number.isNaN(seconds)) {
+    return null
+  }
+
+  slotDate.setHours(hours, minutes, seconds, 0)
+  return slotDate
+}
+
+function isTimeSlotPast(dateValue: string, timeValue: string, nowMs = Date.now()): boolean {
+  const slotDate = parseTimeSlotDateTime(dateValue, timeValue)
+  return slotDate ? slotDate.getTime() <= nowMs : false
+}
+
 function formatGroomerAvatarName(name: string): string {
   return name
     .split(' ')
@@ -144,7 +195,7 @@ function formatGroomerAvatarName(name: string): string {
 }
 
 function isCatalogBookable(catalog: CatalogResponse): boolean {
-  return catalog.status === 'AVAILABLE' && catalog.catalogType !== 'AT_HOME'
+  return catalog.status === 'AVAILABLE'
 }
 
 function getBookingStatusLabelKey(status: string): string | null {
@@ -188,6 +239,11 @@ function getBookingApiErrorKey(error: unknown): string | null {
 
   for (const candidate of candidates) {
     const normalizedCode = normalizeBookingErrorCode(candidate)
+    const aliasCode = normalizedCode ? BOOKING_API_ERROR_ALIAS_BY_CODE[normalizedCode] : null
+
+    if (aliasCode) {
+      return `bookingFlow.apiErrors.${aliasCode}`
+    }
 
     if (normalizedCode && BOOKING_API_ERROR_KEYS.includes(normalizedCode as (typeof BOOKING_API_ERROR_KEYS)[number])) {
       return `bookingFlow.apiErrors.${normalizedCode}`
@@ -256,6 +312,12 @@ function getFirstPaymentWithClientSecret(booking: BookingResponse): PaymentRespo
   return null
 }
 
+function parseOptionalCoordinate(value: string): number | undefined {
+  const coordinate = Number(value)
+
+  return Number.isFinite(coordinate) ? coordinate : undefined
+}
+
 export function BookingPage() {
   const { t } = useTranslation('services')
   const { user } = useAuth()
@@ -276,10 +338,15 @@ export function BookingPage() {
   const [customerName, setCustomerName] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
   const [address, setAddress] = useState('')
+  const [latitude, setLatitude] = useState('')
+  const [longitude, setLongitude] = useState('')
+  const [addressNote, setAddressNote] = useState('')
+  const [homeServiceRequirementsAccepted, setHomeServiceRequirementsAccepted] = useState(false)
   const [note, setNote] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isTimeSlotsLoading, setIsTimeSlotsLoading] = useState(false)
   const [isGroomersLoading, setIsGroomersLoading] = useState(false)
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false)
   const [isCreatingBooking, setIsCreatingBooking] = useState(false)
   const [isRetryingPayment, setIsRetryingPayment] = useState(false)
   const [toast, setToast] = useState<ToastState>(null)
@@ -289,9 +356,11 @@ export function BookingPage() {
   const [paymentError, setPaymentError] = useState('')
   const [paymentAttemptKey, setPaymentAttemptKey] = useState(0)
   const [isDraftReady, setIsDraftReady] = useState(false)
+  const [currentTimeMs, setCurrentTimeMs] = useState(() => Date.now())
   const [assignmentMode, setAssignmentMode] = useState<StaffAssignmentMode>('AUTO')
   const [requestedStaffId, setRequestedStaffId] = useState('')
   const [availableGroomers, setAvailableGroomers] = useState<AvailableGroomerResponse[]>([])
+  const [bookingPreview, setBookingPreview] = useState<BookingPreviewResponse | null>(null)
 
   const selectedCatalog = useMemo(
     () => catalogs.find((catalog) => catalog.catalogId === selectedCatalogId) ?? null,
@@ -306,6 +375,9 @@ export function BookingPage() {
     () => availableTimeSlots.find((slot) => slot.timeSlotId === selectedTimeSlotId) ?? null,
     [availableTimeSlots, selectedTimeSlotId]
   )
+  const isSelectedTimeSlotPast = Boolean(
+    selectedTimeSlot && isTimeSlotPast(scheduledAt, selectedTimeSlot.startTime, currentTimeMs)
+  )
   const petPricePreviews = useMemo<PetPricePreview[]>(() => {
     if (!selectedCatalog) {
       return []
@@ -317,8 +389,14 @@ export function BookingPage() {
     }))
   }, [selectedCatalog, selectedPets])
   const subtotal = petPricePreviews.reduce((total, preview) => total + preview.totalPrice, 0)
-  const deposit = subtotal * DEPOSIT_RATE
-  const remaining = subtotal - deposit
+  const previewTotal = bookingPreview?.totalAmount ?? subtotal
+  const deposit = bookingPreview?.depositAmount ?? subtotal * DEPOSIT_RATE
+  const remaining = previewTotal - deposit
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => setCurrentTimeMs(Date.now()), 30_000)
+    return () => window.clearInterval(intervalId)
+  }, [])
 
   useEffect(() => {
     let isMounted = true
@@ -349,13 +427,22 @@ export function BookingPage() {
         setPets(petResults)
         setMyBookings(bookingResults)
         setSelectedCatalogId(nextCatalogId)
-        setBookingType('AT_STORE')
+        setBookingType(
+          savedDraft?.bookingType === 'AT_HOME' ||
+            bookableCatalogs.find((catalog) => catalog.catalogId === nextCatalogId)?.catalogType === 'AT_HOME'
+            ? 'AT_HOME'
+            : 'AT_STORE'
+        )
         setSelectedPetIds(Array.isArray(savedDraft?.selectedPetIds) ? savedDraft.selectedPetIds : [])
         setScheduledAt(savedDraft?.scheduledAt || getTodayInputValue())
         setSelectedTimeSlotId(Number(savedDraft?.selectedTimeSlotId) || null)
         setCustomerName(savedDraft?.customerName || user?.fullName || '')
         setCustomerPhone(savedDraft?.customerPhone || getUserPhone(user))
         setAddress(savedDraft?.address ?? '')
+        setLatitude(savedDraft?.latitude ?? '')
+        setLongitude(savedDraft?.longitude ?? '')
+        setAddressNote(savedDraft?.addressNote ?? '')
+        setHomeServiceRequirementsAccepted(Boolean(savedDraft?.homeServiceRequirementsAccepted))
         setNote(savedDraft?.note ?? '')
         setAssignmentMode(savedAssignmentMode)
         setRequestedStaffId(savedAssignmentMode === 'SELECTED' ? (savedDraft?.requestedStaffId ?? '') : '')
@@ -439,6 +526,18 @@ export function BookingPage() {
         return
       }
 
+      if (bookingType === 'AT_HOME' && (!latitude.trim() || !longitude.trim())) {
+        setAvailableGroomers([])
+        setRequestedStaffId('')
+        return
+      }
+
+      if (bookingType === 'AT_HOME' && !bookingPreview) {
+        setAvailableGroomers([])
+        setRequestedStaffId('')
+        return
+      }
+
       const bookingDetails = selectedPetIds.map((petId) => ({
         petId,
         catalogId: selectedCatalog.catalogId,
@@ -449,6 +548,10 @@ export function BookingPage() {
         setIsGroomersLoading(true)
         const groomers = await getAvailableGroomers({
           scheduledAt: `${scheduledAt}T${selectedTimeSlot.startTime}`,
+          bookingType,
+          latitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(latitude) : undefined,
+          longitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(longitude) : undefined,
+          estimatedTravelMinute: bookingType === 'AT_HOME' ? bookingPreview?.estimatedTravelMinute : undefined,
           bookingDetails
         })
 
@@ -480,7 +583,17 @@ export function BookingPage() {
     return () => {
       isMounted = false
     }
-  }, [scheduledAt, selectedCatalog, selectedPetIds, selectedTimeSlot, t])
+  }, [
+    bookingPreview,
+    bookingType,
+    latitude,
+    longitude,
+    scheduledAt,
+    selectedCatalog,
+    selectedPetIds,
+    selectedTimeSlot,
+    t
+  ])
 
   useEffect(() => {
     if (!toast) {
@@ -506,6 +619,10 @@ export function BookingPage() {
       customerName,
       customerPhone,
       address,
+      latitude,
+      longitude,
+      addressNote,
+      homeServiceRequirementsAccepted,
       note,
       assignmentMode,
       requestedStaffId
@@ -514,12 +631,16 @@ export function BookingPage() {
     writeStorage(STORAGE_KEYS.bookingDraft, JSON.stringify(draft))
   }, [
     address,
+    addressNote,
     assignmentMode,
     bookingType,
     currentStep,
     customerName,
     customerPhone,
+    homeServiceRequirementsAccepted,
     isDraftReady,
+    latitude,
+    longitude,
     note,
     requestedStaffId,
     scheduledAt,
@@ -544,6 +665,16 @@ export function BookingPage() {
         return false
       }
 
+      if (bookingType === 'AT_HOME' && (!latitude.trim() || !longitude.trim())) {
+        showStepError(t('bookingFlow.toast.coordinateMissing'))
+        return false
+      }
+
+      if (bookingType === 'AT_HOME' && !homeServiceRequirementsAccepted) {
+        showStepError(t('bookingFlow.toast.homeRequirementsMissing'))
+        return false
+      }
+
       if (selectedPetIds.length === 0) {
         showStepError(t('bookingFlow.toast.selectPet'))
         return false
@@ -562,6 +693,11 @@ export function BookingPage() {
       return false
     }
 
+    if (step === 3 && isSelectedTimeSlotPast) {
+      showStepError(t('bookingFlow.toast.pastTimeSlot'))
+      return false
+    }
+
     return true
   }
 
@@ -574,6 +710,7 @@ export function BookingPage() {
     setActiveBooking(null)
     setActivePayment(null)
     setPaymentError('')
+    setBookingPreview(null)
   }
 
   function resetBookingForm() {
@@ -587,9 +724,14 @@ export function BookingPage() {
     setCustomerName(user?.fullName ?? '')
     setCustomerPhone(getUserPhone(user))
     setAddress('')
+    setLatitude('')
+    setLongitude('')
+    setAddressNote('')
+    setHomeServiceRequirementsAccepted(false)
     setNote('')
     setAssignmentMode('AUTO')
     setRequestedStaffId('')
+    setBookingPreview(null)
     setAvailableGroomers([])
     resetCheckoutState()
     setToast({ type: 'success', message: t('bookingFlow.toast.resetSuccess') })
@@ -611,10 +753,20 @@ export function BookingPage() {
   function handleCatalogChange(catalogId: number) {
     const nextCatalog = catalogs.find((catalog) => catalog.catalogId === catalogId)
     setSelectedCatalogId(catalogId)
-    if (nextCatalog?.catalogType === 'AT_STORE') {
+    if (nextCatalog?.catalogType === 'AT_STORE' || nextCatalog?.catalogType === 'AT_HOME') {
       setBookingType(nextCatalog.catalogType)
     }
     setSelectedTimeSlotId(null)
+    resetCheckoutState()
+  }
+
+  function handleBookingTypeChange(value: BookingType) {
+    setBookingType(value)
+    const nextCatalogId = catalogs.find((catalog) => catalog.catalogType === value)?.catalogId ?? null
+    setSelectedCatalogId(nextCatalogId)
+    setSelectedTimeSlotId(null)
+    setRequestedStaffId('')
+    setAssignmentMode('AUTO')
     resetCheckoutState()
   }
 
@@ -649,6 +801,10 @@ export function BookingPage() {
       customerName: customerName.trim(),
       customerPhone: customerPhone.trim(),
       address: bookingType === 'AT_HOME' ? address.trim() : undefined,
+      latitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(latitude) : undefined,
+      longitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(longitude) : undefined,
+      addressNote: bookingType === 'AT_HOME' ? addressNote.trim() || undefined : undefined,
+      homeServiceRequirementsAccepted: bookingType === 'AT_HOME' ? homeServiceRequirementsAccepted : undefined,
       note: note.trim() || undefined,
       bookingType,
       scheduledAt,
@@ -663,12 +819,170 @@ export function BookingPage() {
     }
   }
 
+  const buildBookingPreviewPayload = useCallback((): BookingCreationRequest | null => {
+    if (!selectedCatalog || !selectedTimeSlot) {
+      return null
+    }
+
+    return {
+      customerName: customerName.trim(),
+      customerPhone: customerPhone.trim(),
+      address: bookingType === 'AT_HOME' ? address.trim() : undefined,
+      latitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(latitude) : undefined,
+      longitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(longitude) : undefined,
+      addressNote: bookingType === 'AT_HOME' ? addressNote.trim() || undefined : undefined,
+      homeServiceRequirementsAccepted: bookingType === 'AT_HOME' ? homeServiceRequirementsAccepted : undefined,
+      note: note.trim() || undefined,
+      bookingType,
+      scheduledAt,
+      assignmentMode: assignmentMode === 'SELECTED' && requestedStaffId ? 'SELECTED' : 'AUTO',
+      requestedStaffId: assignmentMode === 'SELECTED' && requestedStaffId ? requestedStaffId : undefined,
+      bookingDetails: selectedPetIds.map((petId) => ({
+        petId,
+        catalogId: selectedCatalog.catalogId,
+        timeSlotId: selectedTimeSlot.timeSlotId,
+        note: note.trim() || undefined
+      }))
+    }
+  }, [
+    address,
+    addressNote,
+    assignmentMode,
+    bookingType,
+    customerName,
+    customerPhone,
+    homeServiceRequirementsAccepted,
+    latitude,
+    longitude,
+    note,
+    requestedStaffId,
+    scheduledAt,
+    selectedCatalog,
+    selectedPetIds,
+    selectedTimeSlot
+  ])
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadBookingPreview() {
+      if (currentStep !== 4 || checkoutPhase !== 'summary') {
+        return
+      }
+
+      if (
+        !selectedCatalog ||
+        !selectedTimeSlot ||
+        selectedPetIds.length === 0 ||
+        !customerName.trim() ||
+        !customerPhone.trim()
+      ) {
+        setBookingPreview(null)
+        return
+      }
+
+      if (bookingType === 'AT_HOME') {
+        if (!address.trim() || !latitude.trim() || !longitude.trim() || !homeServiceRequirementsAccepted) {
+          setBookingPreview(null)
+          return
+        }
+      }
+
+      const payload = buildBookingPreviewPayload()
+      if (!payload) {
+        setBookingPreview(null)
+        return
+      }
+
+      try {
+        setIsPreviewLoading(true)
+        const preview = await previewBooking(payload)
+
+        if (isMounted) {
+          setBookingPreview(preview)
+        }
+      } catch (error) {
+        if (isMounted) {
+          setBookingPreview(null)
+          setToast({
+            type: 'error',
+            message: getBookingErrorMessage(error, t('bookingFlow.toast.previewError'), t)
+          })
+        }
+      } finally {
+        if (isMounted) {
+          setIsPreviewLoading(false)
+        }
+      }
+    }
+
+    void loadBookingPreview()
+
+    return () => {
+      isMounted = false
+    }
+  }, [
+    address,
+    addressNote,
+    assignmentMode,
+    bookingType,
+    buildBookingPreviewPayload,
+    checkoutPhase,
+    currentStep,
+    customerName,
+    customerPhone,
+    homeServiceRequirementsAccepted,
+    latitude,
+    longitude,
+    note,
+    requestedStaffId,
+    scheduledAt,
+    selectedCatalog,
+    selectedPetIds,
+    selectedTimeSlot,
+    t
+  ])
+
   async function refreshMyBookingsAfterPayment() {
     try {
       setMyBookings(await getMyBookings())
     } catch {
       /* Payment result is already known; failing to refresh recent bookings should not block the screen. */
     }
+  }
+
+  function updateActiveBooking(booking: BookingResponse) {
+    setActiveBooking(booking)
+    setMyBookings((currentBookings) => {
+      const hasExistingBooking = currentBookings.some(
+        (currentBooking) => currentBooking.bookingId === booking.bookingId
+      )
+
+      if (!hasExistingBooking) {
+        return [booking, ...currentBookings]
+      }
+
+      return currentBookings.map((currentBooking) =>
+        currentBooking.bookingId === booking.bookingId ? booking : currentBooking
+      )
+    })
+  }
+
+  async function waitForBackendPaymentConfirmation(bookingId: number): Promise<BookingResponse | null> {
+    for (let attempt = 0; attempt < PAYMENT_SYNC_ATTEMPTS; attempt += 1) {
+      if (attempt > 0) {
+        await wait(PAYMENT_SYNC_DELAY_MS)
+      }
+
+      const latestBooking = await getBookingDetail(bookingId)
+      updateActiveBooking(latestBooking)
+
+      if (BACKEND_CONFIRMED_PAYMENT_STATUSES.has(latestBooking.bookingStatus)) {
+        return latestBooking
+      }
+    }
+
+    return null
   }
 
   async function handleCheckout() {
@@ -703,9 +1017,33 @@ export function BookingPage() {
   }
 
   async function handlePaymentSuccess() {
-    setCheckoutPhase('success')
-    setToast({ type: 'success', message: t('bookingFlow.toast.paymentSuccess') })
-    await refreshMyBookingsAfterPayment()
+    if (!activeBooking) {
+      setCheckoutPhase('failed')
+      setPaymentError(t('bookingFlow.toast.paymentConfirmationFailed'))
+      return
+    }
+
+    setCheckoutPhase('syncing')
+    setToast({ type: 'success', message: t('bookingFlow.toast.paymentSyncing') })
+
+    try {
+      const confirmedBooking = await waitForBackendPaymentConfirmation(activeBooking.bookingId)
+
+      if (confirmedBooking) {
+        setCheckoutPhase('success')
+        setToast({ type: 'success', message: t('bookingFlow.toast.paymentSuccess') })
+        await refreshMyBookingsAfterPayment()
+        return
+      }
+
+      setCheckoutPhase('failed')
+      setPaymentError(t('bookingFlow.toast.paymentConfirmationFailed'))
+      setToast({ type: 'error', message: t('bookingFlow.toast.paymentConfirmationFailed') })
+    } catch {
+      setCheckoutPhase('failed')
+      setPaymentError(t('bookingFlow.toast.paymentConfirmationFailed'))
+      setToast({ type: 'error', message: t('bookingFlow.toast.paymentConfirmationFailed') })
+    }
   }
 
   function handlePaymentFailure(message: string) {
@@ -799,16 +1137,21 @@ export function BookingPage() {
                   {currentStep === 1 && (
                     <CustomerInfoStep
                       bookingType={bookingType}
-                      onBookingTypeChange={(value) => {
-                        setBookingType(value)
-                        resetCheckoutState()
-                      }}
+                      onBookingTypeChange={handleBookingTypeChange}
                       customerName={customerName}
                       onCustomerNameChange={setCustomerName}
                       customerPhone={customerPhone}
                       onCustomerPhoneChange={setCustomerPhone}
                       address={address}
                       onAddressChange={setAddress}
+                      latitude={latitude}
+                      onLatitudeChange={setLatitude}
+                      longitude={longitude}
+                      onLongitudeChange={setLongitude}
+                      addressNote={addressNote}
+                      onAddressNoteChange={setAddressNote}
+                      homeServiceRequirementsAccepted={homeServiceRequirementsAccepted}
+                      onHomeServiceRequirementsAcceptedChange={setHomeServiceRequirementsAccepted}
                       note={note}
                       onNoteChange={setNote}
                       pets={pets}
@@ -821,6 +1164,7 @@ export function BookingPage() {
                   {currentStep === 2 && (
                     <ServiceStep
                       catalogs={catalogs}
+                      bookingType={bookingType}
                       selectedCatalogId={selectedCatalogId}
                       selectedPets={selectedPets}
                       onCatalogChange={handleCatalogChange}
@@ -835,11 +1179,19 @@ export function BookingPage() {
                       availableTimeSlots={availableTimeSlots}
                       selectedTimeSlotId={selectedTimeSlotId}
                       onTimeSlotChange={(timeSlotId) => {
+                        const nextTimeSlot = availableTimeSlots.find((slot) => slot.timeSlotId === timeSlotId)
+
+                        if (nextTimeSlot && isTimeSlotPast(scheduledAt, nextTimeSlot.startTime)) {
+                          showStepError(t('bookingFlow.toast.pastTimeSlot'))
+                          return
+                        }
+
                         setSelectedTimeSlotId(timeSlotId)
                         resetCheckoutState()
                       }}
                       isTimeSlotsLoading={isTimeSlotsLoading}
                       selectedCatalog={selectedCatalog}
+                      currentTimeMs={currentTimeMs}
                     />
                   )}
 
@@ -849,6 +1201,9 @@ export function BookingPage() {
                       customerName={customerName}
                       customerPhone={customerPhone}
                       address={address}
+                      addressNote={addressNote}
+                      latitude={latitude}
+                      longitude={longitude}
                       note={note}
                       selectedCatalog={selectedCatalog}
                       selectedPets={selectedPets}
@@ -858,6 +1213,8 @@ export function BookingPage() {
                       requestedStaffId={requestedStaffId}
                       availableGroomers={availableGroomers}
                       isGroomersLoading={isGroomersLoading}
+                      bookingPreview={bookingPreview}
+                      isPreviewLoading={isPreviewLoading}
                       onAssignmentModeChange={(mode) => {
                         setAssignmentMode(mode)
                         if (mode === 'AUTO') {
@@ -872,6 +1229,7 @@ export function BookingPage() {
                       }}
                       petPricePreviews={petPricePreviews}
                       subtotal={subtotal}
+                      total={previewTotal}
                       deposit={deposit}
                       remaining={remaining}
                       checkoutPhase={checkoutPhase}
@@ -915,6 +1273,7 @@ export function BookingPage() {
               subtotal={subtotal}
               deposit={deposit}
               remaining={remaining}
+              bookingPreview={bookingPreview}
               myBookings={myBookings}
             />
           )}
@@ -951,6 +1310,14 @@ interface CustomerInfoStepProps {
   onCustomerPhoneChange: (value: string) => void
   address: string
   onAddressChange: (value: string) => void
+  latitude: string
+  onLatitudeChange: (value: string) => void
+  longitude: string
+  onLongitudeChange: (value: string) => void
+  addressNote: string
+  onAddressNoteChange: (value: string) => void
+  homeServiceRequirementsAccepted: boolean
+  onHomeServiceRequirementsAcceptedChange: (value: boolean) => void
   note: string
   onNoteChange: (value: string) => void
   pets: PetProfileResponse[]
@@ -968,6 +1335,14 @@ function CustomerInfoStep({
   onCustomerPhoneChange,
   address,
   onAddressChange,
+  latitude,
+  onLatitudeChange,
+  longitude,
+  onLongitudeChange,
+  addressNote,
+  onAddressNoteChange,
+  homeServiceRequirementsAccepted,
+  onHomeServiceRequirementsAcceptedChange,
   note,
   onNoteChange,
   pets,
@@ -983,29 +1358,20 @@ function CustomerInfoStep({
       <p className='mt-1 text-sm text-muted-foreground'>{t('bookingFlow.customer.subtitle')}</p>
 
       <div className='mt-5 grid grid-cols-2 gap-2 rounded-md bg-muted p-1'>
-        {BOOKING_TYPES.map((type) => {
-          const isDisabled = type === 'AT_HOME'
-
-          return (
-            <button
-              key={type}
-              type='button'
-              disabled={isDisabled}
-              onClick={() => onBookingTypeChange(type)}
-              className={cn(
-                'flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-semibold transition-colors',
-                bookingType === type ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground',
-                isDisabled && 'cursor-not-allowed opacity-60 hover:text-muted-foreground'
-              )}
-            >
-              <MaterialIcon name={type === 'AT_STORE' ? 'storefront' : 'home_pin'} className='text-[18px]' />
-              <span>
-                {t(`bookingFlow.bookingTypes.${type}`)}
-                {isDisabled ? ` (${t('bookingFlow.bookingTypes.paused')})` : ''}
-              </span>
-            </button>
-          )
-        })}
+        {BOOKING_TYPES.map((type) => (
+          <button
+            key={type}
+            type='button'
+            onClick={() => onBookingTypeChange(type)}
+            className={cn(
+              'flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-semibold transition-colors',
+              bookingType === type ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            <MaterialIcon name={type === 'AT_STORE' ? 'storefront' : 'home_pin'} className='text-[18px]' />
+            <span>{t(`bookingFlow.bookingTypes.${type}`)}</span>
+          </button>
+        ))}
       </div>
 
       <div className='mt-5 grid gap-4 md:grid-cols-2'>
@@ -1017,7 +1383,33 @@ function CustomerInfoStep({
           required
         />
         {bookingType === 'AT_HOME' && (
-          <Field label={t('bookingFlow.customer.address')} value={address} onChange={onAddressChange} required />
+          <>
+            <BookingAddressMap
+              address={address}
+              latitude={latitude}
+              longitude={longitude}
+              onAddressChange={onAddressChange}
+              onLatitudeChange={onLatitudeChange}
+              onLongitudeChange={onLongitudeChange}
+            />
+            <label className='md:col-span-2'>
+              <span className='text-sm font-medium'>{t('bookingFlow.customer.addressNote')}</span>
+              <input
+                value={addressNote}
+                onChange={(event) => onAddressNoteChange(event.target.value)}
+                className='mt-2 h-11 w-full rounded-md border border-border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring'
+              />
+            </label>
+            <label className='md:col-span-2 flex items-start gap-3 rounded-md border border-border bg-muted/60 p-3 text-sm'>
+              <input
+                type='checkbox'
+                className='mt-1 h-4 w-4 accent-current'
+                checked={homeServiceRequirementsAccepted}
+                onChange={(event) => onHomeServiceRequirementsAcceptedChange(event.target.checked)}
+              />
+              <span className='font-medium text-foreground'>{t('bookingFlow.customer.homeRequirements')}</span>
+            </label>
+          </>
         )}
         <label className='md:col-span-2'>
           <span className='text-sm font-medium'>{t('bookingFlow.customer.note')}</span>
@@ -1042,21 +1434,30 @@ function CustomerInfoStep({
 
 interface ServiceStepProps {
   catalogs: CatalogResponse[]
+  bookingType: BookingType
   selectedCatalogId: number | null
   selectedPets: PetProfileResponse[]
   onCatalogChange: (catalogId: number) => void
   formatCurrency: (value: number) => string
 }
 
-function ServiceStep({ catalogs, selectedCatalogId, selectedPets, onCatalogChange, formatCurrency }: ServiceStepProps) {
+function ServiceStep({
+  catalogs,
+  bookingType,
+  selectedCatalogId,
+  selectedPets,
+  onCatalogChange,
+  formatCurrency
+}: ServiceStepProps) {
   const { t } = useTranslation('services')
+  const visibleCatalogs = catalogs.filter((catalog) => catalog.catalogType === bookingType)
 
   return (
     <div>
       <h2 className='text-xl font-bold'>{t('bookingFlow.service.title')}</h2>
       <p className='mt-1 text-sm text-muted-foreground'>{t('bookingFlow.service.subtitle')}</p>
       <div className='mt-5 grid gap-4 md:grid-cols-2'>
-        {catalogs.map((catalog) => (
+        {visibleCatalogs.map((catalog) => (
           <ServiceCatalogCard
             key={catalog.catalogId}
             catalog={catalog}
@@ -1067,6 +1468,11 @@ function ServiceStep({ catalogs, selectedCatalogId, selectedPets, onCatalogChang
           />
         ))}
       </div>
+      {visibleCatalogs.length === 0 ? (
+        <p className='mt-5 rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground'>
+          {t('bookingFlow.service.empty')}
+        </p>
+      ) : null}
     </div>
   )
 }
@@ -1250,6 +1656,7 @@ interface ScheduleStepProps {
   onTimeSlotChange: (timeSlotId: number) => void
   isTimeSlotsLoading: boolean
   selectedCatalog: CatalogResponse | null
+  currentTimeMs: number
 }
 
 function ScheduleStep({
@@ -1259,9 +1666,13 @@ function ScheduleStep({
   selectedTimeSlotId,
   onTimeSlotChange,
   isTimeSlotsLoading,
-  selectedCatalog
+  selectedCatalog,
+  currentTimeMs
 }: ScheduleStepProps) {
   const { t } = useTranslation('services')
+  const hasSelectedPastTimeSlot = availableTimeSlots.some(
+    (slot) => slot.timeSlotId === selectedTimeSlotId && isTimeSlotPast(scheduledAt, slot.startTime, currentTimeMs)
+  )
 
   return (
     <div>
@@ -1286,43 +1697,56 @@ function ScheduleStep({
               ? Array.from({ length: 3 }).map((_, index) => (
                   <div key={index} className='h-24 animate-pulse rounded-md bg-muted' />
                 ))
-              : availableTimeSlots.map((slot) => (
-                  <button
-                    key={slot.timeSlotId}
-                    type='button'
-                    onClick={() => onTimeSlotChange(slot.timeSlotId)}
-                    className={cn(
-                      'rounded-md border p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
-                      selectedTimeSlotId === slot.timeSlotId
-                        ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-border bg-background hover:bg-muted'
-                    )}
-                  >
-                    <span className='flex items-center gap-2 font-semibold'>
-                      <MaterialIcon
-                        name='schedule'
-                        className={cn(
-                          'text-[20px]',
-                          selectedTimeSlotId === slot.timeSlotId ? 'text-secondary' : 'text-primary'
-                        )}
-                      />
-                      {formatSlotTime(slot.startTime)}
-                    </span>
-                    <span
+              : availableTimeSlots.map((slot) => {
+                  const isPastSlot = isTimeSlotPast(scheduledAt, slot.startTime, currentTimeMs)
+                  const isSelectedSlot = selectedTimeSlotId === slot.timeSlotId && !isPastSlot
+
+                  return (
+                    <button
+                      key={slot.timeSlotId}
+                      type='button'
+                      disabled={isPastSlot}
+                      aria-disabled={isPastSlot}
+                      onClick={() => onTimeSlotChange(slot.timeSlotId)}
                       className={cn(
-                        'mt-2 block text-sm',
-                        selectedTimeSlotId === slot.timeSlotId
-                          ? 'font-semibold text-primary-foreground'
-                          : 'text-muted-foreground'
+                        'rounded-md border p-4 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-ring',
+                        isSelectedSlot
+                          ? 'border-primary bg-primary text-primary-foreground'
+                          : 'border-border bg-background hover:bg-muted',
+                        isPastSlot && 'cursor-not-allowed bg-muted/60 opacity-50 hover:bg-muted/60'
                       )}
                     >
-                      {t('bookingFlow.time.duration', {
-                        minutes: slot.durationMinute ?? selectedCatalog?.durationMinute ?? 0
-                      })}
-                    </span>
-                  </button>
-                ))}
+                      <span className='flex items-center gap-2 font-semibold'>
+                        <MaterialIcon
+                          name='schedule'
+                          className={cn('text-[20px]', isSelectedSlot ? 'text-secondary' : 'text-primary')}
+                        />
+                        {formatSlotTime(slot.startTime)}
+                      </span>
+                      <span
+                        className={cn(
+                          'mt-2 block text-sm',
+                          isSelectedSlot ? 'font-semibold text-primary-foreground' : 'text-muted-foreground'
+                        )}
+                      >
+                        {t('bookingFlow.time.duration', {
+                          minutes: slot.durationMinute ?? selectedCatalog?.durationMinute ?? 0
+                        })}
+                      </span>
+                      {isPastSlot ? (
+                        <span className='mt-2 block text-xs font-semibold text-muted-foreground'>
+                          {t('bookingFlow.time.pastSlot')}
+                        </span>
+                      ) : null}
+                    </button>
+                  )
+                })}
           </div>
+          {hasSelectedPastTimeSlot ? (
+            <p className='mt-4 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm font-medium text-destructive'>
+              {t('bookingFlow.time.pastSlotError')}
+            </p>
+          ) : null}
           {!isTimeSlotsLoading && availableTimeSlots.length === 0 && (
             <p className='mt-5 rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground'>
               {t('bookingFlow.time.empty')}
@@ -1339,6 +1763,9 @@ interface ReviewPaymentStepProps {
   customerName: string
   customerPhone: string
   address: string
+  addressNote: string
+  latitude: string
+  longitude: string
   note: string
   selectedCatalog: CatalogResponse | null
   selectedPets: PetProfileResponse[]
@@ -1348,10 +1775,13 @@ interface ReviewPaymentStepProps {
   requestedStaffId: string
   availableGroomers: AvailableGroomerResponse[]
   isGroomersLoading: boolean
+  bookingPreview: BookingPreviewResponse | null
+  isPreviewLoading: boolean
   onAssignmentModeChange: (mode: StaffAssignmentMode) => void
   onRequestedStaffChange: (staffId: string) => void
   petPricePreviews: PetPricePreview[]
   subtotal: number
+  total: number
   deposit: number
   remaining: number
   checkoutPhase: CheckoutPhase
@@ -1372,6 +1802,9 @@ function ReviewPaymentStep({
   customerName,
   customerPhone,
   address,
+  addressNote,
+  latitude,
+  longitude,
   note,
   selectedCatalog,
   selectedPets,
@@ -1381,10 +1814,13 @@ function ReviewPaymentStep({
   requestedStaffId,
   availableGroomers,
   isGroomersLoading,
+  bookingPreview,
+  isPreviewLoading,
   onAssignmentModeChange,
   onRequestedStaffChange,
   petPricePreviews,
   subtotal,
+  total,
   deposit,
   remaining,
   checkoutPhase,
@@ -1405,6 +1841,7 @@ function ReviewPaymentStep({
     assignmentMode === 'SELECTED' && selectedGroomer
       ? t('bookingFlow.assignment.selectedSummary', { name: selectedGroomer.fullName })
       : t('bookingFlow.assignment.autoSummary')
+  const isAssignmentLoading = isGroomersLoading || (bookingType === 'AT_HOME' && isPreviewLoading)
 
   if (checkoutPhase === 'payment' && activeBooking && activePayment) {
     return (
@@ -1412,7 +1849,7 @@ function ReviewPaymentStep({
         key={`${activeBooking.bookingId}-${paymentAttemptKey}`}
         booking={activeBooking}
         payment={activePayment}
-        amount={deposit}
+        amount={activeBooking.depositAmount ?? deposit}
         onPaymentSuccess={onPaymentSuccess}
         onPaymentFailure={onPaymentFailure}
       />
@@ -1421,6 +1858,10 @@ function ReviewPaymentStep({
 
   if (checkoutPhase === 'success' && activeBooking) {
     return <PaymentResultScreen type='success' booking={activeBooking} />
+  }
+
+  if (checkoutPhase === 'syncing' && activeBooking) {
+    return <PaymentResultScreen type='syncing' booking={activeBooking} message={paymentError} />
   }
 
   if (checkoutPhase === 'failed' && activeBooking) {
@@ -1452,7 +1893,21 @@ function ReviewPaymentStep({
             value={customerPhone || t('bookingFlow.summary.empty')}
           />
           {bookingType === 'AT_HOME' && (
-            <SummaryLine label={t('bookingFlow.customer.address')} value={address || t('bookingFlow.summary.empty')} />
+            <>
+              <SummaryLine
+                label={t('bookingFlow.customer.address')}
+                value={address || t('bookingFlow.summary.empty')}
+              />
+              <SummaryLine
+                label={t('bookingFlow.customer.latitude')}
+                value={latitude || t('bookingFlow.summary.empty')}
+              />
+              <SummaryLine
+                label={t('bookingFlow.customer.longitude')}
+                value={longitude || t('bookingFlow.summary.empty')}
+              />
+              {addressNote && <SummaryLine label={t('bookingFlow.customer.addressNote')} value={addressNote} />}
+            </>
           )}
           {note && <SummaryLine label={t('bookingFlow.customer.note')} value={note} />}
         </ReviewCard>
@@ -1547,7 +2002,7 @@ function ReviewPaymentStep({
 
         {assignmentMode === 'SELECTED' && (
           <div className='mt-4 space-y-3'>
-            {isGroomersLoading ? (
+            {isAssignmentLoading ? (
               <div className='grid gap-3 md:grid-cols-2'>
                 {Array.from({ length: 2 }).map((_, index) => (
                   <div key={index} className='h-24 animate-pulse rounded-md bg-muted' />
@@ -1647,7 +2102,34 @@ function ReviewPaymentStep({
             ))}
           </div>
         ) : null}
-        <SummaryRow label={t('bookingFlow.summary.subtotal')} value={formatCurrency(subtotal)} />
+        {isPreviewLoading ? (
+          <p className='rounded-md bg-muted p-3 text-sm text-muted-foreground'>
+            {t('bookingFlow.summary.previewLoading')}
+          </p>
+        ) : null}
+        <SummaryRow
+          label={t('bookingFlow.summary.serviceAmount')}
+          value={formatCurrency(bookingPreview?.serviceAmount ?? subtotal)}
+        />
+        <SummaryRow
+          label={t('bookingFlow.summary.surchargeAmount')}
+          value={formatCurrency(bookingPreview?.surchargeAmount ?? 0)}
+        />
+        {bookingType === 'AT_HOME' ? (
+          <>
+            <SummaryRow
+              label={t('bookingFlow.summary.travelFee')}
+              value={formatCurrency(bookingPreview?.travelFee ?? 0)}
+            />
+            {bookingPreview?.distanceKm !== undefined ? (
+              <SummaryRow
+                label={t('bookingFlow.summary.distance')}
+                value={t('bookingFlow.summary.distanceValue', { value: bookingPreview.distanceKm.toFixed(1) })}
+              />
+            ) : null}
+          </>
+        ) : null}
+        <SummaryRow label={t('bookingFlow.summary.subtotal')} value={formatCurrency(total)} />
         <SummaryRow label={t('bookingFlow.summary.deposit')} value={formatCurrency(deposit)} strong />
         <SummaryRow label={t('bookingFlow.summary.remaining')} value={formatCurrency(remaining)} />
       </div>
@@ -1657,7 +2139,7 @@ function ReviewPaymentStep({
         variant='secondary'
         className='mt-5 w-full'
         onClick={onCheckout}
-        disabled={isCreatingBooking || deposit <= 0}
+        disabled={isCreatingBooking || isPreviewLoading || deposit <= 0 || !bookingPreview}
       >
         <MaterialIcon
           name={isCreatingBooking ? 'progress_activity' : 'lock'}
@@ -1822,7 +2304,7 @@ function BookingPaymentForm({ clientSecret, amount, onPaymentSuccess, onPaymentF
 }
 
 interface PaymentResultScreenProps {
-  type: 'success' | 'failed'
+  type: 'success' | 'syncing' | 'failed'
   booking: BookingResponse
   message?: string
   isRetrying?: boolean
@@ -1832,26 +2314,38 @@ interface PaymentResultScreenProps {
 function PaymentResultScreen({ type, booking, message, isRetrying, onRetryPayment }: PaymentResultScreenProps) {
   const { t } = useTranslation('services')
   const isSuccess = type === 'success'
+  const isSyncing = type === 'syncing'
 
   return (
     <div className='rounded-md border border-border bg-background p-6 text-center'>
       <div
         className={cn(
           'mx-auto flex h-16 w-16 items-center justify-center rounded-full',
-          isSuccess ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'
+          isSuccess && 'bg-success/10 text-success',
+          isSyncing && 'bg-info/10 text-info',
+          type === 'failed' && 'bg-destructive/10 text-destructive'
         )}
       >
-        <MaterialIcon name={isSuccess ? 'verified' : 'error'} className='text-[34px]' />
+        <MaterialIcon
+          name={isSuccess ? 'verified' : isSyncing ? 'progress_activity' : 'error'}
+          className={cn('text-[34px]', isSyncing && 'animate-spin')}
+        />
       </div>
       <h2 className='mt-5 text-2xl font-bold'>
-        {isSuccess ? t('bookingFlow.payment.successTitle') : t('bookingFlow.payment.failedTitle')}
+        {isSuccess
+          ? t('bookingFlow.payment.successTitle')
+          : isSyncing
+            ? t('bookingFlow.payment.syncingTitle')
+            : t('bookingFlow.payment.failedTitle')}
       </h2>
       <p className='mx-auto mt-2 max-w-xl text-sm text-muted-foreground'>
         {isSuccess
           ? t('bookingFlow.payment.successDescription', { code: booking.bookingCode })
-          : message || t('bookingFlow.toast.paymentFailed')}
+          : isSyncing
+            ? message || t('bookingFlow.payment.syncingDescription', { code: booking.bookingCode })
+            : message || t('bookingFlow.toast.paymentFailed')}
       </p>
-      {!isSuccess && onRetryPayment && (
+      {type === 'failed' && onRetryPayment && (
         <Button type='button' variant='secondary' className='mt-6' onClick={onRetryPayment} disabled={isRetrying}>
           <MaterialIcon
             name={isRetrying ? 'progress_activity' : 'refresh'}
@@ -1873,6 +2367,7 @@ interface BookingSidebarProps {
   subtotal: number
   deposit: number
   remaining: number
+  bookingPreview: BookingPreviewResponse | null
   myBookings: BookingResponse[]
 }
 
@@ -1885,6 +2380,7 @@ function BookingSidebar({
   subtotal,
   deposit,
   remaining,
+  bookingPreview,
   myBookings
 }: BookingSidebarProps) {
   const { t } = useTranslation('services')
@@ -1919,7 +2415,22 @@ function BookingSidebar({
             value={formatCurrency(preview.totalPrice)}
           />
         ))}
-        <SummaryRow label={t('bookingFlow.summary.subtotal')} value={formatCurrency(subtotal)} strong />
+        <SummaryRow
+          label={t('bookingFlow.summary.serviceAmount')}
+          value={formatCurrency(bookingPreview?.serviceAmount ?? subtotal)}
+        />
+        <SummaryRow
+          label={t('bookingFlow.summary.surchargeAmount')}
+          value={formatCurrency(bookingPreview?.surchargeAmount ?? 0)}
+        />
+        {bookingPreview && bookingPreview.travelFee > 0 ? (
+          <SummaryRow label={t('bookingFlow.summary.travelFee')} value={formatCurrency(bookingPreview.travelFee)} />
+        ) : null}
+        <SummaryRow
+          label={t('bookingFlow.summary.subtotal')}
+          value={formatCurrency(bookingPreview?.totalAmount ?? subtotal)}
+          strong
+        />
         <SummaryRow label={t('bookingFlow.summary.deposit')} value={formatCurrency(deposit)} strong />
         <SummaryRow label={t('bookingFlow.summary.remaining')} value={formatCurrency(remaining)} />
       </dl>
