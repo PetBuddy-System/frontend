@@ -597,6 +597,61 @@ export const orderHandlers = [
     })
   }),
 
+  http.get(`${BASE}/api/shipper-assignment/:orderId/shipper-suggestions`, () => {
+    return HttpResponse.json({
+      code: 200,
+      message: 'Lấy danh sách đề xuất shipper thành công',
+      success: true,
+      data: [
+        {
+          staffId: 'staff-shipper-1',
+          staffEmail: 'shipper1@petbuddy.com',
+          staffName: 'Shipper Staff (Khu vực)',
+          staffTask: 'SHIPPER',
+          currentLoad: 2,
+          maxCapacity: 10,
+          distanceToClusterKm: 2.5
+        },
+        {
+          staffId: 'staff-shipper-2',
+          staffEmail: 'shipper2@petbuddy.com',
+          staffName: 'Shipper Nguyễn Văn B (Chi nhánh xa)',
+          staffTask: 'SHIPPER',
+          currentLoad: 1,
+          maxCapacity: 10,
+          distanceToClusterKm: 16.8
+        },
+        {
+          staffId: 'staff-shipper-3',
+          staffEmail: 'shipper3@petbuddy.com',
+          staffName: 'Shipper Lê Văn C (Quận ngoại thành)',
+          staffTask: 'SHIPPER',
+          currentLoad: 0,
+          maxCapacity: 10,
+          distanceToClusterKm: 24.2
+        }
+      ],
+      timestamp: new Date().toISOString()
+    })
+  }),
+
+  http.post(`${BASE}/api/shipper-assignment/:orderId/assign-shipper`, async ({ params }) => {
+    const orderId = Number(params.orderId)
+    const orders = getStoredOrders()
+    const idx = orders.findIndex((o) => o.orderId === orderId)
+    if (idx !== -1) {
+      orders[idx] = { ...orders[idx], status: 'SHIPPING' }
+      saveOrders(orders)
+    }
+    return HttpResponse.json({
+      code: 200,
+      message: 'Phân công shipper thành công',
+      success: true,
+      data: null,
+      timestamp: new Date().toISOString()
+    })
+  }),
+
   http.get(`${BASE}/api/shipper-assignment/:staffId/delivery-route`, () => {
     const orders = getStoredOrders()
 

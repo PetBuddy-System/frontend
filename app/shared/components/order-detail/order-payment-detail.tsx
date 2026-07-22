@@ -22,8 +22,6 @@ export function OrderPaymentDetail({
 }: OrderPaymentDetailProps) {
   const { t } = useTranslation('profile')
 
-  // Đơn đã thanh toán online (CARD/MOMO): shipper vẫn thấy giá trị thật,
-  // nhưng được trừ luôn "Số tiền đã trả" để biết không cần thu thêm gì nữa.
   const isOnlinePayment = order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO' || order.payment?.paymentMethod === 'VNPAY'
   const showPaidDeduction = isShipper && isOnlinePayment
 
@@ -86,7 +84,7 @@ export function OrderPaymentDetail({
               className={cn(
                 'flex items-center gap-1.5 font-bold text-sm',
                 order.payment?.status === 'PAID' ? 'text-success' :
-                order.payment?.status === 'REFUNDED' ? 'text-success' :
+                order.payment?.status === 'REFUNDED' || order.payment?.status === 'PARTIALLY_REFUNDED' ? 'text-success' :
                 order.payment?.status === 'FAILED' ? 'text-destructive' :
                 'text-amber-500'
               )}
@@ -94,7 +92,7 @@ export function OrderPaymentDetail({
               <MaterialIcon
                 name={
                   order.payment?.status === 'PAID' ? 'verified_user' :
-                  order.payment?.status === 'REFUNDED' ? 'assignment_return' :
+                  order.payment?.status === 'REFUNDED' || order.payment?.status === 'PARTIALLY_REFUNDED' ? 'assignment_return' :
                   order.payment?.status === 'FAILED' ? 'cancel' :
                   'schedule'
                 }
@@ -103,7 +101,7 @@ export function OrderPaymentDetail({
               <span>
                 {order.payment?.status === 'PAID'
                   ? t('orderDetail.paid', 'Đã thanh toán')
-                  : order.payment?.status === 'REFUNDED'
+                  : order.payment?.status === 'REFUNDED' || order.payment?.status === 'PARTIALLY_REFUNDED'
                   ? t('orderDetail.refunded', 'Đã hoàn tiền')
                   : order.payment?.status === 'FAILED'
                   ? t('orderDetail.paymentFailed', 'Thanh toán thất bại')

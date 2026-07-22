@@ -24,6 +24,8 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
   const [cancelReason, setCancelReason] = useState('')
   const [customReason, setCustomReason] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [submittedReason, setSubmittedReason] = useState('')
 
   useEffect(() => {
     async function loadOrder() {
@@ -54,21 +56,13 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
       return
     }
 
-    const isPaidByCard = order.payment?.paymentMethod === 'CARD'
-
     setIsSubmitting(true)
     try {
       const res = await requestRefundCancelApi(orderId, finalReason)
 
       if (res.success) {
-        if (isPaidByCard) {
-          alert(
-            t('orderCancel.successMessagePaid', 'Yêu cầu hủy & hoàn tiền đã được ghi nhận! Nhân viên sẽ xem xét và xác nhận hoàn tiền sớm nhất có thể.')
-          )
-        } else {
-          alert(t('orderCancel.successMessageCOD', 'Đơn hàng đã được hủy thành công.'))
-        }
-        navigate(`/profile/orders/${orderId}`)
+        setSubmittedReason(finalReason)
+        setShowSuccessModal(true)
       } else {
         alert(res.message || t('orderCancel.submitError', 'Không thể gửi yêu cầu hủy đơn.'))
       }
@@ -286,6 +280,40 @@ export function ProfileOrderCancelPage({ orderId }: ProfileOrderCancelPageProps)
       <SiteFooter />
       <SiteBottomNav />
       <SiteFab />
+
+      {showSuccessModal && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-fadeIn'>
+          <div className='relative w-full max-w-md rounded-2xl bg-card p-6 shadow-2xl border border-border text-center'>
+            <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'>
+              <MaterialIcon name='check_circle' className='text-[40px]' />
+            </div>
+            <h3 className='font-display text-xl font-bold text-foreground'>
+              {t('orderCancel.refundSuccessTitle', 'Yêu cầu hủy & Hoàn tiền thành công')}
+            </h3>
+            <p className='mt-2 text-sm text-muted-foreground'>
+              {t('orderCancel.refundSuccessDesc', { code: order?.orderCode, defaultValue: `Yêu cầu hủy đơn hàng #${order?.orderCode} đã được gửi thành công.` })}
+            </p>
+            <div className='mt-4 rounded-xl bg-muted/40 p-3.5 text-left text-xs space-y-1.5 border border-border/50'>
+              <p className='font-semibold text-foreground'>
+                <span className='text-muted-foreground'>{t('orderCancel.orderCodeLabel', 'Mã đơn:')}</span> #{order?.orderCode}
+              </p>
+              <p className='font-semibold text-foreground'>
+                <span className='text-muted-foreground'>{t('orderCancel.refundAmountLabel', 'Số tiền hoàn:')}</span> {formatPrice(order?.finalAmount ?? 0)}
+              </p>
+              <p className='font-semibold text-foreground'>
+                <span className='text-muted-foreground'>{t('orderCancel.reasonLabel', 'Lý do:')}</span> {submittedReason}
+              </p>
+            </div>
+            <button
+              type='button'
+              onClick={() => navigate(`/profile/orders/${orderId}`)}
+              className='mt-6 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-md transition-all hover:bg-primary/90 active:scale-95'
+            >
+              {t('orderCancel.confirmBtn', 'Xem chi tiết đơn hàng')}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

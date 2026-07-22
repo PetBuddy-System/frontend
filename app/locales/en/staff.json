@@ -89,6 +89,9 @@
     "assignBtn": "Assign",
     "confirmAssignBtn": "Confirm Assignment",
     "recommendedShipper": "Area Shipper (Recommended)",
+    "farShipperBadge": "Far Distance",
+    "farWarningTitle": "Far Shipper Distance Warning",
+    "farWarningDesc": "Shipper {{name}} is far from the delivery cluster ({{distance}} km). Are you sure you want to assign this order?",
     "ordersToDeliver": "{{count}} order(s) to deliver",
     "stats": {
       "pendingPickup": "Orders to Deliver",

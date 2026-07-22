@@ -276,18 +276,64 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
           </div>
         )}
 
-        {order && order.status === 'DELIVERY_FAILED' && order.cancelReason && !isLoading && (
+        {order && order.status === 'CANCELLED' && !isLoading && (
           <div className="flex items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/10 px-5 py-4 text-destructive">
-            <MaterialIcon name="error_outline" className="text-[22px] shrink-0 mt-0.5" />
+            <MaterialIcon name="cancel" className="text-[22px] shrink-0 mt-0.5" />
             <div>
-              <p className="font-bold text-sm">
-                {t('orderDetail.deliveryFailedTitle', 'Giao hàng thất bại')}
+              <p className="font-bold text-base">
+                {t('orderDetail.cancelledTitle', 'Đơn hàng đã bị hủy')}
               </p>
               <p className="text-sm font-medium opacity-90 mt-1">
-                <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span> {order.cancelReason}
+                <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span>{' '}
+                {order.cancelReason || order.payment?.cancelReason || order.note || t('orderDetail.noCancelReason', 'Không có lý do cụ thể')}
               </p>
             </div>
           </div>
+        )}
+
+        {order && (order.status === 'DELIVERY_FAILED' || order.status === 'AWAITING_REDELIVERY') && !isLoading && (
+          <div className="flex items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/10 px-5 py-4 text-destructive">
+            <MaterialIcon name="error_outline" className="text-[22px] shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold text-base">
+                {t('orderDetail.deliveryFailedTitle', 'Giao hàng thất bại')}
+              </p>
+              <p className="text-sm font-medium opacity-90 mt-1">
+                <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span>{' '}
+                {order.cancelReason || order.note || t('orderDetail.defaultDeliveryFailedReason', 'Giao hàng không thành công')}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {order && (order.status === 'RETURNED_TO_WAREHOUSE' || order.status === 'COORDINATOR_REVIEW') && !isLoading && (
+          isStaff || isAdmin ? (
+            <div className="flex items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-5 py-4 text-amber-700 dark:text-amber-400">
+              <MaterialIcon name="inventory_2" className="text-[22px] shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-base">
+                  {t('orderDetail.returnedToWarehouseTitle', 'Đơn hàng đã chuyển về kho / Chờ xử lý điều phối')}
+                </p>
+                <p className="text-sm font-medium opacity-90 mt-1">
+                  <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span>{' '}
+                  {order.cancelReason || order.note || t('orderDetail.returnedToWarehouseReason', 'Đơn hàng giao thất bại và đã được chuyển về kho cho nhân viên điều phối xử lý.')}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/10 px-5 py-4 text-destructive">
+              <MaterialIcon name="error_outline" className="text-[22px] shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-base">
+                  {t('orderDetail.deliveryFailedTitle', 'Giao hàng thất bại')}
+                </p>
+                <p className="text-sm font-medium opacity-90 mt-1">
+                  <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span>{' '}
+                  {order.cancelReason || order.note || t('orderDetail.defaultDeliveryFailedReason', 'Giao hàng không thành công')}
+                </p>
+              </div>
+            </div>
+          )
         )}
 
         <div className="bg-card p-6 rounded-xl border border-border shadow-sm">
@@ -356,7 +402,7 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
                 <span>{formatTimeOnly(order.updatedAt || order.createdAt)}</span>
               </div>
             </div>
-          ) : (
+          ) : (order.status === 'DELIVERY_FAILED' || order.status === 'RETURNED_TO_WAREHOUSE' || order.status === 'COORDINATOR_REVIEW' || order.status === 'AWAITING_REDELIVERY') ? null : (
             <div className="mt-12 px-2 pb-4">
               <OrderStatusSteps order={order} formatDate={formatDateOnly} formatTime={formatTimeOnly} />
             </div>

@@ -161,7 +161,7 @@ export function useVoucherForm({ editingVoucher, onClose, onSuccess }: UseVouche
     const validationErrors = validateForm(form, t)
     if (Object.keys(validationErrors).length > 0) {
       setFieldErrors(validationErrors)
-      setError(Object.values(validationErrors).join(' '))
+      setError('')
       return
     }
 

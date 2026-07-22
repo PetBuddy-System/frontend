@@ -558,6 +558,10 @@
     "bombedBannerDesc": "Shipper đã cố gắng giao hàng nhiều lần nhưng không thành công. Nếu bạn đã thanh toán online, hệ thống sẽ hoàn tiền theo chính sách.",
     "bombedReason": "Lý do không giao được:",
     "returnedToWarehouseBanner": "Hàng hoá đã được nhân viên xác nhận trả về kho thành công.",
+    "cancelledTitle": "Đơn hàng đã bị hủy",
+    "returnedToWarehouseTitle": "Đơn hàng đã chuyển về kho / Chờ xử lý điều phối",
+    "returnedToWarehouseReason": "Đơn hàng giao thất bại và đã được chuyển về kho cho nhân viên điều phối xử lý.",
+    "defaultDeliveryFailedReason": "Giao hàng không thành công",
     "deliveryProofImage": "Ảnh xác nhận giao hàng",
     "payNow": "Thanh toán ngay",
     "payAgain": "Thanh toán lại",
@@ -665,6 +669,10 @@
     "loadError": "Không thể tải thông tin đơn hàng.",
     "loading": "Đang tải thông tin đơn hàng...",
     "notFound": "Không tìm thấy đơn hàng.",
-    "backToOrders": "Quay lại danh sách đơn hàng"
+    "backToOrders": "Quay lại danh sách đơn hàng",
+    "refundSuccessTitle": "Đã hủy đơn hàng & Hoàn tiền thành công",
+    "refundSuccessDesc": "Đơn hàng #{{code}} đã được xử lý hủy thành công.",
+    "orderCodeLabel": "Mã đơn:",
+    "confirmBtn": "Quay về danh sách đơn hàng"
   }
 }

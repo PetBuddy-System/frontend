@@ -18,7 +18,6 @@ const STATUS_BADGE_STYLES: Record<string, string> = {
     COMPLETED: 'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400',
     CANCELLED: 'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-400',
     CANCEL_REQUESTED: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 animate-pulse',
-    DELIVERY_FAILED: 'bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300 animate-pulse',
     RETURNED_TO_WAREHOUSE: 'bg-slate-100 text-slate-700 dark:bg-slate-800/60 dark:text-slate-300',
 }
 
@@ -35,7 +34,6 @@ const DOT_STYLES: Record<string, string> = {
     COMPLETED: 'bg-green-700 dark:bg-green-400',
     CANCELLED: 'bg-red-700 dark:bg-red-400',
     CANCEL_REQUESTED: 'bg-amber-700 dark:bg-amber-400',
-    DELIVERY_FAILED: 'bg-rose-800 dark:bg-rose-300',
     RETURNED_TO_WAREHOUSE: 'bg-slate-700 dark:bg-slate-300',
 }
 

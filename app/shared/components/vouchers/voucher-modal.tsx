@@ -78,6 +78,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                   isEditMode && 'cursor-not-allowed opacity-60'
                 )}
               />
+              {fieldErrors.voucherCode && <p className='text-xs font-medium text-destructive'>{fieldErrors.voucherCode}</p>}
               {isEditMode && <p className='text-xs text-muted-foreground'>{t('voucherModal.codeDisabledHint')}</p>}
             </div>
 
@@ -98,6 +99,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                   fieldErrors.voucherName ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.voucherName && <p className='text-xs font-medium text-destructive'>{fieldErrors.voucherName}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -133,6 +135,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                   fieldErrors.discountValue ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.discountValue && <p className='text-xs font-medium text-destructive'>{fieldErrors.discountValue}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -152,6 +155,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                   fieldErrors.maxDiscount ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.maxDiscount && <p className='text-xs font-medium text-destructive'>{fieldErrors.maxDiscount}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -171,6 +175,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                   fieldErrors.minOrderValue ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.minOrderValue && <p className='text-xs font-medium text-destructive'>{fieldErrors.minOrderValue}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -190,6 +195,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                   fieldErrors.usageLimit ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.usageLimit && <p className='text-xs font-medium text-destructive'>{fieldErrors.usageLimit}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -209,6 +215,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                   fieldErrors.perUserLimit ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.perUserLimit && <p className='text-xs font-medium text-destructive'>{fieldErrors.perUserLimit}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -227,6 +234,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                   fieldErrors.startAt ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.startAt && <p className='text-xs font-medium text-destructive'>{fieldErrors.startAt}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -245,6 +253,7 @@ export function VoucherModal({ isOpen, editingVoucher, onClose, onSuccess }: Vou
                   fieldErrors.expiredAt ? 'border-destructive focus:border-destructive' : 'border-border focus:border-primary'
                 )}
               />
+              {fieldErrors.expiredAt && <p className='text-xs font-medium text-destructive'>{fieldErrors.expiredAt}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>

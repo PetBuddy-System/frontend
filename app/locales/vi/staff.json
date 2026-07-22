@@ -89,6 +89,9 @@
     "assignBtn": "Phân công",
     "confirmAssignBtn": "Xác nhận phân công",
     "recommendedShipper": "Shipper quản lý khu vực (Đề xuất)",
+    "farShipperBadge": "Khoảng cách xa",
+    "farWarningTitle": "Cảnh báo khoảng cách shipper xa",
+    "farWarningDesc": "Shipper {{name}} ở vị trí xa khu vực giao hàng ({{distance}} km). Bạn có chắc chắn muốn phân công không?",
     "ordersToDeliver": "{{count}} đơn hàng cần giao",
     "stats": {
       "pendingPickup": "Đơn hàng chờ giao",

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
 import { StaffSidebar } from '../components/layout/staff-sidebar'
@@ -128,6 +129,7 @@ interface StopCardProps {
 
 function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardProps) {
   const { t, i18n } = useTranslation('staff')
+  const navigate = useNavigate()
   const isDelivered = stop.status === 'DELIVERED'
   const isPaid = stop.paymentStatus === 'PAID'
   const displayAmount = isPaid ? 0 : stop.finalAmount
@@ -304,13 +306,6 @@ export function StaffDeliveryRoutePage() {
   const activeStop = stops.find((s) => s.status === 'SHIPPING') ?? stops[0]
   const nextStop = stops.find((s, i) => i > 0 && s.status !== 'DELIVERED')
 
-  const totalDistanceKm = stops.reduce((sum, s) => sum + (s.distanceFromPreviousKm ?? 0), 0)
-  const totalDistanceLabel = totalDistanceKm > 0 ? `${totalDistanceKm.toFixed(1)} km` : '—'
-  const durationLabel = '—'
-
-  const googleMapsUrl = activeStop
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activeStop.address)}`
-    : 'https://maps.google.com'
 
   return (
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
@@ -380,80 +375,21 @@ export function StaffDeliveryRoutePage() {
                   </div>
                 </div>
 
-                <div className='flex flex-col gap-6 lg:flex-row'>
-                  <div className='flex-1 min-w-0'>
-                    <div className='rounded-2xl border border-border bg-card shadow-sm p-6'>
-                      <div className='mb-6 flex items-center justify-between'>
-                        <h2 className='font-bold text-lg text-foreground'>{t('deliveryRoute.timeline.title')}</h2>
-                      </div>
-
-                      <div>
-                        {stops.map((stop) => (
-                          <StopCard
-                            key={stop.orderId}
-                            stop={stop}
-                            isActive={stop.orderId === activeStop?.orderId && stop.status !== 'DELIVERED'}
-                            onMarkDelivered={setProofTarget}
-                            onMarkFailed={handleMarkFailed}
-                          />
-                        ))}
-                      </div>
-                    </div>
+                <div className='rounded-2xl border border-border bg-card shadow-sm p-6'>
+                  <div className='mb-6 flex items-center justify-between'>
+                    <h2 className='font-bold text-lg text-foreground'>{t('deliveryRoute.timeline.title')}</h2>
                   </div>
-                  <div className='lg:w-80 xl:w-96 shrink-0'>
-                    <div className='sticky top-6 rounded-2xl border border-border bg-card shadow-sm overflow-hidden'>
-                      <div className='border-b border-border px-6 py-4'>
-                        <h2 className='font-bold text-foreground'>{t('deliveryRoute.map.title')}</h2>
-                      </div>
 
-                      <div className='relative flex h-64 items-center justify-center bg-primary/5'>
-                        <div className='z-10 text-center px-6'>
-                          <MaterialIcon name='location_on' className='text-[48px] text-primary mb-2' />
-                          <p className='text-sm text-muted-foreground'>
-                            {t('deliveryRoute.map.currentLocation')}:{' '}
-                            <strong className='text-foreground'>
-                              {activeStop?.address?.split(',').slice(-2).join(',').trim() ?? '—'}
-                            </strong>
-                          </p>
-                          {nextStop && (
-                            <p className='mt-1.5 font-bold text-primary text-sm'>
-                              {t('deliveryRoute.map.distanceToNext', {
-                                dist: nextStop.distanceFromPreviousKm.toFixed(1)
-                              })}
-                            </p>
-                          )}
-                        </div>
-                        <div className='absolute inset-0 opacity-10 pointer-events-none'
-                          style={{ backgroundImage: 'repeating-linear-gradient(0deg, var(--color-border) 0, var(--color-border) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, var(--color-border) 0, var(--color-border) 1px, transparent 1px, transparent 40px)' }}
-                        />
-                      </div>
-                      <div className='p-5 space-y-4'>
-                        <div className='rounded-xl bg-muted p-4'>
-                          <p className='mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground'>
-                            {t('deliveryRoute.map.overview')}
-                          </p>
-                          <div className='flex justify-between text-sm'>
-                            <span className='text-muted-foreground'>{t('deliveryRoute.map.totalDistance')}</span>
-                            <span className='font-bold text-foreground'>{totalDistanceLabel}</span>
-                          </div>
-                          <div className='mt-2 flex justify-between text-sm'>
-                            <span className='text-muted-foreground'>{t('deliveryRoute.map.estimatedTime')}</span>
-                            <span className='font-bold text-foreground'>{durationLabel}</span>
-                          </div>
-                        </div>
-
-                        <a
-                          id='open-google-maps-btn'
-                          href={googleMapsUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='flex w-full items-center justify-center gap-2 rounded-xl bg-primary/10 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary/20'
-                        >
-                          <MaterialIcon name='open_in_new' className='text-[18px]' />
-                          {t('deliveryRoute.map.openMaps')}
-                        </a>
-                      </div>
-                    </div>
+                  <div>
+                    {stops.map((stop) => (
+                      <StopCard
+                        key={stop.orderId}
+                        stop={stop}
+                        isActive={stop.orderId === activeStop?.orderId && stop.status !== 'DELIVERED'}
+                        onMarkDelivered={setProofTarget}
+                        onMarkFailed={handleMarkFailed}
+                      />
+                    ))}
                   </div>
                 </div>
               </>

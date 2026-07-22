@@ -78,6 +78,11 @@ function getStatusLabel(status: string) {
       return 'Hết hạn'
     case 'CANCEL_REQUESTED':
       return 'Chờ hoàn tiền'
+    case 'DELIVERY_FAILED':
+    case 'RETURNED_TO_WAREHOUSE':
+    case 'AWAITING_REDELIVERY':
+    case 'COORDINATOR_REVIEW':
+      return 'Giao thất bại'
     default:
       return status
   }
@@ -132,8 +137,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
   const canPayAgain =
     isOnlinePayment &&
     !isPaid &&
-    order.status !== 'CANCELLED' &&
-    order.status !== 'EXPIRED'
+    order.status === 'PENDING'
 
   return (
     <>
@@ -141,7 +145,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
         onClick={() => navigate(`/profile/orders/${order.orderId}`)}
         className={cn(
           'order-card flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer',
-          (order.status === 'CANCELLED' || order.status === 'EXPIRED') && 'opacity-75'
+          (order.status === 'CANCELLED' || order.status === 'EXPIRED' || order.status === 'DELIVERY_FAILED' || order.status === 'RETURNED_TO_WAREHOUSE') && 'opacity-75'
         )}
       >
         <div className="flex flex-col gap-1">
@@ -153,7 +157,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 getStatusBadgeClassName(order.status)
               )}
             >
-              {getStatusLabel(order.status)} | {order.status}
+              {getStatusLabel(order.status)}
             </span>
           </div>
           <span>Ngày đặt: {formatDateOnly(order.createdAt)}</span>
