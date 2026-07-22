@@ -186,11 +186,30 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
     })
   }
 
+  const STATUS_LABEL_FALLBACK: Record<string, string> = {
+  PENDING: 'Chờ xác nhận',
+  CONFIRMED: 'Đã xác nhận',
+  PICKING: 'Đang lấy hàng',
+  PICKED: 'Đã lấy hàng',
+  SHIPPING: 'Đang giao hàng',
+  DELIVERED: 'Đã giao hàng',
+  AWAITING_REDELIVERY: 'Chờ giao lại',
+  DELIVERY_FAILED: 'Giao hàng thất bại',
+  COORDINATOR_REVIEW: 'Điều phối viên đang xử lý',
+  RETURNED_TO_WAREHOUSE: 'Đã trả về kho',
+  COMPLETED: 'Hoàn tất',
+  CANCELLED: 'Đã hủy',
+  CANCEL_REQUESTED: 'Chờ hoàn tiền',
+  EXPIRED: 'Hết hạn',
+}
+
   function getStatusLabel(status: string) {
     const key = status.toLowerCase()
-    return t(`orderDetail.status.${key}`, status)
+    return t(`orderDetail.status.${key}`, STATUS_LABEL_FALLBACK[status] ?? status)
   }
 
+  
+  const isInternalReturnStatus = order?.status === 'RETURNED_TO_WAREHOUSE' || order?.status === 'COORDINATOR_REVIEW'
   const subtotal = order?.orderDetails?.reduce((sum, item) => sum + item.totalPrice, 0) ?? 0
   const shippingFee = order?.shippingFee ?? (subtotal > 500000 ? 0 : 30000)
   const hasVoucher = Boolean(order?.voucherCode || order?.voucher)
@@ -200,6 +219,16 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
   const discount = rawDiscount > subtotal ? subtotal : rawDiscount
 
   const isExpired = order?.status === 'EXPIRED' || isCountdownExpired
+
+
+  const displayStatusLabel = (() => {
+      if (isExpired && order?.status === 'PENDING') return t('orderDetail.status.expired', 'Hết hạn')
+      if (isRefundPending) return t('orderDetail.status.cancel_requested', 'Chờ hoàn tiền')
+      if (!isStaff && !isAdmin && isInternalReturnStatus) {
+        return t('orderDetail.deliveryFailedTitle', 'Giao hàng thất bại')
+      }
+      return order ? getStatusLabel(order.status) : ''
+ })()
 
   const canCancel = (() => {
     if (!order) return false
@@ -358,14 +387,11 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
                       order.status === 'CANCELLED' ? 'text-destructive' :
                         order.status === 'EXPIRED' || isExpired ? 'text-destructive' :
                           isRefundPending ? 'text-amber-600 dark:text-amber-400' :
-                            'text-primary'
+                            (!isStaff && !isAdmin && isInternalReturnStatus) ? 'text-destructive' :
+                              'text-primary'
                   )}
                 >
-                  {isExpired && order.status === 'PENDING'
-                    ? t('orderDetail.status.expired', 'Hết hạn')
-                    : isRefundPending
-                      ? t('orderDetail.status.cancel_requested', 'Chờ hoàn tiền')
-                      : getStatusLabel(order.status)}
+                  {displayStatusLabel}
                 </span>
               )}
             </div>

@@ -58,7 +58,16 @@ function getStatusBadgeClassName(status: string) {
   return STATUS_BADGE_STYLE[status] || 'bg-muted text-muted-foreground'
 }
 
-function getStatusLabel(status: string) {
+function getStatusLabel(status: string, t: (key: string) => string) {
+  const key = status.toLowerCase()
+  // Using the translations defined in orderDetail.status
+  const translated = t(`orderDetail.status.${key}`)
+  
+  if (translated && !translated.startsWith('orderDetail.status')) {
+    return translated
+  }
+
+  // Fallback map if translation is missing
   switch (status) {
     case 'PENDING':
       return 'Chờ xử lý'
@@ -69,7 +78,6 @@ function getStatusLabel(status: string) {
     case 'SHIPPING':
       return 'Đang giao'
     case 'DELIVERED':
-      return 'Đã giao'
     case 'COMPLETED':
       return 'Đã giao'
     case 'CANCELLED':
@@ -82,7 +90,7 @@ function getStatusLabel(status: string) {
     case 'RETURNED_TO_WAREHOUSE':
     case 'AWAITING_REDELIVERY':
     case 'COORDINATOR_REVIEW':
-      return 'Giao thất bại'
+      return t('orderDetail.status.delivery_failed') || 'Giao thất bại'
     default:
       return status
   }
@@ -103,7 +111,10 @@ function formatDate(dateString: string) {
   return `${dd}/${mm}/${yyyy}`
 }
 
+import { useTranslation } from 'react-i18next'
+
 export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
+  const { t } = useTranslation('profile')
   const navigate = useNavigate()
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [isConfirming, setIsConfirming] = useState(false)
@@ -157,16 +168,16 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 getStatusBadgeClassName(order.status)
               )}
             >
-              {getStatusLabel(order.status)}
+              {getStatusLabel(order.status, t)}
             </span>
           </div>
-          <span>Ngày đặt: {formatDateOnly(order.createdAt)}</span>
+          <span>{t('orderHistory.orderDate', { date: formatDateOnly(order.createdAt) })}</span>
           <span className='text-xs text-muted-foreground'>{formatTimeOnly(order.createdAt)}</span>
         </div>
 
         <div className="flex items-center justify-between gap-6 md:justify-end md:gap-8 w-full md:w-auto">
           <div className="text-left md:text-right">
-            <p className="text-xs text-muted-foreground">Tổng thanh toán</p>
+            <p className="text-xs text-muted-foreground">{t('orderDetail.totalOrder', { defaultValue: 'Tổng thanh toán' })}</p>
             <p className="text-xl font-extrabold text-primary">{formatPrice(order.finalAmount)}</p>
           </div>
 
@@ -179,7 +190,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
               }}
               className="rounded-lg border-2 border-primary px-6 py-2.5 text-sm font-bold text-primary transition-all hover:bg-primary hover:text-primary-foreground active:scale-95"
             >
-              Xem chi tiết
+              {t('orderHistory.actions.viewDetails')}
             </button>
 
             {canPayAgain && (
@@ -243,7 +254,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 disabled={isLoadingPayment}
                 className="rounded-lg bg-success px-4 py-2.5 text-sm font-bold text-success-foreground shadow-sm transition-colors hover:opacity-90 active:scale-95 disabled:opacity-50"
               >
-                {isLoadingPayment ? 'Đang tải...' : 'Thanh toán lại'}
+                {isLoadingPayment ? t('orderCancel.loading', { defaultValue: 'Đang tải...' }) : t('orderDetail.payAgain', { defaultValue: 'Thanh toán lại' })}
               </button>
             )}
 
@@ -256,7 +267,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 }}
                 className="rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground shadow-sm transition-colors hover:opacity-90 active:scale-95"
               >
-                Đã nhận được hàng
+                {t('orderDetail.confirmDelivered', { defaultValue: 'Đã nhận được hàng' })}
               </button>
             )}
           </div>
@@ -266,7 +277,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-            <h4 className="font-display text-lg font-bold text-foreground mb-2">Xác nhận nhận hàng</h4>
+            <h4 className="font-display text-lg font-bold text-foreground mb-2">{t('orderDetail.deliveryProofTitle', { defaultValue: 'Xác nhận nhận hàng' })}</h4>
             <p className="text-sm text-muted-foreground mb-6">
               Bạn xác nhận đã nhận đầy đủ sản phẩm và muốn hoàn tất đơn hàng?
             </p>
@@ -276,7 +287,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 onClick={() => setShowConfirmModal(false)}
                 className="rounded-lg border border-border px-4 py-2 text-xs font-semibold hover:bg-muted"
               >
-                Hủy
+                {t('orderDetail.cancel', { defaultValue: 'Hủy' })}
               </button>
               <button
                 type="button"
@@ -284,7 +295,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 disabled={isConfirming}
                 className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:opacity-90 disabled:opacity-50"
               >
-                Xác nhận
+                {t('orderDetail.confirm', { defaultValue: 'Xác nhận' })}
               </button>
             </div>
           </div>

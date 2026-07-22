@@ -388,6 +388,7 @@
       "track": "Theo dõi"
     },
     "empty": "Chưa có đơn hàng nào phù hợp với bộ lọc này.",
+    "searchPlaceholder": "Tìm theo mã đơn hàng",
     "items": {
       "ord5542": {
         "id": "#ORD-5542",

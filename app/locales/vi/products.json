@@ -308,11 +308,12 @@
       }
     },
     "coupon": {
-      "title": "Mã giảm giá / Voucher",
-      "placeholder": "Nhập mã...",
-      "apply": "Áp dụng"
-    },
-    "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
+      "title": "Mã giảm giá",
+      "apply": "Áp dụng mã giảm giá",
+      "change": "Đổi",
+      "discountApplied": "Giảm {{amount}}",
+      "voucherNoLongerValid": "Mã giảm giá không còn khả dụng. Vui lòng chọn mã khác."
+    }
   },
   "voucherPicker": {
     "back": "Quay lại",

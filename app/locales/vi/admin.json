@@ -1200,7 +1200,9 @@
       "UPDATED": "Cập nhật",
       "PAY": "Thanh toán",
       "REFUND": "Hoàn tiền",
-      "USE": "Sử dụng"
+      "USE": "Sử dụng",
+      "BOMBED": "Giao thất bại",
+      "COORDINATOR_NEGOTIATING": "Chuyển hàng về cho coordinator"
     },
     "entityTypes": {
       "PRODUCT": "Sản phẩm",
@@ -1209,6 +1211,7 @@
       "ORDER": "Đơn hàng",
       "USER": "Người dùng",
       "PAYMENT": "Thanh toán",
+      "VOUCHER": "Voucher",
       "VOUCHER_USAGE": "Sử dụng Voucher"
     },
     "fields": {
@@ -1251,7 +1254,8 @@
       "PAYMENT_BY_MOMO": "Thanh toán MoMo",
       "PAYMENT_BY_CARD": "Thanh toán bằng thẻ",
       "CREATE_VOUCHER": "Tạo voucher",
-      "VOUCHER_USED": "Sử dụng voucher"
+      "VOUCHER_USED": "Sử dụng voucher",
+      "PAYMENT_BY_VNPAY": "Thanh toán VnPay"
     },
     "pagination": {
       "showing": "Hiển thị",

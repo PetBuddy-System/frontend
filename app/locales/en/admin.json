@@ -1200,7 +1200,9 @@
       "UPDATED": "Updated",
       "PAY": "Pay",
       "REFUND": "Refund",
-      "USE": "Use"
+      "USE": "Use",
+      "BOMBED": "Delivery Failed",
+      "COORDINATOR_NEGOTIATING": "Return to Coordinator"
     },
     "entityTypes": {
       "PRODUCT": "Product",
@@ -1209,6 +1211,7 @@
       "ORDER": "Order",
       "USER": "User",
       "PAYMENT": "Payment",
+      "VOUCHER": "Voucher",
       "VOUCHER_USAGE": "Voucher Usage"
     },
     "fields": {
@@ -1251,7 +1254,8 @@
       "PAYMENT_BY_MOMO": "Payment by MoMo",
       "PAYMENT_BY_CARD": "Payment by Card",
       "CREATE_VOUCHER": "Create new voucher",
-      "VOUCHER_USED": "Voucher used"
+      "VOUCHER_USED": "Voucher used",
+      "PAYMENT_BY_VNPAY": "Payment by VNPay"
     },
     "pagination": {
       "showing": "Showing",

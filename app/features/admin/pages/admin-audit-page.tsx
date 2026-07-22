@@ -47,6 +47,7 @@ const getReasonText = (reason: string | null, t: (key: string) => string): strin
         'PAYMENT_BY_CARD': t('audit.reasonMap.PAYMENT_BY_CARD'),
         'CREATE_VOUCHER': t('audit.reasonMap.CREATE_VOUCHER'),
         'VOUCHER_USED': t('audit.reasonMap.VOUCHER_USED'),
+        'PAYMENT_BY_VNPAY': t('audit.reasonMap.PAYMENT_BY_VNPAY')
     }
     return reasonMap[reason] || reason
 }
@@ -58,8 +59,17 @@ const getActionLabel = (action: string, t: (key: string) => string) => {
         'DELETE': t('audit.actions.DELETE'),
         'PAY': t('audit.actions.PAY'),
         'REFUND': t('audit.actions.REFUND'),
-        'USE': t('audit.actions.USE')
+        'USE': t('audit.actions.USE'),
+        'BOMBED': t('audit.actions.BOMBED'),
+        'COORDINATOR_NEGOTIATING': t('audit.actions.COORDINATOR_NEGOTIATING')
     }
+
+    // Check if the translation returns a valid string (not the key itself)
+    const translated = t(`audit.actions.${action}`)
+    if (translated && !translated.startsWith('audit.actions.')) {
+        return translated
+    }
+
     return map[action] || action
 }
 
@@ -144,6 +154,10 @@ export function AdminAuditPage() {
                 return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
             case 'USE':
                 return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+            case 'BOMBED':
+                return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+            case 'COORDINATOR_NEGOTIATING':
+                return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
             default:
                 return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
         }

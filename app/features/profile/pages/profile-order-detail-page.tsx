@@ -1,8 +1,7 @@
-// app/features/profile/pages/profile-order-detail-page.tsx
-
 import { useState, useEffect } from 'react'
 import { ProfileFloatingSupport } from '../components/layout/profile-floating-support'
 import { ProfileSidebar } from '../components/layout/profile-sidebar'
+import { ProfilePageHeader } from '../components/layout/profile-page-header'
 import { OrderDetailView } from '~/shared/components'
 import { Button } from '~/shared/ui'
 import { MaterialIcon } from '~/shared/ui'
@@ -28,7 +27,6 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
   const [existingReview, setExistingReview] = useState<OrderReviewResponse | null>(null)
   const [loadingReview, setLoadingReview] = useState(false)
 
-  // Load order status
   useEffect(() => {
     async function loadOrderStatus() {
       setIsLoadingStatus(true)
@@ -46,7 +44,6 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
     void loadOrderStatus()
   }, [orderId])
 
-  // Load review nếu có
   useEffect(() => {
     async function loadReview() {
       if (!orderId) return
@@ -137,9 +134,7 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
     <div className='flex h-screen overflow-hidden bg-background text-foreground'>
       <ProfileSidebar activeItem='orders' />
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <header className='flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-border bg-card px-4 py-4 sm:px-6'>
-          <h1 className='text-lg font-bold text-foreground'>Đơn hàng của tôi</h1>
-        </header>
+        <ProfilePageHeader titleKey='Đơn hàng của tôi' />
 
         <main className='flex-1 overflow-y-auto p-4 md:p-6 pb-24'>
           <div className='mx-auto flex max-w-7xl flex-col gap-4'>

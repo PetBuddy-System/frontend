@@ -308,11 +308,12 @@
       }
     },
     "coupon": {
-      "title": "Discount code / Voucher",
-      "placeholder": "Enter code...",
-      "apply": "Apply"
-    },
-    "voucherNoLongerValid": "This voucher is no longer available. Please choose another one."
+      "title": "Voucher",
+      "apply": "Apply discount code",
+      "change": "Change",
+      "discountApplied": "Discount {{amount}}",
+      "voucherNoLongerValid": "This voucher is no longer available. Please choose another one."
+    }
   },
   "voucherPicker": {
     "back": "Back",

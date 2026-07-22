@@ -387,6 +387,7 @@
       "buyAgain": "Buy again",
       "track": "Track"
     },
+    "searchPlaceholder": "Search by order Code...",
     "empty": "No orders match this filter yet.",
     "items": {
       "ord5542": {
@@ -539,7 +540,7 @@
       "confirmed": "Confirmed",
       "picking": "Picking",
       "shipping": "Shipping",
-      "delivered": "Delivered (Awaiting pickup)",
+      "delivered": "Delivered",
       "completed": "Completed",
       "cancelled": "Cancelled",
       "expired": "Expired",

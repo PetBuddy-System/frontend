@@ -52,6 +52,7 @@ const getReasonText = (reason: string | null, t: (key: string) => string): strin
         'PAYMENT_BY_CARD': t('audit.reasonMap.PAYMENT_BY_CARD'),
         'CREATE_VOUCHER': t('audit.reasonMap.CREATE_VOUCHER'),
         'VOUCHER_USED': t('audit.reasonMap.VOUCHER_USED'),
+        'PAYMENT_BY_VNPAY': t('audit.reasonMap.PAYMENT_BY_VNPAY')
     }
     return reasonMap[reason] || reason
 }

@@ -124,21 +124,21 @@ export function CheckoutOrderSummary({
           </div>
         </div>
 
-       <button
-        type={isRetryMode ? 'button' : 'submit'}
+        <button
+          type={isRetryMode ? 'button' : 'submit'}
           onClick={isRetryMode ? onRetryPayment : undefined}
           disabled={isSubmitting || items.length === 0}
           className='flex w-full items-center justify-center gap-3 rounded-full bg-secondary px-6 py-4 font-display font-semibold text-secondary-foreground shadow-md transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
         >
-         <MaterialIcon
+          <MaterialIcon
             name={
               isSubmitting
                 ? 'progress_activity'
                 : paymentMethod === 'CARD'
-                ? 'credit_card'
-                : paymentMethod === 'MOMO'
-                ? 'qr_code_2'
-                : 'lock'
+                  ? 'credit_card'
+                  : paymentMethod === 'MOMO'
+                    ? 'qr_code_2'
+                    : 'lock'
             }
             filled={!isSubmitting}
             className={isSubmitting ? 'animate-spin text-[20px]' : 'text-[20px]'}
@@ -164,7 +164,9 @@ export function CheckoutOrderSummary({
             <div className='flex-1 min-w-0'>
               <p className='truncate text-sm font-semibold text-foreground'>{voucherName}</p>
               {discount > 0 && (
-                <p className='text-xs text-success'>Giảm {formatPrice(discount)}</p>
+                <p className='text-xs text-success'>
+                  {t('checkout.coupon.discountApplied', { amount: formatPrice(discount) })}
+                </p>
               )}
             </div>
             <button
@@ -172,7 +174,7 @@ export function CheckoutOrderSummary({
               onClick={() => navigate('/order/voucher')}
               className='shrink-0 text-xs font-semibold text-primary hover:underline'
             >
-              Đổi
+              {t('checkout.coupon.change')}
             </button>
           </div>
         ) : (
@@ -182,7 +184,7 @@ export function CheckoutOrderSummary({
             className='flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-muted/30 py-3.5 text-sm font-semibold text-foreground transition hover:border-primary hover:bg-primary/5 hover:text-primary'
           >
             <MaterialIcon name='local_offer' className='text-[20px]' />
-            Áp dụng mã giảm giá
+            {t('checkout.coupon.apply')}
           </button>
         )}
       </section>
