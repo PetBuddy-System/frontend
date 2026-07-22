@@ -16,9 +16,7 @@ import type {
 
 const AUTH_BASE_URL = `${env.API_AUTH_PATH}`
 
-export async function loginApi(
-  data: AuthenticationRequest
-): Promise<ApiResponse<AuthenticationResponse>> {
+export async function loginApi(data: AuthenticationRequest): Promise<ApiResponse<AuthenticationResponse>> {
   return customFetch<ApiResponse<AuthenticationResponse>>({
     url: `${AUTH_BASE_URL}/login`,
     method: 'POST',
@@ -34,9 +32,7 @@ export async function logoutApi(token: string): Promise<void> {
   })
 }
 
-export async function refreshTokenApi(
-  refreshToken: string
-): Promise<ApiResponse<AuthenticationResponse>> {
+export async function refreshTokenApi(refreshToken: string): Promise<ApiResponse<AuthenticationResponse>> {
   return customFetch<ApiResponse<AuthenticationResponse>>({
     url: `${AUTH_BASE_URL}/refresh`,
     method: 'POST',
@@ -51,9 +47,7 @@ export async function getProfileApi(): Promise<ApiResponse<UserResponse>> {
   })
 }
 
-export async function signupApi(
-  data: UserCreationRequest
-): Promise<ApiResponse<void>> {
+export async function signupApi(data: UserCreationRequest): Promise<ApiResponse<void>> {
   return customFetch<ApiResponse<void>>({
     url: `${AUTH_BASE_URL}/signup`,
     method: 'POST',
@@ -66,7 +60,7 @@ export async function signupApi(
 export const ROLE_REDIRECT_MAP: Record<string, string> = {
   ADMIN: '/admin/dashboard',
   STAFF: '/staff/dashboard',
-  MANAGER: '/manager/dashboard'
+  MANAGER: '/manager/products'
 } as const
 
 export function getDashboardPathByRole(role?: string): string {
