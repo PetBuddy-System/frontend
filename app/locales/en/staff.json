@@ -919,7 +919,6 @@
       "COMPLETED": "Completed",
       "CANCELLED": "Cancelled",
       "CANCEL_REQUESTED": "Refund pending",
-      "DELIVERY_FAILED": "Delivery Failed",
       "RETURNED_TO_WAREHOUSE": "Returned to warehouse"
     },
     "actions": {
