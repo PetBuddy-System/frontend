@@ -205,14 +205,6 @@ export function AdminShippingPage() {
                             </button>
                         </div>
 
-                        {/* Error Message */}
-                        {errorMessage && (
-                            <div className='flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
-                                <MaterialIcon name='error' className='mt-0.5 shrink-0 text-[20px]' />
-                                <p>{errorMessage}</p>
-                            </div>
-                        )}
-
                         {/* Main Table */}
                         <div className='overflow-hidden rounded-xl border border-border/60 bg-card shadow-sm'>
                             <div className='px-6 py-4 border-b border-border/60'>

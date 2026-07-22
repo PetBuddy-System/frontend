@@ -36,11 +36,12 @@ export function AdminRevenueChartCard({ trendPoints = [], isLoading }: AdminReve
     
     let label = ''
     if (val >= 1000000) {
-      label = `${(val / 1000000).toFixed(1).replace('.0', '')}M`
+      const millions = Math.round((val / 1000000) * 10) / 10
+      label = `${millions}M`
     } else if (val >= 1000) {
-      label = `${(val / 1000).toFixed(1).replace('.0', '')}K`
+      label = `${Math.round(val / 1000)}K`
     } else {
-      label = `${val}`
+      label = `${Math.round(val)}`
     }
     return { label, y }
   })

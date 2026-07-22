@@ -4,7 +4,6 @@ export { StaffCoordinatorBookingsPage } from './pages/staff-coordinator-bookings
 export { StaffDashboardPage } from './pages/staff-dashboard-page'
 export { StaffDisposalRequestPage } from './pages/staff-disposal-request-page'
 export { StaffGroomerBookingsPage } from './pages/staff-groomer-bookings-page'
-export { StaffOrdersPage } from './pages/staff-orders-page'
 export { StaffOrderDetailPage } from './pages/staff-order-detail-page'
 export { StaffScheduleDetailPage } from './pages/staff-schedule-detail-page'
 export { StaffWeeklySchedulePage } from './pages/staff-weekly-schedule-page'

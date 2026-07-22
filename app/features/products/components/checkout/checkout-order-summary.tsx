@@ -30,7 +30,7 @@ export interface CheckoutOrderSummaryProps {
   isSubmitting?: boolean
   mode?: 'checkout' | 'retry-payment'
   onRetryPayment?: () => void
-  paymentMethod?: 'CASH' | 'CARD' | 'MOMO'
+  paymentMethod?: 'CASH' | 'CARD' | 'MOMO' | 'VNPAY'
 }
 
 export function CheckoutOrderSummary({

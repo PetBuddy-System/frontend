@@ -84,6 +84,7 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
   function getPaymentMethodLabel() {
     if (selectedPaymentMethod === 'CARD') return t('checkout.shipping.paymentMethods.card')
     if (selectedPaymentMethod === 'MOMO') return t('checkout.shipping.paymentMethods.momo')
+    if (selectedPaymentMethod === 'VNPAY') return t('checkout.shipping.paymentMethods.vnpay')
     return t('checkout.shipping.paymentMethods.cash')
   }
 
@@ -308,6 +309,25 @@ export function useCheckoutSubmit(deps: UseCheckoutSubmitDeps) {
         window.location.href = momoPayUrl
       } else {
         setErrorMessage('checkout.momoUrlMissing')
+      }
+    } else if (selectedPaymentMethod === 'VNPAY') {
+      let vnpayPayUrl = orderData?.payment?.vnpayPayUrl
+
+      if (!vnpayPayUrl) {
+        try {
+          const paymentRes = await getPaymentByOrderIdApi(orderId)
+          vnpayPayUrl = paymentRes.data?.vnpayPayUrl
+        } catch (payErr) {
+          console.error('Error fetching VNPAY payment URL:', payErr)
+        }
+      }
+
+      if (vnpayPayUrl) {
+        sessionStorage.setItem('pendingVnPayOrderId', String(orderId))
+        sessionStorage.removeItem('isVnPayRetry')
+        window.location.href = vnpayPayUrl
+      } else {
+        setErrorMessage('checkout.vnpayUrlMissing')
       }
     } else {
       navigate('/order-success')

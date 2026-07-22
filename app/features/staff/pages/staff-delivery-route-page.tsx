@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
 
 import { StaffSidebar } from '../components/layout/staff-sidebar'
 import { StaffTopNav } from '../components/layout/staff-top-nav'
@@ -12,8 +11,9 @@ import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { formatDateTime } from '~/shared/lib/date'
 
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)
+function formatCurrency(value: number, locale: string): string {
+  const intlLocale = locale === 'vi' ? 'vi-VN' : 'en-US'
+  return new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'VND' }).format(value)
 }
 
 interface DeliveryProofDialogProps {
@@ -127,10 +127,10 @@ interface StopCardProps {
 }
 
 function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardProps) {
-  const { t } = useTranslation('staff')
-  const navigate = useNavigate()
+  const { t, i18n } = useTranslation('staff')
   const isDelivered = stop.status === 'DELIVERED'
-  const isPaidByCard = stop.paymentMethod === 'CARD' && stop.paymentStatus === 'PAID'
+  const isPaid = stop.paymentStatus === 'PAID'
+  const displayAmount = isPaid ? 0 : stop.finalAmount
 
   return (
     <div className='flex relative pb-8'>
@@ -178,9 +178,9 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
             </button>
           </div>
           <div className='text-right'>
-            <p className='font-bold text-foreground'>{formatCurrency(stop.finalAmount)}</p>
-            <p className='text-xs text-muted-foreground'>
-              {isPaidByCard ? t('deliveryRoute.timeline.paymentCard') : t('deliveryRoute.timeline.paymentCash')}
+            <p className='font-bold text-foreground'>{formatCurrency(displayAmount, i18n.language)}</p>
+            <p className='text-xs text-muted-foreground font-medium'>
+              {isPaid ? t('deliveryRoute.timeline.paymentPaid') : t('deliveryRoute.timeline.paymentCod')}
             </p>
           </div>
         </div>
@@ -196,7 +196,9 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
           </div>
           {stop.estimatedDeliveryAt && (
             <div>
-              <p className='text-xs text-muted-foreground mb-0.5'>{t('orderDetail.estimatedDeliveryAt', 'Dự kiến giao hàng', { ns: 'profile' })}</p>
+              {/* Đã bỏ defaultValue tiếng Việt cứng — cần đảm bảo key này tồn tại
+                  trong namespace 'profile' ở cả en.json và vi.json */}
+              <p className='text-xs text-muted-foreground mb-0.5'>{t('orderDetail.estimatedDeliveryAt', { ns: 'profile' })}</p>
               <p className='font-semibold text-foreground flex items-center gap-1'>
                 <MaterialIcon name='event' className='text-primary text-[16px]' />
                 {formatDateTime(stop.estimatedDeliveryAt)}
@@ -227,8 +229,8 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
               )}
             >
               {(stop.deliveryFailCount ?? 0) >= 3
-                ? t('deliveryRoute.timeline.bombedBtn', 'Bom hàng')
-                : t('deliveryRoute.timeline.failedBtn', 'Giao hàng thất bại')}
+                ? t('deliveryRoute.timeline.failedBtn')
+                : t('deliveryRoute.timeline.failedBtn')}
             </button>
           </div>
         )}
@@ -238,7 +240,7 @@ function StopCard({ stop, isActive, onMarkDelivered, onMarkFailed }: StopCardPro
 }
 
 export function StaffDeliveryRoutePage() {
-  const { t } = useTranslation('staff')
+  const { t, i18n } = useTranslation('staff')
   const { user } = useAuth()
 
   const [stops, setStops] = useState<DeliveryStop[]>([])
@@ -285,10 +287,10 @@ export function StaffDeliveryRoutePage() {
 
   async function handleMarkFailed(stop: DeliveryStop) {
     if ((stop.deliveryFailCount ?? 0) >= 3) {
-      // Transition directly to BOMBED
+      // Transition to DELIVERY_FAILED after 3 failed attempts
       setIsSubmittingProof(true)
       try {
-        await updateOrderStatusApi(stop.orderId, 'BOMBED')
+        await updateOrderStatusApi(stop.orderId, 'DELIVERY_FAILED')
         await loadRoute()
       } catch {
       } finally {
@@ -324,7 +326,9 @@ export function StaffDeliveryRoutePage() {
               <div className='flex h-64 items-center justify-center'>
                 <div className='flex flex-col items-center gap-3 text-muted-foreground'>
                   <MaterialIcon name='progress_activity' className='animate-spin text-[40px] text-primary' />
-                  <p className='text-sm'>{t('deliveryRoute.errors.loadFailed')}</p>
+                  {/* Trước đây dùng nhầm key 'errors.loadFailed' (nghĩa là "tải thất bại")
+                      để hiển thị lúc đang tải — cần thêm key riêng 'deliveryRoute.loading' */}
+                  <p className='text-sm'>{t('deliveryRoute.loading')}</p>
                 </div>
               </div>
             )}
@@ -337,7 +341,7 @@ export function StaffDeliveryRoutePage() {
                   onClick={() => void loadRoute()}
                   className='rounded-xl bg-primary px-5 py-2 text-sm font-bold text-primary-foreground'
                 >
-                  Thử lại
+                  {t('deliveryRoute.errors.retry')}
                 </button>
               </div>
             )}

@@ -87,3 +87,27 @@ export async function confirmReturnedToWarehouseApi(
     method: 'POST'
   })
 }
+
+export async function coordinatorReportUnreachableApi(
+  orderId: number,
+  note: string
+): Promise<ApiResponse<OrderResponse>> {
+  return customFetch<ApiResponse<OrderResponse>>({
+    url: `${ORDER_BASE_URL}/${orderId}/coordinator-report-unreachable`,
+    method: 'POST',
+    params: { note }
+  })
+}
+
+export async function coordinatorNegotiateRedeliveryApi(
+  orderId: number,
+  negotiatedDate: string,
+  note: string
+): Promise<ApiResponse<OrderResponse>> {
+  return customFetch<ApiResponse<OrderResponse>>({
+    url: `${ORDER_BASE_URL}/${orderId}/coordinator-negotiate-redelivery`,
+    method: 'POST',
+    params: { negotiatedDate, note }
+  })
+}
+

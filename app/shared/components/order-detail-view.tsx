@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { fetchOrderDetailApi, updateOrderStatusApi } from '~/features/profile/services/order/order-api'
-import { retryMomoPaymentApi } from '~/features/products/services/payment/payment-api'
+import { retryMomoPaymentApi, retryVnPayPaymentApi } from '~/features/products/services/payment/payment-api'
 import type { OrderDetailFull } from '~/shared/lib/order'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
@@ -17,7 +17,7 @@ import { OrderProductList } from './order-detail/order-product-list'
 import { OrderPaymentDetail } from './order-detail/order-payment-detail'
 import { OrderActionButtons } from './order-detail/order-action-buttons'
 import { StaffOrderPickingDialog } from '~/features/staff/components/orders/staff-order-picking-dialog'
-import {formatDateOnly, formatTimeOnly } from '~/shared/lib/date'
+import { formatDateOnly, formatTimeOnly } from '~/shared/lib/date'
 
 interface OrderDetailViewProps {
   orderId: number
@@ -62,7 +62,7 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
 
   const isCountdownExpired =
     order?.status === 'PENDING' &&
-    (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO') &&
+    (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO' || order?.payment?.paymentMethod === 'VNPAY') &&
     order?.payment?.status !== 'PAID' &&
     countdown === 0 &&
     Boolean(order?.paymentExpiredAt)
@@ -118,7 +118,7 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
       return
     }
 
-    if (!isStaff && (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO')) {
+    if (!isStaff && (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO' || order?.payment?.paymentMethod === 'VNPAY')) {
       navigate(`/profile/orders/${orderId}/cancel`)
       return
     }
@@ -150,6 +150,22 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
           window.location.href = res.data.momoPayUrl
         } else {
           alert(res.message || t('orderDetail.momoUrlMissing', 'Không tìm thấy liên kết thanh toán MoMo.'))
+        }
+      } catch (err) {
+        alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
+      }
+      return
+    }
+
+    if (order.payment?.paymentMethod === 'VNPAY') {
+      try {
+        const res = await retryVnPayPaymentApi(order.orderId)
+        if (res.success && res.data?.vnpayPayUrl) {
+          sessionStorage.setItem('pendingVnPayOrderId', String(order.orderId))
+          sessionStorage.setItem('isVnPayRetry', 'true')
+          window.location.href = res.data.vnpayPayUrl
+        } else {
+          alert(res.message || t('orderDetail.vnpayUrlMissing', 'Không tìm thấy liên kết thanh toán VNPAY.'))
         }
       } catch (err) {
         alert(err instanceof Error ? err.message : 'Có lỗi xảy ra')
@@ -214,7 +230,7 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
   const canRetryPayment =
     !isStaff &&
     order?.status === 'PENDING' &&
-    (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO') &&
+    (order?.payment?.paymentMethod === 'CARD' || order?.payment?.paymentMethod === 'MOMO' || order?.payment?.paymentMethod === 'VNPAY') &&
     order?.payment?.status !== 'PAID' &&
     !isExpired
 
@@ -232,7 +248,7 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
           </div>
         )}
 
-        {order && order.status === 'PENDING' && (order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO') && order.payment?.status !== 'PAID' && !isExpired && !isLoading && (
+        {order && order.status === 'PENDING' && (order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO' || order.payment?.paymentMethod === 'VNPAY') && order.payment?.status !== 'PAID' && !isExpired && !isLoading && (
           <div className="flex items-center gap-3 rounded-xl border border-warning/40 bg-warning/10 px-5 py-4 text-warning">
             <MaterialIcon name="schedule" className="text-[22px] shrink-0" />
             <p className="font-semibold text-sm">
@@ -256,6 +272,20 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
                   {t('orderDetail.refundPendingDesc', 'Nhân viên sẽ xem xét và xác nhận hoàn tiền cho bạn sớm nhất có thể.')}
                 </p>
               )}
+            </div>
+          </div>
+        )}
+
+        {order && order.status === 'DELIVERY_FAILED' && order.cancelReason && !isLoading && (
+          <div className="flex items-start gap-3 rounded-xl border border-destructive/40 bg-destructive/10 px-5 py-4 text-destructive">
+            <MaterialIcon name="error_outline" className="text-[22px] shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold text-sm">
+                {t('orderDetail.deliveryFailedTitle', 'Giao hàng thất bại')}
+              </p>
+              <p className="text-sm font-medium opacity-90 mt-1">
+                <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span> {order.cancelReason}
+              </p>
             </div>
           </div>
         )}
@@ -316,6 +346,11 @@ export function OrderDetailView({ orderId, isStaff, isAdmin = false }: OrderDeta
                   ? t('orderDetail.expiredBanner')
                   : t('orderDetail.cancelledMessage', 'Đơn hàng đã bị hủy')}
               </p>
+              {order.status === 'CANCELLED' && order.cancelReason && (
+                <p className="text-sm text-destructive/80 font-medium mt-1 text-center max-w-md">
+                  <span className="font-semibold">{t('orderDetail.reasonLabel', 'Lý do:')}</span> {order.cancelReason}
+                </p>
+              )}
               <div className="flex flex-col items-center text-xs text-muted-foreground">
                 <span>{formatDateOnly(order.updatedAt || order.createdAt)}</span>
                 <span>{formatTimeOnly(order.updatedAt || order.createdAt)}</span>

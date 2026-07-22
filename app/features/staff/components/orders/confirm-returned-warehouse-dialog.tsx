@@ -78,7 +78,7 @@ export function ConfirmReturnedWarehouseDialog({
               <p>{t('confirmReturnedWarehouseDialog.infoDesc')}</p>
               {order.cancelReason && (
                 <p className='mt-2 text-foreground'>
-                  <span className='font-semibold'>{t('confirmReturnedWarehouseDialog.bombedReason')}: </span>
+                  <span className='font-semibold'>{t('confirmReturnedWarehouseDialog.failedDeliveryReason')}: </span>
                   {order.cancelReason}
                 </p>
               )}

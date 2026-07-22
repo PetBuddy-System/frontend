@@ -101,9 +101,9 @@ export function AdminShippingFormModal({
                 </div>
 
                 {error && (
-                    <div className='flex items-start gap-2 rounded-xl border border-destructive/20 bg-destructive/10 px-3 py-2 text-xs text-destructive'>
-                        <MaterialIcon name='error' className='shrink-0 text-[16px]' />
-                        <p>{error}</p>
+                    <div className='flex items-start gap-2.5 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive'>
+                        <MaterialIcon name='error' className='mt-0.5 shrink-0 text-[18px]' />
+                        <p className='leading-snug'>{error}</p>
                     </div>
                 )}
 

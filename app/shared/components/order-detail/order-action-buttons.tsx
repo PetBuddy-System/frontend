@@ -139,7 +139,7 @@ export function OrderActionButtons({
 
       {!isStaff &&
         order.status === 'PENDING' &&
-        (order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO') &&
+        (order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO' || order.payment?.paymentMethod === 'VNPAY') &&
         order.payment?.status !== 'PAID' && (
         <button
           onClick={onRetryPayment}
@@ -151,7 +151,13 @@ export function OrderActionButtons({
           )}
         >
           <MaterialIcon
-            name={order.payment?.paymentMethod === 'MOMO' ? 'qr_code_2' : 'credit_card'}
+            name={
+              order.payment?.paymentMethod === 'MOMO'
+                ? 'qr_code_2'
+                : order.payment?.paymentMethod === 'VNPAY'
+                ? 'account_balance'
+                : 'credit_card'
+            }
             className="text-[18px]"
           />
           <span>{t('orderDetail.payAgain', 'Thanh toán lại')}</span>
