@@ -7,7 +7,7 @@ export { StaffGroomerBookingsPage } from './pages/staff-groomer-bookings-page'
 export { StaffOrdersPage } from './pages/staff-orders-page'
 export { StaffOrderDetailPage } from './pages/staff-order-detail-page'
 export { StaffScheduleDetailPage } from './pages/staff-schedule-detail-page'
+export { StaffShiftRegistrationPage } from './pages/staff-shift-registration-page'
 export { StaffWeeklySchedulePage } from './pages/staff-weekly-schedule-page'
 export { StaffReturnsPage } from './pages/staff-returns-page'
 export { StaffShipperAssignmentPage } from './pages/staff-shipper-assignment-page'
-

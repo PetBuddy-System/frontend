@@ -145,6 +145,7 @@
       "products": "Quản lý sản phẩm",
       "services": "Quản lý dịch vụ",
       "serviceBookings": "Lịch đặt dịch vụ",
+      "shiftRegistrations": "Đăng ký ca làm",
       "staff": "Quản lý lịch làm việc",
       "returnRequests": "Duyệt đổi trả",
       "restock": "Nhập hàng trả về",
@@ -164,6 +165,124 @@
   "serviceBookings": {
     "title": "Quản lý lịch đặt",
     "subtitle": "Theo dõi lịch đã thanh toán, điều phối vận hành và cập nhật trạng thái dịch vụ."
+  },
+  "shiftRegistration": {
+    "title": "Quản lý đăng ký ca làm",
+    "subtitle": "Tạo đợt đăng ký ca theo tuần, theo dõi staff đăng ký ca mong muốn và chuẩn bị dữ liệu tạo lịch làm việc.",
+    "createPage": {
+      "title": "Tạo đợt đăng ký ca",
+      "subtitle": "Thiết lập tuần làm việc và thời gian cho staff gửi đăng ký ca mong muốn."
+    },
+    "detailPage": {
+      "title": "Chi tiết đợt đăng ký ca",
+      "subtitle": "Xem thời gian đăng ký và danh sách staff đã gửi ca mong muốn trong đợt này."
+    },
+    "actions": {
+      "backToList": "Quay lại danh sách",
+      "cancel": "Hủy",
+      "clearFilters": "Xóa lọc",
+      "create": "Tạo đợt đăng ký",
+      "refresh": "Tải lại",
+      "saving": "Đang lưu...",
+      "updateStatus": "Cập nhật trạng thái",
+      "viewDetails": "Xem chi tiết"
+    },
+    "detail": {
+      "registrationWindow": "Thời gian đăng ký",
+      "workRange": "Khoảng ngày làm việc",
+      "workRangeHint": "Staff sẽ đăng ký ca mong muốn trong khoảng ngày làm việc này."
+    },
+    "empty": "Không tìm thấy đợt đăng ký ca phù hợp.",
+    "errors": {
+      "forbidden": "Bạn không có quyền thực hiện thao tác này.",
+      "invalidDateRange": "Khoảng ngày làm việc không hợp lệ. Ngày kết thúc không được trước ngày bắt đầu.",
+      "invalidRegisterCloseTime": "Thời gian đóng đăng ký phải trước ngày bắt đầu tuần làm.",
+      "invalidRegistrationTime": "Thời gian đóng đăng ký phải sau thời gian mở đăng ký.",
+      "network": "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối và thử lại.",
+      "notFound": "Đợt đăng ký ca không tồn tại.",
+      "registrationExpired": "Thời gian đăng ký đã hết hạn.",
+      "registrationNotOpen": "Chưa tới thời gian mở đăng ký ca.",
+      "registrationPeriodClosed": "Đợt đăng ký ca này đã đóng.",
+      "registrationPeriodExists": "Đã có đợt đăng ký ca trùng với khoảng ngày làm việc này.",
+      "server": "Máy chủ đang gặp sự cố. Vui lòng thử lại sau."
+    },
+    "filters": {
+      "fromDate": "Từ ngày",
+      "pageSize": "Số dòng",
+      "shiftType": "Ca đăng ký",
+      "staffKeyword": "Tìm staff",
+      "staffKeywordPlaceholder": "Nhập tên staff...",
+      "status": "Trạng thái",
+      "toDate": "Đến ngày",
+      "workDate": "Ngày làm"
+    },
+    "form": {
+      "helper": "Sau khi tạo đợt đăng ký, staff có thể vào đăng ký ca sáng, chiều, tối, cả ngày hoặc ca tùy chỉnh theo mong muốn cá nhân.",
+      "registerCloseAt": "Thời gian đóng đăng ký",
+      "registerOpenAt": "Thời gian mở đăng ký",
+      "workFromDate": "Ngày bắt đầu tuần làm",
+      "workToDate": "Ngày kết thúc tuần làm"
+    },
+    "list": {
+      "showing": "Hiển thị {{from}}-{{to}} trong {{total}} đợt đăng ký",
+      "title": "Danh sách đợt đăng ký ca"
+    },
+    "messages": {
+      "createFailed": "Tạo đợt đăng ký ca thất bại.",
+      "created": "Tạo đợt đăng ký ca thành công.",
+      "loadDetailFailed": "Không thể tải chi tiết đợt đăng ký ca.",
+      "loadPeriodsFailed": "Không thể tải danh sách đợt đăng ký ca.",
+      "loadRegistrationsFailed": "Không thể tải danh sách staff đăng ký ca.",
+      "required": "Vui lòng nhập đầy đủ các trường bắt buộc.",
+      "statusUpdateFailed": "Cập nhật trạng thái thất bại.",
+      "statusUpdated": "Đã cập nhật trạng thái đợt đăng ký ca."
+    },
+    "pagination": {
+      "label": "Phân trang đăng ký ca",
+      "page": "Trang {{page}} / {{totalPages}}"
+    },
+    "registrations": {
+      "empty": "Chưa có staff nào đăng ký ca trong đợt này.",
+      "listTitle": "Danh sách staff đăng ký ca",
+      "showing": "Hiển thị {{from}}-{{to}} trong {{total}} đăng ký",
+      "standardShift": "Theo khung ca chuẩn",
+      "subtitle": "Danh sách này giúp manager nắm ca mong muốn của staff trước khi tạo lịch làm việc chính thức.",
+      "table": {
+        "createdAt": "Ngày đăng ký",
+        "customTime": "Giờ tùy chỉnh",
+        "reason": "Lý do",
+        "shift": "Ca mong muốn",
+        "staff": "Staff",
+        "workDate": "Ngày làm"
+      },
+      "title": "Staff đã đăng ký ca"
+    },
+    "shiftTypes": {
+      "AFTERNOON": "Ca chiều",
+      "ALL": "Tất cả",
+      "CUSTOM": "Tùy chỉnh",
+      "EVENING": "Ca tối",
+      "FULL_DAY": "Cả ngày",
+      "MORNING": "Ca sáng"
+    },
+    "statusModal": {
+      "close": "Đóng hộp thoại cập nhật trạng thái",
+      "description": "Chọn trạng thái mới cho đợt đăng ký ca này.",
+      "status": "Trạng thái",
+      "title": "Cập nhật trạng thái"
+    },
+    "statuses": {
+      "ALL": "Tất cả",
+      "CLOSED": "Đã đóng",
+      "OPEN": "Đang mở"
+    },
+    "table": {
+      "actions": "Thao tác",
+      "registrationTime": "Thời gian nhận đăng ký",
+      "status": "Trạng thái",
+      "workRange": "Tuần làm việc",
+      "workRangeHint": "Khoảng staff có thể đăng ký ca"
+    }
   },
   "stats": {
     "discrepancies": {

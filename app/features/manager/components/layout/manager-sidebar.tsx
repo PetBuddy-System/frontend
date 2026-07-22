@@ -12,6 +12,7 @@ const MANAGER_NAV_ITEMS = [
   { icon: 'shopping_bag', key: 'products', href: '/manager/products' },
   { icon: 'medical_services', key: 'services', href: '/manager/services' },
   { icon: 'event_note', key: 'serviceBookings', href: '/manager/bookings' },
+  { icon: 'event_available', key: 'shiftRegistrations', href: '/manager/shift-registration-periods' },
   { icon: 'groups', key: 'staff', href: '/manager/staff-schedule' },
   { icon: 'assignment_turned_in', key: 'returnRequests', href: '/manager/return-requests' },
   { icon: 'inventory_2', key: 'restock', href: '/manager/restock' },

@@ -6,7 +6,7 @@ import { useAuth } from '~/providers/auth-provider'
 import { cn } from '~/shared/lib/cn'
 import { MaterialIcon } from '~/shared/ui'
 
-type StaffTask = 'COORDINATOR' | 'SHIPPER'
+type StaffTask = 'COORDINATOR' | 'GROOMER' | 'SHIPPER'
 
 type AllowedTasks = readonly StaffTask[] | null
 
@@ -34,6 +34,12 @@ const STAFF_NAV_ITEMS = [
     allowedTasks: ['COORDINATOR'] as AllowedTasks
   },
   { icon: 'event_note', key: 'weeklySchedule', href: '/staff/weekly-schedule', allowedTasks: null as AllowedTasks },
+  {
+    icon: 'edit_calendar',
+    key: 'shiftRegistration',
+    href: '/staff/shift-registrations',
+    allowedTasks: null as AllowedTasks
+  },
   { icon: 'history', key: 'attendanceHistory', href: '/staff/attendance', allowedTasks: null as AllowedTasks }
 ] as const
 
