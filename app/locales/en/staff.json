@@ -69,7 +69,6 @@
     "roleTitle": "Store Staff",
     "toggle": "Toggle sidebar"
   },
-
   "shipperAssignment": {
     "title": "Shipper Assignment",
     "subtitle": "Group orders in nearby areas and assign a delivery staff.",
@@ -670,6 +669,8 @@
     },
     "stats": {
       "all": "Total requests",
+      "totalRequests": "Total Requests",
+      "assigned": "Assigned",
       "pending": "Pending",
       "approved": "Approved",
       "rejected": "Rejected",
@@ -677,10 +678,12 @@
       "cancelled": "Cancelled",
       "pickingUp": "Picking up",
       "pickedUp": "Picked up",
+      "pickupFailed": "Pickup failed",
       "returnedToStore": "Returned to store",
       "readyToDeliver": "Ready to deliver",
       "delivering": "Delivering",
-      "deliveryFailed": "Delivery failed"
+      "deliveryFailed": "Delivery failed",
+      "rejectedReturnShipping": "Rejected - Return shipping"
     },
     "type": {
       "RETURN": "Return & Refund",
@@ -733,6 +736,14 @@
       "empty": "No return requests found."
     },
     "detail": {
+      "returnShippingBadge": "Return shipping",
+      "btnReturnShipping": "Return shipping",
+      "rejectedBannerTitle": "❌ Request has been rejected",
+      "rejectedBannerDescription": "This return request has been rejected and cannot be processed further.",
+      "rejectedReturnShippingBannerTitle": "⚠️ Request rejected - Returning shipping",
+      "rejectedReturnShippingBannerDescription": "This request was rejected after inspection. The items are being shipped back to the customer.",
+      "rejectedAt": "Rejected at",
+      "btnRetryPickup": "Retry Pickup",
       "title": "Return Request Details",
       "code": "Request Code",
       "orderCode": "Order Code",
@@ -780,6 +791,7 @@
       "noteRequired": "* (required when rejecting or failing delivery)",
       "btnApprove": "Approve Request",
       "btnReject": "Reject",
+      "btnRejectReturnShipping": "Reject & Return shipping",
       "btnComplete": "Complete",
       "successApprove": "Request approved successfully",
       "successReject": "Request rejected successfully",
@@ -797,12 +809,22 @@
       "assignShipper": "Assign Shipper",
       "btnPickingUp": "Start Pickup",
       "btnPickedUp": "Picked Up",
+      "btnPickupFailed": "Pickup Failed",
       "btnReturnedToStore": "Returned to Store",
       "btnReadyToDeliver": "Ready to Deliver",
       "btnDelivering": "Start Delivery",
       "btnDelivered": "Delivery Successful",
+      "btnDeliveryFailed": "Delivery Failed",
+      "btnCancel": "Cancel Request",
+      "pickupFailedBadge": "Pickup Failed ({{count}})",
+      "deliveryFailedBadge": "Delivery Failed ({{count}})",
       "errorAssign": "Failed to assign delivery staff",
       "errorLoadShippers": "Failed to load shippers"
+    },
+    "pagination": {
+      "showing": "Showing page {{page}} of {{total}} pages",
+      "prev": "Previous",
+      "next": "Next"
     }
   },
   "orderCancel": {
@@ -843,7 +865,7 @@
       "other": "Other"
     }
   },
-    "staffOrdersTable": {
+  "staffOrdersTable": {
     "heading": "Order details",
     "searchPlaceholder": "Search code, name...",
     "clearFilters": "Clear filters",
@@ -904,7 +926,7 @@
       "generic": "Something went wrong"
     }
   },
-    "staffOrdersPage": {
+  "staffOrdersPage": {
     "topNav": {
       "title": "Order management",
       "subtitle": "Track and process today's orders"
@@ -920,7 +942,7 @@
       "updateStatusError": "An error occurred while updating the status"
     }
   },
-    "staffOrdersStats": {
+  "staffOrdersStats": {
     "pending": {
       "badge": "Pending",
       "label": "New orders"
@@ -954,7 +976,7 @@
       "label": "Customer no-show"
     }
   },
-    "staffOrderDetailPage": {
+  "staffOrderDetailPage": {
     "topNav": {
       "title": "Order detail",
       "subtitle": "View and process order details"

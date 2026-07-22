@@ -1,7 +1,7 @@
 import { env } from '~/shared/config/env'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import type { ApiResponse, PageResponse } from '~/shared/lib/order'
-import type { ManagementReturnResponse } from '~/shared/lib/returns'
+import type { ManagementReturnResponse, ReturnStatistics } from '~/shared/lib/returns'
 
 const RETURNS_MANAGEMENT_URL = `${env.API_URL}/api/management/returns`
 
@@ -20,10 +20,19 @@ export interface FetchReturnsParams {
   [key: string]: string | number | boolean | null | undefined
 }
 
+/**
+ * Cấu trúc thực của response từ GET /api/management/returns:
+ * { data: { returns: PageResponse<...>, statistics: ReturnStatistics } }
+ */
+export interface ManagementReturnPageData {
+  returns: PageResponse<ManagementReturnResponse>
+  statistics: ReturnStatistics
+}
+
 export async function fetchReturnsApi(
   params: FetchReturnsParams = {}
-): Promise<ApiResponse<PageResponse<ManagementReturnResponse>>> {
-  return customFetch<ApiResponse<PageResponse<ManagementReturnResponse>>>({
+): Promise<ApiResponse<ManagementReturnPageData>> {
+  return customFetch<ApiResponse<ManagementReturnPageData>>({
     url: RETURNS_MANAGEMENT_URL,
     method: 'GET',
     params

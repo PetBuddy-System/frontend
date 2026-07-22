@@ -69,7 +69,6 @@
     "roleTitle": "Nhân viên cửa hàng",
     "toggle": "Thu gọn/mở rộng thanh bên"
   },
-
   "shipperAssignment": {
     "title": "Phân công Shipper",
     "subtitle": "Gom nhóm các đơn hàng ở khu vực lân cận và chỉ định nhân viên giao hàng.",
@@ -101,7 +100,6 @@
       "unknownError": "Có lỗi xảy ra."
     }
   },
-
   "staff": {
     "name": "Nguyễn Văn An"
   },
@@ -671,6 +669,8 @@
     },
     "stats": {
       "all": "Tổng số yêu cầu",
+      "totalRequests": "Tổng yêu cầu",
+      "assigned": "Đã phân công",
       "pending": "Chờ duyệt",
       "approved": "Đã duyệt",
       "rejected": "Đã từ chối",
@@ -678,10 +678,12 @@
       "cancelled": "Đã hủy",
       "pickingUp": "Đang đi lấy hàng",
       "pickedUp": "Đã lấy hàng",
+      "pickupFailed": "Lấy hàng thất bại",
       "returnedToStore": "Đã trả về kho",
       "readyToDeliver": "Sẵn sàng giao hàng",
       "delivering": "Đang giao hàng",
-      "deliveryFailed": "Liên lạc thất bại"
+      "deliveryFailed": "Giao thất bại",
+      "rejectedReturnShipping": "Từ chối - Đang ship trả lại"
     },
     "type": {
       "RETURN": "Trả hàng hoàn tiền",
@@ -734,6 +736,14 @@
       "empty": "Không tìm thấy yêu cầu đổi trả nào."
     },
     "detail": {
+      "returnShippingBadge": "Ship trả lại",
+      "btnReturnShipping": "Ship trả lại",
+      "rejectedBannerTitle": "❌ Yêu cầu đã bị từ chối",
+      "rejectedBannerDescription": "Yêu cầu đổi trả này đã bị từ chối và không thể tiếp tục xử lý.",
+      "rejectedReturnShippingBannerTitle": "⚠️ Yêu cầu đã bị từ chối - Đang ship trả lại",
+      "rejectedReturnShippingBannerDescription": "Yêu cầu này đã bị từ chối sau khi kiểm tra hàng. Hàng đang được ship trả lại cho khách.",
+      "rejectedAt": "Thời gian từ chối",
+      "btnRetryPickup": "Thử lấy hàng lại",
       "title": "Chi tiết yêu cầu đổi trả",
       "code": "Mã yêu cầu",
       "orderCode": "Mã đơn hàng",
@@ -781,6 +791,7 @@
       "noteRequired": "* (bắt buộc khi từ chối hoặc giao thất bại)",
       "btnApprove": "Duyệt yêu cầu",
       "btnReject": "Từ chối",
+      "btnRejectReturnShipping": "Từ chối & Ship trả lại",
       "btnComplete": "Hoàn thành",
       "successApprove": "Đã duyệt yêu cầu thành công",
       "successReject": "Đã từ chối yêu cầu thành công",
@@ -798,12 +809,22 @@
       "assignShipper": "Phân công Shipper",
       "btnPickingUp": "Bắt đầu lấy hàng",
       "btnPickedUp": "Đã lấy hàng",
+      "btnPickupFailed": "Lấy hàng thất bại",
       "btnReturnedToStore": "Đã trả về kho",
       "btnReadyToDeliver": "Sẵn sàng giao",
       "btnDelivering": "Bắt đầu giao",
       "btnDelivered": "Giao hàng thành công",
+      "btnDeliveryFailed": "Giao thất bại",
+      "btnCancel": "Hủy yêu cầu",
+      "pickupFailedBadge": "Lấy hàng thất bại ({{count}})",
+      "deliveryFailedBadge": "Giao thất bại ({{count}})",
       "errorAssign": "Lỗi khi phân công nhân viên giao hàng",
       "errorLoadShippers": "Không thể tải danh sách shipper"
+    },
+    "pagination": {
+      "showing": "Hiển thị trang {{page}} trên tổng số {{total}} trang",
+      "prev": "Trang trước",
+      "next": "Trang sau"
     }
   },
   "orderCancel": {
@@ -844,7 +865,7 @@
       "other": "Khác"
     }
   },
-    "staffOrdersTable": {
+  "staffOrdersTable": {
     "heading": "Chi tiết đơn hàng",
     "searchPlaceholder": "Tìm kiếm mã, tên...",
     "clearFilters": "Xóa bộ lọc",
@@ -905,7 +926,7 @@
       "generic": "Có lỗi xảy ra"
     }
   },
-    "staffOrdersPage": {
+  "staffOrdersPage": {
     "topNav": {
       "title": "Mục đơn hàng",
       "subtitle": "Theo dõi và xử lý các đơn hàng trong ngày"
@@ -921,7 +942,7 @@
       "updateStatusError": "Có lỗi xảy ra khi cập nhật trạng thái"
     }
   },
-    "staffOrdersStats": {
+  "staffOrdersStats": {
     "pending": {
       "badge": "Chờ xử lý",
       "label": "Đơn hàng mới"
@@ -955,7 +976,7 @@
       "label": "Khách không nhận hàng"
     }
   },
-    "staffOrderDetailPage": {
+  "staffOrderDetailPage": {
     "topNav": {
       "title": "Chi tiết đơn hàng",
       "subtitle": "Xem chi tiết và xử lý đơn hàng"

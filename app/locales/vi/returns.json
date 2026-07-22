@@ -51,13 +51,14 @@
     "APPROVED": "Đã chấp thuận",
     "PICKING_UP": "Đang đi lấy hàng",
     "PICKED_UP": "Đã lấy hàng",
+    "PICKUP_FAILED": "Lấy hàng thất bại",
     "RETURNED_TO_STORE": "Đã trả về kho",
     "READY_TO_DELIVER": "Sẵn sàng giao hàng",
     "DELIVERING": "Đang giao hàng",
+    "DELIVERING_FAILED": "Giao hàng thất bại",
     "REJECTED": "Từ chối",
     "CANCELLED": "Đã hủy",
-    "COMPLETED": "Hoàn thành",
-    "DELIVERY_FAILED": "Giao thất bại"
+    "COMPLETED": "Hoàn thành"
   },
   "type": {
     "RETURN": "Trả hàng hoàn tiền",

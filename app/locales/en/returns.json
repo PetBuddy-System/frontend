@@ -51,13 +51,14 @@
     "APPROVED": "Approved",
     "PICKING_UP": "Picking up",
     "PICKED_UP": "Picked up",
+    "PICKUP_FAILED": "Pickup failed",
     "RETURNED_TO_STORE": "Returned to store",
     "READY_TO_DELIVER": "Ready to deliver",
     "DELIVERING": "Delivering",
+    "DELIVERING_FAILED": "Delivery failed",
     "REJECTED": "Rejected",
     "CANCELLED": "Cancelled",
-    "COMPLETED": "Completed",
-    "DELIVERY_FAILED": "Delivery failed"
+    "COMPLETED": "Completed"
   },
   "type": {
     "RETURN": "Return & refund",

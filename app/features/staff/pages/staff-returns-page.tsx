@@ -6,7 +6,7 @@ import { StaffTopNav } from '../components/layout/staff-top-nav'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
 import { fetchReturnsApi, fetchReturnDetailApi } from '../services/returns/returns-api'
-import type { ManagementReturnResponse } from '~/shared/lib/returns'
+import type { ManagementReturnResponse, ReturnStatistics } from '~/shared/lib/returns'
 import { StaffReturnDetailDialog } from '../components/returns/staff-return-detail-dialog'
 
 export function StaffReturnsPage() {
@@ -23,14 +23,14 @@ export function StaffReturnsPage() {
   const [typeFilter, setTypeFilter] = useState('ALL')
   const [refundMethodFilter, setRefundMethodFilter] = useState('ALL')
 
-  // Statistics counters
-  const [stats, setStats] = useState({
-    all: 0,
+  // Statistics counters (display-only from backend statistics object)
+  const [stats, setStats] = useState<ReturnStatistics>({
+    totalRequests: 0,
+    assigned: 0,
     pending: 0,
     approved: 0,
-    rejected: 0,
     completed: 0,
-    cancelled: 0
+    rejected: 0
   })
 
   // Selected item for details modal
@@ -51,23 +51,23 @@ export function StaffReturnsPage() {
       })
 
       if (res.success && res.data) {
-        setReturnRequests(res.data.content)
-        setTotalElements(res.data.totalElements)
-        setTotalPages(res.data.totalPages)
-      }
+        const page = res.data.returns
+        const statistics = res.data.statistics
 
-      // Fetch all to update counters
-      const allRes = await fetchReturnsApi({ page: 0, size: 1000 })
-      if (allRes.success && allRes.data) {
-        const allItems = allRes.data.content
-        setStats({
-          all: allItems.length,
-          pending: allItems.filter((r) => r.status === 'PENDING').length,
-          approved: allItems.filter((r) => r.status === 'APPROVED').length,
-          rejected: allItems.filter((r) => r.status === 'REJECTED').length,
-          completed: allItems.filter((r) => r.status === 'COMPLETED').length,
-          cancelled: allItems.filter((r) => r.status === 'CANCELLED').length
-        })
+        setReturnRequests(page?.content ?? [])
+        setTotalElements(page?.totalElements ?? 0)
+        setTotalPages(page?.totalPages ?? 0)
+
+        if (statistics) {
+          setStats({
+            totalRequests: statistics.totalRequests ?? 0,
+            assigned: statistics.assigned ?? 0,
+            pending: statistics.pending ?? 0,
+            approved: statistics.approved ?? 0,
+            completed: statistics.completed ?? 0,
+            rejected: statistics.rejected ?? 0
+          })
+        }
       }
     } catch (err) {
       console.error('Failed to load return requests data', err)
@@ -121,61 +121,72 @@ export function StaffReturnsPage() {
         return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
       case 'APPROVED':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+      case 'PICKING_UP':
+        return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400'
       case 'PICKED_UP':
         return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
-      case 'REJECTED':
+      case 'PICKUP_FAILED':
         return 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400'
-      case 'CANCELLED':
-        return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-400'
+      case 'RETURNED_TO_STORE':
+        return 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400'
+      case 'READY_TO_DELIVER':
+        return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400'
+      case 'DELIVERING':
+        return 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-400'
+      case 'DELIVERING_FAILED':
+        return 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400'
       case 'COMPLETED':
         return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
-      case 'DELIVERY_FAILED':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+      case 'REJECTED':
+        return 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400'
+      case 'REJECTED_RETURN_SHIPPING':
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
+      case 'CANCELLED':
+        return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-400'
       default:
-        return 'bg-muted text-muted-foregroundforeground'
+        return 'bg-muted text-muted-foreground'
     }
   }
+
   function getStatusLabel(status: string) {
     switch (status) {
       case 'PENDING':
         return t('returns.stats.pending')
       case 'APPROVED':
         return t('returns.stats.approved')
-      case 'REJECTED':
-        return t('returns.stats.rejected')
-      case 'CANCELLED':
-        return t('returns.stats.cancelled')
-      case 'COMPLETED':
-        return t('returns.stats.completed')
+      case 'PICKING_UP':
+        return t('returns.stats.pickingUp')
       case 'PICKED_UP':
         return t('returns.stats.pickedUp')
-      case 'DELIVERY_FAILED':
+      case 'PICKUP_FAILED':
+        return t('returns.stats.pickupFailed')
+      case 'RETURNED_TO_STORE':
+        return t('returns.stats.returnedToStore')
+      case 'READY_TO_DELIVER':
+        return t('returns.stats.readyToDeliver')
+      case 'DELIVERING':
+        return t('returns.stats.delivering')
+      case 'DELIVERING_FAILED':
         return t('returns.stats.deliveryFailed')
+      case 'COMPLETED':
+        return t('returns.stats.completed')
+      case 'REJECTED':
+        return t('returns.stats.rejected')
+      case 'REJECTED_RETURN_SHIPPING':
+        return t('returns.stats.rejectedReturnShipping')
+      case 'CANCELLED':
+        return t('returns.stats.cancelled')
       default:
         return status
     }
   }
 
   function getTypeLabel(type: string) {
-    switch (type) {
-      case 'RETURN':
-        return 'Hoàn trả'
-      case 'EXCHANGE':
-        return 'Đổi hàng'
-      default:
-        return type
-    }
+    return t(`returns.type.${type}`, type)
   }
 
   function getRefundMethodLabel(method: string) {
-    switch (method) {
-      case 'STRIPE_PAYMENT':
-        return 'TK gốc thanh toán'
-      case 'BANK_TRANSFER':
-        return 'Chuyển khoản'
-      default:
-        return method || '—'
-    }
+    return t(`returns.refundMethod.${method}`, method)
   }
 
   function formatPrice(value: number) {
@@ -215,28 +226,24 @@ export function StaffReturnsPage() {
             </section>
 
             {/* Statistics Cards */}
-            <section className='grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5'>
-              <div
-                onClick={() => setStatusFilter('ALL')}
-                className={cn(
-                  'rounded-2xl border border-border bg-card p-4 shadow-sm hover:shadow transition-all duration-200 cursor-pointer active:scale-98',
-                  statusFilter === 'ALL' && 'ring-2 ring-primary ring-offset-2'
-                )}
-              >
+            <section className='grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6'>
+              <div className='rounded-2xl border border-border bg-card p-4 shadow-sm'>
                 <div className='flex items-center justify-between text-muted-foreground'>
-                  <span className='text-xs font-bold uppercase tracking-wider'>{t('returns.stats.all')}</span>
+                  <span className='text-xs font-bold uppercase tracking-wider'>{t('returns.stats.totalRequests')}</span>
                   <MaterialIcon name='assignment' className='text-xl text-primary' />
                 </div>
-                <p className='mt-2 text-3xl font-extrabold text-card-foreground'>{stats.all}</p>
+                <p className='mt-2 text-3xl font-extrabold text-card-foreground'>{stats.totalRequests}</p>
               </div>
 
-              <div
-                onClick={() => setStatusFilter('PENDING')}
-                className={cn(
-                  'rounded-2xl border border-border bg-card p-4 shadow-sm hover:shadow transition-all duration-200 cursor-pointer active:scale-98',
-                  statusFilter === 'PENDING' && 'ring-2 ring-amber-500 ring-offset-2'
-                )}
-              >
+              <div className='rounded-2xl border border-border bg-card p-4 shadow-sm'>
+                <div className='flex items-center justify-between text-muted-foreground'>
+                  <span className='text-xs font-bold uppercase tracking-wider'>{t('returns.stats.assigned')}</span>
+                  <span className='h-2.5 w-2.5 rounded-full bg-indigo-500' />
+                </div>
+                <p className='mt-2 text-3xl font-extrabold text-card-foreground'>{stats.assigned}</p>
+              </div>
+
+              <div className='rounded-2xl border border-border bg-card p-4 shadow-sm'>
                 <div className='flex items-center justify-between text-muted-foreground'>
                   <span className='text-xs font-bold uppercase tracking-wider'>{t('returns.stats.pending')}</span>
                   <span className='h-2.5 w-2.5 rounded-full bg-amber-500' />
@@ -244,13 +251,7 @@ export function StaffReturnsPage() {
                 <p className='mt-2 text-3xl font-extrabold text-card-foreground'>{stats.pending}</p>
               </div>
 
-              <div
-                onClick={() => setStatusFilter('APPROVED')}
-                className={cn(
-                  'rounded-2xl border border-border bg-card p-4 shadow-sm hover:shadow transition-all duration-200 cursor-pointer active:scale-98',
-                  statusFilter === 'APPROVED' && 'ring-2 ring-blue-500 ring-offset-2'
-                )}
-              >
+              <div className='rounded-2xl border border-border bg-card p-4 shadow-sm'>
                 <div className='flex items-center justify-between text-muted-foreground'>
                   <span className='text-xs font-bold uppercase tracking-wider'>{t('returns.stats.approved')}</span>
                   <span className='h-2.5 w-2.5 rounded-full bg-blue-500' />
@@ -258,13 +259,7 @@ export function StaffReturnsPage() {
                 <p className='mt-2 text-3xl font-extrabold text-card-foreground'>{stats.approved}</p>
               </div>
 
-              <div
-                onClick={() => setStatusFilter('COMPLETED')}
-                className={cn(
-                  'rounded-2xl border border-border bg-card p-4 shadow-sm hover:shadow transition-all duration-200 cursor-pointer active:scale-98',
-                  statusFilter === 'COMPLETED' && 'ring-2 ring-emerald-500 ring-offset-2'
-                )}
-              >
+              <div className='rounded-2xl border border-border bg-card p-4 shadow-sm'>
                 <div className='flex items-center justify-between text-muted-foreground'>
                   <span className='text-xs font-bold uppercase tracking-wider'>{t('returns.stats.completed')}</span>
                   <span className='h-2.5 w-2.5 rounded-full bg-emerald-500' />
@@ -272,13 +267,7 @@ export function StaffReturnsPage() {
                 <p className='mt-2 text-3xl font-extrabold text-card-foreground'>{stats.completed}</p>
               </div>
 
-              <div
-                onClick={() => setStatusFilter('REJECTED')}
-                className={cn(
-                  'rounded-2xl border border-border bg-card p-4 shadow-sm hover:shadow transition-all duration-200 cursor-pointer active:scale-98',
-                  statusFilter === 'REJECTED' && 'ring-2 ring-rose-500 ring-offset-2'
-                )}
-              >
+              <div className='rounded-2xl border border-border bg-card p-4 shadow-sm'>
                 <div className='flex items-center justify-between text-muted-foreground'>
                   <span className='text-xs font-bold uppercase tracking-wider'>{t('returns.stats.rejected')}</span>
                   <span className='h-2.5 w-2.5 rounded-full bg-rose-500' />
@@ -291,7 +280,6 @@ export function StaffReturnsPage() {
             <section className='rounded-2xl border border-border bg-card p-4 shadow-sm'>
               <form onSubmit={handleSearchSubmit} className='space-y-4'>
                 <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-                  {/* Search Input */}
                   <div className='relative flex items-center'>
                     <span className='absolute left-3.5 text-muted-foreground'>
                       <MaterialIcon name='search' className='text-lg' />
@@ -305,7 +293,6 @@ export function StaffReturnsPage() {
                     />
                   </div>
 
-                  {/* Status Dropdown */}
                   <div className='flex items-center gap-2'>
                     <label htmlFor='filter-status' className='text-xs font-semibold text-muted-foreground shrink-0'>
                       {t('returns.filters.status')}:
@@ -319,13 +306,20 @@ export function StaffReturnsPage() {
                       <option value='ALL'>{t('returns.filters.all')}</option>
                       <option value='PENDING'>{t('returns.stats.pending')}</option>
                       <option value='APPROVED'>{t('returns.stats.approved')}</option>
-                      <option value='REJECTED'>{t('returns.stats.rejected')}</option>
+                      <option value='PICKING_UP'>{t('returns.stats.pickingUp')}</option>
+                      <option value='PICKED_UP'>{t('returns.stats.pickedUp')}</option>
+                      <option value='PICKUP_FAILED'>{t('returns.stats.pickupFailed')}</option>
+                      <option value='RETURNED_TO_STORE'>{t('returns.stats.returnedToStore')}</option>
+                      <option value='READY_TO_DELIVER'>{t('returns.stats.readyToDeliver')}</option>
+                      <option value='DELIVERING'>{t('returns.stats.delivering')}</option>
+                      <option value='DELIVERING_FAILED'>{t('returns.stats.deliveryFailed')}</option>
                       <option value='COMPLETED'>{t('returns.stats.completed')}</option>
+                      <option value='REJECTED'>{t('returns.stats.rejected')}</option>
+                      <option value='REJECTED_RETURN_SHIPPING'>{t('returns.stats.rejectedReturnShipping')}</option>
                       <option value='CANCELLED'>{t('returns.stats.cancelled')}</option>
                     </select>
                   </div>
 
-                  {/* Request Type Dropdown */}
                   <div className='flex items-center gap-2'>
                     <label htmlFor='filter-type' className='text-xs font-semibold text-muted-foreground shrink-0'>
                       {t('returns.filters.type')}:
@@ -337,15 +331,14 @@ export function StaffReturnsPage() {
                       className='w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none'
                     >
                       <option value='ALL'>{t('returns.filters.all')}</option>
-                      <option value='RETURN'>Hoàn trả</option>
-                      <option value='EXCHANGE'>Đổi hàng</option>
+                      <option value='RETURN'>{t('returns.type.RETURN')}</option>
+                      <option value='EXCHANGE'>{t('returns.type.EXCHANGE')}</option>
                     </select>
                   </div>
 
-                  {/* Refund Method Dropdown */}
                   <div className='flex items-center gap-2'>
                     <label htmlFor='filter-refund' className='text-xs font-semibold text-muted-foreground shrink-0'>
-                      Thanh toán:
+                      {t('returns.filters.refundMethod')}:
                     </label>
                     <select
                       id='filter-refund'
@@ -354,8 +347,8 @@ export function StaffReturnsPage() {
                       className='w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary outline-none'
                     >
                       <option value='ALL'>{t('returns.filters.all')}</option>
-                      <option value='STRIPE_PAYMENT'>Thanh toán tài khoản gốc</option>
-                      <option value='BANK_TRANSFER'>Thanh toán tài khoản khác</option>
+                      <option value='STRIPE_PAYMENT'>{t('returns.refundMethod.STRIPE_PAYMENT')}</option>
+                      <option value='BANK_TRANSFER'>{t('returns.refundMethod.BANK_TRANSFER')}</option>
                     </select>
                   </div>
                 </div>
@@ -374,7 +367,7 @@ export function StaffReturnsPage() {
                     className='inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-primary px-5 text-xs font-bold text-white shadow-sm hover:opacity-90 active:scale-95 transition-all'
                   >
                     <MaterialIcon name='search' className='text-base' />
-                    Tìm kiếm
+                    {t('returns.filters.keyword')}
                   </button>
                 </div>
               </form>
@@ -384,7 +377,7 @@ export function StaffReturnsPage() {
             <section className='overflow-hidden rounded-2xl border border-border bg-card shadow-sm'>
               {isLoading ? (
                 <div className='p-12 text-center text-muted-foreground animate-pulse font-semibold'>
-                  Đang tải danh sách yêu cầu đổi trả...
+                  {t('returns.table.empty')}
                 </div>
               ) : returnRequests.length === 0 ? (
                 <div className='p-12 text-center text-muted-foreground font-semibold'>
@@ -412,7 +405,7 @@ export function StaffReturnsPage() {
                           <td className='px-6 py-4 text-muted-foreground font-medium'>#{req.orderCode}</td>
                           <td className='px-6 py-4'>
                             <p className='font-semibold text-card-foreground'>
-                              {req.requestedBy?.fullName || 'Mock Customer'}
+                              {req.requestedBy?.fullName || 'Customer'}
                             </p>
                             <p className='text-xs text-muted-foreground'>{req.requestedBy?.email}</p>
                           </td>
@@ -430,18 +423,34 @@ export function StaffReturnsPage() {
                                 </p>
                               </>
                             ) : (
-                              <span className='text-xs text-muted-foreground italic'>— Không hoàn tiền —</span>
+                              <span className='text-xs text-muted-foreground'>{t('returns.refundStatus.NOT_REQUIRED')}</span>
                             )}
                           </td>
                           <td className='px-6 py-4'>
-                            <span
-                              className={cn(
-                                'inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider',
-                                getStatusBadgeClassName(req.status)
-                              )}
-                            >
-                              {getStatusLabel(req.status)}
-                            </span>
+                            <div className='flex flex-col items-start gap-1'>
+                              <span
+                                className={cn(
+                                  'inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider',
+                                  getStatusBadgeClassName(req.status)
+                                )}
+                              >
+                                {getStatusLabel(req.status)}
+                              </span>
+                              {/* ✅ Badge pickupFailedCount - chỉ hiển thị ở PICKUP_FAILED và PICKING_UP */}
+                              {(req.status === 'PICKUP_FAILED' || req.status === 'PICKING_UP') &&
+                                req.pickupFailedCount !== undefined && req.pickupFailedCount > 0 && (
+                                  <span className='inline-flex items-center rounded-md bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-800 dark:bg-rose-950/40 dark:text-rose-400'>
+                                    {t('returns.detail.pickupFailedBadge', { count: req.pickupFailedCount })}
+                                  </span>
+                                )}
+                              {/* Badge deliveryFailedCount - chỉ hiển thị ở DELIVERING_FAILED và READY_TO_DELIVER */}
+                              {(req.status === 'DELIVERING_FAILED' || req.status === 'READY_TO_DELIVER') &&
+                                req.deliveryFailedCount !== undefined && req.deliveryFailedCount > 0 && (
+                                  <span className='inline-flex items-center rounded-md bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-800 dark:bg-rose-950/40 dark:text-rose-400'>
+                                    {t('returns.detail.deliveryFailedBadge', { count: req.deliveryFailedCount })}
+                                  </span>
+                                )}
+                            </div>
                           </td>
                           <td className='px-6 py-4 text-xs text-muted-foreground'>
                             {formatDate(req.createdAt)}
@@ -467,7 +476,7 @@ export function StaffReturnsPage() {
               {totalPages > 1 && (
                 <div className='flex items-center justify-between border-t border-border px-6 py-4 bg-muted/10'>
                   <span className='text-xs text-muted-foreground'>
-                    Hiển thị trang <strong>{currentPage + 1}</strong> trên tổng số <strong>{totalPages}</strong> trang
+                    {t('returns.pagination.showing', { page: currentPage + 1, total: totalPages })}
                   </span>
                   <div className='flex items-center gap-2'>
                     <button
@@ -477,7 +486,7 @@ export function StaffReturnsPage() {
                       className='inline-flex h-9 items-center justify-center rounded-xl border border-border bg-card px-4 text-xs font-bold text-card-foreground hover:bg-muted active:scale-95 disabled:opacity-50 transition-all'
                     >
                       <MaterialIcon name='chevron_left' className='text-base' />
-                      Trang trước
+                      {t('returns.pagination.prev')}
                     </button>
                     <button
                       type='button'
@@ -485,7 +494,7 @@ export function StaffReturnsPage() {
                       onClick={() => setCurrentPage((p) => p + 1)}
                       className='inline-flex h-9 items-center justify-center rounded-xl border border-border bg-card px-4 text-xs font-bold text-card-foreground hover:bg-muted active:scale-95 disabled:opacity-50 transition-all'
                     >
-                      Trang sau
+                      {t('returns.pagination.next')}
                       <MaterialIcon name='chevron_right' className='text-base' />
                     </button>
                   </div>

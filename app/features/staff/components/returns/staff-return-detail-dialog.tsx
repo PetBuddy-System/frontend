@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
@@ -30,11 +30,17 @@ export function StaffReturnDetailDialog({
   const [staffNote, setStaffNote] = useState(returnRequest.staffNote || '')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [noteError, setNoteError] = useState<string | null>(null)
 
   const [isAssigning, setIsAssigning] = useState(false)
   const [availableShippers, setAvailableShippers] = useState<ReturnShipperResponse[]>([])
   const [isLoadingShippers, setIsLoadingShippers] = useState(false)
   const [selectedShipperId, setSelectedShipperId] = useState<string>('')
+
+
+  useEffect(() => {
+    setStaffNote('')
+  }, [returnRequest.returnRequestId])
 
   function getStatusBadgeClassName(status: string) {
     switch (status) {
@@ -43,15 +49,23 @@ export function StaffReturnDetailDialog({
       case 'APPROVED':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
       case 'PICKING_UP':
-      case 'READY_TO_DELIVER':
         return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400'
       case 'PICKED_UP':
-      case 'DELIVERING':
         return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+      case 'PICKUP_FAILED':
+        return 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400'
       case 'RETURNED_TO_STORE':
         return 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400'
+      case 'READY_TO_DELIVER':
+        return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400'
+      case 'DELIVERING':
+        return 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-400'
+      case 'DELIVERING_FAILED':
+        return 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400'
       case 'REJECTED':
         return 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400'
+      case 'REJECTED_RETURN_SHIPPING':
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400'
       case 'CANCELLED':
         return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-400'
       case 'COMPLETED':
@@ -71,14 +85,20 @@ export function StaffReturnDetailDialog({
         return t('returns.stats.pickingUp')
       case 'PICKED_UP':
         return t('returns.stats.pickedUp')
+      case 'PICKUP_FAILED':
+        return t('returns.stats.pickupFailed')
       case 'RETURNED_TO_STORE':
         return t('returns.stats.returnedToStore')
       case 'READY_TO_DELIVER':
         return t('returns.stats.readyToDeliver')
       case 'DELIVERING':
         return t('returns.stats.delivering')
+      case 'DELIVERING_FAILED':
+        return t('returns.stats.deliveryFailed')
       case 'REJECTED':
         return t('returns.stats.rejected')
+      case 'REJECTED_RETURN_SHIPPING':
+        return t('returns.stats.rejectedReturnShipping')
       case 'CANCELLED':
         return t('returns.stats.cancelled')
       case 'COMPLETED':
@@ -158,18 +178,20 @@ export function StaffReturnDetailDialog({
     }
   }
 
-  async function handleUpdateStatus(
-    nextStatus: string
-  ) {
+  async function handleUpdateStatus(nextStatus: string) {
     if (nextStatus === 'ASSIGN_SHIPPER') {
       loadShippers()
       return
     }
 
-    if (nextStatus === 'REJECTED' && !staffNote.trim()) {
-      setErrorMessage(t('returns.detail.requiredNote'))
+    // ✅ Chỉ bắt buộc nhập ghi chú khi từ chối (REJECTED, REJECTED_RETURN_SHIPPING)
+    const isRejectAction = nextStatus === 'REJECTED' || nextStatus === 'REJECTED_RETURN_SHIPPING';
+
+    if (isRejectAction && !staffNote.trim()) {
+      setNoteError(t('returns.detail.requiredNote'))
       return
     }
+    setNoteError(null)
 
     setIsSubmitting(true)
     setErrorMessage(null)
@@ -180,6 +202,7 @@ export function StaffReturnDetailDialog({
       const updateApi = isCoordinator ? updateCoordinatorReturnStatusApi : updateShipperReturnStatusApi
       const res = await updateApi(returnRequest.returnRequestId, nextStatus, staffNote)
       if (res.success) {
+        setStaffNote('')
         onSuccess()
       } else {
         setErrorMessage(res.message || t('returns.detail.errorUpdate'))
@@ -192,18 +215,24 @@ export function StaffReturnDetailDialog({
   }
 
   function getAvailableActions() {
-    if (!staffTask) return []
+    if (!staffTask && user?.role !== 'ADMIN') return []
 
-    const { type, status, shipper } = returnRequest
+    const { status, shipper, type, deliveryFailedCount = 0, pickupFailedCount = 0 } = returnRequest
     const actions: Array<{
       value: string
       label: string
       variant: string
     }> = []
 
-    // COORDINATOR
     const task = staffTask as string | undefined
-    if (task === 'COORDINATOR' || task === 'MANAGER' || task === 'ADMIN' || user?.role === 'ADMIN') {
+    const isCoordinator = task === 'COORDINATOR' || task === 'MANAGER' || task === 'ADMIN' || user?.role === 'ADMIN'
+    const isShipper = task === 'SHIPPER'
+
+    // ============================================================
+    // COORDINATOR Workflow
+    // ============================================================
+    if (isCoordinator) {
+      // PENDING -> APPROVED | REJECTED
       if (status === 'PENDING') {
         actions.push(
           { value: 'APPROVED', label: t('returns.detail.btnApprove'), variant: 'primary' },
@@ -211,46 +240,160 @@ export function StaffReturnDetailDialog({
         )
       }
 
-      if (status === 'APPROVED' && !shipper) {
-        actions.push(
-          { value: 'ASSIGN_SHIPPER', label: t('returns.detail.assignShipper'), variant: 'primary' }
-        )
+      // APPROVED -> Assign Shipper (if no shipper assigned)
+      if (status === 'APPROVED') {
+        if (!shipper) {
+          actions.push({ value: 'ASSIGN_SHIPPER', label: t('returns.detail.assignShipper'), variant: 'primary' })
+        }
       }
 
+      // PICKUP_FAILED -> Chỉ hiển thị khi count >= 3
+      if (status === 'PICKUP_FAILED') {
+        if (pickupFailedCount >= 3) {
+          actions.push(
+            { value: 'ASSIGN_SHIPPER', label: t('returns.detail.assignShipper'), variant: 'primary' },
+            { value: 'CANCELLED', label: t('returns.detail.btnCancel'), variant: 'danger' }
+          )
+        }
+      }
+
+      // RETURNED_TO_STORE -> phân biệt theo type
       if (status === 'RETURNED_TO_STORE') {
+        if (type === 'RETURN') {
+          // RETURN: hàng về kho -> hoàn tiền
+          actions.push({ value: 'COMPLETED', label: t('returns.detail.btnComplete'), variant: 'success' })
+        } else if (type === 'EXCHANGE') {
+          // ✅ EXCHANGE: hàng cũ về kho -> gán shipper (để giao hàng mới) hoặc từ chối
+          actions.push(
+            { value: 'ASSIGN_SHIPPER', label: t('returns.detail.assignShipper'), variant: 'primary' },
+            { value: 'REJECTED_RETURN_SHIPPING', label: t('returns.detail.btnRejectReturnShipping'), variant: 'danger' }
+          )
+        }
+      }
+
+      // REJECTED_RETURN_SHIPPING -> Assign Shipper (để ship trả lại)
+      if (status === 'REJECTED_RETURN_SHIPPING') {
+        actions.push({ value: 'ASSIGN_SHIPPER', label: t('returns.detail.assignShipper'), variant: 'primary' })
+      }
+
+      // DELIVERING_FAILED -> Complete (khách tự đến lấy) hoặc Assign Shipper
+      if (status === 'DELIVERING_FAILED') {
         actions.push(
-          { value: 'COMPLETED', label: t('returns.stats.completed'), variant: 'success' }
+          { value: 'COMPLETED', label: t('returns.detail.btnComplete'), variant: 'success' },
+          { value: 'ASSIGN_SHIPPER', label: t('returns.detail.assignShipper'), variant: 'primary' }
         )
       }
 
       return actions
     }
 
-    // SHIPPER
-    if (staffTask === 'SHIPPER') {
+    // ============================================================
+    // SHIPPER Workflow
+    // ============================================================
+    if (isShipper) {
+      // Only show actions for requests assigned to this shipper
+      if (!shipper || (user?.userId && shipper.userId !== user.userId)) {
+        return []
+      }
+
+      // ============================================================
+      // RETURN Workflow (giống hệt EXCHANGE)
+      // ============================================================
       if (type === 'RETURN') {
+        // APPROVED -> PICKING_UP
         if (status === 'APPROVED') {
           actions.push({ value: 'PICKING_UP', label: t('returns.detail.btnPickingUp'), variant: 'primary' })
         }
+
+        // PICKING_UP -> PICKED_UP hoặc PICKUP_FAILED
         if (status === 'PICKING_UP') {
-          actions.push({ value: 'PICKED_UP', label: t('returns.detail.btnPickedUp'), variant: 'primary' })
+          actions.push(
+            { value: 'PICKED_UP', label: t('returns.detail.btnPickedUp'), variant: 'primary' },
+            { value: 'PICKUP_FAILED', label: t('returns.detail.btnPickupFailed'), variant: 'danger' }
+          )
         }
+
+        // PICKED_UP -> RETURNED_TO_STORE
         if (status === 'PICKED_UP') {
           actions.push({ value: 'RETURNED_TO_STORE', label: t('returns.detail.btnReturnedToStore'), variant: 'primary' })
         }
+
+        // READY_TO_DELIVER -> DELIVERING hoặc DELIVERING_FAILED (2 nút)
+        if (status === 'READY_TO_DELIVER') {
+          const isReturnShipping = returnRequest.rejectedAt !== null;
+          actions.push(
+            {
+              value: 'DELIVERING',
+              label: isReturnShipping ? t('returns.detail.btnReturnShipping') : t('returns.detail.btnDelivering'),
+              variant: 'primary'
+            },
+            {
+              value: 'DELIVERING_FAILED',
+              label: t('returns.detail.btnDeliveryFailed'),
+              variant: 'danger'
+            }
+          )
+        }
+
+        // ✅ DELIVERING -> COMPLETED và DELIVERING_FAILED (giống EXCHANGE)
+        if (status === 'DELIVERING') {
+          actions.push(
+            { value: 'COMPLETED', label: t('returns.detail.btnDelivered'), variant: 'success' },
+            { value: 'DELIVERING_FAILED', label: t('returns.detail.btnDeliveryFailed'), variant: 'danger' }
+          )
+        }
+
+        return actions
       }
 
+      // ============================================================
+      // EXCHANGE Workflow
+      // ============================================================
       if (type === 'EXCHANGE') {
+        // Giai đoạn 1: Lấy hàng cũ
         if (status === 'APPROVED') {
-          actions.push({ value: 'READY_TO_DELIVER', label: t('returns.detail.btnReadyToDeliver'), variant: 'primary' })
+          actions.push({ value: 'PICKING_UP', label: t('returns.detail.btnPickingUp'), variant: 'primary' })
         }
+
+        if (status === 'PICKING_UP') {
+          actions.push(
+            { value: 'PICKED_UP', label: t('returns.detail.btnPickedUp'), variant: 'primary' },
+            { value: 'PICKUP_FAILED', label: t('returns.detail.btnPickupFailed'), variant: 'danger' }
+          )
+        }
+
+        if (status === 'PICKED_UP') {
+          actions.push({ value: 'RETURNED_TO_STORE', label: t('returns.detail.btnReturnedToStore'), variant: 'primary' })
+        }
+
+        // Giai đoạn 2: Giao hàng mới
         if (status === 'READY_TO_DELIVER') {
-          actions.push({ value: 'DELIVERING', label: t('returns.detail.btnDelivering'), variant: 'primary' })
+          const isReturnShipping = returnRequest.rejectedAt !== null;
+          actions.push(
+            {
+              value: 'DELIVERING',
+              label: isReturnShipping ? t('returns.detail.btnReturnShipping') : t('returns.detail.btnDelivering'),
+              variant: 'primary'
+            },
+            {
+              value: 'DELIVERING_FAILED',
+              label: t('returns.detail.btnDeliveryFailed'),
+              variant: 'danger'
+            }
+          )
         }
+
+        // DELIVERING -> COMPLETED và DELIVERING_FAILED
         if (status === 'DELIVERING') {
-          actions.push({ value: 'COMPLETED', label: t('returns.detail.btnDelivered'), variant: 'success' })
+          actions.push(
+            { value: 'COMPLETED', label: t('returns.detail.btnDelivered'), variant: 'success' },
+            { value: 'DELIVERING_FAILED', label: t('returns.detail.btnDeliveryFailed'), variant: 'danger' }
+          )
         }
+
+        return actions
       }
+
       return actions
     }
 
@@ -259,9 +402,14 @@ export function StaffReturnDetailDialog({
 
   const availableActions = getAvailableActions()
 
+  // ✅ Chỉ yêu cầu ghi chú khi có action REJECTED hoặc REJECTED_RETURN_SHIPPING
+  const hasRejectAction = availableActions.some(
+    (action) => action.value === 'REJECTED' || action.value === 'REJECTED_RETURN_SHIPPING'
+  )
+
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in duration-200'>
-      <div className='flex h-full max-h-[90vh] w-full max-w-4xl flex-col rounded-2xl border border-border bg-card shadow-2xl animate-in zoom-in-95 duration-200'>
+      <div className='flex h-full max-h-[90vh] w-full max-w-6xl flex-col rounded-2xl border border-border bg-card shadow-2xl animate-in zoom-in-95 duration-200'>
         {/* Header */}
         <div className='flex items-center justify-between border-b border-border px-6 py-4'>
           <div className='flex items-center gap-3'>
@@ -341,20 +489,96 @@ export function StaffReturnDetailDialog({
                   <p className='mt-1.5 text-xs text-muted-foreground'>
                     {t('returns.detail.createdAt')}: {formatDate(returnRequest.createdAt)}
                   </p>
+                  {/* Badge pickupFailedCount - hiển thị ở PICKUP_FAILED và PICKING_UP khi count > 0 */}
+                  {(returnRequest.status === 'PICKUP_FAILED' || returnRequest.status === 'PICKING_UP') &&
+                    returnRequest.pickupFailedCount !== undefined && returnRequest.pickupFailedCount > 0 && (
+                      <div className='mt-2 inline-flex items-center gap-1.5 rounded-lg bg-rose-100 px-3 py-1 text-xs font-bold text-rose-800 dark:bg-rose-950/40 dark:text-rose-400'>
+                        <MaterialIcon name='warning' className='text-sm' />
+                        {t('returns.detail.pickupFailedBadge', { count: returnRequest.pickupFailedCount })}
+                      </div>
+                    )}
+                  {/* Badge deliveryFailedCount - hiển thị ở DELIVERING_FAILED và READY_TO_DELIVER khi count > 0 */}
+                  {(returnRequest.status === 'DELIVERING_FAILED' || returnRequest.status === 'READY_TO_DELIVER') &&
+                    returnRequest.deliveryFailedCount !== undefined && returnRequest.deliveryFailedCount > 0 && (
+                      <div className='mt-2 inline-flex items-center gap-1.5 rounded-lg bg-rose-100 px-3 py-1 text-xs font-bold text-rose-800 dark:bg-rose-950/40 dark:text-rose-400'>
+                        <MaterialIcon name='warning' className='text-sm' />
+                        {t('returns.detail.deliveryFailedBadge', { count: returnRequest.deliveryFailedCount })}
+                      </div>
+                    )}
+                  {/* ✅ Badge "Ship trả lại" khi đơn đã bị từ chối */}
+                  {returnRequest.rejectedAt && (
+                    <div className='mt-2 inline-flex items-center gap-1.5 rounded-lg bg-orange-100 px-3 py-1 text-xs font-bold text-orange-800 dark:bg-orange-950/40 dark:text-orange-400'>
+                      <MaterialIcon name='history' className='text-sm' />
+                      {t('returns.detail.returnShippingBadge')}
+                    </div>
+                  )}
                 </div>
               </div>
+
+              {/* ✅ Banner thông báo khi đơn hàng đã bị từ chối (dựa vào rejectedAt) */}
+              {returnRequest.rejectedAt && (
+                <div className={cn(
+                  'rounded-xl p-4 flex items-start gap-3 border',
+                  returnRequest.status === 'REJECTED'
+                    ? 'bg-rose-50 border-rose-200 dark:bg-rose-950/20 dark:border-rose-900/50'
+                    : 'bg-orange-50 border-orange-200 dark:bg-orange-950/20 dark:border-orange-900/50'
+                )}>
+                  <MaterialIcon
+                    name='warning'
+                    className={cn(
+                      'text-xl shrink-0 mt-0.5',
+                      returnRequest.status === 'REJECTED' ? 'text-rose-600' : 'text-orange-600'
+                    )}
+                  />
+                  <div>
+                    <p className={cn(
+                      'font-bold text-sm',
+                      returnRequest.status === 'REJECTED' ? 'text-rose-800 dark:text-rose-400' : 'text-orange-800 dark:text-orange-400'
+                    )}>
+                      {returnRequest.status === 'REJECTED'
+                        ? t('returns.detail.rejectedBannerTitle')
+                        : t('returns.detail.rejectedReturnShippingBannerTitle')}
+                    </p>
+                    <p className={cn(
+                      'text-sm',
+                      returnRequest.status === 'REJECTED' ? 'text-rose-700 dark:text-rose-300/70' : 'text-orange-700 dark:text-orange-300/70'
+                    )}>
+                      {returnRequest.status === 'REJECTED'
+                        ? t('returns.detail.rejectedBannerDescription')
+                        : t('returns.detail.rejectedReturnShippingBannerDescription')}
+                    </p>
+                    {returnRequest.rejectedAt && (
+                      <p className='text-xs mt-1 text-muted-foreground'>
+                        {t('returns.detail.rejectedAt')}: {formatDate(returnRequest.rejectedAt)}
+                      </p>
+                    )}
+                    {returnRequest.staffNote && (
+                      <p className='text-xs mt-1 text-muted-foreground'>
+                        <span className='font-semibold'>{t('returns.detail.staffNoteLabel')}</span> {returnRequest.staffNote}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Timeline */}
               <div className='rounded-xl border border-border bg-card p-4 sm:px-6'>
                 <h4 className='text-sm font-bold border-b border-border pb-3 mb-2'>{t('returns.detail.requestStatus')}</h4>
-                <ReturnTimeline 
-                  type={returnRequest.type} 
-                  status={returnRequest.status} 
-                  createdAt={returnRequest.createdAt} 
-                  approvedAt={returnRequest.approvedAt} 
-                  pickedUpAt={returnRequest.pickedUpAt} 
-                  returnedToStoreAt={returnRequest.returnedToStoreAt} 
-                  completedAt={returnRequest.completedAt} 
+                <ReturnTimeline
+                  type={returnRequest.type}
+                  status={returnRequest.status}
+                  createdAt={returnRequest.createdAt}
+                  approvedAt={returnRequest.approvedAt}
+                  pickingUpAt={returnRequest.pickingUpAt}
+                  pickedUpAt={returnRequest.pickedUpAt}
+                  returnedToStoreAt={returnRequest.returnedToStoreAt}
+                  readyToDeliverAt={returnRequest.readyToDeliverAt}
+                  deliveringAt={returnRequest.deliveringAt}
+                  deliveringFailedAt={returnRequest.deliveringFailedAt}
+                  completedAt={returnRequest.completedAt}
+                  rejectedAt={returnRequest.rejectedAt}
+                  cancelledAt={returnRequest.cancelledAt}
+                  restockedAt={returnRequest.restockedAt}
                 />
               </div>
 
@@ -549,7 +773,7 @@ export function StaffReturnDetailDialog({
                       <span className='font-semibold text-foreground'>{returnRequest.processedBy.fullName}</span>
                     </div>
                   )}
-                  
+
                   {returnRequest.processedAt && (
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>{t('returns.detail.processedAt')}:</span>
@@ -605,22 +829,32 @@ export function StaffReturnDetailDialog({
                     {t('returns.detail.actionTitle')}
                   </h4>
 
-                  <div className='space-y-2'>
-                    <label htmlFor='staff-note' className='text-xs font-semibold text-muted-foreground block'>
-                      {t('returns.detail.staffNote')}{' '}
-                      {(returnRequest.status === 'PENDING' || returnRequest.status === 'PICKED_UP') && (
-                        <span className='text-rose-500'>{t('returns.detail.noteRequired')}</span>
+                  {/* ✅ Chỉ hiển thị ô nhập ghi chú khi có action REJECTED hoặc REJECTED_RETURN_SHIPPING */}
+                  {hasRejectAction && (
+                    <div className='space-y-2'>
+                      <label htmlFor='staff-note' className='text-xs font-semibold text-muted-foreground block'>
+                        {t('returns.detail.staffNote')}
+                        <span className='text-rose-500 ml-1'>* (bắt buộc khi từ chối)</span>
+                      </label>
+                      {noteError && (
+                        <p className='text-xs text-rose-500'>{noteError}</p>
                       )}
-                    </label>
-                    <textarea
-                      id='staff-note'
-                      value={staffNote}
-                      onChange={(e) => setStaffNote(e.target.value)}
-                      placeholder={t('returns.detail.notePlaceholder')}
-                      className='w-full min-h-[80px] rounded-lg border border-border p-2.5 text-sm bg-card text-foreground focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all'
-                      disabled={isSubmitting}
-                    />
-                  </div>
+                      <textarea
+                        id='staff-note'
+                        value={staffNote}
+                        onChange={(e) => {
+                          setStaffNote(e.target.value)
+                          if (noteError) setNoteError(null)
+                        }}
+                        placeholder={t('returns.detail.notePlaceholder')}
+                        className={cn(
+                          'w-full min-h-[80px] rounded-lg border p-2.5 text-sm bg-card text-foreground focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all',
+                          noteError ? 'border-rose-500' : 'border-border'
+                        )}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                  )}
 
                   <div className='flex flex-col gap-2'>
                     {availableActions.map((action) => {
@@ -649,11 +883,14 @@ export function StaffReturnDetailDialog({
                           {action.value === 'ASSIGN_SHIPPER' && <MaterialIcon name='person_add' className='text-lg' />}
                           {action.value === 'PICKING_UP' && <MaterialIcon name='directions_car' className='text-lg' />}
                           {action.value === 'PICKED_UP' && <MaterialIcon name='local_shipping' className='text-lg' />}
+                          {action.value === 'PICKUP_FAILED' && <MaterialIcon name='error' className='text-lg' />}
                           {action.value === 'RETURNED_TO_STORE' && <MaterialIcon name='store' className='text-lg' />}
                           {action.value === 'READY_TO_DELIVER' && <MaterialIcon name='inventory_2' className='text-lg' />}
                           {action.value === 'DELIVERING' && <MaterialIcon name='local_shipping' className='text-lg' />}
                           {action.value === 'COMPLETED' && <MaterialIcon name='done_all' className='text-lg' />}
-                          {action.value === 'DELIVERY_FAILED' && <MaterialIcon name='error' className='text-lg' />}
+                          {action.value === 'DELIVERING_FAILED' && <MaterialIcon name='error' className='text-lg' />}
+                          {action.value === 'REJECTED_RETURN_SHIPPING' && <MaterialIcon name='local_shipping' className='text-lg' />}
+                          {action.value === 'CANCELLED' && <MaterialIcon name='cancel' className='text-lg' />}
                           {action.label}
                         </button>
                       )
@@ -687,7 +924,7 @@ export function StaffReturnDetailDialog({
                 <MaterialIcon name='close' className='text-xl' />
               </button>
             </div>
-            
+
             {isLoadingShippers ? (
               <div className='py-8 text-center text-muted-foreground'>{t('returns.detail.loadingShippers')}</div>
             ) : availableShippers.length === 0 ? (
