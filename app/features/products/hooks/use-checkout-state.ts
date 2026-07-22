@@ -194,7 +194,7 @@ export function useCheckoutState() {
     setRawCartItems((prev) => prev.filter((i) => i.cartItemId !== itemId))
     setCartItems((prev) => prev.filter((i) => i.key !== itemId))
     setAdjustedQueue((prev) => prev.slice(1))
-  }, [currentAdjustedItem])
+  }, [currentAdjustedItem, t])
 
   const fetchPendingOrder = useCallback(
     async (orderId: number) => {
