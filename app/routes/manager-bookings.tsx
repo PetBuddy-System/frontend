@@ -4,7 +4,7 @@ import { ManagerSidebar, ManagerTopNav } from '~/features/manager'
 export default function ManagerBookingsRoute() {
   return (
     <AdminServiceBookingsPage
-      canManageStatus={false}
+      canManageStatus
       sidebar={<ManagerSidebar activeItem='serviceBookings' />}
       topNav={<ManagerTopNav titleKey='serviceBookings.title' subtitleKey='serviceBookings.subtitle' />}
     />

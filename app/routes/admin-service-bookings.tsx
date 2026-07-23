@@ -1,5 +1,5 @@
 import { AdminServiceBookingsPage } from '~/features/admin'
 
 export default function AdminServiceBookingsRoute() {
-  return <AdminServiceBookingsPage />
+  return <AdminServiceBookingsPage canManageStatus={false} />
 }
