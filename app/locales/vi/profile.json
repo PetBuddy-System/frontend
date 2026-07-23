@@ -41,7 +41,7 @@
     "avatarAlt": "Ảnh hồ sơ cỡ lớn",
     "changePhoto": "Đổi ảnh hồ sơ",
     "goldMember": "Thành viên Vàng",
-    "memberSince": "Tham gia từ tháng 1, 2023 • 150 điểm thưởng",
+    "memberSince": "Tham gia từ {{date}}",
     "edit": "Chỉnh sửa",
     "editProfile": {
       "title": "Chỉnh sửa thông tin cá nhân",

@@ -12,6 +12,7 @@ export const axiosInstance = axios.create({
   baseURL: env.API_URL,
   withCredentials: true,
   headers: {
+    'Content-Type': 'application/json',
     Accept: 'application/json'
   }
 })

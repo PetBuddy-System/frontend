@@ -99,19 +99,18 @@ export function ProfileInfoCard() {
                 />
               </div>
 
-              {/* Name + Badge */}
+              {/* Name */}
               <div className='flex-1 text-center md:text-left'>
-                <div className='mb-2 flex flex-col items-center gap-3 md:flex-row'>
-                  <h2 className='font-display text-xl font-semibold text-foreground md:text-2xl'>{displayFullName}</h2>
-                  <span className='mx-auto flex w-fit items-center gap-1 rounded-full bg-secondary px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary-foreground md:mx-0'>
-                    <MaterialIcon name='star' filled className='text-[14px]' />
-                    {t('profile.goldMember')}
-                  </span>
-                </div>
+                <h2 className='mb-1 font-display text-xl font-semibold text-foreground md:text-2xl'>{displayFullName}</h2>
                 <p className='text-sm text-muted-foreground md:text-base'>
                   {user?.createdAt
-                    ? `${t('profile.memberSince').split('•')[0].trim()} ${new Date(user.createdAt).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', { month: 'long', year: 'numeric' })}`
-                    : t('profile.memberSince')}
+                    ? t('profile.memberSince', {
+                        date: new Date(user.createdAt).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
+                          month: 'long',
+                          year: 'numeric'
+                        })
+                      })
+                    : ''}
                 </p>
               </div>
 

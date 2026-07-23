@@ -41,7 +41,7 @@
     "avatarAlt": "Large profile photo",
     "changePhoto": "Change profile photo",
     "goldMember": "Gold member",
-    "memberSince": "Joined January 2023 • 150 reward points",
+    "memberSince": "Member since {{date}}",
     "edit": "Edit",
     "editProfile": {
       "title": "Edit personal information",
