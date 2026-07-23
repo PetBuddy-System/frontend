@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Button, MaterialIcon } from '~/shared/ui'
 import type { UserResponse } from '~/shared/lib/auth'
-import { updateCurrentUserApi } from '../../services/user'
+import { updateCurrentUserApi, updateUserByIdApi } from '../../services/user'
 
 interface ProfileEditModalProps {
   user: UserResponse | null
@@ -30,6 +30,7 @@ export function ProfileEditModal({ user, isOpen, onClose, onSuccess }: ProfileEd
     avatarUrl: ''
   })
   const [previewUrl, setPreviewUrl] = useState('')
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -37,7 +38,10 @@ export function ProfileEditModal({ user, isOpen, onClose, onSuccess }: ProfileEd
   // Sync form khi user prop thay đổi
   useEffect(() => {
     if (user && isOpen) {
-      const avatarUrl = user.mediaFiles?.find((m) => m.mediaPurpose === 'USER_PROFILE')?.fileUrl ?? ''
+      const avatarUrl =
+        user.mediaFiles?.find((m) => m.mediaPurpose === 'USER_PROFILE' || m.mediaPurpose === 'PET_PROFILE')?.fileUrl ??
+        user.mediaFiles?.[0]?.fileUrl ??
+        ''
       setFormValues({
         fullName: user.fullName ?? '',
         dateOfBirth: user.dateOfBirth ?? '',
@@ -45,6 +49,7 @@ export function ProfileEditModal({ user, isOpen, onClose, onSuccess }: ProfileEd
         avatarUrl
       })
       setPreviewUrl(avatarUrl)
+      setSelectedFile(null)
       setErrorMessage('')
       setSuccessMessage('')
     }
@@ -55,6 +60,7 @@ export function ProfileEditModal({ user, isOpen, onClose, onSuccess }: ProfileEd
     if (!isOpen) {
       setFormValues({ fullName: '', dateOfBirth: '', gender: 'MALE', avatarUrl: '' })
       setPreviewUrl('')
+      setSelectedFile(null)
       setErrorMessage('')
       setSuccessMessage('')
       setIsSubmitting(false)
@@ -68,6 +74,7 @@ export function ProfileEditModal({ user, isOpen, onClose, onSuccess }: ProfileEd
   function handleAvatarChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
     if (file) {
+      setSelectedFile(file)
       const objectUrl = URL.createObjectURL(file)
       setPreviewUrl(objectUrl)
       setFormValues((prev) => ({ ...prev, avatarUrl: objectUrl }))
@@ -92,20 +99,12 @@ export function ProfileEditModal({ user, isOpen, onClose, onSuccess }: ProfileEd
       const payload = {
         fullName: formValues.fullName.trim(),
         dateOfBirth: formValues.dateOfBirth || undefined,
-        gender: formValues.gender || undefined,
-        mediaFiles:
-          previewUrl && previewUrl !== user?.mediaFiles?.[0]?.fileUrl
-            ? [
-                {
-                  fileUrl: previewUrl,
-                  fileType: 'IMAGE',
-                  mediaPurpose: 'USER_PROFILE'
-                }
-              ]
-            : undefined
+        gender: formValues.gender || undefined
       }
 
-      const response = await updateCurrentUserApi(payload)
+      const response = user?.userId
+        ? await updateUserByIdApi(user.userId, payload, selectedFile)
+        : await updateCurrentUserApi(payload, selectedFile)
 
       if (response.success && response.data) {
         setSuccessMessage(t('profile.editProfile.updateSuccess'))

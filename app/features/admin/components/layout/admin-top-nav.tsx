@@ -8,10 +8,15 @@ import { useSidebar } from '~/providers/sidebar-provider'
 export interface AdminTopNavProps {
   titleKey?: string
   subtitleKey?: string
+  ns?: string
 }
 
-export function AdminTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashboard.subtitle' }: AdminTopNavProps) {
-  const { t } = useTranslation('admin')
+export function AdminTopNav({
+  titleKey = 'dashboard.title',
+  subtitleKey = 'dashboard.subtitle',
+  ns = 'admin',
+}: AdminTopNavProps) {
+  const { t } = useTranslation(['admin', ns])
   const { user } = useAuth()
   const { openMobileSidebar } = useSidebar()
 
@@ -27,8 +32,8 @@ export function AdminTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashb
           <MaterialIcon name='menu' />
         </button>
         <div>
-          <p className='font-display text-xl font-bold text-primary md:text-2xl'>{t(titleKey)}</p>
-          {subtitleKey ? <p className='hidden text-sm text-muted-foreground sm:block'>{t(subtitleKey)}</p> : null}
+          <p className='font-display text-xl font-bold text-primary md:text-2xl'>{t(titleKey, { ns })}</p>
+          {subtitleKey ? <p className='hidden text-sm text-muted-foreground sm:block'>{t(subtitleKey, { ns })}</p> : null}
         </div>
       </div>
 
