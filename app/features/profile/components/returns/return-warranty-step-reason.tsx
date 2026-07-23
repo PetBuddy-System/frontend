@@ -22,6 +22,7 @@ export interface ReturnWarrantyStepReasonProps {
   onBankNameChange: (value: string) => void
   onBankAccountNumberChange: (value: string) => void
   onBankAccountHolderChange: (value: string) => void
+  errors?: Record<string, string>
 }
 
 export function ReturnWarrantyStepReason({
