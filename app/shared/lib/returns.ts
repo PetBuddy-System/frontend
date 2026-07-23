@@ -77,10 +77,19 @@ export interface ReturnRequestResponse {
   shipper?: ReturnProcessedStaff | null
   processedAt?: string | null
   approvedAt?: string | null
+  pickingUpAt?: string | null
+  pickupFailedAt?: string | null
   pickedUpAt?: string | null
   returnedToStoreAt?: string | null
+  readyToDeliverAt?: string | null
+  deliveringAt?: string | null
+  deliveringFailedAt?: string | null
   completedAt?: string | null
+  rejectedAt?: string | null
+  cancelledAt?: string | null
   restockedAt?: string | null
+  pickupFailedCount?: number
+  deliveryFailedCount?: number
   staffNote?: string | null
   address?: string | null
   latitude?: number | null
@@ -143,10 +152,19 @@ export interface ManagementReturnResponse {
   createdAt: string
   processedAt?: string | null
   approvedAt?: string | null
+  pickingUpAt?: string | null
+  pickupFailedAt?: string | null
   pickedUpAt?: string | null
   returnedToStoreAt?: string | null
+  readyToDeliverAt?: string | null
+  deliveringAt?: string | null
+  deliveringFailedAt?: string | null
   completedAt?: string | null
+  rejectedAt?: string | null
+  cancelledAt?: string | null
   restockedAt?: string | null
+  pickupFailedCount?: number
+  deliveryFailedCount?: number
   address?: string | null
   recipientName?: string | null
   phoneNumber?: string | null
@@ -162,4 +180,13 @@ export interface ReturnShipperResponse {
   staffName: string
   staffEmail: string
   activeReturnCount: number
+}
+
+export interface ReturnStatistics {
+  totalRequests: number
+  assigned: number
+  pending: number
+  approved: number
+  completed: number
+  rejected: number
 }

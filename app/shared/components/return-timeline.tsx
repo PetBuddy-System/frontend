@@ -7,12 +7,16 @@ interface ReturnTimelineProps {
   status: string
   createdAt: string
   approvedAt?: string | null
+  pickingUpAt?: string | null
   pickedUpAt?: string | null
   returnedToStoreAt?: string | null
-  completedAt?: string | null
-  // Cho exchange
   readyToDeliverAt?: string | null
   deliveringAt?: string | null
+  deliveringFailedAt?: string | null
+  completedAt?: string | null
+  rejectedAt?: string | null
+  cancelledAt?: string | null
+  restockedAt?: string | null
 }
 
 function formatTime(dateString?: string | null) {
@@ -28,56 +32,47 @@ function formatTime(dateString?: string | null) {
 }
 
 export function ReturnTimeline({
-  type,
   status,
   createdAt,
   approvedAt,
+  pickingUpAt,
   pickedUpAt,
   returnedToStoreAt,
-  completedAt,
   readyToDeliverAt,
-  deliveringAt
+  deliveringAt,
+  deliveringFailedAt,
+  completedAt,
+  rejectedAt,
+  cancelledAt
 }: ReturnTimelineProps) {
   const { t } = useTranslation('returns')
 
-  const returnSteps = [
+  const allMilestones = [
     { key: 'PENDING', labelKey: 'status.PENDING', icon: 'pending_actions', time: createdAt },
     { key: 'APPROVED', labelKey: 'status.APPROVED', icon: 'check_circle', time: approvedAt },
-    { key: 'PICKING_UP', labelKey: 'status.PICKING_UP', icon: 'local_shipping', time: null },
+    { key: 'PICKING_UP', labelKey: 'status.PICKING_UP', icon: 'directions_car', time: pickingUpAt },
     { key: 'PICKED_UP', labelKey: 'status.PICKED_UP', icon: 'inventory', time: pickedUpAt },
     { key: 'RETURNED_TO_STORE', labelKey: 'status.RETURNED_TO_STORE', icon: 'store', time: returnedToStoreAt },
-    { key: 'COMPLETED', labelKey: 'status.COMPLETED', icon: 'done_all', time: completedAt }
-  ]
-
-  const exchangeSteps = [
-    { key: 'PENDING', labelKey: 'status.PENDING', icon: 'pending_actions', time: createdAt },
-    { key: 'APPROVED', labelKey: 'status.APPROVED', icon: 'check_circle', time: approvedAt },
     { key: 'READY_TO_DELIVER', labelKey: 'status.READY_TO_DELIVER', icon: 'inventory_2', time: readyToDeliverAt },
     { key: 'DELIVERING', labelKey: 'status.DELIVERING', icon: 'local_shipping', time: deliveringAt },
-    { key: 'COMPLETED', labelKey: 'status.COMPLETED', icon: 'done_all', time: completedAt }
+    { key: 'DELIVERING_FAILED', labelKey: 'status.DELIVERING_FAILED', icon: 'error', time: deliveringFailedAt },
+    { key: 'COMPLETED', labelKey: 'status.COMPLETED', icon: 'done_all', time: completedAt },
+    { key: 'REJECTED', labelKey: 'status.REJECTED', icon: 'cancel', time: rejectedAt },
+    { key: 'CANCELLED', labelKey: 'status.CANCELLED', icon: 'close', time: cancelledAt }
   ]
 
-  let steps = type === 'RETURN' ? returnSteps : exchangeSteps
-
-  if (status === 'REJECTED') {
-    steps = [
-      { key: 'PENDING', labelKey: 'status.PENDING', icon: 'pending_actions', time: createdAt },
-      { key: 'REJECTED', labelKey: 'status.REJECTED', icon: 'cancel', time: completedAt || approvedAt }
-    ]
-  } else if (status === 'CANCELLED') {
-    steps = [
-      { key: 'PENDING', labelKey: 'status.PENDING', icon: 'pending_actions', time: createdAt },
-      { key: 'CANCELLED', labelKey: 'status.CANCELLED', icon: 'close', time: completedAt || approvedAt }
-    ]
-  }
+  // Only display milestones with non-null timestamp or matching current status
+  const steps = allMilestones.filter((m) => Boolean(m.time) || m.key === status)
 
   const currentStepIndex = steps.findIndex((s) => s.key === status)
   const activeIndex = currentStepIndex >= 0 ? currentStepIndex : steps.length - 1
 
+  if (steps.length === 0) return null
+
   return (
     <div className='py-4'>
       <div className='relative pl-4 sm:pl-0'>
-        {/* Đường line dọc cho mobile */}
+        {/* Mobile vertical line */}
         <div className='absolute left-8 top-4 bottom-4 w-0.5 bg-border sm:hidden' />
 
         <div className='flex flex-col sm:flex-row justify-between gap-6 sm:gap-2'>
@@ -123,7 +118,9 @@ export function ReturnTimeline({
                     {t(step.labelKey)}
                   </span>
                   {step.time && (
-                    <span className='text-[10px] text-muted-foreground mt-0.5'>{formatTime(step.time)}</span>
+                    <span className='text-[10px] text-muted-foreground mt-0.5'>
+                      {formatTime(step.time)}
+                    </span>
                   )}
                 </div>
               </div>

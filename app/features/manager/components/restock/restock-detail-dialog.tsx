@@ -68,13 +68,13 @@ export function RestockDetailDialog({
         }))
         setRestockData({ items })
       } catch (err) {
-        setErrorMessage(err instanceof Error ? err.message : 'Không thể tải thông tin nhập kho')
+        setErrorMessage(err instanceof Error ? err.message : t('restock.errors.loadFailed'))
       } finally {
         setIsLoading(false)
       }
     }
     void loadRestockInfo()
-  }, [returnRequestId])
+  }, [returnRequestId, t])
 
   function handleQuantityChange(itemIndex: number, batchIndex: number, value: number) {
     if (isViewOnly) return
@@ -91,7 +91,7 @@ export function RestockDetailDialog({
       await restockApi.restock(returnRequestId, restockData)
       onSuccess()
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : 'Nhập kho thất bại')
+      setErrorMessage(err instanceof Error ? err.message : t('restock.errors.submitFailed'))
     } finally {
       setIsSubmitting(false)
     }
@@ -140,7 +140,7 @@ export function RestockDetailDialog({
         <div className='rounded-2xl border border-border bg-card p-8 shadow-2xl'>
           <div className='flex flex-col items-center gap-4'>
             <div className='h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent' />
-            <p className='text-muted-foreground'>Đang tải thông tin nhập kho...</p>
+            <p className='text-muted-foreground'>{t('restock.detail.loading')}</p>
           </div>
         </div>
       </div>
@@ -153,13 +153,13 @@ export function RestockDetailDialog({
         <div className='rounded-2xl border border-border bg-card p-8 shadow-2xl max-w-md w-full'>
           <div className='text-center'>
             <MaterialIcon name='error' className='text-5xl text-destructive mx-auto mb-4' />
-            <p className='text-foreground font-semibold'>Không thể tải thông tin</p>
+            <p className='text-foreground font-semibold'>{t('restock.detail.loadFailed')}</p>
             <button
               type='button'
               onClick={onClose}
               className='mt-4 rounded-xl bg-primary px-6 py-2 text-white font-bold'
             >
-              Đóng
+              {t('restock.detail.close')}
             </button>
           </div>
         </div>
@@ -183,14 +183,14 @@ export function RestockDetailDialog({
             </span>
             <div>
               <h3 className='font-display text-lg font-bold text-card-foreground'>
-                {isViewMode ? 'Chi tiết nhập kho' : 'Nhập kho'} #{restockInfo.returnCode}
+                {isViewMode ? t('restock.detail.title.view') : t('restock.detail.title.restock')} #{restockInfo.returnCode}
               </h3>
               <p className='text-xs text-muted-foreground'>
-                Mã yêu cầu: #{restockInfo.returnCode}
+                {t('restock.detail.requestCode')}: #{restockInfo.returnCode}
                 {hasRestocked && (
                   <span className='ml-2 inline-flex items-center gap-1 text-emerald-600'>
                     <MaterialIcon name='check_circle' className='text-sm' />
-                    Đã nhập kho
+                    {t('restock.detail.status.restocked')}
                   </span>
                 )}
               </p>
@@ -217,7 +217,7 @@ export function RestockDetailDialog({
           {/* Danh sách sản phẩm */}
           <div className='space-y-4'>
             <h4 className='text-sm font-bold text-card-foreground border-b border-border pb-2'>
-              Danh sách sản phẩm nhập kho
+              {t('restock.detail.productList')}
             </h4>
 
             {restockInfo.items.map((item, itemIndex) => (
@@ -225,13 +225,15 @@ export function RestockDetailDialog({
                 <div className='flex items-center justify-between'>
                   <div>
                     <p className='font-semibold text-card-foreground'>{item.productName}</p>
-                    <p className='text-xs text-muted-foreground'>ID: #{item.orderDetailId}</p>
+                    <p className='text-xs text-muted-foreground'>{t('restock.detail.id')}: #{item.orderDetailId}</p>
                   </div>
                 </div>
 
                 {/* Batches */}
                 <div className='space-y-2'>
-                  <p className='text-xs font-semibold text-muted-foreground uppercase tracking-wider'>Lô hàng:</p>
+                  <p className='text-xs font-semibold text-muted-foreground uppercase tracking-wider'>
+                    {t('restock.detail.batches')}:
+                  </p>
                   {item.batches.map((batch, batchIndex) => {
                     const selectedQuantity = restockData.items[itemIndex]?.batches[batchIndex]?.restockQuantity || 0
                     const isRestockedBatch = batch.restockQuantity > 0
@@ -239,18 +241,20 @@ export function RestockDetailDialog({
                     return (
                       <div key={batch.batchId} className='grid grid-cols-4 gap-3 rounded-lg bg-muted/20 p-3'>
                         <div className='col-span-1'>
-                          <p className='text-xs text-muted-foreground'>Mã lô</p>
+                          <p className='text-xs text-muted-foreground'>{t('restock.detail.batchCode')}</p>
                           <p className='font-semibold text-foreground'>{batch.batchCode}</p>
                         </div>
                         <div className='col-span-1'>
-                          <p className='text-xs text-muted-foreground'>{isViewMode ? 'Đã nhập' : 'Có thể nhập'}</p>
+                          <p className='text-xs text-muted-foreground'>
+                            {isViewMode ? t('restock.detail.restocked') : t('restock.detail.availableToRestock')}
+                          </p>
                           <p className={cn('font-semibold', isViewMode ? 'text-primary' : 'text-emerald-600')}>
                             {isViewMode ? batch.restockQuantity : batch.availableToRestock}
                           </p>
                         </div>
                         <div className='col-span-1'>
                           <label className='text-xs text-muted-foreground block'>
-                            {isViewMode ? 'Số lượng đã nhập' : 'Số lượng nhập'}
+                            {isViewMode ? t('restock.detail.quantityRestocked') : t('restock.detail.quantityToRestock')}
                           </label>
                           {isViewMode ? (
                             <p className='font-bold text-primary text-lg'>{batch.restockQuantity}</p>
@@ -270,7 +274,7 @@ export function RestockDetailDialog({
                         <div className='col-span-1'>
                           {isViewMode && isRestockedBatch && (
                             <div>
-                              <p className='text-xs text-muted-foreground'>Người nhập</p>
+                              <p className='text-xs text-muted-foreground'>{t('restock.detail.restockedBy')}</p>
                               <p className='font-semibold text-foreground text-sm'>{batch.restockedBy || '—'}</p>
                               <p className='text-xs text-muted-foreground mt-1'>{formatDate(batch.restockedAt)}</p>
                             </div>
@@ -288,14 +292,18 @@ export function RestockDetailDialog({
           <div className='rounded-xl border border-border bg-muted/10 p-4 space-y-2'>
             <div className='flex justify-between'>
               <span className='text-muted-foreground'>
-                {isViewMode ? 'Tổng số sản phẩm đã nhập:' : 'Tổng số sản phẩm sẽ nhập:'}
+                {isViewMode ? t('restock.detail.totalRestocked') : t('restock.detail.totalToRestock')}
               </span>
               <strong className='text-primary text-lg'>{isViewMode ? totalRestocked : totalSelected}</strong>
             </div>
             {isViewMode && (
               <div className='flex justify-between border-t border-border pt-2 text-xs text-muted-foreground'>
-                <span>Người nhập: {restockInfo.items[0]?.batches[0]?.restockedBy || '—'}</span>
-                <span>Thời gian: {formatDate(restockInfo.items[0]?.batches[0]?.restockedAt)}</span>
+                <span>
+                  {t('restock.detail.restockedBy')}: {restockInfo.items[0]?.batches[0]?.restockedBy || '—'}
+                </span>
+                <span>
+                  {t('restock.detail.restockedAt')}: {formatDate(restockInfo.items[0]?.batches[0]?.restockedAt)}
+                </span>
               </div>
             )}
           </div>
@@ -308,7 +316,7 @@ export function RestockDetailDialog({
             onClick={onClose}
             className='rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-bold text-card-foreground hover:bg-muted transition-colors active:scale-95'
           >
-            Đóng
+            {t('restock.detail.close')}
           </button>
           {!isViewMode && (
             <button
@@ -320,12 +328,12 @@ export function RestockDetailDialog({
               {isSubmitting ? (
                 <>
                   <div className='h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
-                  Đang xử lý...
+                  {t('restock.detail.processing')}
                 </>
               ) : (
                 <>
                   <MaterialIcon name='check_circle' className='text-lg' />
-                  Xác nhận nhập kho
+                  {t('restock.detail.confirmRestock')}
                 </>
               )}
             </button>

@@ -176,6 +176,7 @@ export async function updateProductApi(
   // Nếu có images, gửi dạng FormData
   if (images && images.length > 0) {
     const formData = new FormData()
+    // ✅ Đảm bảo payload được stringify đúng
     formData.append('data', JSON.stringify(payload))
 
     for (const file of images) {
@@ -189,7 +190,7 @@ export async function updateProductApi(
     })
   }
 
-  // Nếu không có images, gửi JSON
+  // ✅ Luôn gửi payload (bao gồm cả weight, unit, categoryId, ...)
   return customFetch<UpdateProductResponse>({
     url: `${PRODUCTS_BASE_URL}/${productId}`,
     method: 'PATCH',

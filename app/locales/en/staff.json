@@ -59,6 +59,7 @@
       "deliveryRoute": "Manage Delivery Route",
       "attendanceHistory": "Attendance history",
       "weeklySchedule": "Weekly shifts",
+      "shiftRegistration": "Shift registration",
       "disposalRequest": "Disposal request",
       "inventory": "Inventory management",
       "returns": "Manage Returns",
@@ -69,7 +70,6 @@
     "roleTitle": "Store Staff",
     "toggle": "Toggle sidebar"
   },
-
   "shipperAssignment": {
     "title": "Shipper Assignment",
     "subtitle": "Group orders in nearby areas and assign a delivery staff.",
@@ -377,7 +377,7 @@
     },
     "detail": {
       "actionsTitle": "Check-in / Check-out",
-      "actionHint": "The system will validate the shift status before recording check-in or check-out.",
+      "actionHint": "After a successful check-in, the check-out action will be available for this shift.",
       "attendanceStatus": "Attendance status",
       "assignedAt": "Assigned at",
       "checkInAt": "Check-in time",
@@ -406,7 +406,7 @@
       "checkOutAlreadyDone": "You have already checked out for this shift.",
       "checkOutNotAllowed": "This shift cannot be checked out right now.",
       "checkOutRequiresCheckIn": "You can only check out after you have checked in for this shift.",
-      "checkOutTooEarly": "It is not time to check out yet. You can only check out after the shift end time.",
+      "checkOutTooEarly": "You need to check in for this shift before checking out.",
       "forbidden": "You do not have permission to update this shift.",
       "invalidDateRange": "Invalid date range. The end date cannot be before the start date.",
       "network": "Cannot connect to the server. Please try again.",
@@ -463,6 +463,98 @@
       "noShift": "No shift",
       "subtitle": "Shifts are grouped by day so you can scan the weekly distribution clearly.",
       "title": "Weekly schedule board"
+    }
+  },
+  "shiftRegistration": {
+    "pageTitle": "Shift registration",
+    "pageSubtitle": "Choose preferred shifts for an open registration period",
+    "heading": "Register preferred shifts",
+    "description": "Choose a registration period, mark the days you want to work, and select suitable shifts. Custom shifts are only for proposing your own time window.",
+    "actions": {
+      "cancel": "Cancel",
+      "create": "Register shifts",
+      "refresh": "Refresh",
+      "saving": "Saving...",
+      "update": "Update shifts"
+    },
+    "errors": {
+      "alreadyExists": "You have already registered shifts for this period. Please use update if you want to change them.",
+      "badRequest": "Unable to save shift registration. Please check the information again.",
+      "customFieldsNotAllowed": "Only custom shifts can include custom time and reason.",
+      "customReasonRequired": "A custom shift reason is required.",
+      "customTimeRequired": "Custom shifts require start time and end time.",
+      "duplicateRegistration": "Duplicate shift registration on the same date is not allowed.",
+      "emptyRegistration": "Please choose at least one shift before saving.",
+      "expired": "The registration period has expired.",
+      "forbidden": "Please sign in with a staff account to manage shift registration.",
+      "invalidCustomTime": "End time must be after start time.",
+      "network": "Cannot connect to the server. Please try again.",
+      "notFound": "This shift registration period does not exist.",
+      "notOpen": "This shift registration period is not open yet.",
+      "periodForbidden": "Please sign in with a staff account to view shift registration periods.",
+      "periodClosed": "This shift registration period is closed.",
+      "server": "The server is having trouble. Please try again later.",
+      "shiftTypeRequired": "Please choose a preferred shift.",
+      "workDateOutOfPeriod": "The work date must be inside the registration work period.",
+      "workDateRequired": "Work date is required."
+    },
+    "form": {
+      "emptyRangeDescription": "This registration period does not have a valid work date range.",
+      "emptyRangeTitle": "No work dates",
+      "endTime": "End time",
+      "reason": "Reason",
+      "reasonPlaceholder": "Enter the reason for proposing a custom shift...",
+      "saved": "Saved",
+      "shift": "Preferred shift",
+      "startTime": "Start time",
+      "subtitle": "Each day can have one preferred shift, or be skipped if you do not want to register.",
+      "title": "Choose shifts by date"
+    },
+    "messages": {
+      "createSuccess": "Shift registration saved successfully.",
+      "loadPeriodsFailed": "Unable to load shift registration periods.",
+      "loadRegistrationsFailed": "Unable to load your registered shifts.",
+      "saveFailed": "Unable to save shift registration.",
+      "updateSuccess": "Shift registration updated successfully."
+    },
+    "pagination": {
+      "page": "Page {{page}} / {{totalPages}}"
+    },
+    "periods": {
+      "closedHint": "This period is closed, so it cannot be selected for registration or updates.",
+      "emptyDescription": "There are no shift registration periods right now.",
+      "emptyTitle": "No registration period",
+      "subtitle": "Closed periods are still shown for tracking, but only open periods can be selected.",
+      "title": "Shift registration periods",
+      "workRange": "Work week"
+    },
+    "shiftTypes": {
+      "AFTERNOON": "Afternoon",
+      "CUSTOM": "Custom",
+      "EVENING": "Evening",
+      "FULL_DAY": "Full day",
+      "MORNING": "Morning",
+      "NONE": "Do not register"
+    },
+    "statuses": {
+      "CLOSED": "Closed",
+      "OPEN": "Open"
+    },
+    "summary": {
+      "count": "{{count}} selected shifts",
+      "empty": "No shifts selected in this registration period yet.",
+      "standardShift": "Standard shift window",
+      "title": "Selected shifts"
+    },
+    "updateModal": {
+      "close": "Close update shift dialog",
+      "subtitle": "Choose your preferred shifts again for each work date, then save the update.",
+      "title": "Update registered shifts"
+    },
+    "validation": {
+      "chooseAtLeastOne": "Please choose at least one day to register.",
+      "customRequired": "Custom shifts require start time, end time, and reason.",
+      "customTimeInvalid": "End time must be after start time."
     }
   },
   "stats": {
@@ -702,6 +794,8 @@
     },
     "stats": {
       "all": "Total requests",
+      "totalRequests": "Total Requests",
+      "assigned": "Assigned",
       "pending": "Pending",
       "approved": "Approved",
       "rejected": "Rejected",
@@ -709,10 +803,12 @@
       "cancelled": "Cancelled",
       "pickingUp": "Picking up",
       "pickedUp": "Picked up",
+      "pickupFailed": "Pickup failed",
       "returnedToStore": "Returned to store",
       "readyToDeliver": "Ready to deliver",
       "delivering": "Delivering",
-      "deliveryFailed": "Delivery failed"
+      "deliveryFailed": "Delivery failed",
+      "rejectedReturnShipping": "Rejected - Return shipping"
     },
     "type": {
       "RETURN": "Return & Refund",
@@ -765,6 +861,14 @@
       "empty": "No return requests found."
     },
     "detail": {
+      "returnShippingBadge": "Return shipping",
+      "btnReturnShipping": "Return shipping",
+      "rejectedBannerTitle": "❌ Request has been rejected",
+      "rejectedBannerDescription": "This return request has been rejected and cannot be processed further.",
+      "rejectedReturnShippingBannerTitle": "⚠️ Request rejected - Returning shipping",
+      "rejectedReturnShippingBannerDescription": "This request was rejected after inspection. The items are being shipped back to the customer.",
+      "rejectedAt": "Rejected at",
+      "btnRetryPickup": "Retry Pickup",
       "title": "Return Request Details",
       "code": "Request Code",
       "orderCode": "Order Code",
@@ -812,6 +916,7 @@
       "noteRequired": "* (required when rejecting or failing delivery)",
       "btnApprove": "Approve Request",
       "btnReject": "Reject",
+      "btnRejectReturnShipping": "Reject & Return shipping",
       "btnComplete": "Complete",
       "successApprove": "Request approved successfully",
       "successReject": "Request rejected successfully",
@@ -829,12 +934,22 @@
       "assignShipper": "Assign Shipper",
       "btnPickingUp": "Start Pickup",
       "btnPickedUp": "Picked Up",
+      "btnPickupFailed": "Pickup Failed",
       "btnReturnedToStore": "Returned to Store",
       "btnReadyToDeliver": "Ready to Deliver",
       "btnDelivering": "Start Delivery",
       "btnDelivered": "Delivery Successful",
+      "btnDeliveryFailed": "Delivery Failed",
+      "btnCancel": "Cancel Request",
+      "pickupFailedBadge": "Pickup Failed ({{count}})",
+      "deliveryFailedBadge": "Delivery Failed ({{count}})",
       "errorAssign": "Failed to assign delivery staff",
       "errorLoadShippers": "Failed to load shippers"
+    },
+    "pagination": {
+      "showing": "Showing page {{page}} of {{total}} pages",
+      "prev": "Previous",
+      "next": "Next"
     }
   },
   "orderCancel": {

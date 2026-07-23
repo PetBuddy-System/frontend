@@ -209,7 +209,8 @@ export async function customFetch<T>(options: RequestOptions): Promise<T> {
     headers,
     params: cleanParams,
     data,
-    signal
+    signal,
+    baseURL: env.API_URL && url.startsWith(env.API_URL) ? '' : undefined
   }
 
   try {

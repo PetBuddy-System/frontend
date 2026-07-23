@@ -36,6 +36,7 @@
       "products": "Quản lý sản phẩm",
       "services": "Quản lý dịch vụ",
       "serviceBookings": "Lịch đặt dịch vụ",
+      "shiftRegistrations": "Đăng ký ca làm",
       "staff": "Quản lý lịch làm việc",
       "returnRequests": "Duyệt đổi trả",
       "restock": "Nhập hàng trả về",
@@ -56,6 +57,124 @@
   "serviceBookings": {
     "title": "Quản lý lịch đặt",
     "subtitle": "Theo dõi lịch đã thanh toán, điều phối vận hành và cập nhật trạng thái dịch vụ."
+  },
+  "shiftRegistration": {
+    "title": "Quản lý đăng ký ca làm",
+    "subtitle": "Tạo đợt đăng ký ca theo tuần, theo dõi staff đăng ký ca mong muốn và chuẩn bị dữ liệu tạo lịch làm việc.",
+    "createPage": {
+      "title": "Tạo đợt đăng ký ca",
+      "subtitle": "Thiết lập tuần làm việc và thời gian cho staff gửi đăng ký ca mong muốn."
+    },
+    "detailPage": {
+      "title": "Chi tiết đợt đăng ký ca",
+      "subtitle": "Xem thời gian đăng ký và danh sách staff đã gửi ca mong muốn trong đợt này."
+    },
+    "actions": {
+      "backToList": "Quay lại danh sách",
+      "cancel": "Hủy",
+      "clearFilters": "Xóa lọc",
+      "create": "Tạo đợt đăng ký",
+      "refresh": "Tải lại",
+      "saving": "Đang lưu...",
+      "updateStatus": "Cập nhật trạng thái",
+      "viewDetails": "Xem chi tiết"
+    },
+    "detail": {
+      "registrationWindow": "Thời gian đăng ký",
+      "workRange": "Khoảng ngày làm việc",
+      "workRangeHint": "Staff sẽ đăng ký ca mong muốn trong khoảng ngày làm việc này."
+    },
+    "empty": "Không tìm thấy đợt đăng ký ca phù hợp.",
+    "errors": {
+      "forbidden": "Bạn không có quyền thực hiện thao tác này.",
+      "invalidDateRange": "Khoảng ngày làm việc không hợp lệ. Ngày kết thúc không được trước ngày bắt đầu.",
+      "invalidRegisterCloseTime": "Thời gian đóng đăng ký phải trước ngày bắt đầu tuần làm.",
+      "invalidRegistrationTime": "Thời gian đóng đăng ký phải sau thời gian mở đăng ký.",
+      "network": "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối và thử lại.",
+      "notFound": "Đợt đăng ký ca không tồn tại.",
+      "registrationExpired": "Thời gian đăng ký đã hết hạn.",
+      "registrationNotOpen": "Chưa tới thời gian mở đăng ký ca.",
+      "registrationPeriodClosed": "Đợt đăng ký ca này đã đóng.",
+      "registrationPeriodExists": "Đã có đợt đăng ký ca trùng với khoảng ngày làm việc này.",
+      "server": "Máy chủ đang gặp sự cố. Vui lòng thử lại sau."
+    },
+    "filters": {
+      "fromDate": "Từ ngày",
+      "pageSize": "Số dòng",
+      "shiftType": "Ca đăng ký",
+      "staffKeyword": "Tìm staff",
+      "staffKeywordPlaceholder": "Nhập tên staff...",
+      "status": "Trạng thái",
+      "toDate": "Đến ngày",
+      "workDate": "Ngày làm"
+    },
+    "form": {
+      "helper": "Sau khi tạo đợt đăng ký, staff có thể vào đăng ký ca sáng, chiều, tối, cả ngày hoặc ca tùy chỉnh theo mong muốn cá nhân.",
+      "registerCloseAt": "Thời gian đóng đăng ký",
+      "registerOpenAt": "Thời gian mở đăng ký",
+      "workFromDate": "Ngày bắt đầu tuần làm",
+      "workToDate": "Ngày kết thúc tuần làm"
+    },
+    "list": {
+      "showing": "Hiển thị {{from}}-{{to}} trong {{total}} đợt đăng ký",
+      "title": "Danh sách đợt đăng ký ca"
+    },
+    "messages": {
+      "createFailed": "Tạo đợt đăng ký ca thất bại.",
+      "created": "Tạo đợt đăng ký ca thành công.",
+      "loadDetailFailed": "Không thể tải chi tiết đợt đăng ký ca.",
+      "loadPeriodsFailed": "Không thể tải danh sách đợt đăng ký ca.",
+      "loadRegistrationsFailed": "Không thể tải danh sách staff đăng ký ca.",
+      "required": "Vui lòng nhập đầy đủ các trường bắt buộc.",
+      "statusUpdateFailed": "Cập nhật trạng thái thất bại.",
+      "statusUpdated": "Đã cập nhật trạng thái đợt đăng ký ca."
+    },
+    "pagination": {
+      "label": "Phân trang đăng ký ca",
+      "page": "Trang {{page}} / {{totalPages}}"
+    },
+    "registrations": {
+      "empty": "Chưa có staff nào đăng ký ca trong đợt này.",
+      "listTitle": "Danh sách staff đăng ký ca",
+      "showing": "Hiển thị {{from}}-{{to}} trong {{total}} đăng ký",
+      "standardShift": "Theo khung ca chuẩn",
+      "subtitle": "Danh sách này giúp manager nắm ca mong muốn của staff trước khi tạo lịch làm việc chính thức.",
+      "table": {
+        "createdAt": "Ngày đăng ký",
+        "customTime": "Giờ tùy chỉnh",
+        "reason": "Lý do",
+        "shift": "Ca mong muốn",
+        "staff": "Staff",
+        "workDate": "Ngày làm"
+      },
+      "title": "Staff đã đăng ký ca"
+    },
+    "shiftTypes": {
+      "AFTERNOON": "Ca chiều",
+      "ALL": "Tất cả",
+      "CUSTOM": "Tùy chỉnh",
+      "EVENING": "Ca tối",
+      "FULL_DAY": "Cả ngày",
+      "MORNING": "Ca sáng"
+    },
+    "statusModal": {
+      "close": "Đóng hộp thoại cập nhật trạng thái",
+      "description": "Chọn trạng thái mới cho đợt đăng ký ca này.",
+      "status": "Trạng thái",
+      "title": "Cập nhật trạng thái"
+    },
+    "statuses": {
+      "ALL": "Tất cả",
+      "CLOSED": "Đã đóng",
+      "OPEN": "Đang mở"
+    },
+    "table": {
+      "actions": "Thao tác",
+      "registrationTime": "Thời gian nhận đăng ký",
+      "status": "Trạng thái",
+      "workRange": "Tuần làm việc",
+      "workRangeHint": "Khoảng staff có thể đăng ký ca"
+    }
   },
   "stats": {
     "discrepancies": {
@@ -375,6 +494,68 @@
     "breadcrumb": {
       "ops": "Kho vận",
       "current": "Nhập hàng trả về"
+    },
+    "list": {
+      "loading": "Đang tải danh sách yêu cầu nhập hàng...",
+      "searchPlaceholder": "Tìm theo mã yêu cầu, mã đơn hàng...",
+      "search": "Tìm kiếm",
+      "empty": "Không có yêu cầu nào đã hoàn thành để nhập kho.",
+      "view": "Xem",
+      "restock": "Nhập kho",
+      "columns": {
+        "requestCode": "Mã yêu cầu",
+        "orderCode": "Mã đơn hàng",
+        "customer": "Khách hàng",
+        "productCount": "Số sản phẩm",
+        "createdAt": "Ngày tạo",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "pagination": {
+        "page": "Trang",
+        "previous": "Trang trước",
+        "next": "Trang sau"
+      }
+    },
+    "status": {
+      "pending": "Chờ duyệt",
+      "approved": "Đã duyệt",
+      "pickedUp": "Đã lấy hàng",
+      "rejected": "Từ chối",
+      "cancelled": "Đã hủy",
+      "completed": "Hoàn thành",
+      "deliveryFailed": "Giao thất bại"
+    },
+    "detail": {
+      "loading": "Đang tải thông tin nhập kho...",
+      "loadFailed": "Không thể tải thông tin",
+      "close": "Đóng",
+      "title": {
+        "view": "Chi tiết nhập kho",
+        "restock": "Nhập kho"
+      },
+      "requestCode": "Mã yêu cầu",
+      "status": {
+        "restocked": "Đã nhập kho"
+      },
+      "productList": "Danh sách sản phẩm nhập kho",
+      "id": "ID",
+      "batches": "Lô hàng",
+      "batchCode": "Mã lô",
+      "restocked": "Đã nhập",
+      "availableToRestock": "Có thể nhập",
+      "quantityRestocked": "Số lượng đã nhập",
+      "quantityToRestock": "Số lượng nhập",
+      "restockedBy": "Người nhập",
+      "restockedAt": "Thời gian",
+      "totalRestocked": "Tổng số sản phẩm đã nhập:",
+      "totalToRestock": "Tổng số sản phẩm sẽ nhập:",
+      "processing": "Đang xử lý...",
+      "confirmRestock": "Xác nhận nhập kho"
+    },
+    "errors": {
+      "loadFailed": "Không thể tải thông tin nhập kho",
+      "submitFailed": "Nhập kho thất bại"
     }
   },
   "table": {
@@ -443,6 +624,7 @@
   },
   "productManagement": {
     "batch": {
+      "expiringSoon": "Sắp hết hạn",
       "searchPlaceholder": "Tìm kiếm lô hàng...",
       "statusAll": "Trạng thái: Tất cả",
       "sortNewest": "Sắp xếp: Mới nhất",
@@ -746,12 +928,23 @@
         "startDate": "Ngày bắt đầu",
         "endDate": "Ngày kết thúc",
         "status": "Trạng thái",
-        "actions": "Thao tác"
+        "actions": "Thao tác",
+        "brand": "Thương hiệu",
+        "price": "Giá",
+        "stock": "Tồn kho"
       },
       "noPromotions": "Không có chương trình khuyến mãi nào",
       "noPromotionsDesc": "Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm"
     },
+    "editPage": {
+      "subtitle": "Chỉnh sửa chương trình khuyến mãi",
+      "description": "Cập nhật thông tin, thời gian, trạng thái và danh sách sản phẩm áp dụng.",
+      "loading": "Đang tải thông tin khuyến mãi...",
+      "backToList": "Quay lại danh sách"
+    },
     "editModal": {
+      "reasonPlaceholder": "Ví dụ: Cập nhật thời gian chạy, bổ sung sản phẩm...",
+      "notePlaceholder": "Ghi chú thêm nếu có...",
       "title": "Chỉnh sửa khuyến mãi",
       "createTitle": "Thêm khuyến mãi mới",
       "name": "Tên khuyến mãi",
@@ -766,6 +959,88 @@
       "success": "Cập nhật khuyến mãi thành công",
       "createSuccess": "Tạo chương trình khuyến mãi thành công",
       "error": "Thao tác thất bại"
+    },
+    "createModal": {
+      "title": "Thêm khuyến mãi mới",
+      "subtitle": "Vui lòng điền đầy đủ các thông tin của chương trình khuyến mãi",
+      "name": "Tên khuyến mãi",
+      "namePlaceholder": "Ví dụ: Summer Sale, Black Friday...",
+      "description": "Mô tả",
+      "descriptionPlaceholder": "Mô tả chi tiết chương trình khuyến mãi...",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "status": "Trạng thái",
+      "cancel": "Hủy",
+      "save": "Lưu thay đổi",
+      "close": "Đóng"
+    },
+    "errors": {
+      "nameRequired": "Tên khuyến mãi không được để trống",
+      "descriptionRequired": "Mô tả không được để trống",
+      "startDateRequired": "Vui lòng chọn ngày bắt đầu",
+      "endDateRequired": "Vui lòng chọn ngày kết thúc",
+      "endDateInvalid": "Ngày kết thúc phải diễn ra sau ngày bắt đầu",
+      "createFailed": "Có lỗi xảy ra khi tạo khuyến mãi",
+      "loadProductsFailed": "Không thể tải danh sách sản phẩm",
+      "dateRequired": "Vui lòng chọn ngày bắt đầu và ngày kết thúc",
+      "noProductSelected": "Vui lòng chọn ít nhất một sản phẩm",
+      "loadFailed": "Không thể tải thông tin khuyến mãi"
+    },
+    "status": {
+      "cancelled": "Đã hủy",
+      "draft": "Bản nháp",
+      "active": "Hoạt động",
+      "expired": "Đã hết hạn"
+    },
+    "createPage": {
+      "title": "Thêm khuyến mãi mới",
+      "subtitle": "Tạo mới chương trình khuyến mãi",
+      "back": "Quay lại",
+      "programInfo": "Thông tin chương trình",
+      "appliedProducts": "Sản phẩm áp dụng",
+      "nearExpired": "Lọc gần hết hạn",
+      "category": "Danh mục",
+      "allCategories": "Tất cả danh mục",
+      "select": "Chọn",
+      "brand": "Thương hiệu",
+      "price": "Giá",
+      "stock": "Tồn kho",
+      "discountType": "Loại giảm giá",
+      "discountValue": "Giá trị giảm",
+      "percentage": "Phần trăm",
+      "fixedAmount": "Số tiền cố định",
+      "selectedCount": "Đã chọn {{selected}} / {{total}} sản phẩm",
+      "selectAll": "Chọn tất cả",
+      "deselectAll": "Bỏ chọn tất cả",
+      "searchPlaceholder": "Tìm kiếm sản phẩm theo tên, mã hoặc thương hiệu...",
+      "clearSearch": "Xóa tìm kiếm",
+      "loading": "Đang tải danh sách sản phẩm...",
+      "noResultsWithKeyword": "Không tìm thấy sản phẩm nào với từ khóa \"{{keyword}}\"",
+      "noProducts": "Không có sản phẩm phù hợp với bộ lọc.",
+      "hasPromotion": "đang KM",
+      "batchCount": "{{count}} lô hàng",
+      "outOfStock": "Hết hàng",
+      "lowStock": "Sắp hết",
+      "searchResults": "Kết quả tìm kiếm: {{count}} sản phẩm",
+      "showingProducts": "Hiển thị {{current}} trên {{total}} sản phẩm",
+      "pageInfo": "Trang {{current}} / {{total}}",
+      "createPromotion": "Tạo khuyến mãi"
+    },
+    "nearExpiredOptions": {
+      "all": "Tất cả sản phẩm",
+      "30": "1 tháng (30 ngày)",
+      "60": "2 tháng (60 ngày)",
+      "90": "3 tháng (90 ngày)",
+      "120": "4 tháng (120 ngày)",
+      "180": "6 tháng (180 ngày)"
+    },
+    "categories": {
+      "dogFood": "Thức ăn cho chó",
+      "catFood": "Thức ăn cho mèo",
+      "petAccessories": "Phụ kiện thú cưng",
+      "nutrition": "Dinh dưỡng bổ sung",
+      "toys": "Đồ chơi thú cưng",
+      "hygiene": "Vệ sinh và chăm sóc"
     }
   },
   "storeLocations": {
@@ -798,7 +1073,30 @@
   },
   "reviews": {
     "title": "Quản lý đánh giá",
-    "subtitle": "Xem, kiểm duyệt và quản lý các đánh giá sản phẩm từ người dùng."
+    "subtitle": "Xem, kiểm duyệt và quản lý các đánh giá sản phẩm từ người dùng.",
+    "filter": {
+      "searchPlaceholder": "Tìm sản phẩm, đơn hàng, tên khách hàng...",
+      "reviewType": {
+        "all": "Tất cả loại",
+        "product": "Đánh giá sản phẩm",
+        "order": "Đánh giá đơn hàng"
+      },
+      "status": {
+        "all": "Tất cả trạng thái",
+        "active": "Đang hiển thị (Active)",
+        "hidden": "Đang ẩn (Hidden)"
+      },
+      "rating": {
+        "all": "Tất cả đánh giá sao",
+        "stars": "Sao"
+      },
+      "sort": {
+        "newest": "Ngày đăng: Mới nhất",
+        "oldest": "Ngày đăng: Cũ nhất",
+        "highestRating": "Đánh giá: Cao đến Thấp",
+        "lowestRating": "Đánh giá: Thấp đến Cao"
+      }
+    }
   },
   "auditLogs": {
     "title": "Lịch sử hệ thống",

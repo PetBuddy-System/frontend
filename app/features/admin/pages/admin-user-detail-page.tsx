@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocation, useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 
 import { cn } from '~/shared/lib/cn'
 import { Button, MaterialIcon } from '~/shared/ui'
@@ -26,34 +26,24 @@ const STATUS_CLASS_BY_STATUS: Record<string, string> = {
 
 export function AdminUserDetailPage() {
   const { t } = useTranslation('admin')
-  const location = useLocation()
   const navigate = useNavigate()
   const { userId } = useParams()
   const [user, setUser] = useState<AdminUserResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(() => {
-    const state = location.state
-
-    if (state && typeof state === 'object' && 'employeeUpdated' in state && state.employeeUpdated === true) {
-      return { type: 'success', text: t('users.messages.updateSuccess') }
-    }
-
-    return null
-  })
+  const [message, setMessage] = useState<string | null>(null)
   const avatarUrl = getAdminUserAvatarUrl(user)
 
   const loadUser = useCallback(async () => {
     if (!userId) return
 
     setIsLoading(true)
+    setMessage(null)
+
     try {
       const response = await adminUsersApi.getUser(userId)
       setUser(response.data)
     } catch (error) {
-      setMessage({
-        type: 'error',
-        text: error instanceof Error ? error.message : t('users.messages.loadDetailFailed')
-      })
+      setMessage(error instanceof Error ? error.message : t('users.messages.loadDetailFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -93,14 +83,8 @@ export function AdminUserDetailPage() {
             </section>
 
             {message ? (
-              <div
-                className={
-                  message.type === 'success'
-                    ? 'rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm font-semibold text-success'
-                    : 'rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive'
-                }
-              >
-                {message.text}
+              <div className='rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive'>
+                {message}
               </div>
             ) : null}
 

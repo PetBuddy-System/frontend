@@ -37,6 +37,7 @@
       "products": "Product Management",
       "services": "Service Management",
       "serviceBookings": "Service Bookings",
+      "shiftRegistrations": "Shift Registration",
       "staff": "Work Schedule Management",
       "returnRequests": "Return approvals",
       "restock": "Restock returns",
@@ -57,6 +58,124 @@
   "serviceBookings": {
     "title": "Booking Management",
     "subtitle": "Review paid bookings, assign operational flow, and update service status."
+  },
+  "shiftRegistration": {
+    "title": "Shift Registration Management",
+    "subtitle": "Create weekly shift registration periods, track staff preferences, and prepare data for official work schedules.",
+    "createPage": {
+      "title": "Create shift registration period",
+      "subtitle": "Set the work week and registration window for staff to submit their preferred shifts."
+    },
+    "detailPage": {
+      "title": "Shift registration period details",
+      "subtitle": "View the registration window and staff preferred shifts submitted in this period."
+    },
+    "actions": {
+      "backToList": "Back to list",
+      "cancel": "Cancel",
+      "clearFilters": "Clear filters",
+      "create": "Create period",
+      "refresh": "Refresh",
+      "saving": "Saving...",
+      "updateStatus": "Update status",
+      "viewDetails": "View details"
+    },
+    "detail": {
+      "registrationWindow": "Registration window",
+      "workRange": "Work date range",
+      "workRangeHint": "Staff will submit their preferred shifts within this work date range."
+    },
+    "empty": "No matching shift registration periods found.",
+    "errors": {
+      "forbidden": "You do not have permission to perform this action.",
+      "invalidDateRange": "Invalid work date range. The end date cannot be before the start date.",
+      "invalidRegisterCloseTime": "Registration close time must be before the work period starts.",
+      "invalidRegistrationTime": "Registration close time must be after registration open time.",
+      "network": "Cannot connect to the server. Please check your connection and try again.",
+      "notFound": "This shift registration period does not exist.",
+      "registrationExpired": "The registration window has expired.",
+      "registrationNotOpen": "Shift registration is not open yet.",
+      "registrationPeriodClosed": "This shift registration period is closed.",
+      "registrationPeriodExists": "A shift registration period already overlaps this work date range.",
+      "server": "The server is having trouble. Please try again later."
+    },
+    "filters": {
+      "fromDate": "From date",
+      "pageSize": "Rows",
+      "shiftType": "Registered shift",
+      "staffKeyword": "Search staff",
+      "staffKeywordPlaceholder": "Enter staff name...",
+      "status": "Status",
+      "toDate": "To date",
+      "workDate": "Work date"
+    },
+    "form": {
+      "helper": "After creating a registration period, staff can submit morning, afternoon, evening, full-day, or custom shifts based on their own preference.",
+      "registerCloseAt": "Registration close time",
+      "registerOpenAt": "Registration open time",
+      "workFromDate": "Work week start date",
+      "workToDate": "Work week end date"
+    },
+    "list": {
+      "showing": "Showing {{from}}-{{to}} of {{total}} registration periods",
+      "title": "Shift registration periods"
+    },
+    "messages": {
+      "createFailed": "Failed to create shift registration period.",
+      "created": "Shift registration period created successfully.",
+      "loadDetailFailed": "Failed to load shift registration period details.",
+      "loadPeriodsFailed": "Failed to load shift registration periods.",
+      "loadRegistrationsFailed": "Failed to load staff shift registrations.",
+      "required": "Please fill in all required fields.",
+      "statusUpdateFailed": "Failed to update status.",
+      "statusUpdated": "Shift registration period status updated."
+    },
+    "pagination": {
+      "label": "Shift registration pagination",
+      "page": "Page {{page}} / {{totalPages}}"
+    },
+    "registrations": {
+      "empty": "No staff has registered shifts in this period yet.",
+      "listTitle": "Staff registration list",
+      "showing": "Showing {{from}}-{{to}} of {{total}} registrations",
+      "standardShift": "Standard shift window",
+      "subtitle": "This list helps managers review staff preferences before creating official work schedules.",
+      "table": {
+        "createdAt": "Registered at",
+        "customTime": "Custom time",
+        "reason": "Reason",
+        "shift": "Preferred shift",
+        "staff": "Staff",
+        "workDate": "Work date"
+      },
+      "title": "Staff shift registrations"
+    },
+    "shiftTypes": {
+      "AFTERNOON": "Afternoon",
+      "ALL": "All",
+      "CUSTOM": "Custom",
+      "EVENING": "Evening",
+      "FULL_DAY": "Full day",
+      "MORNING": "Morning"
+    },
+    "statusModal": {
+      "close": "Close status dialog",
+      "description": "Choose a new status for this shift registration period.",
+      "status": "Status",
+      "title": "Update status"
+    },
+    "statuses": {
+      "ALL": "All",
+      "CLOSED": "Closed",
+      "OPEN": "Open"
+    },
+    "table": {
+      "actions": "Actions",
+      "registrationTime": "Registration window",
+      "status": "Status",
+      "workRange": "Work week",
+      "workRangeHint": "Date range staff can register for"
+    }
   },
   "stats": {
     "discrepancies": {
@@ -371,10 +490,72 @@
   },
   "restock": {
     "title": "Restock Returns",
-    "subtitle": "Confirm restocking of products returned by customers.",
+    "subtitle": "Confirm warehouse receipt of products returned by customers.",
     "breadcrumb": {
-      "ops": "Warehouse",
+      "ops": "Warehouse Ops",
       "current": "Restock Returns"
+    },
+    "list": {
+      "loading": "Loading restock requests...",
+      "searchPlaceholder": "Search by request code, order code...",
+      "search": "Search",
+      "empty": "No completed requests available for restock.",
+      "view": "View",
+      "restock": "Restock",
+      "columns": {
+        "requestCode": "Request Code",
+        "orderCode": "Order Code",
+        "customer": "Customer",
+        "productCount": "Products",
+        "createdAt": "Created At",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "pagination": {
+        "page": "Page",
+        "previous": "Previous",
+        "next": "Next"
+      }
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "pickedUp": "Picked Up",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "deliveryFailed": "Delivery Failed"
+    },
+    "detail": {
+      "loading": "Loading restock information...",
+      "loadFailed": "Failed to load information",
+      "close": "Close",
+      "title": {
+        "view": "Restock Details",
+        "restock": "Restock"
+      },
+      "requestCode": "Request Code",
+      "status": {
+        "restocked": "Restocked"
+      },
+      "productList": "Product Restock List",
+      "id": "ID",
+      "batches": "Batches",
+      "batchCode": "Batch Code",
+      "restocked": "Restocked",
+      "availableToRestock": "Available to Restock",
+      "quantityRestocked": "Quantity Restocked",
+      "quantityToRestock": "Quantity to Restock",
+      "restockedBy": "Restocked By",
+      "restockedAt": "Time",
+      "totalRestocked": "Total products restocked:",
+      "totalToRestock": "Total products to restock:",
+      "processing": "Processing...",
+      "confirmRestock": "Confirm Restock"
+    },
+    "errors": {
+      "loadFailed": "Failed to load restock information",
+      "submitFailed": "Restock failed"
     }
   },
   "table": {
@@ -443,6 +624,7 @@
   },
   "productManagement": {
     "batch": {
+      "expiringSoon": "Expiring Soon",
       "searchPlaceholder": "Search batches...",
       "statusAll": "Status: All",
       "sortNewest": "Sort: Newest",
@@ -746,12 +928,23 @@
         "startDate": "Start Date",
         "endDate": "End Date",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Actions",
+        "brand": "Brand",
+        "price": "Price",
+        "stock": "Stock"
       },
       "noPromotions": "No promotions found",
       "noPromotionsDesc": "Try adjusting your filters or keyword query"
     },
+    "editPage": {
+      "subtitle": "Edit promotion program",
+      "description": "Update information, time, status and list of applicable products.",
+      "loading": "Loading promotion information...",
+      "backToList": "Back to list"
+    },
     "editModal": {
+      "reasonPlaceholder": "Example: Update runtime, add products...",
+      "notePlaceholder": "Additional notes if any...",
       "title": "Edit Promotion",
       "createTitle": "Add New Promotion",
       "name": "Promotion Name",
@@ -766,6 +959,88 @@
       "success": "Promotion updated successfully",
       "createSuccess": "Promotion created successfully",
       "error": "Operation failed"
+    },
+    "createModal": {
+      "title": "Add New Promotion",
+      "subtitle": "Please fill in all the information for the promotion program",
+      "name": "Promotion Name",
+      "namePlaceholder": "Example: Summer Sale, Black Friday...",
+      "description": "Description",
+      "descriptionPlaceholder": "Detailed description of the promotion program...",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "status": "Status",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "close": "Close"
+    },
+    "errors": {
+      "nameRequired": "Promotion name is required",
+      "descriptionRequired": "Description is required",
+      "startDateRequired": "Please select start date",
+      "endDateRequired": "Please select end date",
+      "endDateInvalid": "End date must be after start date",
+      "createFailed": "Failed to create promotion",
+      "loadProductsFailed": "Failed to load product list",
+      "dateRequired": "Please select start date and end date",
+      "noProductSelected": "Please select at least one product",
+      "loadFailed": "Failed to load promotion information"
+    },
+    "status": {
+      "cancelled": "Cancelled",
+      "draft": "Draft",
+      "active": "Active",
+      "expired": "Expired"
+    },
+    "createPage": {
+      "title": "Add New Promotion",
+      "subtitle": "Create a new promotion program",
+      "back": "Back",
+      "programInfo": "Program Information",
+      "appliedProducts": "Applied Products",
+      "nearExpired": "Filter by near expiry",
+      "category": "Category",
+      "allCategories": "All Categories",
+      "select": "Select",
+      "brand": "Brand",
+      "price": "Price",
+      "stock": "Stock",
+      "discountType": "Discount Type",
+      "discountValue": "Discount Value",
+      "percentage": "Percentage",
+      "fixedAmount": "Fixed Amount",
+      "selectedCount": "Selected {{selected}} / {{total}} products",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "searchPlaceholder": "Search products by name, code or brand...",
+      "clearSearch": "Clear Search",
+      "loading": "Loading products...",
+      "noResultsWithKeyword": "No products found with keyword \"{{keyword}}\"",
+      "noProducts": "No products match the filters.",
+      "hasPromotion": "on promo",
+      "batchCount": "{{count}} batches",
+      "outOfStock": "Out of Stock",
+      "lowStock": "Low Stock",
+      "searchResults": "Search results: {{count}} products",
+      "showingProducts": "Showing {{current}} of {{total}} products",
+      "pageInfo": "Page {{current}} / {{total}}",
+      "createPromotion": "Create Promotion"
+    },
+    "nearExpiredOptions": {
+      "all": "All products",
+      "30": "1 month (30 days)",
+      "60": "2 months (60 days)",
+      "90": "3 months (90 days)",
+      "120": "4 months (120 days)",
+      "180": "6 months (180 days)"
+    },
+    "categories": {
+      "dogFood": "Dog Food",
+      "catFood": "Cat Food",
+      "petAccessories": "Pet Accessories",
+      "nutrition": "Nutrition Supplements",
+      "toys": "Pet Toys",
+      "hygiene": "Hygiene & Care"
     }
   },
   "storeLocations": {
@@ -798,7 +1073,30 @@
   },
   "reviews": {
     "title": "Review Management",
-    "subtitle": "View, moderate and manage customer product reviews."
+    "subtitle": "View, moderate and manage product reviews from users.",
+    "filter": {
+      "searchPlaceholder": "Search products, orders, customer names...",
+      "reviewType": {
+        "all": "All Types",
+        "product": "Product Reviews",
+        "order": "Order Reviews"
+      },
+      "status": {
+        "all": "All Statuses",
+        "active": "Active",
+        "hidden": "Hidden"
+      },
+      "rating": {
+        "all": "All Ratings",
+        "stars": "Stars"
+      },
+      "sort": {
+        "newest": "Date: Newest",
+        "oldest": "Date: Oldest",
+        "highestRating": "Rating: Highest to Lowest",
+        "lowestRating": "Rating: Lowest to Highest"
+      }
+    }
   },
   "auditLogs": {
     "title": "System Logs",

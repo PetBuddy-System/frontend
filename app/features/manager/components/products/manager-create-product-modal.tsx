@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
+import { cn } from '~/shared/lib/cn'
 import { createProductApi, updateProductImagesApi, updateProductVideoApi } from '../../services/product'
 import type { CategoryData, ProductUnit } from '~/shared/lib/product'
 
@@ -40,12 +41,26 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
     unit: '',
     weight: ''
   })
+
+  const [errors, setErrors] = useState<{
+    name?: string
+    salePrice?: string
+    brandName?: string
+    categoryId?: string
+    unit?: string
+    weight?: string
+    images?: string
+    description?: string
+    ingredients?: string
+    usageInstructions?: string
+  }>({})
+
   const [images, setImages] = useState<File[]>([])
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
   const [videoFile, setVideoFile] = useState<File | null>(null)
   const [videoPreview, setVideoPreview] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [generalError, setGeneralError] = useState<string | null>(null)
 
   // Lấy unit options từ translation
   const UNIT_OPTIONS: { value: ProductUnit; label: string }[] = [
@@ -67,17 +82,77 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
     }
   }, [imagePreviews, videoPreview])
 
+  // ── Validation functions ──────────────────────────────────────────────────
+
+  const validateField = (field: keyof CreateProductFormData): string | undefined => {
+    switch (field) {
+      case 'name':
+        if (!form.name.trim()) return t('productManagement.createModal.errors.nameRequired')
+        return undefined
+      case 'salePrice':
+        if (form.salePrice < 0) return t('productManagement.createModal.errors.priceInvalid')
+        return undefined
+      case 'brandName':
+        if (!form.brandName.trim()) return t('productManagement.createModal.errors.brandRequired')
+        return undefined
+      case 'categoryId':
+        if (!form.categoryId) return t('productManagement.createModal.errors.categoryRequired')
+        return undefined
+      case 'unit':
+        if (!form.unit) return t('productManagement.createModal.errors.unitRequired')
+        return undefined
+      case 'weight':
+        if (!form.weight) return t('productManagement.createModal.errors.weightRequired')
+        if (Number(form.weight) <= 0) return t('productManagement.createModal.errors.weightInvalid')
+        return undefined
+      default:
+        return undefined
+    }
+  }
+
+  const validateAll = (): boolean => {
+    const newErrors: typeof errors = {}
+    let hasError = false
+
+    const fields: (keyof CreateProductFormData)[] = ['name', 'salePrice', 'brandName', 'categoryId', 'unit', 'weight']
+    for (const field of fields) {
+      const error = validateField(field)
+      if (error) {
+        newErrors[field] = error
+        hasError = true
+      }
+    }
+
+    if (images.length > 4) {
+      newErrors.images = t('productManagement.createModal.errors.maxImages')
+      hasError = true
+    }
+
+    setErrors(newErrors)
+    return !hasError
+  }
+
   // ── Form handlers ──────────────────────────────────────────────────────────
+
+  const handleFieldChange = <K extends keyof CreateProductFormData>(
+    field: K,
+    value: CreateProductFormData[K]
+  ) => {
+    setForm((prev) => ({ ...prev, [field]: value }))
+    // ✅ Xóa lỗi của field đó khi người dùng thay đổi
+    setErrors((prev) => ({ ...prev, [field]: undefined }))
+    setGeneralError(null)
+  }
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files)
       if (images.length + filesArray.length > 4) {
-        setError(t('productManagement.createModal.errors.maxImages'))
+        setErrors((prev) => ({ ...prev, images: t('productManagement.createModal.errors.maxImages') }))
         e.target.value = ''
         return
       }
-      setError(null)
+      setErrors((prev) => ({ ...prev, images: undefined }))
       setImages((prev) => [...prev, ...filesArray])
       const newPreviews = filesArray.map((file) => URL.createObjectURL(file))
       setImagePreviews((prev) => [...prev, ...newPreviews])
@@ -91,6 +166,7 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
     }
     setImages((prev) => prev.filter((_, idx) => idx !== index))
     setImagePreviews((prev) => prev.filter((_, idx) => idx !== index))
+    setErrors((prev) => ({ ...prev, images: undefined }))
   }
 
   function handleVideoChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -112,42 +188,13 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    // Validate form
-    if (!form.name.trim()) {
-      setError(t('productManagement.createModal.errors.nameRequired'))
-      return
-    }
-    if (form.salePrice < 0) {
-      setError(t('productManagement.createModal.errors.priceInvalid'))
-      return
-    }
-    if (!form.brandName.trim()) {
-      setError(t('productManagement.createModal.errors.brandRequired'))
-      return
-    }
-    if (!form.categoryId) {
-      setError(t('productManagement.createModal.errors.categoryRequired'))
-      return
-    }
-    if (!form.unit) {
-      setError(t('productManagement.createModal.errors.unitRequired'))
-      return
-    }
-    if (images.length > 4) {
-      setError(t('productManagement.createModal.errors.maxImages'))
-      return
-    }
-    if (!form.weight) {
-      setError(t('productManagement.createModal.errors.weightRequired'))
-      return
-    }
-    if (Number(form.weight) <= 0) {
-      setError(t('productManagement.createModal.errors.weightInvalid'))
+    // ✅ Validate tất cả trước khi submit
+    if (!validateAll()) {
       return
     }
 
     setIsSubmitting(true)
-    setError(null)
+    setGeneralError(null)
 
     try {
       // 1. Tạo sản phẩm
@@ -164,7 +211,7 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
       })
 
       if (!response.success) {
-        setError(response.message || t('productManagement.createModal.errors.createFailed'))
+        setGeneralError(response.message || t('productManagement.createModal.errors.createFailed'))
         setIsSubmitting(false)
         return
       }
@@ -190,7 +237,7 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
       onSuccess()
       onClose()
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : t('productManagement.createModal.errors.createFailed'))
+      setGeneralError(err instanceof Error ? err.message : t('productManagement.createModal.errors.createFailed'))
     } finally {
       setIsSubmitting(false)
     }
@@ -229,10 +276,11 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
         {/* ── Body ── */}
         <form onSubmit={handleSubmit} className='flex flex-col min-h-0 flex-1'>
           <div className='min-h-0 flex-1 overflow-y-auto p-6 space-y-4'>
-            {error && (
+            {/* ✅ Chỉ hiển thị lỗi chung (từ BE) */}
+            {generalError && (
               <div className='flex items-center gap-2 rounded-xl bg-destructive/10 p-4 text-sm font-semibold text-destructive'>
                 <MaterialIcon name='error' className='shrink-0 text-xl' />
-                <span>{error}</span>
+                <span>{generalError}</span>
               </div>
             )}
 
@@ -251,9 +299,18 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                   required
                   placeholder={t('productManagement.createModal.namePlaceholder')}
                   value={form.name}
-                  onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-                  className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
+                  onChange={(e) => handleFieldChange('name', e.target.value)}
+                  className={cn(
+                    'h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                    errors.name && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+                  )}
                 />
+                {errors.name && (
+                  <p className='text-xs text-destructive flex items-center gap-1'>
+                    <MaterialIcon name='error' className='text-sm' />
+                    {errors.name}
+                  </p>
+                )}
               </div>
 
               <div className='flex flex-col gap-1.5'>
@@ -269,9 +326,18 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                   required
                   min='0'
                   value={form.salePrice}
-                  onChange={(e) => setForm((prev) => ({ ...prev, salePrice: Number(e.target.value) }))}
-                  className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
+                  onChange={(e) => handleFieldChange('salePrice', Number(e.target.value))}
+                  className={cn(
+                    'h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                    errors.salePrice && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+                  )}
                 />
+                {errors.salePrice && (
+                  <p className='text-xs text-destructive flex items-center gap-1'>
+                    <MaterialIcon name='error' className='text-sm' />
+                    {errors.salePrice}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -290,9 +356,18 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                   required
                   placeholder={t('productManagement.createModal.brandPlaceholder')}
                   value={form.brandName}
-                  onChange={(e) => setForm((prev) => ({ ...prev, brandName: e.target.value }))}
-                  className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
+                  onChange={(e) => handleFieldChange('brandName', e.target.value)}
+                  className={cn(
+                    'h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                    errors.brandName && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+                  )}
                 />
+                {errors.brandName && (
+                  <p className='text-xs text-destructive flex items-center gap-1'>
+                    <MaterialIcon name='error' className='text-sm' />
+                    {errors.brandName}
+                  </p>
+                )}
               </div>
 
               <div className='flex flex-col gap-1.5'>
@@ -308,9 +383,12 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                     required
                     value={form.categoryId || ''}
                     onChange={(e) =>
-                      setForm((prev) => ({ ...prev, categoryId: e.target.value ? Number(e.target.value) : undefined }))
+                      handleFieldChange('categoryId', e.target.value ? Number(e.target.value) : undefined)
                     }
-                    className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
+                    className={cn(
+                      'h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer',
+                      errors.categoryId && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+                    )}
                   >
                     <option value=''>{t('productManagement.createModal.selectCategory')}</option>
                     {categories.map((cat) => (
@@ -324,6 +402,12 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                     className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
                   />
                 </div>
+                {errors.categoryId && (
+                  <p className='text-xs text-destructive flex items-center gap-1'>
+                    <MaterialIcon name='error' className='text-sm' />
+                    {errors.categoryId}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -340,10 +424,13 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                 <div className='relative'>
                   <select
                     id='create-unit'
-                    required // ✅ Thêm required
+                    required
                     value={form.unit}
-                    onChange={(e) => setForm((prev) => ({ ...prev, unit: e.target.value as ProductUnit }))}
-                    className='h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer'
+                    onChange={(e) => handleFieldChange('unit', e.target.value as ProductUnit)}
+                    className={cn(
+                      'h-11 w-full appearance-none rounded-xl border border-input bg-card pl-4 pr-10 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors cursor-pointer',
+                      errors.unit && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+                    )}
                   >
                     <option value=''>{t('productManagement.createModal.selectUnit')}</option>
                     {UNIT_OPTIONS.map((u) => (
@@ -357,6 +444,12 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                     className='pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground'
                   />
                 </div>
+                {errors.unit && (
+                  <p className='text-xs text-destructive flex items-center gap-1'>
+                    <MaterialIcon name='error' className='text-sm' />
+                    {errors.unit}
+                  </p>
+                )}
               </div>
 
               {/* Weight */}
@@ -376,10 +469,19 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                   placeholder={t('productManagement.createModal.weightPlaceholder')}
                   value={form.weight}
                   onChange={(e) =>
-                    setForm((prev) => ({ ...prev, weight: e.target.value ? Number(e.target.value) : '' }))
+                    handleFieldChange('weight', e.target.value ? Number(e.target.value) : '')
                   }
-                  className='h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
+                  className={cn(
+                    'h-11 w-full rounded-xl border border-input bg-card px-4 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                    errors.weight && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+                  )}
                 />
+                {errors.weight && (
+                  <p className='text-xs text-destructive flex items-center gap-1'>
+                    <MaterialIcon name='error' className='text-sm' />
+                    {errors.weight}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -393,7 +495,7 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                 rows={5}
                 placeholder={t('productManagement.createModal.descriptionPlaceholder')}
                 value={form.description}
-                onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+                onChange={(e) => handleFieldChange('description', e.target.value)}
                 className='w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors resize-y min-h-[100px]'
               />
             </div>
@@ -412,7 +514,7 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                   rows={4}
                   placeholder={t('productManagement.createModal.ingredientsPlaceholder')}
                   value={form.ingredients}
-                  onChange={(e) => setForm((prev) => ({ ...prev, ingredients: e.target.value }))}
+                  onChange={(e) => handleFieldChange('ingredients', e.target.value)}
                   className='w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors resize-y min-h-[80px]'
                 />
               </div>
@@ -429,7 +531,7 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                   rows={4}
                   placeholder={t('productManagement.createModal.usagePlaceholder')}
                   value={form.usageInstructions}
-                  onChange={(e) => setForm((prev) => ({ ...prev, usageInstructions: e.target.value }))}
+                  onChange={(e) => handleFieldChange('usageInstructions', e.target.value)}
                   className='w-full rounded-xl border border-input bg-card p-3 text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors resize-y min-h-[80px]'
                 />
               </div>
@@ -476,7 +578,10 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                 <span className='text-xs font-bold text-muted-foreground'>
                   {t('productManagement.createModal.uploadImages')}
                 </span>
-                <label className='flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/20 transition-all hover:bg-muted/50 hover:border-primary/50'>
+                <label className={cn(
+                  'flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/20 transition-all hover:bg-muted/50 hover:border-primary/50',
+                  errors.images && 'border-destructive/50 bg-destructive/5 hover:border-destructive'
+                )}>
                   <div className='flex flex-col items-center justify-center pb-2 pt-2 text-center px-4'>
                     <MaterialIcon name='cloud_upload' className='text-3xl text-muted-foreground' />
                     <p className='text-xs text-muted-foreground mt-2 font-semibold'>
@@ -488,6 +593,12 @@ export function ManagerCreateProductModal({ categories, onClose, onSuccess }: Ma
                   </div>
                   <input type='file' multiple accept='image/*' className='hidden' onChange={handleImageChange} />
                 </label>
+                {errors.images && (
+                  <p className='text-xs text-destructive flex items-center gap-1'>
+                    <MaterialIcon name='error' className='text-sm' />
+                    {errors.images}
+                  </p>
+                )}
               </div>
             </div>
 
