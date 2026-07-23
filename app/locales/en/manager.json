@@ -37,6 +37,7 @@
       "products": "Product Management",
       "services": "Service Management",
       "serviceBookings": "Service Bookings",
+      "shiftRegistrations": "Shift Registration",
       "staff": "Work Schedule Management",
       "returnRequests": "Return approvals",
       "restock": "Restock returns",
@@ -57,6 +58,124 @@
   "serviceBookings": {
     "title": "Booking Management",
     "subtitle": "Review paid bookings, assign operational flow, and update service status."
+  },
+  "shiftRegistration": {
+    "title": "Shift Registration Management",
+    "subtitle": "Create weekly shift registration periods, track staff preferences, and prepare data for official work schedules.",
+    "createPage": {
+      "title": "Create shift registration period",
+      "subtitle": "Set the work week and registration window for staff to submit their preferred shifts."
+    },
+    "detailPage": {
+      "title": "Shift registration period details",
+      "subtitle": "View the registration window and staff preferred shifts submitted in this period."
+    },
+    "actions": {
+      "backToList": "Back to list",
+      "cancel": "Cancel",
+      "clearFilters": "Clear filters",
+      "create": "Create period",
+      "refresh": "Refresh",
+      "saving": "Saving...",
+      "updateStatus": "Update status",
+      "viewDetails": "View details"
+    },
+    "detail": {
+      "registrationWindow": "Registration window",
+      "workRange": "Work date range",
+      "workRangeHint": "Staff will submit their preferred shifts within this work date range."
+    },
+    "empty": "No matching shift registration periods found.",
+    "errors": {
+      "forbidden": "You do not have permission to perform this action.",
+      "invalidDateRange": "Invalid work date range. The end date cannot be before the start date.",
+      "invalidRegisterCloseTime": "Registration close time must be before the work period starts.",
+      "invalidRegistrationTime": "Registration close time must be after registration open time.",
+      "network": "Cannot connect to the server. Please check your connection and try again.",
+      "notFound": "This shift registration period does not exist.",
+      "registrationExpired": "The registration window has expired.",
+      "registrationNotOpen": "Shift registration is not open yet.",
+      "registrationPeriodClosed": "This shift registration period is closed.",
+      "registrationPeriodExists": "A shift registration period already overlaps this work date range.",
+      "server": "The server is having trouble. Please try again later."
+    },
+    "filters": {
+      "fromDate": "From date",
+      "pageSize": "Rows",
+      "shiftType": "Registered shift",
+      "staffKeyword": "Search staff",
+      "staffKeywordPlaceholder": "Enter staff name...",
+      "status": "Status",
+      "toDate": "To date",
+      "workDate": "Work date"
+    },
+    "form": {
+      "helper": "After creating a registration period, staff can submit morning, afternoon, evening, full-day, or custom shifts based on their own preference.",
+      "registerCloseAt": "Registration close time",
+      "registerOpenAt": "Registration open time",
+      "workFromDate": "Work week start date",
+      "workToDate": "Work week end date"
+    },
+    "list": {
+      "showing": "Showing {{from}}-{{to}} of {{total}} registration periods",
+      "title": "Shift registration periods"
+    },
+    "messages": {
+      "createFailed": "Failed to create shift registration period.",
+      "created": "Shift registration period created successfully.",
+      "loadDetailFailed": "Failed to load shift registration period details.",
+      "loadPeriodsFailed": "Failed to load shift registration periods.",
+      "loadRegistrationsFailed": "Failed to load staff shift registrations.",
+      "required": "Please fill in all required fields.",
+      "statusUpdateFailed": "Failed to update status.",
+      "statusUpdated": "Shift registration period status updated."
+    },
+    "pagination": {
+      "label": "Shift registration pagination",
+      "page": "Page {{page}} / {{totalPages}}"
+    },
+    "registrations": {
+      "empty": "No staff has registered shifts in this period yet.",
+      "listTitle": "Staff registration list",
+      "showing": "Showing {{from}}-{{to}} of {{total}} registrations",
+      "standardShift": "Standard shift window",
+      "subtitle": "This list helps managers review staff preferences before creating official work schedules.",
+      "table": {
+        "createdAt": "Registered at",
+        "customTime": "Custom time",
+        "reason": "Reason",
+        "shift": "Preferred shift",
+        "staff": "Staff",
+        "workDate": "Work date"
+      },
+      "title": "Staff shift registrations"
+    },
+    "shiftTypes": {
+      "AFTERNOON": "Afternoon",
+      "ALL": "All",
+      "CUSTOM": "Custom",
+      "EVENING": "Evening",
+      "FULL_DAY": "Full day",
+      "MORNING": "Morning"
+    },
+    "statusModal": {
+      "close": "Close status dialog",
+      "description": "Choose a new status for this shift registration period.",
+      "status": "Status",
+      "title": "Update status"
+    },
+    "statuses": {
+      "ALL": "All",
+      "CLOSED": "Closed",
+      "OPEN": "Open"
+    },
+    "table": {
+      "actions": "Actions",
+      "registrationTime": "Registration window",
+      "status": "Status",
+      "workRange": "Work week",
+      "workRangeHint": "Date range staff can register for"
+    }
   },
   "stats": {
     "discrepancies": {

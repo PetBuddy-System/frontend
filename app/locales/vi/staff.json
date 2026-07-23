@@ -59,6 +59,7 @@
       "deliveryRoute": "Quản lý lộ trình",
       "attendanceHistory": "Lịch sử chấm công",
       "weeklySchedule": "Ca làm việc trong tuần",
+      "shiftRegistration": "Đăng ký ca làm",
       "disposalRequest": "Tạo yêu cầu hủy hàng",
       "inventory": "Quản lý kho hàng",
       "returns": "Quản lý đổi trả",
@@ -376,7 +377,7 @@
     },
     "detail": {
       "actionsTitle": "Check-in / Check-out",
-      "actionHint": "Hệ thống sẽ kiểm tra trạng thái ca trước khi ghi nhận check-in hoặc check-out.",
+      "actionHint": "Sau khi check-in thành công, hệ thống sẽ mở thao tác check-out cho ca làm này.",
       "attendanceStatus": "Trạng thái chấm công",
       "assignedAt": "Được phân công",
       "checkInAt": "Giờ check-in",
@@ -405,7 +406,7 @@
       "checkOutAlreadyDone": "Bạn đã check-out ca làm này rồi.",
       "checkOutNotAllowed": "Ca làm hiện không thể check-out.",
       "checkOutRequiresCheckIn": "Chỉ có thể check-out khi bạn đã check-in ca làm này.",
-      "checkOutTooEarly": "Chưa tới giờ check-out. Bạn chỉ có thể check-out sau giờ tan ca.",
+      "checkOutTooEarly": "Bạn cần check-in ca làm này trước khi check-out.",
       "forbidden": "Bạn không có quyền thao tác trên ca làm này.",
       "invalidDateRange": "Khoảng ngày không hợp lệ. Ngày kết thúc không được trước ngày bắt đầu.",
       "network": "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
@@ -462,6 +463,98 @@
       "noShift": "Không có ca",
       "subtitle": "Các ca được nhóm theo ngày để bạn dễ theo dõi phân bổ trong tuần.",
       "title": "Bảng lịch tuần"
+    }
+  },
+  "shiftRegistration": {
+    "pageTitle": "Đăng ký ca làm",
+    "pageSubtitle": "Chọn ca mong muốn trong đợt đăng ký đang mở",
+    "heading": "Đăng ký ca làm mong muốn",
+    "description": "Chọn đợt đăng ký, đánh dấu ngày bạn muốn làm và chọn ca phù hợp. Ca tùy chỉnh chỉ dùng khi bạn cần đề xuất khung giờ riêng.",
+    "actions": {
+      "cancel": "Hủy",
+      "create": "Đăng ký ca",
+      "refresh": "Tải lại",
+      "saving": "Đang lưu...",
+      "update": "Cập nhật ca"
+    },
+    "errors": {
+      "alreadyExists": "Bạn đã đăng ký ca cho đợt này rồi. Vui lòng dùng nút cập nhật nếu muốn chỉnh lại.",
+      "badRequest": "Không thể lưu đăng ký ca. Vui lòng kiểm tra lại thông tin.",
+      "customFieldsNotAllowed": "Chỉ ca tùy chỉnh mới được nhập giờ riêng và lý do.",
+      "customReasonRequired": "Ca tùy chỉnh cần có lý do.",
+      "customTimeRequired": "Ca tùy chỉnh cần có giờ bắt đầu và giờ kết thúc.",
+      "duplicateRegistration": "Không được đăng ký trùng ca trong cùng một ngày.",
+      "emptyRegistration": "Vui lòng chọn ít nhất một ca trước khi lưu.",
+      "expired": "Thời gian đăng ký đã hết hạn.",
+      "forbidden": "Bạn cần đăng nhập bằng tài khoản staff để thao tác đăng ký ca.",
+      "invalidCustomTime": "Giờ kết thúc phải sau giờ bắt đầu.",
+      "network": "Không thể kết nối đến máy chủ. Vui lòng thử lại.",
+      "notFound": "Đợt đăng ký ca không tồn tại.",
+      "notOpen": "Đợt đăng ký ca chưa mở.",
+      "periodForbidden": "Bạn cần đăng nhập bằng tài khoản staff để xem danh sách đợt đăng ký ca.",
+      "periodClosed": "Đợt đăng ký ca đã đóng.",
+      "server": "Máy chủ đang gặp sự cố. Vui lòng thử lại sau.",
+      "shiftTypeRequired": "Vui lòng chọn ca mong muốn.",
+      "workDateOutOfPeriod": "Ngày đăng ký phải nằm trong khoảng ngày làm việc của đợt đăng ký.",
+      "workDateRequired": "Ngày làm việc không được để trống."
+    },
+    "form": {
+      "emptyRangeDescription": "Đợt đăng ký này chưa có khoảng ngày làm việc hợp lệ.",
+      "emptyRangeTitle": "Không có ngày làm việc",
+      "endTime": "Giờ kết thúc",
+      "reason": "Lý do",
+      "reasonPlaceholder": "Nhập lý do đề xuất ca tùy chỉnh...",
+      "saved": "Đã lưu",
+      "shift": "Ca mong muốn",
+      "startTime": "Giờ bắt đầu",
+      "subtitle": "Mỗi ngày có thể chọn một ca mong muốn hoặc bỏ qua nếu không đăng ký.",
+      "title": "Chọn ca theo ngày"
+    },
+    "messages": {
+      "createSuccess": "Đăng ký ca làm thành công.",
+      "loadPeriodsFailed": "Không thể tải các đợt đăng ký ca.",
+      "loadRegistrationsFailed": "Không thể tải ca bạn đã đăng ký.",
+      "saveFailed": "Không thể lưu đăng ký ca.",
+      "updateSuccess": "Cập nhật đăng ký ca thành công."
+    },
+    "pagination": {
+      "page": "Trang {{page}} / {{totalPages}}"
+    },
+    "periods": {
+      "closedHint": "Đợt này đã đóng nên không thể chọn để đăng ký hoặc cập nhật.",
+      "emptyDescription": "Hiện chưa có đợt đăng ký ca nào.",
+      "emptyTitle": "Chưa có đợt đăng ký ca",
+      "subtitle": "Đợt đã đóng vẫn hiển thị để bạn theo dõi, nhưng chỉ đợt đang mở mới có thể chọn.",
+      "title": "Các đợt đăng ký ca",
+      "workRange": "Tuần làm việc"
+    },
+    "shiftTypes": {
+      "AFTERNOON": "Ca chiều",
+      "CUSTOM": "Tùy chỉnh",
+      "EVENING": "Ca tối",
+      "FULL_DAY": "Cả ngày",
+      "MORNING": "Ca sáng",
+      "NONE": "Không đăng ký"
+    },
+    "statuses": {
+      "CLOSED": "Đã đóng",
+      "OPEN": "Đang mở"
+    },
+    "summary": {
+      "count": "{{count}} ca đã chọn",
+      "empty": "Chưa chọn ca nào trong đợt đăng ký này.",
+      "standardShift": "Theo khung ca chuẩn",
+      "title": "Ca đã chọn"
+    },
+    "updateModal": {
+      "close": "Đóng hộp thoại cập nhật ca",
+      "subtitle": "Chọn lại ca mong muốn cho từng ngày rồi lưu cập nhật.",
+      "title": "Cập nhật ca đã đăng ký"
+    },
+    "validation": {
+      "chooseAtLeastOne": "Vui lòng chọn ít nhất một ngày đăng ký ca.",
+      "customRequired": "Ca tùy chỉnh cần có giờ bắt đầu, giờ kết thúc và lý do.",
+      "customTimeInvalid": "Giờ kết thúc phải sau giờ bắt đầu."
     }
   },
   "stats": {
