@@ -162,8 +162,9 @@ export function OrdersManagementPage() {
             {isAdmin ? <AdminSidebar activeItem='orders' /> : <StaffSidebar activeItem='orders' />}
 
             <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-                {isAdmin ? (
+               {isAdmin ? (
                     <AdminTopNav
+                        ns='staff'
                         titleKey={isHistoryView ? 'deliveryHistory.topNav.title' : 'staffOrdersPage.topNav.title'}
                         subtitleKey={isHistoryView ? 'deliveryHistory.topNav.subtitle' : 'staffOrdersPage.topNav.subtitle'}
                     />

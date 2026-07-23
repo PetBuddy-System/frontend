@@ -11,10 +11,15 @@ const STAFF_AVATAR_URL =
 export interface StaffTopNavProps {
   titleKey?: string
   subtitleKey?: string
+  ns?: string
 }
 
-export function StaffTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashboard.subtitle' }: StaffTopNavProps) {
-  const { t } = useTranslation('staff')
+export function StaffTopNav({
+  titleKey = 'dashboard.title',
+  subtitleKey = 'dashboard.subtitle',
+  ns = 'staff',
+}: StaffTopNavProps) {
+  const { t } = useTranslation(['staff', ns])
   const { user } = useAuth()
   const { openMobileSidebar } = useSidebar()
 
@@ -30,8 +35,8 @@ export function StaffTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashb
           <MaterialIcon name='menu' />
         </button>
         <div>
-          <p className='font-display text-xl font-bold text-primary md:text-2xl'>{t(titleKey)}</p>
-          {subtitleKey ? <p className='hidden text-sm text-muted-foreground sm:block'>{t(subtitleKey)}</p> : null}
+          <p className='font-display text-xl font-bold text-primary md:text-2xl'>{t(titleKey, { ns })}</p>
+          {subtitleKey ? <p className='hidden text-sm text-muted-foreground sm:block'>{t(subtitleKey, { ns })}</p> : null}
         </div>
       </div>
 
