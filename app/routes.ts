@@ -95,8 +95,6 @@ export default [
     route('manager/services', 'routes/manager-services.tsx'),
     route('manager/bookings', 'routes/manager-bookings.tsx'),
     route('manager/inventory-transactions', 'routes/manager-inventory-transactions.tsx'),
-    route('manager/disposal-approvals', 'routes/manager-disposal-approvals.tsx'),
-    route('manager/return-requests', 'routes/manager-return-requests.tsx'),
     route('manager/shift-registration-periods', 'routes/manager-shift-registration-periods.tsx'),
     route('manager/shift-registration-periods/new', 'routes/manager-shift-registration-period-new.tsx'),
     route('manager/shift-registration-periods/:periodId', 'routes/manager-shift-registration-period-detail.tsx'),

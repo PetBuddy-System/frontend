@@ -139,16 +139,68 @@ export function ReturnHistoryList() {
                   </div>
                 ) : detail ? (
                   <>
+                    {/* ✅ Banner thông báo khi đơn hàng đã bị từ chối (dựa vào rejectedAt) */}
+                    {detail.rejectedAt && (
+                      <div className={cn(
+                        'rounded-xl p-4 flex items-start gap-3 border',
+                        detail.status === 'REJECTED'
+                          ? 'bg-rose-50 border-rose-200 dark:bg-rose-950/20 dark:border-rose-900/50'
+                          : 'bg-orange-50 border-orange-200 dark:bg-orange-950/20 dark:border-orange-900/50'
+                      )}>
+                        <MaterialIcon
+                          name='warning'
+                          className={cn(
+                            'text-xl shrink-0 mt-0.5',
+                            detail.status === 'REJECTED' ? 'text-rose-600' : 'text-orange-600'
+                          )}
+                        />
+                        <div>
+                          <p className={cn(
+                            'font-bold text-sm',
+                            detail.status === 'REJECTED' ? 'text-rose-800 dark:text-rose-400' : 'text-orange-800 dark:text-orange-400'
+                          )}>
+                            {detail.status === 'REJECTED'
+                              ? t('list.detail.rejectedBannerTitle')
+                              : t('list.detail.rejectedReturnShippingBannerTitle')}
+                          </p>
+                          <p className={cn(
+                            'text-sm',
+                            detail.status === 'REJECTED' ? 'text-rose-700 dark:text-rose-300/70' : 'text-orange-700 dark:text-orange-300/70'
+                          )}>
+                            {detail.status === 'REJECTED'
+                              ? t('list.detail.rejectedBannerDescription')
+                              : t('list.detail.rejectedReturnShippingBannerDescription')}
+                          </p>
+                          {detail.rejectedAt && (
+                            <p className='text-xs mt-1 text-muted-foreground'>
+                              {t('list.detail.rejectedAt')}: {formatReturnDateTime(detail.rejectedAt)}
+                            </p>
+                          )}
+                          {detail.staffNote && (
+                            <p className='text-xs mt-1 text-muted-foreground'>
+                              <span className='font-semibold'>{t('list.detail.staffNoteLabel')}</span> {detail.staffNote}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     <div className='rounded-xl border border-border bg-card p-4 sm:px-6'>
-                      <h4 className='text-sm font-bold border-b border-border pb-3 mb-2'>Trạng thái yêu cầu</h4>
+                      <h4 className='text-sm font-bold border-b border-border pb-3 mb-2'>{t('list.detail.requestStatus')}</h4>
                       <ReturnTimeline
                         type={detail.type}
                         status={detail.status}
                         createdAt={detail.createdAt}
                         approvedAt={detail.approvedAt}
+                        pickingUpAt={detail.pickingUpAt}
                         pickedUpAt={detail.pickedUpAt}
                         returnedToStoreAt={detail.returnedToStoreAt}
+                        readyToDeliverAt={detail.readyToDeliverAt}
+                        deliveringAt={detail.deliveringAt}
+                        deliveringFailedAt={detail.deliveringFailedAt}
                         completedAt={detail.completedAt}
+                        rejectedAt={detail.rejectedAt}
+                        cancelledAt={detail.cancelledAt}
                       />
                     </div>
                     <ReturnReasonBlock detail={detail} />

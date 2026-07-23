@@ -6,11 +6,17 @@
 export type ReturnStatus =
   | 'PENDING'
   | 'APPROVED'
+  | 'PICKING_UP'
   | 'PICKED_UP'
+  | 'PICKUP_FAILED'
+  | 'RETURNED_TO_STORE'
+  | 'READY_TO_DELIVER'
+  | 'DELIVERING'
+  | 'DELIVERING_FAILED'
   | 'REJECTED'
+  | 'REJECTED_RETURN_SHIPPING'
   | 'CANCELLED'
   | 'COMPLETED'
-  | 'DELIVERY_FAILED'
 
 export type ReturnType = 'RETURN' | 'EXCHANGE'
 
@@ -23,13 +29,19 @@ export type RefundStatus = 'NOT_REQUIRED' | 'PENDING' | 'SUCCESS' | 'FAILED'
  * Status cụ thể giữ palette phân biệt để user phân biệt nhanh.
  */
 export const RETURN_STATUS_BADGE_STYLE: Record<ReturnStatus, string> = {
-  PENDING: 'bg-warning/15 text-warning',
-  APPROVED: 'bg-info/15 text-info',
-  PICKED_UP: 'bg-accent text-accent-foreground',
-  REJECTED: 'bg-destructive/15 text-destructive',
-  CANCELLED: 'bg-muted text-muted-foreground',
-  COMPLETED: 'bg-success/15 text-success',
-  DELIVERY_FAILED: 'bg-destructive/15 text-destructive'
+  PENDING: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+  APPROVED: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  PICKING_UP: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400',
+  PICKED_UP: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
+  PICKUP_FAILED: 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400',
+  RETURNED_TO_STORE: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400',
+  READY_TO_DELIVER: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400',
+  DELIVERING: 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-400',
+  DELIVERING_FAILED: 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400',
+  REJECTED: 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400',
+  REJECTED_RETURN_SHIPPING: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
+  CANCELLED: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-400',
+  COMPLETED: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
 }
 
 export function getStatusBadgeClassName(status: string): string {
