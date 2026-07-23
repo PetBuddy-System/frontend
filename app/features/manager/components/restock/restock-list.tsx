@@ -43,22 +43,22 @@ function getStatusBadgeClassName(status: string) {
   }
 }
 
-function getStatusLabel(status: string) {
+function getStatusLabel(status: string, t: (key: string) => string) {
   switch (status) {
     case 'PENDING':
-      return 'Chờ duyệt'
+      return t('restock.status.pending')
     case 'APPROVED':
-      return 'Đã duyệt'
+      return t('restock.status.approved')
     case 'PICKED_UP':
-      return 'Đã lấy hàng'
+      return t('restock.status.pickedUp')
     case 'REJECTED':
-      return 'Từ chối'
+      return t('restock.status.rejected')
     case 'CANCELLED':
-      return 'Đã hủy'
+      return t('restock.status.cancelled')
     case 'COMPLETED':
-      return 'Hoàn thành'
+      return t('restock.status.completed')
     case 'DELIVERY_FAILED':
-      return 'Giao thất bại'
+      return t('restock.status.deliveryFailed')
     default:
       return status
   }
@@ -84,11 +84,16 @@ export function RestockList({ onSelectReturn, onViewDetail }: RestockListProps) 
       })
 
       if (res.success && res.data) {
-        setReturns(res.data.content)
-        setTotalPages(res.data.totalPages)
+        setReturns(res.data.content || [])
+        setTotalPages(res.data.totalPages || 0)
+      } else {
+        setReturns([])
+        setTotalPages(0)
       }
     } catch (err) {
       console.error('Failed to load returns for restock', err)
+      setReturns([])
+      setTotalPages(0)
     } finally {
       setIsLoading(false)
     }
@@ -115,7 +120,7 @@ export function RestockList({ onSelectReturn, onViewDetail }: RestockListProps) 
   if (isLoading) {
     return (
       <div className='p-12 text-center text-muted-foreground animate-pulse font-semibold'>
-        Đang tải danh sách yêu cầu nhập hàng...
+        {t('restock.list.loading')}
       </div>
     )
   }
@@ -134,7 +139,7 @@ export function RestockList({ onSelectReturn, onViewDetail }: RestockListProps) 
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder='Tìm theo mã yêu cầu, mã đơn hàng...'
+              placeholder={t('restock.list.searchPlaceholder')}
               className='w-full rounded-xl border border-border bg-card py-2 pl-10 pr-4 text-sm text-foreground focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all'
             />
           </div>
@@ -143,33 +148,34 @@ export function RestockList({ onSelectReturn, onViewDetail }: RestockListProps) 
             className='inline-flex h-10 items-center justify-center gap-1.5 rounded-xl bg-primary px-6 text-sm font-bold text-white shadow-sm hover:opacity-90 active:scale-95 transition-all'
           >
             <MaterialIcon name='search' className='text-base' />
-            Tìm kiếm
+            {t('restock.list.search')}
           </button>
         </form>
       </div>
 
       {/* Table */}
       <div className='overflow-x-auto'>
-        {returns.length === 0 ? (
+        {!returns || returns.length === 0 ? (
           <div className='p-12 text-center text-muted-foreground font-semibold'>
-            Không có yêu cầu nào đã hoàn thành để nhập kho.
+            {t('restock.list.empty')}
           </div>
         ) : (
           <table className='w-full min-w-[800px] border-collapse text-left text-sm'>
             <thead>
               <tr className='border-b border-border bg-muted/50 text-xs font-bold uppercase tracking-wide text-muted-foreground'>
-                <th className='px-6 py-4'>Mã yêu cầu</th>
-                <th className='px-6 py-4'>Mã đơn hàng</th>
-                <th className='px-6 py-4'>Khách hàng</th>
-                <th className='px-6 py-4'>Số sản phẩm</th>
-                <th className='px-6 py-4'>Ngày tạo</th>
-                <th className='px-6 py-4'>Trạng thái</th>
-                <th className='px-6 py-4 text-right'>Thao tác</th>
+                <th className='px-6 py-4'>{t('restock.list.columns.requestCode')}</th>
+                <th className='px-6 py-4'>{t('restock.list.columns.orderCode')}</th>
+                <th className='px-6 py-4'>{t('restock.list.columns.customer')}</th>
+                <th className='px-6 py-4'>{t('restock.list.columns.productCount')}</th>
+                <th className='px-6 py-4'>{t('restock.list.columns.createdAt')}</th>
+                <th className='px-6 py-4'>{t('restock.list.columns.status')}</th>
+                <th className='px-6 py-4 text-right'>{t('restock.list.columns.actions')}</th>
               </tr>
             </thead>
             <tbody className='divide-y divide-border'>
               {returns.map((req) => {
                 const isRestocked = req.restockedAt !== null && req.restockedAt !== undefined
+                const itemCount = req.returnItems?.length ?? 0
 
                 return (
                   <tr key={req.returnRequestId} className='transition-colors hover:bg-muted/30'>
@@ -179,7 +185,7 @@ export function RestockList({ onSelectReturn, onViewDetail }: RestockListProps) 
                       <p className='font-semibold text-card-foreground'>{req.requestedBy?.fullName || 'Customer'}</p>
                       <p className='text-xs text-muted-foreground'>{req.requestedBy?.email}</p>
                     </td>
-                    <td className='px-6 py-4 text-center font-semibold'>{req.returnItems?.length || 0}</td>
+                    <td className='px-6 py-4 text-center font-semibold'>{itemCount}</td>
                     <td className='px-6 py-4 text-xs text-muted-foreground'>{formatDate(req.createdAt)}</td>
                     <td className='px-6 py-4'>
                       <span
@@ -188,29 +194,27 @@ export function RestockList({ onSelectReturn, onViewDetail }: RestockListProps) 
                           getStatusBadgeClassName(req.status)
                         )}
                       >
-                        {getStatusLabel(req.status)}
+                        {getStatusLabel(req.status, t)}
                       </span>
                     </td>
                     <td className='px-6 py-4 text-right'>
                       {isRestocked ? (
-                        // ✅ Đã nhập kho → hiển thị nút Xem
                         <button
                           type='button'
                           onClick={() => onViewDetail?.(req.returnRequestId)}
                           className='inline-flex items-center gap-1.5 rounded-xl bg-blue-500 px-3.5 py-1.5 text-xs font-bold text-white shadow-sm hover:opacity-90 active:scale-95 transition-all'
                         >
                           <MaterialIcon name='visibility' className='text-sm shrink-0' />
-                          Xem
+                          {t('restock.list.view')}
                         </button>
                       ) : (
-                        // ✅ Chưa nhập kho → hiển thị nút Nhập kho
                         <button
                           type='button'
                           onClick={() => onSelectReturn(req.returnRequestId)}
                           className='inline-flex items-center gap-1.5 rounded-xl bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-sm hover:opacity-90 active:scale-95 transition-all'
                         >
                           <MaterialIcon name='inventory_2' className='text-sm shrink-0' />
-                          Nhập kho
+                          {t('restock.list.restock')}
                         </button>
                       )}
                     </td>
@@ -226,7 +230,7 @@ export function RestockList({ onSelectReturn, onViewDetail }: RestockListProps) 
       {totalPages > 1 && (
         <div className='flex items-center justify-between border-t border-border px-6 py-4 bg-muted/10'>
           <span className='text-xs text-muted-foreground'>
-            Trang <strong>{currentPage + 1}</strong> / <strong>{totalPages}</strong>
+            {t('restock.list.pagination.page')} <strong>{currentPage + 1}</strong> / <strong>{totalPages}</strong>
           </span>
           <div className='flex items-center gap-2'>
             <button
@@ -236,7 +240,7 @@ export function RestockList({ onSelectReturn, onViewDetail }: RestockListProps) 
               className='inline-flex h-9 items-center justify-center rounded-xl border border-border bg-card px-4 text-xs font-bold text-card-foreground hover:bg-muted active:scale-95 disabled:opacity-50 transition-all'
             >
               <MaterialIcon name='chevron_left' className='text-base' />
-              Trang trước
+              {t('restock.list.pagination.previous')}
             </button>
             <button
               type='button'
@@ -244,7 +248,7 @@ export function RestockList({ onSelectReturn, onViewDetail }: RestockListProps) 
               onClick={() => setCurrentPage((p) => p + 1)}
               className='inline-flex h-9 items-center justify-center rounded-xl border border-border bg-card px-4 text-xs font-bold text-card-foreground hover:bg-muted active:scale-95 disabled:opacity-50 transition-all'
             >
-              Trang sau
+              {t('restock.list.pagination.next')}
               <MaterialIcon name='chevron_right' className='text-base' />
             </button>
           </div>

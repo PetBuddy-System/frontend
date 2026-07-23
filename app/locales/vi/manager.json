@@ -375,6 +375,68 @@
     "breadcrumb": {
       "ops": "Kho vận",
       "current": "Nhập hàng trả về"
+    },
+    "list": {
+      "loading": "Đang tải danh sách yêu cầu nhập hàng...",
+      "searchPlaceholder": "Tìm theo mã yêu cầu, mã đơn hàng...",
+      "search": "Tìm kiếm",
+      "empty": "Không có yêu cầu nào đã hoàn thành để nhập kho.",
+      "view": "Xem",
+      "restock": "Nhập kho",
+      "columns": {
+        "requestCode": "Mã yêu cầu",
+        "orderCode": "Mã đơn hàng",
+        "customer": "Khách hàng",
+        "productCount": "Số sản phẩm",
+        "createdAt": "Ngày tạo",
+        "status": "Trạng thái",
+        "actions": "Thao tác"
+      },
+      "pagination": {
+        "page": "Trang",
+        "previous": "Trang trước",
+        "next": "Trang sau"
+      }
+    },
+    "status": {
+      "pending": "Chờ duyệt",
+      "approved": "Đã duyệt",
+      "pickedUp": "Đã lấy hàng",
+      "rejected": "Từ chối",
+      "cancelled": "Đã hủy",
+      "completed": "Hoàn thành",
+      "deliveryFailed": "Giao thất bại"
+    },
+    "detail": {
+      "loading": "Đang tải thông tin nhập kho...",
+      "loadFailed": "Không thể tải thông tin",
+      "close": "Đóng",
+      "title": {
+        "view": "Chi tiết nhập kho",
+        "restock": "Nhập kho"
+      },
+      "requestCode": "Mã yêu cầu",
+      "status": {
+        "restocked": "Đã nhập kho"
+      },
+      "productList": "Danh sách sản phẩm nhập kho",
+      "id": "ID",
+      "batches": "Lô hàng",
+      "batchCode": "Mã lô",
+      "restocked": "Đã nhập",
+      "availableToRestock": "Có thể nhập",
+      "quantityRestocked": "Số lượng đã nhập",
+      "quantityToRestock": "Số lượng nhập",
+      "restockedBy": "Người nhập",
+      "restockedAt": "Thời gian",
+      "totalRestocked": "Tổng số sản phẩm đã nhập:",
+      "totalToRestock": "Tổng số sản phẩm sẽ nhập:",
+      "processing": "Đang xử lý...",
+      "confirmRestock": "Xác nhận nhập kho"
+    },
+    "errors": {
+      "loadFailed": "Không thể tải thông tin nhập kho",
+      "submitFailed": "Nhập kho thất bại"
     }
   },
   "table": {
@@ -443,6 +505,7 @@
   },
   "productManagement": {
     "batch": {
+      "expiringSoon": "Sắp hết hạn",
       "searchPlaceholder": "Tìm kiếm lô hàng...",
       "statusAll": "Trạng thái: Tất cả",
       "sortNewest": "Sắp xếp: Mới nhất",
@@ -746,12 +809,23 @@
         "startDate": "Ngày bắt đầu",
         "endDate": "Ngày kết thúc",
         "status": "Trạng thái",
-        "actions": "Thao tác"
+        "actions": "Thao tác",
+        "brand": "Thương hiệu",
+        "price": "Giá",
+        "stock": "Tồn kho"
       },
       "noPromotions": "Không có chương trình khuyến mãi nào",
       "noPromotionsDesc": "Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm"
     },
+    "editPage": {
+      "subtitle": "Chỉnh sửa chương trình khuyến mãi",
+      "description": "Cập nhật thông tin, thời gian, trạng thái và danh sách sản phẩm áp dụng.",
+      "loading": "Đang tải thông tin khuyến mãi...",
+      "backToList": "Quay lại danh sách"
+    },
     "editModal": {
+      "reasonPlaceholder": "Ví dụ: Cập nhật thời gian chạy, bổ sung sản phẩm...",
+      "notePlaceholder": "Ghi chú thêm nếu có...",
       "title": "Chỉnh sửa khuyến mãi",
       "createTitle": "Thêm khuyến mãi mới",
       "name": "Tên khuyến mãi",
@@ -766,6 +840,88 @@
       "success": "Cập nhật khuyến mãi thành công",
       "createSuccess": "Tạo chương trình khuyến mãi thành công",
       "error": "Thao tác thất bại"
+    },
+    "createModal": {
+      "title": "Thêm khuyến mãi mới",
+      "subtitle": "Vui lòng điền đầy đủ các thông tin của chương trình khuyến mãi",
+      "name": "Tên khuyến mãi",
+      "namePlaceholder": "Ví dụ: Summer Sale, Black Friday...",
+      "description": "Mô tả",
+      "descriptionPlaceholder": "Mô tả chi tiết chương trình khuyến mãi...",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày kết thúc",
+      "status": "Trạng thái",
+      "cancel": "Hủy",
+      "save": "Lưu thay đổi",
+      "close": "Đóng"
+    },
+    "errors": {
+      "nameRequired": "Tên khuyến mãi không được để trống",
+      "descriptionRequired": "Mô tả không được để trống",
+      "startDateRequired": "Vui lòng chọn ngày bắt đầu",
+      "endDateRequired": "Vui lòng chọn ngày kết thúc",
+      "endDateInvalid": "Ngày kết thúc phải diễn ra sau ngày bắt đầu",
+      "createFailed": "Có lỗi xảy ra khi tạo khuyến mãi",
+      "loadProductsFailed": "Không thể tải danh sách sản phẩm",
+      "dateRequired": "Vui lòng chọn ngày bắt đầu và ngày kết thúc",
+      "noProductSelected": "Vui lòng chọn ít nhất một sản phẩm",
+      "loadFailed": "Không thể tải thông tin khuyến mãi"
+    },
+    "status": {
+      "cancelled": "Đã hủy",
+      "draft": "Bản nháp",
+      "active": "Hoạt động",
+      "expired": "Đã hết hạn"
+    },
+    "createPage": {
+      "title": "Thêm khuyến mãi mới",
+      "subtitle": "Tạo mới chương trình khuyến mãi",
+      "back": "Quay lại",
+      "programInfo": "Thông tin chương trình",
+      "appliedProducts": "Sản phẩm áp dụng",
+      "nearExpired": "Lọc gần hết hạn",
+      "category": "Danh mục",
+      "allCategories": "Tất cả danh mục",
+      "select": "Chọn",
+      "brand": "Thương hiệu",
+      "price": "Giá",
+      "stock": "Tồn kho",
+      "discountType": "Loại giảm giá",
+      "discountValue": "Giá trị giảm",
+      "percentage": "Phần trăm",
+      "fixedAmount": "Số tiền cố định",
+      "selectedCount": "Đã chọn {{selected}} / {{total}} sản phẩm",
+      "selectAll": "Chọn tất cả",
+      "deselectAll": "Bỏ chọn tất cả",
+      "searchPlaceholder": "Tìm kiếm sản phẩm theo tên, mã hoặc thương hiệu...",
+      "clearSearch": "Xóa tìm kiếm",
+      "loading": "Đang tải danh sách sản phẩm...",
+      "noResultsWithKeyword": "Không tìm thấy sản phẩm nào với từ khóa \"{{keyword}}\"",
+      "noProducts": "Không có sản phẩm phù hợp với bộ lọc.",
+      "hasPromotion": "đang KM",
+      "batchCount": "{{count}} lô hàng",
+      "outOfStock": "Hết hàng",
+      "lowStock": "Sắp hết",
+      "searchResults": "Kết quả tìm kiếm: {{count}} sản phẩm",
+      "showingProducts": "Hiển thị {{current}} trên {{total}} sản phẩm",
+      "pageInfo": "Trang {{current}} / {{total}}",
+      "createPromotion": "Tạo khuyến mãi"
+    },
+    "nearExpiredOptions": {
+      "all": "Tất cả sản phẩm",
+      "30": "1 tháng (30 ngày)",
+      "60": "2 tháng (60 ngày)",
+      "90": "3 tháng (90 ngày)",
+      "120": "4 tháng (120 ngày)",
+      "180": "6 tháng (180 ngày)"
+    },
+    "categories": {
+      "dogFood": "Thức ăn cho chó",
+      "catFood": "Thức ăn cho mèo",
+      "petAccessories": "Phụ kiện thú cưng",
+      "nutrition": "Dinh dưỡng bổ sung",
+      "toys": "Đồ chơi thú cưng",
+      "hygiene": "Vệ sinh và chăm sóc"
     }
   },
   "storeLocations": {
@@ -798,7 +954,30 @@
   },
   "reviews": {
     "title": "Quản lý đánh giá",
-    "subtitle": "Xem, kiểm duyệt và quản lý các đánh giá sản phẩm từ người dùng."
+    "subtitle": "Xem, kiểm duyệt và quản lý các đánh giá sản phẩm từ người dùng.",
+    "filter": {
+      "searchPlaceholder": "Tìm sản phẩm, đơn hàng, tên khách hàng...",
+      "reviewType": {
+        "all": "Tất cả loại",
+        "product": "Đánh giá sản phẩm",
+        "order": "Đánh giá đơn hàng"
+      },
+      "status": {
+        "all": "Tất cả trạng thái",
+        "active": "Đang hiển thị (Active)",
+        "hidden": "Đang ẩn (Hidden)"
+      },
+      "rating": {
+        "all": "Tất cả đánh giá sao",
+        "stars": "Sao"
+      },
+      "sort": {
+        "newest": "Ngày đăng: Mới nhất",
+        "oldest": "Ngày đăng: Cũ nhất",
+        "highestRating": "Đánh giá: Cao đến Thấp",
+        "lowestRating": "Đánh giá: Thấp đến Cao"
+      }
+    }
   },
   "auditLogs": {
     "title": "Lịch sử hệ thống",
