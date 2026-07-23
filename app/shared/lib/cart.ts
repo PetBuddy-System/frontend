@@ -30,7 +30,6 @@ export interface MergeCartRequest {
   items: AddToCartRequest[]
 }
 
-
 const GUEST_CART_KEY = 'petbuddy_guest_cart'
 
 function _readGuestCart(): CartItemResponse[] {
@@ -65,9 +64,7 @@ export const guestCart = {
     const existing = items.find((i) => i.productId === request.productId)
 
     const effectivePrice =
-      request.salePrice != null && request.salePrice < request.price
-        ? request.salePrice
-        : request.price
+      request.salePrice != null && request.salePrice < request.price ? request.salePrice : request.price
 
     if (existing) {
       existing.quantity += request.quantity
@@ -85,7 +82,7 @@ export const guestCart = {
         salePrice: request.salePrice ?? null,
         quantity: request.quantity,
         imageUrl: request.imageUrl,
-        subtotal: effectivePrice * request.quantity,
+        subtotal: effectivePrice * request.quantity
       })
     }
 
@@ -96,8 +93,7 @@ export const guestCart = {
   update(cartItemId: string, request: UpdateCartItemRequest): CartItemResponse[] {
     const items = _readGuestCart().map((item) => {
       if (item.cartItemId !== cartItemId) return item
-      const effectivePrice =
-        item.salePrice != null && item.salePrice < item.price ? item.salePrice : item.price
+      const effectivePrice = item.salePrice != null && item.salePrice < item.price ? item.salePrice : item.price
       return { ...item, quantity: request.quantity, subtotal: effectivePrice * request.quantity }
     })
     _writeGuestCart(items)
@@ -117,5 +113,5 @@ export const guestCart = {
 
   isEmpty(): boolean {
     return _readGuestCart().length === 0
-  },
+  }
 }

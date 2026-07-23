@@ -32,7 +32,7 @@ export function ProductsPage() {
   const { t } = useTranslation('products')
 
   const [searchInput, setSearchInput] = useState('')
-  const [keyword, setKeyword] = useState('')  // ⭐ Thêm keyword state
+  const [keyword, setKeyword] = useState('') // ⭐ Thêm keyword state
   const [category, setCategory] = useState<string | number>('all')
   const [brandName, setBrandName] = useState('')
   const [sort, setSort] = useState('popular')
@@ -81,7 +81,7 @@ export function ProductsPage() {
       setIsLoading(true)
       try {
         const response = await fetchProductsApi({
-          keyword,  // ⭐ Dùng keyword thay vì searchInput
+          keyword, // ⭐ Dùng keyword thay vì searchInput
           page,
           size: 12,
           categoryId: category !== 'all' ? Number(category) : undefined,
@@ -110,7 +110,7 @@ export function ProductsPage() {
     return () => {
       active = false
     }
-  }, [keyword, category, brandName, sort, page])  // ⭐ Dùng keyword thay vì searchInput
+  }, [keyword, category, brandName, sort, page]) // ⭐ Dùng keyword thay vì searchInput
 
   const resultsFrom = totalElements > 0 ? page * 12 + 1 : 0
   const resultsTo = Math.min((page + 1) * 12, totalElements)
@@ -135,16 +135,11 @@ export function ProductsPage() {
 
             <section className='w-full md:w-3/4'>
               <div className='mb-6 flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 shadow-sm md:hidden'>
-                <button
-                  type='button'
-                  className='flex items-center gap-2 text-sm font-semibold text-foreground'
-                >
+                <button type='button' className='flex items-center gap-2 text-sm font-semibold text-foreground'>
                   <MaterialIcon name='filter_list' className='text-[20px]' />
                   {t('mobile.filterSort')}
                 </button>
-                <span className='text-sm text-muted-foreground'>
-                  {t('mobile.count', { count: totalElements })}
-                </span>
+                <span className='text-sm text-muted-foreground'>{t('mobile.count', { count: totalElements })}</span>
               </div>
 
               <div className='mb-6 hidden md:flex'>

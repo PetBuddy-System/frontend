@@ -7,8 +7,10 @@ import { readStorage } from '~/shared/lib/storage'
 export enum BookingStatus {
   PENDING_PAYMENT = 'PENDING_PAYMENT',
   FAILED = 'FAILED',
+  WAITING_STAFF = 'WAITING_STAFF',
   PENDING_ACCEPTANCE = 'PENDING_ACCEPTANCE',
   ACCEPTED = 'ACCEPTED',
+  ON_THE_WAY = 'ON_THE_WAY',
   IN_PROGRESS = 'IN_PROGRESS',
   READY_FOR_PICKUP = 'READY_FOR_PICKUP',
   COMPLETED = 'COMPLETED',
@@ -33,16 +35,32 @@ export interface BookingResponse {
   customerName: string
   customerPhone: string
   address?: string
+  latitude?: number
+  longitude?: number
+  addressNote?: string
+  distanceKm?: number
+  travelFee?: number
+  estimatedTravelMinute?: number
   scheduledAt: string
   estimatedEndAt?: string
+  departedAt?: string
+  actualStartedAt?: string
+  actualCompletedAt?: string
   totalAmount: number
   depositAmount: number
   remainingAmount: number
   bookingStatus: BookingStatus | string
-  cancelReason: string
-  paymentDeadlineAt: string
-  staffId: string
-  staffName: string
+  note?: string
+  cancelReason?: string
+  paymentDeadlineAt?: string
+  assignmentMode?: 'AUTO' | 'SELECTED' | string
+  staffScheduleId?: string
+  staffId?: string
+  staffName?: string
+  requestedStaffId?: string
+  requestedStaffName?: string
+  assignedStaffId?: string
+  assignedStaffName?: string
   bookingDetails: BookingDetailResponse[]
   payments: PaymentResponse[]
 }
@@ -51,15 +69,23 @@ export interface BookingDetailResponse {
   bookingDetailId: number
   petId: string
   petName: string
+  petImage?: string
   petSpecies?: string
   petWeight?: number
   petHealthNote?: string
   catalogId: number
   catalogName: string
+  catalogImage?: string
   catalogType?: string
   timeSlotId: number
   timeSlot: string
   unitPrice: number
+  weightRange?: string
+  baseDurationMinute?: number
+  additionalDurationMinute?: number
+  totalDurationMinute?: number
+  basePrice?: number
+  additionalPrice?: number
   quantity?: number
   durationMinute: number
   totalPrice: number
@@ -85,6 +111,31 @@ export interface MediaFileResponse {
   mediaStatus?: string
   bookingMediaType?: 'BEFORE_SERVICE' | 'AFTER_SERVICE'
   createdAt?: string
+}
+
+export interface AvailableGroomerRequest {
+  scheduledAt: string
+  bookingType?: string
+  latitude?: number
+  longitude?: number
+  estimatedTravelMinute?: number
+  bookingDetails: {
+    petId: string
+    catalogId: number
+    timeSlotId: number
+    note?: string
+  }[]
+}
+
+export interface AvailableGroomerResponse {
+  staffId: string
+  fullName: string
+  specialization?: string
+  introduction?: string
+  yearsOfExperience?: number
+  avatar?: string
+  shiftStart: string
+  shiftEnd: string
 }
 
 interface ApiResponse<T> {
@@ -170,6 +221,27 @@ export function updateBookingManagementStatus(
   return request<BookingResponse>({
     url: `${BOOKINGS_URL}/${bookingId}/status`,
     method: 'PATCH',
+    data: payload
+  })
+}
+
+export function assignBookingManagementGroomer(
+  bookingId: number | string,
+  groomerId: string
+): Promise<BookingResponse> {
+  return request<BookingResponse>({
+    url: `${BOOKINGS_URL}/${bookingId}/assign-groomer`,
+    method: 'PATCH',
+    params: { groomerId }
+  })
+}
+
+export function getBookingManagementAvailableGroomers(
+  payload: AvailableGroomerRequest
+): Promise<AvailableGroomerResponse[]> {
+  return request<AvailableGroomerResponse[]>({
+    url: `${BOOKINGS_URL}/available-groomers`,
+    method: 'POST',
     data: payload
   })
 }

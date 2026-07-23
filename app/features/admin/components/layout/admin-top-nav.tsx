@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { LanguageSwitcher, ThemeToggle } from '~/shared/components'
 import { useAuth } from '~/providers/auth-provider'
+import { useSidebar } from '~/providers/sidebar-provider'
 
 export interface AdminTopNavProps {
   titleKey?: string
@@ -12,6 +13,7 @@ export interface AdminTopNavProps {
 export function AdminTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashboard.subtitle' }: AdminTopNavProps) {
   const { t } = useTranslation('admin')
   const { user } = useAuth()
+  const { openMobileSidebar } = useSidebar()
 
   return (
     <header className='flex h-20 shrink-0 items-center justify-between border-b border-border bg-card px-4 shadow-sm md:px-8'>
@@ -19,6 +21,7 @@ export function AdminTopNav({ titleKey = 'dashboard.title', subtitleKey = 'dashb
         <button
           type='button'
           aria-label={t('topNav.menu')}
+          onClick={openMobileSidebar}
           className='rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-primary md:hidden'
         >
           <MaterialIcon name='menu' />

@@ -72,13 +72,17 @@ function getCheckInClientErrorKey(schedule: StaffScheduleResponse) {
 
 function getCheckOutClientErrorKey(schedule: StaffScheduleResponse) {
   if (schedule.checkOutAt) return 'staffSchedule.errors.checkOutAlreadyDone'
-  if (!schedule.checkInAt) return 'staffSchedule.errors.checkOutRequiresCheckIn'
-  if (schedule.scheduleStatus !== 'WORKING') return 'staffSchedule.errors.checkOutNotAllowed'
+  if (!hasCheckedIn(schedule)) return 'staffSchedule.errors.checkOutRequiresCheckIn'
 
-  const shiftEnd = parseScheduleDateTime(schedule.workDate, schedule.endTime)
-  if (!shiftEnd) return null
+  return null
+}
 
-  return new Date() < shiftEnd ? 'staffSchedule.errors.checkOutTooEarly' : null
+function hasCheckedIn(schedule: StaffScheduleResponse) {
+  return Boolean(schedule.checkInAt) || schedule.scheduleStatus === 'WORKING' || schedule.scheduleStatus === 'COMPLETED'
+}
+
+function hasCheckedOut(schedule: StaffScheduleResponse) {
+  return Boolean(schedule.checkOutAt) || schedule.scheduleStatus === 'COMPLETED'
 }
 
 export function StaffScheduleDetailPage() {

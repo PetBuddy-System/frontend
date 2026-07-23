@@ -26,22 +26,42 @@
     "profile": "My account"
   },
   "chatModal": {
-    "eyebrow": "Live support",
-    "title": "PetBuddy chat",
-    "subtitle": "Ask us anything about booking, products, or pet care tips.",
-    "close": "Close chat box",
-    "greeting": "Hi! We’re here to help you choose the best service for your pet.",
-    "reply": "Our team can answer in a few minutes. What would you like to know?",
-    "followUp": "If you need a service recommendation, tell us your pet’s size and coat condition.",
-    "inputLabel": "Message",
-    "placeholder": "Type your question here",
+    "assistantLabel": "PetBuddy AI assistant",
+    "attachImages": "Attach images",
+    "close": "Close AI assistant",
+    "emptyConversations": "No conversations yet.",
+    "emptyDescription": "Ask about services, products, pet health, or upload images so PetBuddy AI can help faster.",
+    "emptyTitle": "How would you like to care for your pet today?",
+    "exitFullscreen": "Exit fullscreen",
+    "fullscreen": "Open fullscreen",
+    "hideConversation": "Remove from list",
+    "hideSidebar": "Hide conversation list",
+    "imageLimit": "{{count}}/{{max}} images",
+    "imagePreviewAlt": "Selected image",
+    "loadingDetail": "Loading conversation...",
+    "moreActions": "Open conversation options",
+    "placeholder": "Type a question or describe the images...",
+    "removeImage": "Remove image",
+    "retry": "Retry",
     "send": "Send",
-    "sideTitle": "Support details",
-    "sideDescription": "This space is reserved for a larger chat box so the conversation feels easier to read.",
-    "sideHoursLabel": "Hours",
-    "sideHoursValue": "08:00 - 21:00 daily",
-    "sidePhoneLabel": "Phone",
-    "sidePhoneValue": "092 199 9319"
+    "showSidebar": "Show conversation list",
+    "sidebarSubtitle": "History is saved to your account",
+    "sidebarTitle": "Conversations",
+    "subtitle": "AI support for pet care, products, and PetBuddy services.",
+    "temporaryDescription": "You can still ask the AI assistant, but this conversation only exists in the current session. Log in to save and revisit history.",
+    "temporaryEmptyDescription": "You are chatting in temporary mode. PetBuddy AI can still help with questions and images, but history will not be saved.",
+    "temporarySidebarSubtitle": "Log in to save history",
+    "temporaryTitle": "Not signed in",
+    "thinking": "PetBuddy AI is replying...",
+    "title": "PetBuddy AI Assistant",
+    "untitledConversation": "New conversation",
+    "errors": {
+      "emptyAnswer": "The AI did not return an answer for this message. You can try sending it again.",
+      "imageLimit": "You can upload up to 3 images.",
+      "loadConversations": "Unable to load conversation history.",
+      "loadDetail": "Unable to load conversation details.",
+      "send": "Unable to send this message. Please try again."
+    }
   },
   "hero": {
     "title": "Complete care for your beloved pets",
@@ -134,23 +154,27 @@
         ]
       },
       "shippingHero": {
-        "title": "Free shipping in inner city",
-        "description": "Orders within central HCM City districts enjoy complimentary delivery."
-      },
-      "shippingItems": {
-        "fast": {
-          "title": "Fast delivery",
-          "description": "Most orders are processed and shipped within 2-4 hours after confirmation."
+          "title": "Reliable, careful delivery",
+          "description": "Every order is packed and shipped with care so it reaches your pet safely and on time."
         },
-        "safe": {
-          "title": "Safe packaging",
-          "description": "Careful packaging keeps products protected during transit."
+        "shippingItems": {
+          "fast": {
+            "title": "Fast delivery",
+            "description": "Most orders are processed and shipped within 2-4 hours after confirmation."
+          },
+          "safe": {
+            "title": "Safe packaging",
+            "description": "Careful packaging keeps products protected during transit."
+          },
+          "schedule": {
+            "title": "Flexible schedule",
+            "description": "Choose a delivery window that fits your routine."
+          },
+          "missedDelivery": {
+            "title": "Missed delivery fee",
+            "description": "If you don't receive your order after our delivery attempt, a 30,000₫ processing fee will apply."
+          }
         },
-        "schedule": {
-          "title": "Flexible schedule",
-          "description": "Choose a delivery window that fits your routine."
-        }
-      },
       "return": {
         "intro": "PetBuddy is committed to providing the best quality products for your pets. If any issues arise, we are ready to support returns and exchanges according to our policy.",
         "applicable": {
@@ -187,7 +211,10 @@
           "title": "Return process",
           "steps": [
             { "title": "Contact us", "description": "Email, call hotline, or chat directly on website" },
-            { "title": "Provide information", "description": "Order ID, photos/videos of defects, detailed description" },
+            {
+              "title": "Provide information",
+              "description": "Order ID, photos/videos of defects, detailed description"
+            },
             { "title": "PetBuddy confirms", "description": "Response within 24-48 business hours" },
             { "title": "Ship item back (if needed)", "description": "Send product to PetBuddy address" },
             { "title": "Process completed", "description": "Exchange or refund within 2 business days" }
@@ -205,8 +232,7 @@
         },
         "delivery": {
           "question": "Do you offer home delivery?",
-          "answer": "Yes. We provide nationwide delivery and complimentary shipping for many qualifying orders within inner Ho Chi Minh City under our current policy."
-        },
+          "answer": "Yes. We provide nationwide delivery, and our team works to get every order to you quickly and safely."        },
         "returns": {
           "question": "What is your product return policy?",
           "answer": "PetBuddy supports returns within 7 days for manufacturer defects or items that do not match the description, as long as the product remains unused and keeps its original labels."

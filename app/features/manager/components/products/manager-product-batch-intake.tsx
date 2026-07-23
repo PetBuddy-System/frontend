@@ -1,6 +1,7 @@
 // app/features/manager/components/products/manager-product-batch-intake.tsx
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { createBatchesApi } from '../../services/batch'
 import type { CreateBatchPayload } from '~/shared/lib/batch'
@@ -10,11 +11,8 @@ export interface ManagerProductBatchIntakeProps {
   onSuccess: () => void
 }
 
-export function ManagerProductBatchIntake({
-  productId,
-  onSuccess
-}: ManagerProductBatchIntakeProps) {
-  // ⭐ THÊM basePrice vào state
+export function ManagerProductBatchIntake({ productId, onSuccess }: ManagerProductBatchIntakeProps) {
+  const { t } = useTranslation('manager')
   const [newBatches, setNewBatches] = useState<{ quantity: number; basePrice: number; expiryDate: string }[]>([
     { quantity: 0, basePrice: 0, expiryDate: '' }
   ])
@@ -23,7 +21,6 @@ export function ManagerProductBatchIntake({
   const [showSuccess, setShowSuccess] = useState(false)
 
   const addBatchRow = () => {
-    // ⭐ THÊM basePrice: 0
     setNewBatches([...newBatches, { quantity: 0, basePrice: 0, expiryDate: '' }])
   }
 
@@ -31,7 +28,6 @@ export function ManagerProductBatchIntake({
     setNewBatches(newBatches.filter((_, i) => i !== index))
   }
 
-  // ⭐ THÊM basePrice vào update
   const updateBatchRow = (index: number, field: 'quantity' | 'basePrice' | 'expiryDate', value: string | number) => {
     const updated = [...newBatches]
     updated[index] = { ...updated[index], [field]: value }
@@ -42,22 +38,20 @@ export function ManagerProductBatchIntake({
     setSubmitError(null)
     setShowSuccess(false)
 
-    // ⭐ KIỂM TRA basePrice
     const validBatches = newBatches.filter(
       (batch) => batch.quantity > 0 && batch.basePrice >= 0 && batch.expiryDate.trim() !== ''
     )
 
     if (validBatches.length === 0) {
-      setSubmitError('Vui lòng nhập đầy đủ thông tin (Số lượng > 0, Giá vốn >= 0, Ngày hết hạn)')
+      setSubmitError(t('productManagement.batch.errors.invalidBatch'))
       return
     }
 
     setIsSubmitting(true)
     try {
-      // ⭐ THÊM basePrice vào payload
       const payload: CreateBatchPayload[] = validBatches.map((batch) => ({
         stockQuantity: batch.quantity,
-        basePrice: batch.basePrice,  // ⭐ THÊM
+        basePrice: batch.basePrice,
         expiryDate: batch.expiryDate
       }))
 
@@ -68,11 +62,11 @@ export function ManagerProductBatchIntake({
         onSuccess()
         setTimeout(() => setShowSuccess(false), 3000)
       } else {
-        setSubmitError(response.message || 'Không thể nhập lô hàng')
+        setSubmitError(response.message || t('productManagement.batch.errors.submitFailed'))
       }
     } catch (err) {
       console.error('Submit batches error:', err)
-      const errMsg = err instanceof Error ? err.message : 'Có lỗi xảy ra khi nhập lô hàng'
+      const errMsg = err instanceof Error ? err.message : t('productManagement.batch.errors.submitFailed')
       setSubmitError(errMsg)
     } finally {
       setIsSubmitting(false)
@@ -82,7 +76,7 @@ export function ManagerProductBatchIntake({
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
-        <h4 className='font-bold text-base text-foreground'>Nhập nhiều lô hàng</h4>
+        <h4 className='font-bold text-base text-foreground'>{t('productManagement.batch.intakeTitle')}</h4>
         <div className='flex items-center gap-3'>
           <button
             onClick={addBatchRow}
@@ -90,7 +84,7 @@ export function ManagerProductBatchIntake({
             className='px-4 py-2 bg-card hover:bg-muted text-primary border border-border rounded-lg text-sm font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
           >
             <MaterialIcon name='add' className='text-lg' />
-            Thêm dòng
+            {t('productManagement.batch.addRow')}
           </button>
           <button
             onClick={handleSubmitBatches}
@@ -102,7 +96,7 @@ export function ManagerProductBatchIntake({
             ) : (
               <MaterialIcon name='check_circle' className='text-lg' />
             )}
-            Xác nhận nhập lô
+            {t('productManagement.batch.confirmImport')}
           </button>
         </div>
       </div>
@@ -112,11 +106,21 @@ export function ManagerProductBatchIntake({
         <table className='w-full text-sm border-collapse'>
           <thead>
             <tr className='bg-muted/40 border-b border-border'>
-              <th className='w-16 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>STT</th>
-              <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Số lượng</th>
-              <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Giá vốn</th> {/* ⭐ THÊM CỘT */}
-              <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>Ngày hết hạn</th>
-              <th className='w-20 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>Thao tác</th>
+              <th className='w-16 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                {t('productManagement.batch.stt')}
+              </th>
+              <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                {t('productManagement.batch.quantity')}
+              </th>
+              <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                {t('productManagement.batch.basePrice')}
+              </th>
+              <th className='px-4 py-2.5 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                {t('productManagement.batch.expiryDate')}
+              </th>
+              <th className='w-20 px-4 py-2.5 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                {t('productManagement.batch.actions')}
+              </th>
             </tr>
           </thead>
           <tbody className='divide-y divide-border'>
@@ -130,7 +134,7 @@ export function ManagerProductBatchIntake({
                     value={batch.quantity || ''}
                     onChange={(e) => updateBatchRow(index, 'quantity', Number(e.target.value))}
                     className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
-                    placeholder='0'
+                    placeholder={t('productManagement.batch.quantityPlaceholder')}
                     disabled={isSubmitting}
                   />
                 </td>
@@ -139,10 +143,10 @@ export function ManagerProductBatchIntake({
                     type='number'
                     min='0'
                     step='1000'
-                    value={batch.basePrice || ''}  // ⭐ THÊM input basePrice
+                    value={batch.basePrice || ''}
                     onChange={(e) => updateBatchRow(index, 'basePrice', Number(e.target.value))}
                     className='w-full bg-background border border-input rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all'
-                    placeholder='0'
+                    placeholder={t('productManagement.batch.basePricePlaceholder')}
                     disabled={isSubmitting}
                   />
                 </td>
@@ -179,7 +183,7 @@ export function ManagerProductBatchIntake({
       {showSuccess && (
         <div className='mt-2 flex items-center gap-2 text-success text-sm font-semibold bg-success/10 p-3 rounded-lg'>
           <MaterialIcon name='check_circle_outline' className='text-lg shrink-0' />
-          <span>Nhập lô hàng thành công!</span>
+          <span>{t('productManagement.batch.importSuccess')}</span>
         </div>
       )}
     </div>

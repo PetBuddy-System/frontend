@@ -42,10 +42,7 @@ export const storeLocationHandlers = [
     const id = parseInt(params.id as string, 10)
     const loc = mockStoreLocations.find((l) => l.id === id)
     if (!loc) {
-      return HttpResponse.json(
-        { success: false, message: 'Store location not found' },
-        { status: 404 }
-      )
+      return HttpResponse.json({ success: false, message: 'Store location not found' }, { status: 404 })
     }
     return HttpResponse.json({
       success: true,
@@ -57,7 +54,7 @@ export const storeLocationHandlers = [
   // POST /api/store-locations
   http.post(`${BASE}/api/store-locations`, async ({ request }) => {
     const body = (await request.json()) as { latitude: number; longitude: number; address: string }
-    
+
     // Deactivate previous active location
     mockStoreLocations = mockStoreLocations.map((loc) => ({
       ...loc,
@@ -87,13 +84,10 @@ export const storeLocationHandlers = [
   http.put(`${BASE}/api/store-locations/:id`, async ({ params, request }) => {
     const id = parseInt(params.id as string, 10)
     const body = (await request.json()) as { latitude: number; longitude: number; address: string }
-    
+
     const index = mockStoreLocations.findIndex((l) => l.id === id)
     if (index === -1) {
-      return HttpResponse.json(
-        { success: false, message: 'Store location not found' },
-        { status: 404 }
-      )
+      return HttpResponse.json({ success: false, message: 'Store location not found' }, { status: 404 })
     }
 
     mockStoreLocations[index] = {

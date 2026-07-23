@@ -9,10 +9,12 @@ export enum BookingStatus {
   FAILED = 'FAILED',
   PENDING_ACCEPTANCE = 'PENDING_ACCEPTANCE',
   ACCEPTED = 'ACCEPTED',
+  ON_THE_WAY = 'ON_THE_WAY',
   IN_PROGRESS = 'IN_PROGRESS',
   READY_FOR_PICKUP = 'READY_FOR_PICKUP',
   COMPLETED = 'COMPLETED',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
+  WAITING_STAFF = 'WAITING_STAFF'
 }
 
 export interface MediaFileResponse {
@@ -36,12 +38,26 @@ export interface BookingDetailResponse {
   bookingDetailId: number
   petId: string
   petName: string
+  petImage?: string
+  petSpecies?: string
+  petBreed?: string
+  petWeight?: number
+  petHealthNote?: string
+  petAllergyNote?: string
+  petBehaviorNote?: string
   catalogId: number
   catalogName: string
+  catalogImage?: string
   timeSlotId: number
   timeSlot: string
-  unitPrice: number
-  durationMinute: number
+  weightRange?: string
+  baseDurationMinute?: number
+  additionalDurationMinute?: number
+  totalDurationMinute?: number
+  basePrice?: number
+  additionalPrice?: number
+  unitPrice?: number
+  durationMinute?: number
   totalPrice: number
   mediaFiles: MediaFileResponse[]
 }
@@ -54,14 +70,15 @@ export interface BookingResponse {
   customerPhone: string
   address: string
   scheduledAt: string
+  estimatedEndAt?: string | null
   totalAmount: number
   depositAmount: number
   remainingAmount: number
   bookingStatus: BookingStatus | string
   cancelReason: string
   paymentDeadlineAt: string
-  staffId: string
-  staffName: string
+  staffId?: string | null
+  staffName?: string | null
   bookingDetails: BookingDetailResponse[]
   payments: PaymentResponse[]
 }
@@ -71,6 +88,7 @@ interface ApiResponse<T> {
   code?: number
   message?: string
   data?: T
+  result?: T
 }
 
 function getAuthHeaders() {
@@ -78,14 +96,20 @@ function getAuthHeaders() {
 
   return token
     ? {
-      Authorization: `Bearer ${token}`
-    }
+        Authorization: `Bearer ${token}`
+      }
     : undefined
 }
 
 function unwrapResponse<T>(payload: ApiResponse<T> | T): T {
-  if (payload && typeof payload === 'object' && 'data' in payload) {
-    return (payload as ApiResponse<T>).data as T
+  if (payload && typeof payload === 'object') {
+    const apiPayload = payload as ApiResponse<T>
+    if (apiPayload.data !== undefined) {
+      return apiPayload.data
+    }
+    if (apiPayload.result !== undefined) {
+      return apiPayload.result
+    }
   }
 
   return payload as T

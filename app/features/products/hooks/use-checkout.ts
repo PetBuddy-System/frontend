@@ -1,10 +1,6 @@
 import { useCheckoutState } from './use-checkout-state'
 import { useCheckoutSubmit } from './use-checkout-submit'
 
-/**
- * Orchestrator hook — compose useCheckoutState + useCheckoutSubmit.
- * Được dùng duy nhất bởi CheckoutPage.
- */
 export function useCheckout() {
   const state = useCheckoutState()
   const { handleSubmit } = useCheckoutSubmit(state)
@@ -14,7 +10,7 @@ export function useCheckout() {
     user: state.user,
     isSubmitting: state.isSubmitting,
     isLoading: state.isLoading,
-    errorMessage: state.errorMessage,
+    errorMessage: state.errorMessage ? state.t(state.errorMessage) : state.errorMessage,
     cartItems: state.cartItems,
     outOfStockProductName: state.outOfStockProductName,
     setOutOfStockProductName: state.setOutOfStockProductName,
@@ -31,6 +27,6 @@ export function useCheckout() {
     handleAdjustedDecline: state.handleAdjustedDecline,
     handleRetryPayment: state.handleRetryPayment,
     handleSubmit,
-    subtotal: state.subtotal,
+    subtotal: state.subtotal
   }
 }

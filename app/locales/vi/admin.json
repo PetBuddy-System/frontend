@@ -348,6 +348,7 @@
   "sidebar": {
     "branch": "Chi nhánh chính",
     "brand": "PawAdmin",
+    "close": "Đóng menu",
     "logoAlt": "Logo PetBuddy",
     "logout": "Đăng xuất",
     "nav": {
@@ -403,8 +404,10 @@
       "pending": "Đang chờ",
       "PENDING_PAYMENT": "Chờ thanh toán",
       "FAILED": "Thanh toán lỗi",
+      "WAITING_STAFF": "Chờ phân công",
       "PENDING_ACCEPTANCE": "Chờ xác nhận",
       "ACCEPTED": "Đã nhận",
+      "ON_THE_WAY": "Đang di chuyển",
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Sẵn sàng đón",
       "COMPLETED": "Hoàn thành",
@@ -449,8 +452,10 @@
       "ALL": "Tất cả",
       "PENDING_PAYMENT": "Chờ thanh toán",
       "FAILED": "Thanh toán lỗi",
+      "WAITING_STAFF": "Chờ phân công",
       "PENDING_ACCEPTANCE": "Chờ xác nhận",
       "ACCEPTED": "Đã nhận",
+      "ON_THE_WAY": "Đang di chuyển",
       "IN_PROGRESS": "Đang thực hiện",
       "READY_FOR_PICKUP": "Sẵn sàng đón",
       "COMPLETED": "Hoàn thành",
@@ -468,7 +473,10 @@
       "updateFailed": "Không thể cập nhật trạng thái booking.",
       "updateSuccess": "Đã cập nhật trạng thái booking.",
       "emptyTitle": "Không tìm thấy booking",
-      "emptyText": "Thử chọn tab trạng thái khác hoặc điều chỉnh khoảng ngày."
+      "emptyText": "Thử chọn tab trạng thái khác hoặc điều chỉnh khoảng ngày.",
+      "groomerLoadFailed": "Không thể tải danh sách groomer rảnh.",
+      "assignFailed": "Không thể gán groomer cho booking này.",
+      "assignSuccess": "Đã gán groomer cho booking."
     },
     "cancelModal": {
       "close": "Đóng hộp thoại hủy lịch",
@@ -520,8 +528,36 @@
         "note": "Ghi chú",
         "staff": "Nhân viên",
         "address": "Địa chỉ",
-        "cancelReason": "Lý do hủy"
-      }
+        "cancelReason": "Lý do hủy",
+        "addressNote": "Ghi chú địa chỉ",
+        "distance": "Khoảng cách",
+        "travelFee": "Phí di chuyển",
+        "baseDuration": "Thời lượng cơ bản",
+        "additionalDuration": "Thời lượng cộng thêm",
+        "totalDuration": "Tổng thời lượng",
+        "basePrice": "Giá dịch vụ",
+        "additionalPrice": "Phụ phí"
+      },
+      "distanceValue": "{{value}} km",
+      "petLabel": "Thú cưng",
+      "serviceLabel": "Gói dịch vụ",
+      "beforeMedia": "Ảnh trước khi thực hiện",
+      "afterMedia": "Ảnh sau khi thực hiện",
+      "noMedia": "Chưa có ảnh.",
+      "sections": {
+        "items": "Thú cưng và dịch vụ"
+      },
+      "minuteValue": "{{value}} phút"
+    },
+    "assign": {
+      "title": "Gán groomer",
+      "subtitle": "Chỉ hiển thị nhân viên rảnh theo lịch hẹn này.",
+      "groomerLabel": "Nhân viên phù hợp",
+      "placeholder": "Chọn groomer để gán",
+      "loading": "Đang tải nhân viên rảnh...",
+      "empty": "Chưa có groomer rảnh phù hợp với khung giờ này.",
+      "submit": "Gán groomer",
+      "submitting": "Đang gán..."
     }
   },
   "serviceManagement": {
@@ -555,9 +591,12 @@
         "catalogType": "Hình thức cung ứng",
         "petSpecies": "Loài thú cưng áp dụng",
         "price": "Giá cơ bản (VNĐ)",
+        "additionalPricePerMinute": "Phí mỗi phút phát sinh",
         "weightRange": "Khoảng cân nặng",
         "durationMinute": "Thời lượng thực hiện",
-        "bufferTime": "Thời gian dọn dẹp giữa các ca"
+        "bufferTime": "Thời gian dọn dẹp giữa các ca",
+        "image": "Ảnh dịch vụ",
+        "imagePreview": "Xem trước ảnh dịch vụ"
       },
       "media": {
         "hint": "PNG, JPG tối đa 10MB",
@@ -591,7 +630,7 @@
       "dto": {
         "label": "HƯỚNG DẪN CẤU HÌNH",
         "title": "Lưu ý khi thiết lập dịch vụ",
-        "text": "1. Hình thức dịch vụ: Chọn 'Tại tiệm' nếu khách mang thú cưng đến cửa hàng, chọn 'Tại nhà' nếu cử nhân viên đến tận nơi.\n2. Giá gốc áp dụng cho thú cưng dưới 12kg (nhỏ & vừa).\n3. Phụ thu theo cân nặng chỉ điền khi dịch vụ áp dụng cho thú cưng trên 12kg.\n4. Thời gian đệm là khoảng dọn dẹp, chuẩn bị dụng cụ giữa các ca."
+        "text": "1. Hình thức dịch vụ: Chọn 'Tại tiệm' nếu khách mang thú cưng đến cửa hàng, chọn 'Tại nhà' nếu cần nhân viên đến tận nơi.\n2. Giá cơ bản là mức giá tiêu chuẩn cho dịch vụ trước khi cộng thêm thời gian phát sinh.\n3. Với thú cưng lớn hơn, hãy nhập số phút cần cộng thêm. Hệ thống sẽ tự tính phần phí phát sinh theo mức phí mỗi phút.\n4. Thời gian đệm là khoảng dọn dẹp và chuẩn bị dụng cụ giữa các ca."
       }
     },
     "categories": {
@@ -623,7 +662,7 @@
       "saving": "Đang lưu..."
     },
     "pagination": {
-      "showing": "Hiển thị {{shown}} trên {{total}} dịch vụ",
+      "showing": "Hiển thị {{from}} - {{to}} trong số {{total}} dịch vụ",
       "previous": "Trang trước",
       "next": "Trang sau"
     },
@@ -670,7 +709,7 @@
       "currency": "đ",
       "editDetails": "Chỉnh sửa chi tiết",
       "save": "Cập nhật bảng giá",
-      "serviceId": "Service ID: {{id}}",
+      "serviceId": "Mã dịch vụ: {{id}}",
       "subtitle": "Cấu hình biểu phí linh hoạt cho Spa & Grooming. Mức giá được phân loại theo trọng lượng cơ thể để đảm bảo tính công bằng và chuyên nghiệp trong vận hành.",
       "title": "Quản lý bảng giá dịch vụ",
       "weightTiers": {
@@ -702,28 +741,18 @@
       "EXTRA_LARGE": "Từ 18kg đến 25kg",
       "EXTRA_EXTRA_LARGE": "Trên 25kg"
     },
-    "surcharge": {
-      "title": "Phụ thu theo cân nặng",
-      "help": "Để trống hoặc nhập 0 nếu không áp dụng phụ thu. Giá gốc áp dụng cho EXTRA_SMALL và SMALL.",
-      "ranges": {
-        "MEDIUM": "Cỡ vừa (8kg - 12kg)",
-        "LARGE": "Cỡ lớn (12kg – 18kg)",
-        "EXTRA_LARGE": "Cỡ rất lớn (18kg – 25kg)",
-        "EXTRA_EXTRA_LARGE": "Cỡ siêu lớn (trên 25kg)"
-      }
-    },
     "durationConfig": {
       "title": "Thời lượng theo cân nặng",
-      "help": "Nhập số phút cộng thêm so với thời lượng gốc. Hệ thống sẽ gửi durationConfig là tổng thời lượng cuối cùng theo từng hạng cân.",
-      "unit": "phút thêm",
+      "help": "Nhập số phút cần cộng thêm so với thời lượng gốc. Có thể để trống hoặc nhập 0 nếu hạng cân đó không cần thêm thời gian.",
+      "unit": "phút",
       "ranges": {
-        "MEDIUM": "Cỡ vừa",
-        "LARGE": "Cỡ lớn",
-        "EXTRA_LARGE": "Cỡ rất lớn",
-        "EXTRA_EXTRA_LARGE": "Cỡ siêu lớn"
+        "MEDIUM": "Từ 8kg đến 12kg",
+        "LARGE": "Từ 12kg đến 18kg",
+        "EXTRA_LARGE": "Từ 18kg đến 25kg",
+        "EXTRA_EXTRA_LARGE": "Trên 25kg"
       }
     },
-    "searchPlaceholder": "Tìm tên dịch vụ hoặc mã catalog...",
+    "searchPlaceholder": "Tìm tên dịch vụ hoặc mã dịch vụ...",
     "catalogTypes": {
       "AT_STORE": "Tại tiệm",
       "AT_HOME": "Tại nhà"
@@ -745,10 +774,15 @@
         "petSpecies": "Loại áp dụng",
         "weightRange": "Khoảng cân nặng",
         "price": "Giá gốc",
+        "additionalPricePerMinute": "Phí mỗi phút phát sinh",
         "durationMinute": "Thời lượng phút",
         "bufferTime": "Thời gian đệm",
         "status": "Trạng thái",
-        "description": "Mô tả"
+        "description": "Mô tả",
+        "image": "Ảnh dịch vụ",
+        "imageUrl": "Đường dẫn ảnh",
+        "noImage": "Chưa có ảnh",
+        "deleteImage": "Xóa ảnh hiện tại"
       }
     },
     "schedule": {
@@ -1201,7 +1235,9 @@
       "UPDATED": "Cập nhật",
       "PAY": "Thanh toán",
       "REFUND": "Hoàn tiền",
-      "USE": "Sử dụng"
+      "USE": "Sử dụng",
+      "BOMBED": "Giao thất bại",
+      "COORDINATOR_NEGOTIATING": "Chuyển hàng về cho coordinator"
     },
     "entityTypes": {
       "PRODUCT": "Sản phẩm",
@@ -1210,6 +1246,7 @@
       "ORDER": "Đơn hàng",
       "USER": "Người dùng",
       "PAYMENT": "Thanh toán",
+      "VOUCHER": "Voucher",
       "VOUCHER_USAGE": "Sử dụng Voucher"
     },
     "fields": {
@@ -1252,7 +1289,8 @@
       "PAYMENT_BY_MOMO": "Thanh toán MoMo",
       "PAYMENT_BY_CARD": "Thanh toán bằng thẻ",
       "CREATE_VOUCHER": "Tạo voucher",
-      "VOUCHER_USED": "Sử dụng voucher"
+      "VOUCHER_USED": "Sử dụng voucher",
+      "PAYMENT_BY_VNPAY": "Thanh toán VnPay"
     },
     "pagination": {
       "showing": "Hiển thị",
@@ -1276,50 +1314,45 @@
     }
   },
   "voucherModal": {
-    "createTitle": "Tạo Voucher mới",
-    "editTitle": "Chỉnh sửa Voucher",
-    "detailTitle": "Chi tiết Voucher",
-    "code": "Mã Voucher",
+    "createTitle": "Tạo voucher mới",
+    "editTitle": "Sửa voucher",
+    "code": "Mã voucher",
+    "codePlaceholder": "VD: SUMMER2024",
+    "codeDisabledHint": "Không thể thay đổi mã voucher sau khi đã tạo",
     "codeRequired": "Mã voucher tối đa 20 ký tự",
-    "codeDisabledHint": "Không thể thay đổi mã voucher.",
-    "codePlaceholder": "VD: SUMMER2025",
-    "name": "Tên Voucher",
+    "name": "Tên voucher",
+    "namePlaceholder": "VD: Khuyến mãi mùa hè 2024",
     "nameRequired": "Tên voucher tối đa 100 ký tự",
-    "namePlaceholder": "VD: Giảm 50k đơn hàng từ 500k",
     "discountType": "Loại giảm giá",
-    "fixedAmount": "Số tiền cố định (VND)",
-    "percentage": "Phần trăm (%)",
+    "fixedAmount": "Số tiền cố định",
+    "percentage": "Phần trăm",
     "discountValue": "Giá trị giảm",
-    "discountPercentRange": "Phần trăm giảm giá phải từ 0% đến 100%",
-    "discountAmountRange": "Giá trị giảm phải từ 0.01đ đến 999.999.999,99đ",
-    "maxDiscount": "Giảm tối đa (VND)",
-    "maxDiscountRange": "Giảm tối đa phải từ 0đ đến 999.999.999,99đ",
-    "minOrderValue": "Đơn hàng tối thiểu (VND)",
-    "minOrderValueRange": "Đơn hàng tối thiểu phải từ 0đ đến 999.999.999,99đ",
-    "usageLimit": "Tổng lượt sử dụng",
-    "usageLimitRange": "Tổng lượt sử dụng phải từ 1 đến 999.999",
-    "usageLimitRelation": "Tổng lượt sử dụng phải lớn hơn hoặc bằng lượt sử dụng/người",
-    "perUserLimit": "Lượt sử dụng / người",
-    "perUserLimitRange": "Lượt sử dụng/người phải từ 1 đến 1.000",
-    "perUserLimitRelation": "Lượt sử dụng/người phải nhỏ hơn hoặc bằng tổng lượt sử dụng",
-    "startAt": "Ngày bắt đầu",
-    "expiredAt": "Ngày hết hạn",
+    "discountPercentRange": "Giá trị giảm theo % phải trong khoảng 0 đến 100",
+    "discountAmountRange": "Giá trị giảm phải trong khoảng 0.01 đến 999.999.999,99",
+    "maxDiscount": "Giảm tối đa",
+    "maxDiscountPlaceholder": "Không giới hạn",
+    "maxDiscountRange": "Giảm tối đa phải trong khoảng 0 đến 999.999.999,99",
+    "minOrderValue": "Đơn hàng tối thiểu",
+    "minOrderPlaceholder": "Không yêu cầu",
+    "minOrderValueRange": "Đơn hàng tối thiểu phải trong khoảng 0 đến 999.999.999,99",
+    "usageLimit": "Giới hạn tổng lượt dùng",
+    "usageLimitPlaceholder": "Không giới hạn",
+    "usageLimitRange": "Giới hạn lượt dùng phải trong khoảng 1 đến 999.999",
+    "usageLimitRelation": "Giới hạn tổng lượt dùng không được nhỏ hơn giới hạn mỗi người dùng",
+    "perUserLimit": "Giới hạn mỗi người dùng",
+    "perUserLimitPlaceholder": "Không giới hạn",
+    "perUserLimitRange": "Giới hạn mỗi người dùng phải trong khoảng 1 đến 1.000",
+    "perUserLimitRelation": "Giới hạn mỗi người dùng không được vượt quá giới hạn tổng lượt dùng",
+    "startDate": "Ngày bắt đầu",
+    "endDate": "Ngày kết thúc",
+    "applyScope": "Phạm vi áp dụng",
+    "scopeAll": "Tất cả sản phẩm",
     "status": "Trạng thái",
-    "expired": "Hết hạn",
-    "expiredDescription": "Voucher đã quá ngày hết hạn và không thể kích hoạt lại.",
     "statusActive": "Hoạt động",
     "statusInactive": "Tạm dừng",
-    "activeDescription": "Voucher đang được kích hoạt cho khách hàng sử dụng.",
-    "inactiveDescription": "Voucher đang tạm dừng, khách hàng không thể sử dụng.",
-    "upcomingDescription": "Ngày bắt đầu chưa tới — voucher sẽ tự động kích hoạt đúng hẹn.",
     "cancel": "Hủy",
-    "close": "Đóng",
-    "save": "Lưu thay đổi",
-    "create": "Tạo Voucher",
-    "saving": "Đang lưu...",
-    "unexpectedError": "Có lỗi xảy ra. Vui lòng thử lại.",
-    "emptyPlaceholder": "Để trống = không giới hạn",
-    "emptyOrderPlaceholder": "Để trống = không yêu cầu"
+    "save": "Lưu",
+    "unexpectedError": "Đã có lỗi không mong muốn xảy ra. Vui lòng thử lại."
   },
   "footer": {
     "label": "Chọn trang quản trị",

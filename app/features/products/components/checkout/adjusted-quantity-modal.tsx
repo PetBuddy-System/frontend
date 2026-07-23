@@ -6,12 +6,7 @@ export interface AdjustedQuantityModalProps {
   onConfirm: () => void
   onDecline: () => void
 }
-export function AdjustedQuantityModal({
-  productName,
-  newQuantity,
-  onConfirm,
-  onDecline,
-}: AdjustedQuantityModalProps) {
+export function AdjustedQuantityModal({ productName, newQuantity, onConfirm, onDecline }: AdjustedQuantityModalProps) {
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300'>
       <div
@@ -25,24 +20,17 @@ export function AdjustedQuantityModal({
             </div>
           </div>
 
-          <h2 className='text-2xl font-bold text-slate-900 mb-4'>
-            Số lượng đã thay đổi
-          </h2>
+          <h2 className='text-2xl font-bold text-slate-900 mb-4'>Số lượng đã thay đổi</h2>
 
           <div className='bg-slate-50 border border-slate-200 rounded-lg p-4 mb-6 flex items-center justify-center gap-3'>
             <MaterialIcon name='inventory_2' className='text-[20px] text-amber-500' />
-            <span className='text-indigo-900 font-semibold text-lg line-clamp-2'>
-              {productName}
-            </span>
+            <span className='text-indigo-900 font-semibold text-lg line-clamp-2'>{productName}</span>
           </div>
 
           <div className='text-slate-600 space-y-2 mb-10'>
             <p className='text-lg'>
-              Sản phẩm{' '}
-              <span className='font-semibold text-indigo-900'>{productName}</span>{' '}
-              hiện chỉ còn{' '}
-              <span className='font-bold text-amber-600 text-xl'>{newQuantity}</span>{' '}
-              sản phẩm trong kho.
+              Sản phẩm <span className='font-semibold text-indigo-900'>{productName}</span> hiện chỉ còn{' '}
+              <span className='font-bold text-amber-600 text-xl'>{newQuantity}</span> sản phẩm trong kho.
             </p>
             <p className='text-sm'>
               Số lượng trong giỏ hàng đã được cập nhật. Bạn có muốn tiếp tục mua sản phẩm này không?

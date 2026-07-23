@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { ShipperSuggestionList } from './shipper-suggestion-list'
 import type { OrderResponse } from '~/shared/lib/order'
+import { formatDateTime } from '~/shared/lib/date'
 
 interface OrderRowProps {
   order: OrderResponse
@@ -16,19 +17,6 @@ export function OrderRow({ order, onAssignSuccess }: OrderRowProps) {
   function formatPrice(value: number) {
     if (value == null || isNaN(Number(value))) return '0đ'
     return `${new Intl.NumberFormat('vi-VN').format(Number(value))}đ`
-  }
-
-  function formatDate(dateStr: string) {
-    if (!dateStr) return '—'
-    const normalized = dateStr.includes('Z') || dateStr.includes('+') ? dateStr : dateStr + 'Z'
-    const d = new Date(normalized)
-    if (isNaN(d.getTime())) return dateStr
-    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}/${d.getFullYear()} - ${d.getHours().toString().padStart(2, '0')}:${d
-      .getMinutes()
-      .toString()
-      .padStart(2, '0')}`
   }
 
   return (
@@ -62,10 +50,12 @@ export function OrderRow({ order, onAssignSuccess }: OrderRowProps) {
         <div className='flex items-center justify-between md:justify-end gap-6 pl-10 md:pl-0 border-t border-border/40 md:border-0 pt-3 md:pt-0'>
           <div className='text-left md:text-right space-y-0.5'>
             <p className='text-xs text-muted-foreground font-medium'>{t('shipperAssignment.orderDate', 'Ngày đặt')}</p>
-            <p className='text-sm font-semibold text-muted-foreground'>{formatDate(order.createdAt)}</p>
+            <p className='text-sm font-semibold text-muted-foreground'>{formatDateTime(order.createdAt)}</p>
           </div>
           <div className='text-left md:text-right space-y-0.5'>
-            <p className='text-xs text-muted-foreground font-medium'>{t('shipperAssignment.totalAmount', 'Tổng tiền')}</p>
+            <p className='text-xs text-muted-foreground font-medium'>
+              {t('shipperAssignment.totalAmount', 'Tổng tiền')}
+            </p>
             <p className='text-base font-bold text-foreground'>{formatPrice(order.finalAmount)}</p>
           </div>
         </div>

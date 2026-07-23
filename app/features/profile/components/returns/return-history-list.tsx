@@ -2,14 +2,11 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import {
-  fetchMyReturnsApi,
-  cancelReturnRequestApi,
-  fetchReturnDetailApi
-} from '~/features/profile/services'
+import { fetchMyReturnsApi, cancelReturnRequestApi, fetchReturnDetailApi } from '~/features/profile/services'
 import type { ReturnRequestResponse } from '~/shared/lib/returns'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
+import { ReturnTimeline } from '~/shared/components/return-timeline'
 
 import { ReturnCancelDialog } from './return-cancel-dialog'
 import { ReturnItemsSection } from './return-items-section'
@@ -17,11 +14,7 @@ import { ReturnMediaGallery } from './return-media-gallery'
 import { ReturnProcessingSection } from './return-processing-section'
 import { ReturnRefundSection } from './return-refund-section'
 import { ReturnStatusBadge } from './return-status-badge'
-import {
-  formatPrice,
-  formatReturnDateTime,
-  isReturnCancellable
-} from './lib/return-labels'
+import { formatPrice, formatReturnDateTime, isReturnCancellable } from './lib/return-labels'
 
 export function ReturnHistoryList() {
   const { t } = useTranslation('returns')
@@ -64,7 +57,7 @@ export function ReturnHistoryList() {
       try {
         const res = await fetchReturnDetailApi(id)
         if (res.success && res.data) {
-          setDetailData(prev => ({ ...prev, [id]: res.data }))
+          setDetailData((prev) => ({ ...prev, [id]: res.data }))
         }
       } catch (err) {
         console.error('Failed to load return detail', err)
@@ -83,7 +76,7 @@ export function ReturnHistoryList() {
       if (res.success) {
         setConfirmCancelId(null)
         void loadReturns()
-        setDetailData(prev => {
+        setDetailData((prev) => {
           const next = { ...prev }
           delete next[returnId]
           return next
@@ -99,7 +92,7 @@ export function ReturnHistoryList() {
   }
 
   const getDetailData = (id: number) => {
-    return detailData[id] || returns.find(r => r.returnRequestId === id)
+    return detailData[id] || returns.find((r) => r.returnRequestId === id)
   }
 
   if (isLoading) {
@@ -146,6 +139,70 @@ export function ReturnHistoryList() {
                   </div>
                 ) : detail ? (
                   <>
+                    {/* ✅ Banner thông báo khi đơn hàng đã bị từ chối (dựa vào rejectedAt) */}
+                    {detail.rejectedAt && (
+                      <div className={cn(
+                        'rounded-xl p-4 flex items-start gap-3 border',
+                        detail.status === 'REJECTED'
+                          ? 'bg-rose-50 border-rose-200 dark:bg-rose-950/20 dark:border-rose-900/50'
+                          : 'bg-orange-50 border-orange-200 dark:bg-orange-950/20 dark:border-orange-900/50'
+                      )}>
+                        <MaterialIcon
+                          name='warning'
+                          className={cn(
+                            'text-xl shrink-0 mt-0.5',
+                            detail.status === 'REJECTED' ? 'text-rose-600' : 'text-orange-600'
+                          )}
+                        />
+                        <div>
+                          <p className={cn(
+                            'font-bold text-sm',
+                            detail.status === 'REJECTED' ? 'text-rose-800 dark:text-rose-400' : 'text-orange-800 dark:text-orange-400'
+                          )}>
+                            {detail.status === 'REJECTED'
+                              ? t('list.detail.rejectedBannerTitle')
+                              : t('list.detail.rejectedReturnShippingBannerTitle')}
+                          </p>
+                          <p className={cn(
+                            'text-sm',
+                            detail.status === 'REJECTED' ? 'text-rose-700 dark:text-rose-300/70' : 'text-orange-700 dark:text-orange-300/70'
+                          )}>
+                            {detail.status === 'REJECTED'
+                              ? t('list.detail.rejectedBannerDescription')
+                              : t('list.detail.rejectedReturnShippingBannerDescription')}
+                          </p>
+                          {detail.rejectedAt && (
+                            <p className='text-xs mt-1 text-muted-foreground'>
+                              {t('list.detail.rejectedAt')}: {formatReturnDateTime(detail.rejectedAt)}
+                            </p>
+                          )}
+                          {detail.staffNote && (
+                            <p className='text-xs mt-1 text-muted-foreground'>
+                              <span className='font-semibold'>{t('list.detail.staffNoteLabel')}</span> {detail.staffNote}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className='rounded-xl border border-border bg-card p-4 sm:px-6'>
+                      <h4 className='text-sm font-bold border-b border-border pb-3 mb-2'>{t('list.detail.requestStatus')}</h4>
+                      <ReturnTimeline
+                        type={detail.type}
+                        status={detail.status}
+                        createdAt={detail.createdAt}
+                        approvedAt={detail.approvedAt}
+                        pickingUpAt={detail.pickingUpAt}
+                        pickedUpAt={detail.pickedUpAt}
+                        returnedToStoreAt={detail.returnedToStoreAt}
+                        readyToDeliverAt={detail.readyToDeliverAt}
+                        deliveringAt={detail.deliveringAt}
+                        deliveringFailedAt={detail.deliveringFailedAt}
+                        completedAt={detail.completedAt}
+                        rejectedAt={detail.rejectedAt}
+                        cancelledAt={detail.cancelledAt}
+                      />
+                    </div>
                     <ReturnReasonBlock detail={detail} />
                     {detail.type === 'RETURN' ? <ReturnRefundSection detail={detail} /> : null}
                     <ReturnItemsSection detail={detail} />
@@ -227,10 +284,7 @@ function ReturnCardHeader({ request, isExpanded, onToggle }: ReturnCardHeaderPro
         ) : null}
         <MaterialIcon
           name='expand_more'
-          className={cn(
-            'text-2xl text-muted-foreground transition-transform duration-200',
-            isExpanded && 'rotate-180'
-          )}
+          className={cn('text-2xl text-muted-foreground transition-transform duration-200', isExpanded && 'rotate-180')}
         />
       </div>
     </div>

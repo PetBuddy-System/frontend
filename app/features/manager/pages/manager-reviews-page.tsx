@@ -40,7 +40,7 @@ export function ManagerReviewsPage() {
   const [debouncedKeyword, setDebouncedKeyword] = useState('')
   const [ratingFilter, setRatingFilter] = useState<number | undefined>(undefined)
   const [statusFilter, setStatusFilter] = useState('')
-  const [reviewTypeFilter, setReviewTypeFilter] = useState<ReviewTypeFilter>('ALL')  // ← THÊM
+  const [reviewTypeFilter, setReviewTypeFilter] = useState<ReviewTypeFilter>('ALL') // ← THÊM
   const [sortKey, setSortKey] = useState<SortKey>('newest')
 
   // ── Detail drawer state ──────────────────────────────────────────────────────
@@ -64,7 +64,7 @@ export function ManagerReviewsPage() {
         keyword: debouncedKeyword || undefined,
         rating: ratingFilter,
         status: statusFilter || undefined,
-        reviewType: reviewTypeFilter === 'ALL' ? undefined : reviewTypeFilter,  // ← THÊM
+        reviewType: reviewTypeFilter === 'ALL' ? undefined : reviewTypeFilter, // ← THÊM
         page: currentPage,
         size: PAGE_SIZE,
         sortBy,
@@ -91,9 +91,7 @@ export function ManagerReviewsPage() {
     const newStatus = review.status === 'ACTIVE' ? 'HIDDEN' : 'ACTIVE'
     const res = await updateManagementReviewStatusApi(review.reviewId, newStatus)
     if (res.success) {
-      setReviews((prev) =>
-        prev.map((r) => (r.reviewId === review.reviewId ? { ...r, status: newStatus } : r))
-      )
+      setReviews((prev) => prev.map((r) => (r.reviewId === review.reviewId ? { ...r, status: newStatus } : r)))
     }
   }
 
@@ -118,7 +116,8 @@ export function ManagerReviewsPage() {
     setCurrentPage(0)
   }
 
-  const handleReviewTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {  // ← THÊM
+  const handleReviewTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // ← THÊM
     setReviewTypeFilter(e.target.value as ReviewTypeFilter)
     setCurrentPage(0)
   }
@@ -151,9 +150,7 @@ export function ManagerReviewsPage() {
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             {/* Page header */}
             <section className='border-b border-border pb-6'>
-              <h1 className='font-display text-2xl font-bold text-card-foreground md:text-3xl'>
-                {t('reviews.title')}
-              </h1>
+              <h1 className='font-display text-2xl font-bold text-card-foreground md:text-3xl'>{t('reviews.title')}</h1>
               <p className='mt-2 text-muted-foreground'>{t('reviews.subtitle')}</p>
             </section>
 
@@ -165,7 +162,7 @@ export function ManagerReviewsPage() {
               onStatusChange={handleStatusChange}
               ratingFilter={ratingFilter}
               onRatingChange={handleRatingChange}
-              reviewTypeFilter={reviewTypeFilter}        // ← THÊM
+              reviewTypeFilter={reviewTypeFilter} // ← THÊM
               onReviewTypeChange={handleReviewTypeChange} // ← THÊM
               sortKey={currentSortKey}
               onSortChange={handleSortChange}
@@ -193,7 +190,8 @@ export function ManagerReviewsPage() {
         onClose={() => setSelectedReviewId(null)}
         onToggleStatus={handleToggleStatus}
         onDelete={async (reviewId) => {
-          if (!window.confirm('Bạn có chắc chắn muốn xóa đánh giá này vĩnh viễn? Hành động này không thể hoàn tác.')) return
+          if (!window.confirm('Bạn có chắc chắn muốn xóa đánh giá này vĩnh viễn? Hành động này không thể hoàn tác.'))
+            return
           const res = await deleteManagementReviewApi(reviewId)
           if (res.success) {
             setReviews((prev) => prev.filter((r) => r.reviewId !== reviewId))

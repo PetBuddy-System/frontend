@@ -31,12 +31,7 @@ const CATEGORIES = [
   { value: 'catFood', labelKey: 'addProduct.categories.catFood' }
 ]
 
-export function AddProductForm({
-  product,
-  onChange,
-  onConfirm,
-  isConfirmDisabled
-}: AddProductFormProps) {
+export function AddProductForm({ product, onChange, onConfirm, isConfirmDisabled }: AddProductFormProps) {
   const { t } = useTranslation('staff')
 
   function handleChange(field: keyof ProductFormData) {
@@ -49,9 +44,7 @@ export function AddProductForm({
     <div className='space-y-4 sm:space-y-5'>
       {/* Product Name */}
       <div>
-        <label className='mb-1.5 block text-sm font-semibold text-primary'>
-          {t('addProduct.form.productName')}
-        </label>
+        <label className='mb-1.5 block text-sm font-semibold text-primary'>{t('addProduct.form.productName')}</label>
         <input
           type='text'
           value={product.name}
@@ -64,9 +57,7 @@ export function AddProductForm({
       {/* Category & Supplier Row */}
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
         <div>
-          <label className='mb-1.5 block text-sm font-semibold text-primary'>
-            {t('addProduct.form.category')}
-          </label>
+          <label className='mb-1.5 block text-sm font-semibold text-primary'>{t('addProduct.form.category')}</label>
           <div className='relative'>
             <select
               value={product.category}
@@ -88,9 +79,7 @@ export function AddProductForm({
         </div>
 
         <div>
-          <label className='mb-1.5 block text-sm font-semibold text-primary'>
-            {t('addProduct.form.supplier')}
-          </label>
+          <label className='mb-1.5 block text-sm font-semibold text-primary'>{t('addProduct.form.supplier')}</label>
           <input
             type='text'
             value={product.supplier}
@@ -104,9 +93,7 @@ export function AddProductForm({
       {/* Price & Stock Row */}
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
         <div>
-          <label className='mb-1.5 block text-sm font-semibold text-primary'>
-            {t('addProduct.form.price')}
-          </label>
+          <label className='mb-1.5 block text-sm font-semibold text-primary'>{t('addProduct.form.price')}</label>
           <div className='relative'>
             <input
               type='text'
@@ -121,9 +108,7 @@ export function AddProductForm({
         </div>
 
         <div>
-          <label className='mb-1.5 block text-sm font-semibold text-primary'>
-            {t('addProduct.form.stock')}
-          </label>
+          <label className='mb-1.5 block text-sm font-semibold text-primary'>{t('addProduct.form.stock')}</label>
           <input
             type='number'
             value={product.stock}
@@ -135,9 +120,7 @@ export function AddProductForm({
 
       {/* Description */}
       <div>
-        <label className='mb-1.5 block text-sm font-semibold text-primary'>
-          {t('addProduct.form.description')}
-        </label>
+        <label className='mb-1.5 block text-sm font-semibold text-primary'>{t('addProduct.form.description')}</label>
         <textarea
           rows={3}
           value={product.description}

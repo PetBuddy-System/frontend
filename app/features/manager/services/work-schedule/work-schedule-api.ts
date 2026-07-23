@@ -3,11 +3,7 @@ import type { UserResponse } from '~/shared/lib/auth'
 
 export type WorkScheduleShiftType = 'MORNING' | 'AFTERNOON' | 'EVENING' | 'FULL_DAY' | 'CUSTOM'
 
-export type StaffScheduleStatus =
-  | 'SCHEDULED'
-  | 'WORKING'
-  | 'COMPLETED'
-  | 'CANCELLED'
+export type StaffScheduleStatus = 'SCHEDULED' | 'WORKING' | 'COMPLETED' | 'CANCELLED'
 
 export type StaffAttendanceStatus = 'ON_TIME' | 'LATE' | 'ABSENT' | 'LEAVE'
 
@@ -123,19 +119,15 @@ function cleanParams(params: GetWorkSchedulesParams) {
 
 export const workScheduleApi = {
   async getWorkSchedules(params: GetWorkSchedulesParams = {}) {
-    const response = await axiosInstance.get<ApiResponse<PageWorkScheduleResponse>>(
-      WORK_SCHEDULES_BASE_URL,
-      { params: cleanParams(params) }
-    )
+    const response = await axiosInstance.get<ApiResponse<PageWorkScheduleResponse>>(WORK_SCHEDULES_BASE_URL, {
+      params: cleanParams(params)
+    })
 
     return response.data
   },
 
   async createWorkSchedule(payload: WorkScheduleCreationRequest) {
-    const response = await axiosInstance.post<ApiResponse<WorkScheduleResponse>>(
-      WORK_SCHEDULES_BASE_URL,
-      payload
-    )
+    const response = await axiosInstance.post<ApiResponse<WorkScheduleResponse>>(WORK_SCHEDULES_BASE_URL, payload)
 
     return response.data
   },

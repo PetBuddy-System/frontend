@@ -47,8 +47,7 @@ function cleanParams(params: GetMyStaffSchedulesParams) {
   return {
     fromDate: params.fromDate || undefined,
     toDate: params.toDate || undefined,
-    scheduleStatus:
-      params.scheduleStatus && params.scheduleStatus !== 'ALL' ? params.scheduleStatus : undefined
+    scheduleStatus: params.scheduleStatus && params.scheduleStatus !== 'ALL' ? params.scheduleStatus : undefined
   }
 }
 
@@ -78,10 +77,9 @@ function throwFriendlyError(error: unknown): never {
 export const staffScheduleApi = {
   async getMySchedules(params: GetMyStaffSchedulesParams = {}) {
     try {
-      const response = await axiosInstance.get<ApiResponse<StaffScheduleResponse[]>>(
-        `${STAFF_SCHEDULES_BASE_URL}/me`,
-        { params: cleanParams(params) }
-      )
+      const response = await axiosInstance.get<ApiResponse<StaffScheduleResponse[]>>(`${STAFF_SCHEDULES_BASE_URL}/me`, {
+        params: cleanParams(params)
+      })
 
       return response.data
     } catch (error) {

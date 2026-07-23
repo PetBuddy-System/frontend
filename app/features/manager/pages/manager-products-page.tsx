@@ -5,7 +5,6 @@ import { MaterialIcon } from '~/shared/ui'
 
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
-import { ManagerProductsStatsGrid } from '../components/products/manager-products-stats-grid'
 import { ManagerProductsTable } from '../components/products/manager-products-table'
 import { ManagerProductsToolbar } from '../components/products/manager-products-toolbar'
 import { ManagerCreateProductModal } from '../components/products/manager-create-product-modal'
@@ -15,10 +14,10 @@ import { ManagerProductDeleteDialog } from '../components/products/manager-produ
 import {
   fetchProductsManagementApi,
   fetchCategoriesApi,
-  fetchProductStatsApi,
   updateProductApi,
+  fetchProductManagementByIdApi
 } from '../services/product'
-import type { ProductManagementItem, CategoryData } from '~/shared/lib/product'
+import type { ProductManagementItem, CategoryData, ProductUnit } from '~/shared/lib/product'
 
 export function ManagerProductsPage() {
   const { t } = useTranslation('manager')
@@ -38,10 +37,6 @@ export function ManagerProductsPage() {
   const [totalPages, setTotalPages] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  // Stats State
-  const [stats, setStats] = useState({ inStock: 0, lowStock: 0 })
-  const [isStatsLoading, setIsStatsLoading] = useState(true)
 
   // Edit & Refresh states
   const [editingProductId, setEditingProductId] = useState<string | null>(null)
@@ -85,37 +80,6 @@ export function ManagerProductsPage() {
     }, 400)
     return () => clearTimeout(handler)
   }, [searchInput])
-
-  // Fetch PRODUCT STATS
-  useEffect(() => {
-    let active = true
-    async function loadStats() {
-      setIsStatsLoading(true)
-      try {
-        const statsData = await fetchProductStatsApi({
-          keyword,
-          categoryId: category !== 'all' ? Number(category) : undefined,
-          status: status !== 'all' ? (status as 'ACTIVE' | 'INACTIVE' | 'DELETED') : undefined,
-        })
-        if (active) {
-          setStats({
-            inStock: statsData.inStock,
-            lowStock: statsData.lowStock
-          })
-        }
-      } catch (err) {
-        console.error('Failed to load stats:', err)
-      } finally {
-        if (active) {
-          setIsStatsLoading(false)
-        }
-      }
-    }
-    void loadStats()
-    return () => {
-      active = false
-    }
-  }, [keyword, category, status, refreshKey])
 
   // Fetch management products list
   useEffect(() => {
@@ -162,7 +126,7 @@ export function ManagerProductsPage() {
   }
 
   const handleDelete = (productId: string) => {
-    const product = products.find(p => p.productId === productId)
+    const product = products.find((p) => p.productId === productId)
     if (product) {
       setDeletingProductId(productId)
       setDeletingProductName(product.name)
@@ -178,18 +142,34 @@ export function ManagerProductsPage() {
     setDeleteError(null)
 
     try {
-      const product = products.find(p => p.productId === deletingProductId)
+      // ✅ Gọi API lấy chi tiết sản phẩm
+      const detailResponse = await fetchProductManagementByIdApi(deletingProductId)
+
+      if (!detailResponse.success || !detailResponse.data) {
+        throw new Error('Không thể lấy thông tin chi tiết sản phẩm')
+      }
+
+      const product = detailResponse.data
+
       const response = await updateProductApi(deletingProductId, {
-        name: product?.name ?? '',
-        salePrice: product?.salePrice ?? 0,
-        brandName: product?.brandName ?? '',
-        status: 'DELETED'
+        name: product.name,
+        salePrice: product.salePrice,
+        brandName: product.brandName,
+        status: 'DELETED',
+        categoryId: product.categoryId,
+        description: product.description || '',
+        ingredients: product.ingredients || '',
+        usageInstructions: product.usageInstructions || '',
+        unit: product.unit as ProductUnit,
+        weight: product.weight,
+        reason: undefined,
+        note: undefined
       })
 
       if (response.success) {
         setIsDeleteConfirmOpen(false)
         setDeletingProductId(null)
-        setRefreshKey(prev => prev + 1)
+        setRefreshKey((prev) => prev + 1)
       } else {
         setDeleteError(response.message || 'Không thể xóa sản phẩm')
       }
@@ -216,7 +196,7 @@ export function ManagerProductsPage() {
         <ManagerTopNav titleKey='productManagement.title' subtitleKey='productManagement.subtitle' />
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
-            {/* ⭐ Header - đã bỏ search */}
+            {/* Header */}
             <section className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
               <div>
                 <h1 className='font-display text-2xl font-bold text-primary md:text-3xl'>
@@ -251,14 +231,7 @@ export function ManagerProductsPage() {
               </div>
             )}
 
-            <ManagerProductsStatsGrid
-              totalProducts={totalElements}
-              inStock={stats.inStock}
-              lowStock={stats.lowStock}
-              isLoading={isStatsLoading}
-            />
-
-            {/* ⭐ Toolbar với search + category dropdown + status + sort */}
+            {/* Toolbar với search + category dropdown + status + sort */}
             <ManagerProductsToolbar
               categories={categories}
               selectedCategory={category}

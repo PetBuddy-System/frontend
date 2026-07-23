@@ -45,10 +45,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
       )}
     >
       <div
-        className={cn(
-          'relative overflow-hidden bg-muted',
-          featured ? 'h-48 w-full md:h-auto md:w-1/2' : 'h-48 w-full'
-        )}
+        className={cn('relative overflow-hidden bg-muted', featured ? 'h-48 w-full md:h-auto md:w-1/2' : 'h-48 w-full')}
       >
         <img
           src={post.imageUrl}
@@ -71,12 +68,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
           <span>{post.date}</span>
         </div>
 
-        <h3
-          className={cn(
-            'font-semibold leading-snug text-foreground',
-            featured ? 'text-lg md:text-xl' : 'text-base'
-          )}
-        >
+        <h3 className={cn('font-semibold leading-snug text-foreground', featured ? 'text-lg md:text-xl' : 'text-base')}>
           {post.title}
         </h3>
 

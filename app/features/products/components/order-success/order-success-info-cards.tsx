@@ -17,7 +17,9 @@ export function OrderSuccessInfoCards({ userName, phoneNumber, address, paymentM
       <article className='rounded-3xl border border-border/60 bg-card p-6 shadow-sm md:p-8'>
         <div className='mb-6 flex items-center gap-3 text-primary'>
           <MaterialIcon name='local_shipping' className='text-[24px]' />
-          <h3 className='font-display text-lg font-semibold text-foreground'>{t('orderSuccess.delivery.title', 'Thông tin nhận hàng')}</h3>
+          <h3 className='font-display text-lg font-semibold text-foreground'>
+            {t('orderSuccess.delivery.title', 'Thông tin nhận hàng')}
+          </h3>
         </div>
         <div className='space-y-3'>
           <p className='font-bold text-foreground'>{userName}</p>
@@ -29,15 +31,11 @@ export function OrderSuccessInfoCards({ userName, phoneNumber, address, paymentM
       <article className='rounded-3xl border border-border/60 bg-card p-6 shadow-sm md:p-8'>
         <div className='mb-6 flex items-center gap-3 text-primary'>
           <MaterialIcon name='payments' className='text-[24px]' />
-          <h3 className='font-display text-lg font-semibold text-foreground'>{t('orderSuccess.method.title', 'Phương thức vận chuyển & Thanh toán')}</h3>
+          <h3 className='font-display text-lg font-semibold text-foreground'>
+            {t('orderSuccess.method.title', 'Phương thức Thanh toán')}
+          </h3>
         </div>
         <div className='space-y-4'>
-          <div>
-            <p className='mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
-              {t('orderSuccess.method.shippingLabel', 'Vận chuyển')}
-            </p>
-            <p className='font-medium text-foreground'>{t('orderSuccess.method.shipping', 'Giao hàng nhanh (2-3 ngày)')}</p>
-          </div>
           <div>
             <p className='mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
               {t('orderSuccess.method.paymentLabel', 'Thanh toán')}

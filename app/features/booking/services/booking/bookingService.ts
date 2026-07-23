@@ -8,20 +8,30 @@ export enum BookingStatus {
   PENDING_PAYMENT = 'PENDING_PAYMENT',
   PENDING_ACCEPTANCE = 'PENDING_ACCEPTANCE',
   ACCEPTED = 'ACCEPTED',
+  ON_THE_WAY = 'ON_THE_WAY',
   IN_PROGRESS = 'IN_PROGRESS',
   READY_FOR_PICKUP = 'READY_FOR_PICKUP',
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
-  FAILED = 'FAILED'
+  FAILED = 'FAILED',
+  WAITING_STAFF = 'WAITING_STAFF'
 }
+
+export type StaffAssignmentMode = 'AUTO' | 'SELECTED'
 
 export interface BookingCreationRequest {
   customerName: string
   customerPhone: string
   address?: string
+  latitude?: number
+  longitude?: number
+  addressNote?: string
+  homeServiceRequirementsAccepted?: boolean
   note?: string
   bookingType: string
   scheduledAt: string
+  assignmentMode?: StaffAssignmentMode
+  requestedStaffId?: string
   bookingDetails: BookingDetailCreationRequest[]
 }
 
@@ -43,7 +53,14 @@ export interface BookingResponse {
   bookingType: string
   customerName: string
   customerPhone: string
-  address: string
+  address?: string
+  latitude?: number
+  longitude?: number
+  addressNote?: string
+  distanceKm?: number
+  travelFee?: number
+  estimatedTravelMinute?: number
+  homeServiceRequirementsAccepted?: boolean
   scheduledAt: string
   totalAmount: number
   depositAmount: number
@@ -51,22 +68,37 @@ export interface BookingResponse {
   bookingStatus: string
   cancelReason: string
   paymentDeadlineAt: string
-  staffId: string
-  staffName: string
+  estimatedEndAt?: string
+  stripeClientSecret?: string
+  assignmentMode?: StaffAssignmentMode
+  requestedStaffId?: string
+  requestedStaffName?: string
+  assignedStaffId?: string
+  assignedStaffName?: string
+  staffId?: string
+  staffName?: string
   bookingDetails: BookingDetailResponse[]
-  payments: PaymentResponse[]
+  payments?: PaymentResponse[]
 }
 
 export interface BookingDetailResponse {
   bookingDetailId: number
   petId: string
   petName: string
+  petImage?: string
   catalogId: number
   catalogName: string
+  catalogImage?: string
   timeSlotId: number
   timeSlot: string
-  unitPrice: number
-  durationMinute: number
+  weightRange?: string
+  baseDurationMinute?: number
+  additionalDurationMinute?: number
+  totalDurationMinute?: number
+  basePrice?: number
+  additionalPrice?: number
+  unitPrice?: number
+  durationMinute?: number
   totalPrice: number
   mediaFiles: MediaFileResponse[]
 }
@@ -82,7 +114,12 @@ export interface PaymentResponse {
 export interface MediaFileResponse {
   mediaFileId: number
   fileUrl: string
+  fileKey?: string
+  fileSize?: number
   fileType: string
+  mediaPurpose?: string
+  mediaStatus?: string
+  bookingMediaType?: string
   createdAt: string
 }
 
@@ -97,8 +134,10 @@ export interface CatalogResponse {
   durationMinute: number
   bufferTime: number
   status: string
-  surchargeConfig?: string | null
   durationConfig?: string | null
+  additionalDurationConfig?: string | null
+  additionalPricePerMinute?: number | null
+  imageUrl?: string | null
 }
 
 export interface PetProfileResponse {
@@ -130,6 +169,37 @@ export interface TimeSlotResponse {
   maxPets?: number | null
 }
 
+export interface AvailableGroomerRequest {
+  scheduledAt: string
+  bookingType?: string
+  latitude?: number
+  longitude?: number
+  estimatedTravelMinute?: number
+  bookingDetails: BookingDetailCreationRequest[]
+}
+
+export interface AvailableGroomerResponse {
+  staffId: string
+  fullName: string
+  specialization?: string
+  introduction?: string
+  yearsOfExperience?: number
+  avatar?: string
+  shiftStart: string
+  shiftEnd: string
+}
+
+export interface BookingPreviewResponse {
+  serviceAmount: number
+  surchargeAmount: number
+  travelFee: number
+  distanceKm?: number
+  estimatedTravelMinute?: number
+  estimatedServiceMinute: number
+  totalAmount: number
+  depositAmount: number
+}
+
 export interface BookingListParams {
   status?: BookingStatus
   fromDate?: string
@@ -140,7 +210,8 @@ interface ApiResponse<T> {
   code?: number | string
   message?: string
   success?: boolean
-  data: T
+  data?: T
+  result?: T
   timestamp?: string
 }
 
@@ -155,8 +226,14 @@ function getAuthorizationHeaders(): Record<string, string> {
 }
 
 function unwrapResponse<T>(payload: ApiResponse<T> | T): T {
-  if (payload && typeof payload === 'object' && 'data' in payload) {
-    return (payload as ApiResponse<T>).data
+  if (payload && typeof payload === 'object') {
+    const apiPayload = payload as ApiResponse<T>
+    if (apiPayload.data !== undefined) {
+      return apiPayload.data
+    }
+    if (apiPayload.result !== undefined) {
+      return apiPayload.result
+    }
   }
 
   return payload as T
@@ -200,9 +277,23 @@ export function getCatalogs(): Promise<CatalogResponse[]> {
   })
 }
 
+export function getCatalogDetail(catalogId: number | string): Promise<CatalogResponse> {
+  return request<CatalogResponse>({
+    url: `${CATALOGS_URL}/${catalogId}`,
+    method: 'GET'
+  })
+}
+
 export function getPets(): Promise<PetProfileResponse[]> {
   return request<PetProfileResponse[]>({
     url: PETS_URL,
+    method: 'GET'
+  })
+}
+
+export function getPetDetail(petId: number | string): Promise<PetProfileResponse> {
+  return request<PetProfileResponse>({
+    url: `${PETS_URL}/${petId}`,
     method: 'GET'
   })
 }
@@ -233,7 +324,7 @@ export function getAvailableCatalogTimeSlots(catalogId: number, selectedDate: st
   return request<TimeSlotResponse[]>({
     url: `${CATALOG_TIME_SLOTS_URL}/catalogs/${catalogId}/available`,
     method: 'GET',
-    params: { selectedDate }
+    params: { date: selectedDate, selectedDate }
   })
 }
 
@@ -247,6 +338,22 @@ export function toggleCatalogTimeSlot(timeSlotId: number): Promise<TimeSlotRespo
 export function createBooking(payload: BookingCreationRequest): Promise<BookingResponse> {
   return request<BookingResponse>({
     url: BOOKINGS_URL,
+    method: 'POST',
+    data: payload
+  })
+}
+
+export function previewBooking(payload: BookingCreationRequest): Promise<BookingPreviewResponse> {
+  return request<BookingPreviewResponse>({
+    url: `${BOOKINGS_URL}/preview`,
+    method: 'POST',
+    data: payload
+  })
+}
+
+export function getAvailableGroomers(payload: AvailableGroomerRequest): Promise<AvailableGroomerResponse[]> {
+  return request<AvailableGroomerResponse[]>({
+    url: `${BOOKINGS_URL}/available-groomers`,
     method: 'POST',
     data: payload
   })
@@ -280,13 +387,13 @@ export function updateBookingStatus(
 ): Promise<BookingResponse> {
   return request<BookingResponse>({
     url: `${BOOKINGS_URL}/${bookingId}/status`,
-    method: 'PUT',
+    method: 'PATCH',
     data: payload
   })
 }
 
-export function retryBookingPayment(bookingId: number | string): Promise<BookingResponse> {
-  return request<BookingResponse>({
+export function retryBookingPayment(bookingId: number | string): Promise<BookingResponse | PaymentResponse> {
+  return request<BookingResponse | PaymentResponse>({
     url: `${BOOKINGS_URL}/${bookingId}/retry-payment`,
     method: 'POST'
   })

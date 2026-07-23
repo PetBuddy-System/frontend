@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { MaterialIcon } from '~/shared/ui'
-import { calculateShippingFeeApi } from '~/features/products/services/shipping/shipping-api' 
+import { calculateShippingFeeApi } from '~/features/products/services/shipping/shipping-api'
 import { useTranslation } from 'react-i18next'
 
 export interface CheckoutMapProps {
@@ -12,11 +12,7 @@ export interface CheckoutMapProps {
 const STORE_LAT = 10.776889
 const STORE_LON = 106.700806
 
-export function CheckoutMap({
-  onLocationSelect,
-  defaultLat = STORE_LAT,
-  defaultLng = STORE_LON
-}: CheckoutMapProps) {
+export function CheckoutMap({ onLocationSelect, defaultLat = STORE_LAT, defaultLng = STORE_LON }: CheckoutMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapInstanceRef = useRef<any>(null)
   const markerRef = useRef<any>(null)

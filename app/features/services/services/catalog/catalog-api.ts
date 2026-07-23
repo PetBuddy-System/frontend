@@ -13,7 +13,10 @@ export interface CatalogResponse {
   durationMinute: number
   bufferTime: number
   status: string
-  surchargeConfig?: string | null
+  additionalDurationConfig?: string | null
+  durationConfig?: string | null
+  additionalPricePerMinute?: number | null
+  imageUrl?: string | null
   createdAt?: string
   updatedAt?: string
 }

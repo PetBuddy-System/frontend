@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
@@ -31,6 +32,7 @@ type ProductDiscountState = {
 }
 
 export function ManagerPromotionCreatePage() {
+  const { t } = useTranslation('manager')
   const navigate = useNavigate()
 
   const [form, setForm] = useState({
@@ -40,6 +42,15 @@ export function ManagerPromotionCreatePage() {
     endDate: '',
     status: 'ACTIVE' as 'DRAFT' | 'ACTIVE'
   })
+
+  // ✅ State cho lỗi từng field
+  const [errors, setErrors] = useState<{
+    name?: string
+    description?: string
+    startDate?: string
+    endDate?: string
+    products?: string
+  }>({})
 
   // ⭐ State cho filter
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | undefined>(undefined)
@@ -51,7 +62,7 @@ export function ManagerPromotionCreatePage() {
   const [products, setProducts] = useState<ProductManagementItem[]>([])
   const [isLoadingProducts, setIsLoadingProducts] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [generalError, setGeneralError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const [currentPage, setCurrentPage] = useState(0)
@@ -84,11 +95,64 @@ export function ManagerPromotionCreatePage() {
     return value.toLocaleString('vi-VN')
   }
 
+  // ⭐ Validation functions
+  const validateField = (field: keyof typeof errors): string | undefined => {
+    switch (field) {
+      case 'name':
+        if (!form.name.trim()) return t('promotions.errors.nameRequired')
+        return undefined
+      case 'description':
+        if (!form.description.trim()) return t('promotions.errors.descriptionRequired')
+        return undefined
+      case 'startDate':
+        if (!form.startDate) return t('promotions.errors.startDateRequired')
+        return undefined
+      case 'endDate':
+        if (!form.endDate) return t('promotions.errors.endDateRequired')
+        return undefined
+      default:
+        return undefined
+    }
+  }
+
+  const validateAll = (): boolean => {
+    const newErrors: typeof errors = {}
+    let hasError = false
+
+    const fields: (keyof typeof errors)[] = ['name', 'description', 'startDate', 'endDate']
+    for (const field of fields) {
+      const error = validateField(field)
+      if (error) {
+        newErrors[field] = error
+        hasError = true
+      }
+    }
+
+    // ✅ Kiểm tra ngày kết thúc phải sau ngày bắt đầu
+    if (form.startDate && form.endDate) {
+      const start = new Date(form.startDate)
+      const end = new Date(form.endDate)
+      if (end < start) {
+        newErrors.endDate = t('promotions.errors.endDateInvalid')
+        hasError = true
+      }
+    }
+
+    // ✅ Kiểm tra có sản phẩm được chọn
+    if (selectedProductMap.size === 0) {
+      newErrors.products = t('promotions.errors.noProductSelected')
+      hasError = true
+    }
+
+    setErrors(newErrors)
+    return !hasError
+  }
+
   // ⭐ Load products
   useEffect(() => {
     async function loadProducts() {
       setIsLoadingProducts(true)
-      setError(null)
+      setGeneralError(null)
 
       try {
         const params: any = {
@@ -96,10 +160,9 @@ export function ManagerPromotionCreatePage() {
           page: currentPage,
           size: PAGE_SIZE,
           sortBy: 'date_desc',
-          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays),
+          nearExpiredDays: nearExpiredDays === 'all' ? undefined : Number(nearExpiredDays)
         }
 
-        // ⭐ Chỉ thêm categoryId khi có giá trị hợp lệ
         if (selectedCategoryId !== undefined && !isNaN(selectedCategoryId)) {
           params.categoryId = selectedCategoryId
         }
@@ -107,7 +170,7 @@ export function ManagerPromotionCreatePage() {
         const response = await fetchProductsManagementApi(params)
 
         if (!response.success) {
-          throw new Error(response.message || 'Không thể tải danh sách sản phẩm')
+          throw new Error(response.message || t('promotions.errors.loadProductsFailed'))
         }
 
         setProducts(response.data.content)
@@ -115,14 +178,14 @@ export function ManagerPromotionCreatePage() {
         setTotalElements(response.data.totalElements)
       } catch (err) {
         setProducts([])
-        setError(err instanceof Error ? err.message : 'Không thể tải danh sách sản phẩm')
+        setGeneralError(err instanceof Error ? err.message : t('promotions.errors.loadProductsFailed'))
       } finally {
         setIsLoadingProducts(false)
       }
     }
 
     void loadProducts()
-  }, [nearExpiredDays, selectedCategoryId, currentPage, keyword])
+  }, [nearExpiredDays, selectedCategoryId, currentPage, keyword, t])
 
   function toggleProduct(productId: string) {
     setSelectedProductMap((prev) => {
@@ -137,6 +200,10 @@ export function ManagerPromotionCreatePage() {
       }
       return newMap
     })
+    // ✅ Xóa lỗi products khi có sản phẩm được chọn
+    if (selectedProductMap.size === 0) {
+      setErrors((prev) => ({ ...prev, products: undefined }))
+    }
   }
 
   function handleSelectAllProducts() {
@@ -152,6 +219,7 @@ export function ManagerPromotionCreatePage() {
       }
       return newMap
     })
+    setErrors((prev) => ({ ...prev, products: undefined }))
   }
 
   function handleDeselectAllProducts() {
@@ -187,42 +255,35 @@ export function ManagerPromotionCreatePage() {
   }
 
   const getProductDiscount = (productId: string): ProductDiscountState => {
-    return selectedProductMap.get(productId) || {
-      promotionType: 'PERCENTAGE',
-      discountValue: DEFAULT_DISCOUNT_VALUE
-    }
+    return (
+      selectedProductMap.get(productId) || {
+        promotionType: 'PERCENTAGE',
+        discountValue: DEFAULT_DISCOUNT_VALUE
+      }
+    )
+  }
+
+  // ✅ Form handler với validation inline
+  const handleFieldChange = <K extends keyof typeof form>(
+    field: K,
+    value: typeof form[K]
+  ) => {
+    setForm((prev) => ({ ...prev, [field]: value }))
+    // ✅ Xóa lỗi của field đó khi người dùng thay đổi
+    setErrors((prev) => ({ ...prev, [field]: undefined }))
+    setGeneralError(null)
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!form.name.trim()) {
-      setError('Tên khuyến mãi không được để trống')
-      return
-    }
-
-    if (!form.description.trim()) {
-      setError('Mô tả không được để trống')
-      return
-    }
-
-    if (!form.startDate || !form.endDate) {
-      setError('Vui lòng chọn ngày bắt đầu và ngày kết thúc')
-      return
-    }
-
-    if (new Date(form.endDate) < new Date(form.startDate)) {
-      setError('Ngày kết thúc phải sau ngày bắt đầu')
-      return
-    }
-
-    if (selectedProductMap.size === 0) {
-      setError('Vui lòng chọn ít nhất một sản phẩm')
+    // ✅ Validate tất cả trước khi submit
+    if (!validateAll()) {
       return
     }
 
     setIsSubmitting(true)
-    setError(null)
+    setGeneralError(null)
 
     try {
       const allSelectedProducts = Array.from(selectedProductMap.entries()).map(([productId, discount]) => ({
@@ -249,12 +310,12 @@ export function ManagerPromotionCreatePage() {
       }
 
       await promotionApi.createPromotion(payload)
-      setSuccessMessage('Tạo chương trình khuyến mãi thành công')
+      setSuccessMessage(t('promotions.editModal.createSuccess'))
       setTimeout(() => {
         void navigate('/manager/promotions')
       }, 700)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Có lỗi xảy ra khi tạo khuyến mãi')
+      setGeneralError(err instanceof Error ? err.message : t('promotions.errors.createFailed'))
     } finally {
       setIsSubmitting(false)
     }
@@ -266,16 +327,12 @@ export function ManagerPromotionCreatePage() {
     }
   }
 
-
   const handleNearExpiredChange = (value: string) => {
     setNearExpiredDays(value)
-    setCurrentPage(0) // Reset về trang đầu khi đổi filter
+    setCurrentPage(0)
   }
 
-
-  // ⭐ Reset page khi đổi filter
   const handleCategoryChange = (categoryId: string) => {
-    // ⭐ Kiểm tra nếu là 'all' hoặc rỗng thì set undefined
     if (categoryId === 'all' || categoryId === '') {
       setSelectedCategoryId(undefined)
     } else {
@@ -290,14 +347,14 @@ export function ManagerPromotionCreatePage() {
       <ManagerSidebar activeItem='promotions' />
 
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-        <ManagerTopNav titleKey='promotions.title' subtitleKey='Tạo mới chương trình khuyến mãi' />
+        <ManagerTopNav titleKey='promotions.title' subtitleKey={t('promotions.createPage.subtitle')} />
 
         <main className='flex-1 overflow-y-auto p-4 md:p-6'>
           <div className='mx-auto flex max-w-7xl flex-col gap-6'>
             <div className='flex items-center justify-between gap-4'>
               <div>
                 <h1 className='font-display text-2xl font-bold text-card-foreground md:text-3xl'>
-                  Thêm khuyến mãi mới
+                  {t('promotions.createPage.title')}
                 </h1>
               </div>
 
@@ -307,14 +364,15 @@ export function ManagerPromotionCreatePage() {
                 className='inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 text-sm font-bold text-foreground shadow-sm transition-colors hover:bg-muted'
               >
                 <MaterialIcon name='arrow_back' className='text-lg' />
-                Quay lại
+                {t('promotions.createPage.back')}
               </button>
             </div>
 
-            {error && (
+            {/* ✅ Chỉ hiển thị lỗi chung (từ BE) và success message */}
+            {generalError && (
               <div className='flex items-center gap-2 rounded-xl bg-destructive/10 p-4 text-sm font-semibold text-destructive'>
                 <MaterialIcon name='error' className='shrink-0 text-xl' />
-                <span>{error}</span>
+                <span>{generalError}</span>
               </div>
             )}
 
@@ -333,64 +391,114 @@ export function ManagerPromotionCreatePage() {
                     <span className='text-sm font-bold text-primary'>1</span>
                   </div>
                   <div>
-                    <h2 className='text-lg font-bold text-foreground'>Thông tin chương trình</h2>
+                    <h2 className='text-lg font-bold text-foreground'>
+                      {t('promotions.createPage.programInfo')}
+                    </h2>
                   </div>
                 </div>
                 <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
                   <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-2'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Tên khuyến mãi</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      {t('promotions.createModal.name')} <span className='text-destructive'>*</span>
+                    </span>
                     <input
                       value={form.name}
-                      onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
-                      placeholder='Flash Sale: Mua ngay kẻo lỡ'
+                      onChange={(e) => handleFieldChange('name', e.target.value)}
+                      className={cn(
+                        'h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                        errors.name && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+                      )}
+                      placeholder={t('promotions.createModal.namePlaceholder')}
                     />
+                    {errors.name && (
+                      <p className='text-xs text-destructive flex items-center gap-1'>
+                        <MaterialIcon name='error' className='text-sm' />
+                        {errors.name}
+                      </p>
+                    )}
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày bắt đầu</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      {t('promotions.createModal.startDate')} <span className='text-destructive'>*</span>
+                    </span>
                     <input
                       type='datetime-local'
                       value={form.startDate}
-                      onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
-                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
+                      onChange={(e) => handleFieldChange('startDate', e.target.value)}
+                      className={cn(
+                        'h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                        errors.startDate && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+                      )}
                     />
+                    {errors.startDate && (
+                      <p className='text-xs text-destructive flex items-center gap-1'>
+                        <MaterialIcon name='error' className='text-sm' />
+                        {errors.startDate}
+                      </p>
+                    )}
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Ngày kết thúc</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      {t('promotions.createModal.endDate')} <span className='text-destructive'>*</span>
+                    </span>
                     <input
                       type='datetime-local'
                       value={form.endDate}
-                      onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
-                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
+                      onChange={(e) => handleFieldChange('endDate', e.target.value)}
+                      className={cn(
+                        'h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                        errors.endDate && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+                      )}
                     />
+                    {errors.endDate && (
+                      <p className='text-xs text-destructive flex items-center gap-1'>
+                        <MaterialIcon name='error' className='text-sm' />
+                        {errors.endDate}
+                      </p>
+                    )}
                   </label>
                   <label className='flex flex-col gap-1.5 sm:col-span-2 lg:col-span-4'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Mô tả</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      {t('promotions.createModal.description')} <span className='text-destructive'>*</span>
+                    </span>
                     <textarea
                       value={form.description}
-                      onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+                      onChange={(e) => handleFieldChange('description', e.target.value)}
                       rows={3}
-                      className='rounded-xl border border-input bg-background p-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
-                      placeholder='Mô tả ngắn gọn về chương trình...'
+                      className={cn(
+                        'rounded-xl border border-input bg-background p-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors',
+                        errors.description && 'border-destructive focus:border-destructive focus:ring-destructive/20'
+                      )}
+                      placeholder={t('promotions.createModal.descriptionPlaceholder')}
                     />
+                    {errors.description && (
+                      <p className='text-xs text-destructive flex items-center gap-1'>
+                        <MaterialIcon name='error' className='text-sm' />
+                        {errors.description}
+                      </p>
+                    )}
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Trạng thái</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      {t('promotions.createModal.status')}
+                    </span>
                     <select
                       value={form.status}
-                      onChange={(e) => setForm((prev) => ({ ...prev, status: e.target.value as 'DRAFT' | 'ACTIVE' }))}
-                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
+                      onChange={(e) => handleFieldChange('status', e.target.value as 'DRAFT' | 'ACTIVE')}
+                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
                     >
-                      <option value='ACTIVE'>Hoạt động</option>
-                      <option value='DRAFT'>Bản nháp</option>
+                      <option value='ACTIVE'>{t('promotions.status.active')}</option>
+                      <option value='DRAFT'>{t('promotions.status.draft')}</option>
                     </select>
                   </label>
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Lọc gần hết hạn</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      {t('promotions.createPage.nearExpired')}
+                    </span>
                     <select
                       value={nearExpiredDays}
                       onChange={(e) => handleNearExpiredChange(e.target.value)}
-                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
+                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
                     >
                       {NEAR_EXPIRED_DAY_OPTIONS.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -399,21 +507,22 @@ export function ManagerPromotionCreatePage() {
                       ))}
                     </select>
                   </label>
-                  {/* ⭐ Category filter */}
                   <label className='flex flex-col gap-1.5'>
-                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>Danh mục</span>
+                    <span className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                      {t('promotions.createPage.category')}
+                    </span>
                     <select
                       value={selectedCategoryId?.toString() || 'all'}
                       onChange={(e) => handleCategoryChange(e.target.value)}
-                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
+                      className='h-11 rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
                     >
-                      <option value='all'>Tất cả danh mục</option>
-                      <option value='1'>Thức ăn cho chó</option>
-                      <option value='2'>Thức ăn cho mèo</option>
-                      <option value='3'>Phụ kiện thú cưng</option>
-                      <option value='4'>Dinh dưỡng bổ sung</option>
-                      <option value='5'>Đồ chơi thú cưng</option>
-                      <option value='6'>Vệ sinh và chăm sóc</option>
+                      <option value='all'>{t('promotions.createPage.allCategories')}</option>
+                      <option value='1'>{t('promotions.categories.dogFood')}</option>
+                      <option value='2'>{t('promotions.categories.catFood')}</option>
+                      <option value='3'>{t('promotions.categories.petAccessories')}</option>
+                      <option value='4'>{t('promotions.categories.nutrition')}</option>
+                      <option value='5'>{t('promotions.categories.toys')}</option>
+                      <option value='6'>{t('promotions.categories.hygiene')}</option>
                     </select>
                   </label>
                 </div>
@@ -427,12 +536,17 @@ export function ManagerPromotionCreatePage() {
                       <span className='text-sm font-bold text-primary'>2</span>
                     </div>
                     <div>
-                      <h2 className='text-lg font-bold text-foreground'>Sản phẩm áp dụng</h2>
+                      <h2 className='text-lg font-bold text-foreground'>
+                        {t('promotions.createPage.appliedProducts')}
+                      </h2>
                     </div>
                   </div>
                   <div className='flex items-center gap-4'>
                     <span className='rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground'>
-                      Đã chọn {selectedProductMap.size} / {totalElements} sản phẩm
+                      {t('promotions.createPage.selectedCount', {
+                        selected: selectedProductMap.size,
+                        total: totalElements
+                      })}
                     </span>
                     <div className='flex gap-2'>
                       <button
@@ -440,18 +554,26 @@ export function ManagerPromotionCreatePage() {
                         onClick={handleSelectAllProducts}
                         className='text-sm font-semibold text-primary hover:underline'
                       >
-                        Chọn tất cả
+                        {t('promotions.createPage.selectAll')}
                       </button>
                       <button
                         type='button'
                         onClick={handleDeselectAllProducts}
                         className='text-sm font-semibold text-destructive hover:underline'
                       >
-                        Bỏ chọn tất cả
+                        {t('promotions.createPage.deselectAll')}
                       </button>
                     </div>
                   </div>
                 </div>
+
+                {/* ✅ Hiển thị lỗi products */}
+                {errors.products && (
+                  <div className='mb-4 flex items-center gap-2 rounded-xl bg-destructive/10 p-3 text-sm text-destructive'>
+                    <MaterialIcon name='error' className='text-base shrink-0' />
+                    <span>{errors.products}</span>
+                  </div>
+                )}
 
                 {/* Thanh tìm kiếm */}
                 <div className='mb-4 flex items-center gap-4'>
@@ -462,7 +584,7 @@ export function ManagerPromotionCreatePage() {
                     />
                     <input
                       type='text'
-                      placeholder='Tìm kiếm sản phẩm theo tên, mã hoặc thương hiệu...'
+                      placeholder={t('promotions.createPage.searchPlaceholder')}
                       value={keywordInput}
                       onChange={(e) => setKeywordInput(e.target.value)}
                       className='h-11 w-full rounded-xl border border-input bg-background pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring transition-colors'
@@ -478,7 +600,7 @@ export function ManagerPromotionCreatePage() {
                       }}
                       className='shrink-0 rounded-xl border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted transition-colors'
                     >
-                      Xóa tìm kiếm
+                      {t('promotions.createPage.clearSearch')}
                     </button>
                   )}
                 </div>
@@ -487,14 +609,16 @@ export function ManagerPromotionCreatePage() {
                   <table className='w-full min-w-[900px] border-collapse text-left'>
                     <thead className='sticky top-0 bg-muted/60 backdrop-blur-sm'>
                       <tr className='border-b border-border text-xs font-bold uppercase tracking-wide text-muted-foreground'>
-                        <th className='w-14 px-4 py-3 text-center'>Chọn</th>
-                        <th className='px-4 py-3'>Mã sản phẩm</th>
-                        <th className='px-4 py-3'>Tên sản phẩm</th>
-                        <th className='px-4 py-3'>Thương hiệu</th>
-                        <th className='px-4 py-3'>Giá</th>
-                        <th className='px-4 py-3'>Tồn kho</th>
-                        <th className='px-4 py-3'>Loại giảm giá</th>
-                        <th className='px-4 py-3'>Giá trị giảm</th>
+                        <th className='w-14 px-4 py-3 text-center'>
+                          {t('promotions.createPage.select')}
+                        </th>
+                        <th className='px-4 py-3'>{t('promotions.table.columns.code')}</th>
+                        <th className='px-4 py-3'>{t('promotions.table.columns.name')}</th>
+                        <th className='px-4 py-3'>{t('promotions.table.columns.brand')}</th>
+                        <th className='px-4 py-3'>{t('promotions.table.columns.price')}</th>
+                        <th className='px-4 py-3'>{t('promotions.table.columns.stock')}</th>
+                        <th className='px-4 py-3'>{t('promotions.createPage.discountType')}</th>
+                        <th className='px-4 py-3'>{t('promotions.createPage.discountValue')}</th>
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-border'>
@@ -503,7 +627,7 @@ export function ManagerPromotionCreatePage() {
                           <td colSpan={8} className='px-4 py-10 text-center text-sm text-muted-foreground'>
                             <div className='flex items-center justify-center gap-2'>
                               <span className='h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent' />
-                              Đang tải danh sách sản phẩm...
+                              {t('promotions.createPage.loading')}
                             </div>
                           </td>
                         </tr>
@@ -511,11 +635,9 @@ export function ManagerPromotionCreatePage() {
                         <tr>
                           <td colSpan={8} className='px-4 py-10 text-center text-sm text-muted-foreground'>
                             {keyword ? (
-                              <>
-                                Không tìm thấy sản phẩm nào với từ khóa "<strong>{keyword}</strong>"
-                              </>
+                              t('promotions.createPage.noResultsWithKeyword', { keyword })
                             ) : (
-                              'Không có sản phẩm phù hợp với bộ lọc.'
+                              t('promotions.createPage.noProducts')
                             )}
                           </td>
                         </tr>
@@ -547,50 +669,54 @@ export function ManagerPromotionCreatePage() {
                                   />
                                   {hasActivePromotion && (
                                     <span className='text-[10px] text-muted-foreground whitespace-nowrap'>
-                                      (đang KM)
+                                      ({t('promotions.createPage.hasPromotion')})
                                     </span>
                                   )}
                                 </div>
                               </td>
-                              {/* ⭐ Cột Mã sản phẩm - giống manager products table */}
                               <td className='px-4 py-3 font-mono text-sm font-semibold text-primary'>
                                 {product.productCode}
                               </td>
                               <td className='px-4 py-3'>
                                 <div className='font-semibold text-foreground'>{product.name}</div>
                                 <div className='flex items-center gap-2 text-xs text-muted-foreground'>
-                                  <span>{product.batchCount} lô hàng</span>
+                                  <span>
+                                    {t('promotions.createPage.batchCount', { count: product.batchCount })}
+                                  </span>
                                   {hasActivePromotion && (
                                     <span className='rounded-full bg-success/10 px-2 py-0.5 text-xs text-success'>
-                                      Đang KM
+                                      {t('promotions.createPage.hasPromotion')}
                                     </span>
                                   )}
                                 </div>
                               </td>
-                              {/* ⭐ Cột Thương hiệu - giống manager products table */}
                               <td className='px-4 py-3'>
                                 <span className='inline-flex rounded-full bg-secondary px-3 py-1 text-xs font-bold text-secondary-foreground'>
                                   {product.brandName || 'N/A'}
                                 </span>
                               </td>
-                              {/* ⭐ Cột Giá - giống manager products table */}
                               <td className='px-4 py-3 font-bold text-primary'>
                                 {formatPrice(product.salePrice || 0)} đ
                               </td>
-                              {/* ⭐ Cột Tồn kho - giống manager products table */}
                               <td className='px-4 py-3'>
                                 <div className='flex flex-col items-center'>
-                                  <span className={product.totalStock === 0 ? 'font-bold text-destructive' : 'font-semibold text-foreground'}>
+                                  <span
+                                    className={
+                                      product.totalStock === 0
+                                        ? 'font-bold text-destructive'
+                                        : 'font-semibold text-foreground'
+                                    }
+                                  >
                                     {product.totalStock}
                                   </span>
                                   {product.totalStock === 0 && (
                                     <span className='text-[10px] font-bold uppercase tracking-wide text-destructive'>
-                                      Hết hàng
+                                      {t('promotions.createPage.outOfStock')}
                                     </span>
                                   )}
                                   {product.totalStock > 0 && product.totalStock <= 5 && (
                                     <span className='text-[10px] font-bold uppercase tracking-wide text-warning'>
-                                      Sắp hết
+                                      {t('promotions.createPage.lowStock')}
                                     </span>
                                   )}
                                 </div>
@@ -608,8 +734,8 @@ export function ManagerPromotionCreatePage() {
                                     }
                                     className='h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                                   >
-                                    <option value='PERCENTAGE'>Phần trăm</option>
-                                    <option value='FIXED_AMOUNT'>Số tiền cố định</option>
+                                    <option value='PERCENTAGE'>{t('promotions.createPage.percentage')}</option>
+                                    <option value='FIXED_AMOUNT'>{t('promotions.createPage.fixedAmount')}</option>
                                   </select>
                                 ) : (
                                   <span className='text-sm text-muted-foreground'>-</span>
@@ -622,11 +748,7 @@ export function ManagerPromotionCreatePage() {
                                     min={0}
                                     value={discount.discountValue}
                                     onChange={(e) =>
-                                      updateProductDiscount(
-                                        product.productId,
-                                        'discountValue',
-                                        Number(e.target.value)
-                                      )
+                                      updateProductDiscount(product.productId, 'discountValue', Number(e.target.value))
                                     }
                                     className='h-10 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring'
                                   />
@@ -647,9 +769,12 @@ export function ManagerPromotionCreatePage() {
                   <div className='mt-4 flex items-center justify-between'>
                     <div className='text-sm text-muted-foreground'>
                       {keyword ? (
-                        <>Kết quả tìm kiếm: {totalElements} sản phẩm</>
+                        t('promotions.createPage.searchResults', { count: totalElements })
                       ) : (
-                        <>Hiển thị {products.length} trên {totalElements} sản phẩm</>
+                        t('promotions.createPage.showingProducts', {
+                          current: products.length,
+                          total: totalElements
+                        })
                       )}
                     </div>
                     <div className='flex items-center gap-2'>
@@ -662,7 +787,10 @@ export function ManagerPromotionCreatePage() {
                         <MaterialIcon name='chevron_left' className='text-lg' />
                       </button>
                       <span className='text-sm text-muted-foreground'>
-                        Trang {currentPage + 1} / {totalPages}
+                        {t('promotions.createPage.pageInfo', {
+                          current: currentPage + 1,
+                          total: totalPages
+                        })}
                       </span>
                       <button
                         type='button'
@@ -684,15 +812,17 @@ export function ManagerPromotionCreatePage() {
                   onClick={() => void navigate('/manager/promotions')}
                   className='h-11 rounded-xl border border-border bg-card px-5 text-sm font-bold text-foreground hover:bg-muted transition-colors'
                 >
-                  Hủy
+                  {t('promotions.createModal.cancel')}
                 </button>
                 <button
                   type='submit'
                   disabled={!canSubmit}
                   className='inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-secondary px-6 text-sm font-bold text-secondary-foreground shadow-sm transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50'
                 >
-                  {isSubmitting && <span className='h-4 w-4 animate-spin rounded-full border-2 border-secondary-foreground border-t-transparent' />}
-                  Tạo khuyến mãi
+                  {isSubmitting && (
+                    <span className='h-4 w-4 animate-spin rounded-full border-2 border-secondary-foreground border-t-transparent' />
+                  )}
+                  {t('promotions.createPage.createPromotion')}
                 </button>
               </div>
             </form>

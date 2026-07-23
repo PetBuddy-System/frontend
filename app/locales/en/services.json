@@ -402,13 +402,13 @@
   "bookingFlow": {
     "eyebrow": "Checkout & booking",
     "title": "Book spa and grooming",
-    "subtitle": "Select a service, choose a time slot, add pet details, then pay the 20% deposit.",
+    "subtitle": "Enter your information, choose a service and time slot, then pay the 20% deposit.",
     "steps": {
       "step": "Step {{step}}",
       "items": {
-        "1": "Service",
-        "2": "Date & time",
-        "3": "Pets & info",
+        "1": "Info & pets",
+        "2": "Service",
+        "3": "Date & time",
         "4": "Checkout"
       }
     },
@@ -420,6 +420,7 @@
     "service": {
       "title": "Select service",
       "subtitle": "Catalog data is loaded from the backend service catalog.",
+      "empty": "No service matches the booking type you selected yet.",
       "duration": "{{minutes}} minutes",
       "basePrice": "Base {{price}}",
       "selectedPetsTotal": "Selected pets total: {{price}}"
@@ -437,11 +438,13 @@
       "subtitle": "Only active time slots for the chosen service and date are shown.",
       "dateLabel": "Appointment date",
       "duration": "{{minutes}} minutes",
-      "empty": "No active time slots are available for this service on the selected date."
+      "empty": "No active time slots are available for this service on the selected date.",
+      "pastSlot": "Time passed",
+      "pastSlotError": "This time slot has already passed for today. Please choose another time slot."
     },
     "review": {
-      "title": "Review and pay",
-      "subtitle": "Review your booking like checkout, then pay the deposit securely by card.",
+      "title": "Booking checkout",
+      "subtitle": "Review your booking details before continuing to the deposit payment screen.",
       "customerSection": "Customer",
       "serviceSection": "Service booking",
       "created": "Booking {{code}} is ready for payment.",
@@ -457,9 +460,36 @@
       "deposit": "20% deposit",
       "remaining": "Remaining",
       "priceByPet": "Price by pet weight",
-      "priceWithSurcharge": "{{total}} (includes {{surcharge}} surcharge)",
+      "priceWithExtraDuration": "{{total}} (+{{minutes}} min: {{fee}})",
+      "serviceAmount": "Service price",
+      "surchargeAmount": "Pet surcharge",
+      "travelFee": "Travel fee",
+      "distance": "Distance",
+      "distanceValue": "{{value}} km",
+      "previewLoading": "PetBuddy is calculating the final price...",
+      "homeFinalPriceNote": "Travel fee, if any, will be finalized by PetBuddy when the booking is created.",
+      "groomer": "Assigned groomer",
       "empty": "Not selected",
       "depositNote": "The booking uses one shared time slot for all selected pets. At-home bookings include the service address."
+    },
+    "assignment": {
+      "title": "Choose a groomer",
+      "subtitle": "Let PetBuddy arrange the best available groomer, or choose one who is free for this time slot.",
+      "auto": {
+        "title": "Let PetBuddy arrange",
+        "description": "The system will choose a suitable available groomer for your booking."
+      },
+      "selected": {
+        "title": "Choose groomer",
+        "description": "Pick the groomer you prefer for this care session."
+      },
+      "loading": "Finding available groomers...",
+      "empty": "No groomer is currently available for this time slot. You can still let PetBuddy arrange one.",
+      "shift": "Shift {{start}} - {{end}}",
+      "experience": "{{years}} years of experience",
+      "noExperience": "Experience details are being updated",
+      "autoSummary": "PetBuddy will arrange",
+      "selectedSummary": "{{name}}"
     },
     "weightRanges": {
       "EXTRA_SMALL": "Under 5kg",
@@ -477,10 +507,12 @@
         "FAILED": "Payment failed",
         "PENDING_ACCEPTANCE": "Pending acceptance",
         "ACCEPTED": "Accepted",
+        "ON_THE_WAY": "Staff on the way",
         "IN_PROGRESS": "In progress",
         "READY_FOR_PICKUP": "Ready for pickup",
         "COMPLETED": "Completed",
         "CANCELLED": "Cancelled",
+        "WAITING_STAFF": "Waiting for staff",
         "unknown": "Updating"
       }
     },
@@ -488,7 +520,7 @@
       "back": "Back",
       "next": "Continue",
       "reset": "Reset form",
-      "checkout": "Checkout",
+      "checkout": "Continue to payment",
       "submit": "Create booking",
       "submitting": "Creating booking..."
     },
@@ -496,21 +528,30 @@
       "loadError": "Could not load booking data.",
       "timeSlotLoadError": "Could not load available time slots.",
       "submitError": "Could not create booking.",
+      "previewError": "Could not calculate the booking price. Please check the booking details.",
       "success": "Booking details saved. Please pay the deposit to complete.",
       "paymentSuccess": "Booking and deposit payment completed successfully!",
       "selectService": "Please select a service first.",
       "selectPet": "Please select at least one pet.",
       "selectTime": "Please select an appointment date and time slot.",
+      "pastTimeSlot": "This time slot has already passed for today. Please choose another time slot.",
+      "selectGroomer": "Please choose your preferred groomer, or let PetBuddy arrange one for you.",
       "customerMissing": "Please enter customer name and phone number.",
       "addressMissing": "Please enter the at-home service address.",
+      "coordinateMissing": "Please choose your service location on the map so PetBuddy can calculate the travel fee.",
+      "homeRequirementsMissing": "Please confirm the at-home service requirements before continuing.",
       "slotLimit": "The selected time slot has reached its pet capacity.",
       "resetSuccess": "Booking form has been reset.",
       "paymentSecretMissing": "The booking was created but no Stripe payment secret was returned.",
       "retryPaymentFailed": "Could not create a new payment attempt.",
+      "groomerLoadError": "Could not load available groomers. You can still let PetBuddy arrange one for you.",
       "cardElementMissing": "Could not load the card input.",
       "cardholderMissing": "Please enter the cardholder name.",
       "paymentFailed": "Payment failed. Please try again.",
-      "paymentIncomplete": "Payment is not complete yet. Please try again."
+      "paymentIncomplete": "Payment is not complete yet. Please try again.",
+      "paymentSyncing": "PetBuddy is checking the payment result...",
+      "paymentPendingConfirmation": "PetBuddy has not received payment confirmation from the system yet. If you are running locally, start the Stripe listener and check again in a few minutes.",
+      "paymentConfirmationFailed": "Payment has not been completed in PetBuddy yet. Please try paying again."
     },
     "apiErrors": {
       "BOOKING_NOT_FOUND": "We could not find this booking. Please refresh and check again.",
@@ -527,6 +568,10 @@
       "TIME_SLOT_FULL": "This time slot is full. Please choose another time slot.",
       "PET_NOT_FOUND": "We could not find this pet profile. Please check your pet list again.",
       "PET_INACTIVE": "This pet profile cannot be booked right now. Please choose another pet.",
+      "PET_SPECIES_MISMATCH": "This service does not match the selected pet's species. Please choose a suitable service or select another pet.",
+      "STORE_LOCATION_NOT_FOUND": "PetBuddy does not have an active store location to calculate at-home booking details yet. Please try again later or contact the store for help.",
+      "9031": "This service does not match the selected pet's species. Please choose a suitable service or select another pet.",
+      "5408": "PetBuddy does not have an active store location to calculate at-home booking details yet. Please try again later or contact the store for help.",
       "PAYMENT_FAILED": "Payment was not successful. Please check your card and try again.",
       "PAYMENT_NOT_FOUND": "We could not find this payment attempt. Please try again in a moment.",
       "PAYMENT_ALREADY_PAID": "This booking deposit has already been paid.",
@@ -539,7 +584,8 @@
     },
     "bookingTypes": {
       "AT_STORE": "At store",
-      "AT_HOME": "At home"
+      "AT_HOME": "At home",
+      "paused": "paused"
     },
     "customer": {
       "title": "Customer information",
@@ -547,7 +593,26 @@
       "name": "Customer name",
       "phone": "Phone number",
       "address": "Service address",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "addressNote": "Address note",
+      "homeRequirements": "I confirm this address has a safe space for PetBuddy staff to perform the at-home service.",
       "note": "Booking note"
+    },
+    "addressMap": {
+      "title": "Choose service location",
+      "subtitle": "Search, use your current location, or click the map to set the exact address.",
+      "myLocation": "Use my location",
+      "searchPlaceholder": "Enter street name, ward, or address...",
+      "searchButton": "Search",
+      "suggestionsEmpty": "No matching address suggestions yet.",
+      "mapLoading": "Loading map...",
+      "mapHint": "Click the map or drag the marker to adjust the exact service location.",
+      "selectedAddress": "Selected service address",
+      "geoUnsupported": "Your browser does not support location access.",
+      "geoFailed": "Could not get your current location. Please check browser permission.",
+      "addressNotFound": "Could not find this address on the map. Please try a more specific address.",
+      "searchFailed": "Could not search the address right now. Please try again."
     },
     "schedule": {
       "title": "Select date and time slot",
@@ -562,6 +627,8 @@
       "processing": "Processing payment...",
       "successTitle": "Payment successful",
       "successDescription": "Your deposit for booking {{code}} has been paid successfully.",
+      "syncingTitle": "Confirming payment",
+      "syncingDescription": "PetBuddy is waiting for the payment system to confirm booking {{code}}. If you are running locally, start the Stripe listener and check again in a few minutes.",
       "failedTitle": "Payment failed",
       "retry": "Retry payment",
       "retrying": "Creating new payment..."

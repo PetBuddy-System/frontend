@@ -1,13 +1,6 @@
-export type PaymentMethod = 'CASH' | 'CARD' | 'MOMO'
+export type PaymentMethod = 'CASH' | 'CARD' | 'MOMO' | 'VNPAY'
 
-export type PaymentStatus =
-  | 'PENDING'
-  | 'PROCESSING'
-  | 'PAID'
-  | 'FAILED'
-  | 'CANCELLED'
-  | 'REFUNDED'
-  | (string & {})
+export type PaymentStatus = 'PENDING' | 'PROCESSING' | 'PAID' | 'FAILED' | 'CANCELLED' | 'REFUNDED' | (string & {})
 
 export interface PaymentResponse {
   paymentId: number
@@ -18,6 +11,7 @@ export interface PaymentResponse {
   amount: number
   stripeClientSecret?: string
   momoPayUrl?: string
+  vnpayPayUrl?: string
   cancelReason?: string
   paidAt?: string
   createdAt: string

@@ -122,7 +122,7 @@ export function ProductDetailPage() {
   }
 
   // Lấy ảnh thumbnail (ưu tiên từ API images, fallback từ product)
-  const thumbnailUrl = imageUrls.length > 0 ? imageUrls[0] : (product.thumbnailUrl || '')
+  const thumbnailUrl = imageUrls.length > 0 ? imageUrls[0] : product.thumbnailUrl || ''
 
   return (
     <div className='flex min-h-screen flex-col bg-background text-foreground'>
@@ -150,10 +150,7 @@ export function ProductDetailPage() {
 
         {/* Phần 1: Gallery + Info - 2 cột */}
         <div className='mb-8 grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16'>
-          <ProductDetailGallery
-            imageUrls={imageUrls.length > 0 ? imageUrls : []}
-            productName={product.name}
-          />
+          <ProductDetailGallery imageUrls={imageUrls.length > 0 ? imageUrls : []} productName={product.name} />
           <ProductDetailInfo
             productId={product.productId}
             name={product.name}
@@ -182,11 +179,7 @@ export function ProductDetailPage() {
               Video sản phẩm
             </h3>
             <div className='relative overflow-hidden rounded-xl border border-border/60 bg-card shadow-sm'>
-              <video
-                src={videoUrl}
-                controls
-                className='w-full max-h-[500px] object-contain'
-              />
+              <video src={videoUrl} controls className='w-full max-h-[500px] object-contain' />
             </div>
           </div>
         )}
@@ -205,7 +198,7 @@ export function ProductDetailPage() {
           <ProductReviews productId={product.productId} />
         </div>
 
-        <RelatedProducts />
+        <RelatedProducts productId={product.productId} categoryId={product.categoryId} limit={4} />
       </main>
       <SiteFooter />
       <ProductsBottomNav />

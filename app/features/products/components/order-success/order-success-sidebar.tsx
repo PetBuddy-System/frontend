@@ -24,7 +24,9 @@ export function OrderSuccessSidebar({
   return (
     <aside className='space-y-6'>
       <section className='rounded-3xl border border-accent bg-card p-6 shadow-sm md:p-8'>
-        <h2 className='mb-6 font-display text-lg font-semibold text-foreground'>{t('orderSuccess.payment.title', 'Tổng cộng')}</h2>
+        <h2 className='mb-6 font-display text-lg font-semibold text-foreground'>
+          {t('orderSuccess.payment.title', 'Tổng cộng')}
+        </h2>
         <div className='mb-6 space-y-4'>
           <div className='flex justify-between gap-4 text-muted-foreground'>
             <span>{t('orderSuccess.payment.subtotal', 'Tạm tính')}</span>

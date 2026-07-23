@@ -11,7 +11,10 @@ export async function getPaymentByOrderIdApi(orderId: number): Promise<ApiRespon
   })
 }
 
-export async function updatePaymentMethodApi(orderId: number, paymentMethod: PaymentMethod): Promise<ApiResponse<PaymentResponse>> {
+export async function updatePaymentMethodApi(
+  orderId: number,
+  paymentMethod: PaymentMethod
+): Promise<ApiResponse<PaymentResponse>> {
   return customFetch<ApiResponse<PaymentResponse>>({
     url: `${PAYMENT_BASE_URL}/method/${orderId}`,
     method: 'PUT',
@@ -22,6 +25,13 @@ export async function updatePaymentMethodApi(orderId: number, paymentMethod: Pay
 export async function retryMomoPaymentApi(orderId: number): Promise<ApiResponse<PaymentResponse>> {
   return customFetch<ApiResponse<PaymentResponse>>({
     url: `${PAYMENT_BASE_URL}/${orderId}/momo/retry`,
+    method: 'POST'
+  })
+}
+
+export async function retryVnPayPaymentApi(orderId: number): Promise<ApiResponse<PaymentResponse>> {
+  return customFetch<ApiResponse<PaymentResponse>>({
+    url: `${PAYMENT_BASE_URL}/${orderId}/vnpay/retry`,
     method: 'POST'
   })
 }

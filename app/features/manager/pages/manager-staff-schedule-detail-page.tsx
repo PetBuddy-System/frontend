@@ -7,10 +7,7 @@ import { Button, MaterialIcon } from '~/shared/ui'
 import { ManagerSidebar } from '../components/layout/manager-sidebar'
 import { ManagerTopNav } from '../components/layout/manager-top-nav'
 import { workScheduleApi, type WorkScheduleResponse } from '../services'
-import {
-  formatWorkScheduleDate,
-  formatWorkScheduleDateTime
-} from '../lib/work-schedule-format'
+import { formatWorkScheduleDate, formatWorkScheduleDateTime } from '../lib/work-schedule-format'
 import { getWorkScheduleErrorMessage } from '../lib/work-schedule-error'
 
 export function ManagerStaffScheduleDetailPage() {
@@ -33,12 +30,7 @@ export function ManagerStaffScheduleDetailPage() {
     } catch (error) {
       setMessage({
         type: 'error',
-        text: getWorkScheduleErrorMessage(
-          error,
-          t,
-          'staffSchedule.workSchedules.messages.loadDetailFailed',
-          'detail'
-        )
+        text: getWorkScheduleErrorMessage(error, t, 'staffSchedule.workSchedules.messages.loadDetailFailed', 'detail')
       })
     } finally {
       setIsLoading(false)
@@ -71,10 +63,7 @@ export function ManagerStaffScheduleDetailPage() {
                   <MaterialIcon name='arrow_back' className='text-lg' />
                   {t('staffSchedule.workSchedules.actions.backToList')}
                 </Button>
-                <Button
-                  type='button'
-                  onClick={() => void navigate(`/manager/staff-schedule/${workScheduleId}/edit`)}
-                >
+                <Button type='button' onClick={() => void navigate(`/manager/staff-schedule/${workScheduleId}/edit`)}>
                   <MaterialIcon name='edit' className='text-lg' />
                   {t('staffSchedule.workSchedules.actions.edit')}
                 </Button>

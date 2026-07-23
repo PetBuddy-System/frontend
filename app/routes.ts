@@ -18,6 +18,7 @@ export default [
   route('services', 'routes/services.tsx'),
   route('services/:serviceId', 'routes/service-detail.tsx'),
   route('payment/momo/return', 'routes/momo-return.tsx'),
+  route('payment/vnpay/return', 'routes/vnpay-return.tsx'),
 
   // ─── Authenticated General Routes ─────────────────────────────────────────
   layout('routes/auth-layout.tsx', [
@@ -32,6 +33,7 @@ export default [
     route('profile/orders/:orderId/cancel', 'routes/profile-order-cancel.tsx'),
     route('profile/services', 'routes/profile-services.tsx'),
     route('my-bookings', 'routes/my-bookings.tsx'),
+    route('my-bookings/:bookingId', 'routes/my-booking-detail.tsx'),
     route('profile/returns', 'routes/profile-returns.tsx'),
     route('booking', 'routes/booking.tsx'),
     route('checkout', 'routes/checkout.tsx'),
@@ -48,17 +50,20 @@ export default [
   layout('routes/staff-layout.tsx', [
     route('staff/dashboard', 'routes/staff-dashboard.tsx'),
     route('staff/groomer-bookings', 'routes/staff-groomer-bookings.tsx'),
+    route('staff/groomer-bookings/:bookingId', 'routes/staff-groomer-booking-detail.tsx'),
     route('staff/coordinator-bookings', 'routes/staff-coordinator-bookings.tsx'),
     route('staff/attendance', 'routes/staff-attendance.tsx'),
     route('staff/disposal-request', 'routes/staff-disposal-request.tsx'),
     route('staff/weekly-schedule', 'routes/staff-weekly-schedule.tsx'),
     route('staff/weekly-schedule/:staffScheduleId', 'routes/staff-schedule-detail.tsx'),
+    route('staff/shift-registrations', 'routes/staff-shift-registrations.tsx'),
     route('staff/add-product', 'routes/staff-add-product.tsx'),
     route('staff/orders', 'routes/staff-orders.tsx'),
     route('staff/orders/:orderId', 'routes/staff-order-detail.tsx'),
     route('staff/orders/:orderId/cancel', 'routes/staff-order-cancel.tsx'),
     route('staff/returns', 'routes/staff-returns.tsx'),
-    route('staff/shipper-assignment', 'routes/staff-shipper-assignment.tsx')
+    route('staff/shipper-assignment', 'routes/staff-shipper-assignment.tsx'),
+    route('staff/delivery-route', 'routes/staff-delivery-route.tsx')
   ]),
 
   // ─── Admin Only Routes ────────────────────────────────────────────────────
@@ -86,13 +91,13 @@ export default [
 
   // ─── Manager Only Routes ──────────────────────────────────────────────────
   layout('routes/manager-layout.tsx', [
-    route('manager/dashboard', 'routes/manager-dashboard.tsx'),
     route('manager/products', 'routes/manager-products.tsx'),
     route('manager/services', 'routes/manager-services.tsx'),
     route('manager/bookings', 'routes/manager-bookings.tsx'),
     route('manager/inventory-transactions', 'routes/manager-inventory-transactions.tsx'),
-    route('manager/disposal-approvals', 'routes/manager-disposal-approvals.tsx'),
-    route('manager/return-requests', 'routes/manager-return-requests.tsx'),
+    route('manager/shift-registration-periods', 'routes/manager-shift-registration-periods.tsx'),
+    route('manager/shift-registration-periods/new', 'routes/manager-shift-registration-period-new.tsx'),
+    route('manager/shift-registration-periods/:periodId', 'routes/manager-shift-registration-period-detail.tsx'),
     route('manager/staff-schedule', 'routes/manager-staff-schedule.tsx'),
     route('manager/staff-schedule/new', 'routes/manager-staff-schedule-new.tsx'),
     route('manager/staff-schedule/:workScheduleId/edit', 'routes/manager-staff-schedule-edit.tsx'),

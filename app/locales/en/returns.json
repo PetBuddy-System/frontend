@@ -13,6 +13,15 @@
     "detail": {
       "reason": "Return reason",
       "description": "Detailed description",
+      "rejectedBannerTitle": "❌ Request has been rejected",
+      "rejectedBannerDescription": "This return request has been rejected and cannot be processed further.",
+      "rejectedReturnShippingBannerTitle": "⚠️ Request rejected - Returning shipping",
+      "rejectedReturnShippingBannerDescription": "This request was rejected after inspection. The items are being shipped back to the customer.",
+      "rejectedAt": "Rejected at",
+      "staffNoteLabel": "Reason / Note:",
+      "requestStatus": "Request Status",
+      "returnShippingBadge": "Return shipping",
+      "btnReturnShipping": "Return shipping",
       "refund": {
         "title": "Refund information",
         "method": "Refund method:",
@@ -38,7 +47,8 @@
         "processedBy": "Processed by:",
         "processedAt": "Processed at:",
         "completedAt": "Completed at:",
-        "staffNote": "Note:"
+        "staffNote": "Note:",
+        "addressLabel": "Shipping / return address"
       },
       "actions": {
         "cancel": "Cancel request"
@@ -48,11 +58,17 @@
   "status": {
     "PENDING": "Pending",
     "APPROVED": "Approved",
+    "PICKING_UP": "Picking up",
     "PICKED_UP": "Picked up",
+    "PICKUP_FAILED": "Pickup failed",
+    "RETURNED_TO_STORE": "Returned to store",
+    "READY_TO_DELIVER": "Ready to deliver",
+    "DELIVERING": "Delivering",
+    "DELIVERING_FAILED": "Delivery failed",
     "REJECTED": "Rejected",
+    "REJECTED_RETURN_SHIPPING": "Rejected - Return shipping",
     "CANCELLED": "Cancelled",
-    "COMPLETED": "Completed",
-    "DELIVERY_FAILED": "Delivery failed"
+    "COMPLETED": "Completed"
   },
   "type": {
     "RETURN": "Return & refund",

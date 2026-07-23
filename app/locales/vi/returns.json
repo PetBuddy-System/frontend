@@ -13,6 +13,15 @@
     "detail": {
       "reason": "Lý do đổi trả",
       "description": "Mô tả chi tiết",
+      "rejectedBannerTitle": "❌ Yêu cầu đã bị từ chối",
+      "rejectedBannerDescription": "Yêu cầu đổi trả này đã bị từ chối và không thể tiếp tục xử lý.",
+      "rejectedReturnShippingBannerTitle": "⚠️ Yêu cầu đã bị từ chối - Đang ship trả lại",
+      "rejectedReturnShippingBannerDescription": "Yêu cầu này đã bị từ chối sau khi kiểm tra hàng. Hàng đang được ship trả lại cho khách.",
+      "rejectedAt": "Thời gian từ chối",
+      "staffNoteLabel": "Lý do / Ghi chú:",
+      "requestStatus": "Trạng thái yêu cầu",
+      "returnShippingBadge": "Ship trả lại",
+      "btnReturnShipping": "Ship trả lại",
       "refund": {
         "title": "Thông tin hoàn tiền",
         "method": "Phương thức hoàn:",
@@ -38,7 +47,8 @@
         "processedBy": "Người xử lý:",
         "processedAt": "Thời gian xử lý:",
         "completedAt": "Thời gian hoàn thành:",
-        "staffNote": "Ghi chú:"
+        "staffNote": "Ghi chú:",
+        "addressLabel": "Địa chỉ lấy / giao hàng"
       },
       "actions": {
         "cancel": "Hủy yêu cầu đổi trả"
@@ -48,11 +58,17 @@
   "status": {
     "PENDING": "Chờ duyệt",
     "APPROVED": "Đã chấp thuận",
+    "PICKING_UP": "Đang đi lấy hàng",
     "PICKED_UP": "Đã lấy hàng",
+    "PICKUP_FAILED": "Lấy hàng thất bại",
+    "RETURNED_TO_STORE": "Đã trả về kho",
+    "READY_TO_DELIVER": "Sẵn sàng giao hàng",
+    "DELIVERING": "Đang giao hàng",
+    "DELIVERING_FAILED": "Giao hàng thất bại",
     "REJECTED": "Từ chối",
+    "REJECTED_RETURN_SHIPPING": "Từ chối - Đang ship trả lại",
     "CANCELLED": "Đã hủy",
-    "COMPLETED": "Hoàn thành",
-    "DELIVERY_FAILED": "Giao thất bại"
+    "COMPLETED": "Hoàn thành"
   },
   "type": {
     "RETURN": "Trả hàng hoàn tiền",

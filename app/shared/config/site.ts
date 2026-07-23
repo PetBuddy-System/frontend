@@ -19,5 +19,6 @@ export const STORAGE_KEYS = {
   accessToken: 'petbuddy-access-token',
   refreshToken: 'petbuddy-refresh-token',
   user: 'petbuddy-user',
-  bookingDraft: 'petbuddy-booking-draft'
+  bookingDraft: 'petbuddy-booking-draft',
+  hiddenChatConversations: 'petbuddy-hidden-chat-conversations'
 } as const

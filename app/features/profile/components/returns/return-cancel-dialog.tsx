@@ -41,10 +41,7 @@ export function ReturnCancelDialog({ open, isSubmitting, onClose, onConfirm }: R
       className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm'
     >
       <div className='w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150'>
-        <h4
-          id='return-cancel-title'
-          className='font-display text-lg font-bold text-foreground mb-2'
-        >
+        <h4 id='return-cancel-title' className='font-display text-lg font-bold text-foreground mb-2'>
           {t('cancel.title')}
         </h4>
         <p className='text-sm text-muted-foreground mb-6'>{t('cancel.description')}</p>

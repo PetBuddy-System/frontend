@@ -14,6 +14,22 @@ import {
 
 import logo from '../assets/cho-signup.jpg'
 
+const ISO_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
+const DISPLAY_DATE_PATTERN = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/
+
+function normalizeDateOfBirthForApi(value: string) {
+  const trimmedValue = value.trim()
+  if (!trimmedValue) return trimmedValue
+  if (ISO_DATE_PATTERN.test(trimmedValue)) return trimmedValue
+
+  const displayDateMatch = DISPLAY_DATE_PATTERN.exec(trimmedValue)
+  if (!displayDateMatch) return trimmedValue
+
+  const [, day, month, year] = displayDateMatch
+
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+}
+
 export function RegisterPage() {
   const { t } = useTranslation('auth')
 
@@ -162,9 +178,7 @@ export function RegisterPage() {
     setIsSubmitting(true)
 
     try {
-      // HTML input type="date" trả về yyyy-MM-dd, API yêu cầu dd-MM-yyyy
-      const [year, month, day] = dateOfBirth.split('-')
-      const formattedDob = `${day}-${month}-${year}`
+      const formattedDob = normalizeDateOfBirthForApi(dateOfBirth)
 
       await signupApi({ email, password, fullName, gender, dateOfBirth: formattedDob })
       // Signup thành công → chuyển sang trang OTP verification

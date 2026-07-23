@@ -29,7 +29,8 @@ const INITIAL_REVIEWS: MockReview[] = [
     fullName: 'Nguyễn Văn Minh',
     avatar: null,
     rating: 5,
-    content: 'Sản phẩm hạt rất thơm ngon, cún nhà mình ăn rất hợp, không bị đi ngoài hay dị ứng gì. Lông bóng mượt hẳn ra.',
+    content:
+      'Sản phẩm hạt rất thơm ngon, cún nhà mình ăn rất hợp, không bị đi ngoài hay dị ứng gì. Lông bóng mượt hẳn ra.',
     anonymous: true,
     status: 'ACTIVE',
     createdAt: '2026-07-10T12:00:00.000Z',
@@ -89,7 +90,7 @@ function getLoggedInUser(request: Request) {
   if (typeof window === 'undefined') return null
   const authHeader = request.headers.get('Authorization')
   if (!authHeader) return null
-  
+
   // Đọc thông tin user đang lưu trong localStorage
   const rawUser = localStorage.getItem('petbuddy-user')
   if (!rawUser) return null
@@ -272,14 +273,11 @@ export const productReviewHandlers = [
     const reviewIdx = reviews.findIndex((r) => r.reviewId === reviewId && r.status === 'ACTIVE')
 
     if (reviewIdx === -1) {
-      return HttpResponse.json(
-        { code: 4003, message: 'Không tìm thấy đánh giá', success: false },
-        { status: 404 }
-      )
+      return HttpResponse.json({ code: 4003, message: 'Không tìm thấy đánh giá', success: false }, { status: 404 })
     }
 
     const review = reviews[reviewIdx]
-    
+
     // Check ownership
     if (review.userId !== user.userId) {
       return HttpResponse.json(
@@ -324,10 +322,7 @@ export const productReviewHandlers = [
     const reviewIdx = reviews.findIndex((r) => r.reviewId === reviewId && r.status !== 'DELETED')
 
     if (reviewIdx === -1) {
-      return HttpResponse.json(
-        { code: 4003, message: 'Không tìm thấy đánh giá', success: false },
-        { status: 404 }
-      )
+      return HttpResponse.json({ code: 4003, message: 'Không tìm thấy đánh giá', success: false }, { status: 404 })
     }
 
     const review = reviews[reviewIdx]
@@ -425,7 +420,11 @@ export const productReviewHandlers = [
       productCode: `PRD${r.productId.substring(0, 6).toUpperCase()}`,
       productName: r.productName,
       userId: r.userId,
-      userEmail: `${r.fullName.toLowerCase().replace(/\s/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')}@gmail.com`,
+      userEmail: `${r.fullName
+        .toLowerCase()
+        .replace(/\s/g, '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')}@gmail.com`,
       userFullName: r.fullName,
       userAvatar: r.avatar
     }))
@@ -457,10 +456,7 @@ export const productReviewHandlers = [
     const r = reviews.find((x) => x.reviewId === reviewId && x.status !== 'DELETED')
 
     if (!r) {
-      return HttpResponse.json(
-        { code: 4003, message: 'Không tìm thấy đánh giá', success: false },
-        { status: 404 }
-      )
+      return HttpResponse.json({ code: 4003, message: 'Không tìm thấy đánh giá', success: false }, { status: 404 })
     }
 
     const detail = {
@@ -476,7 +472,11 @@ export const productReviewHandlers = [
       productCode: `PRD${r.productId.substring(0, 6).toUpperCase()}`,
       productName: r.productName,
       userId: r.userId,
-      userEmail: `${r.fullName.toLowerCase().replace(/\s/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')}@gmail.com`,
+      userEmail: `${r.fullName
+        .toLowerCase()
+        .replace(/\s/g, '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')}@gmail.com`,
       userFullName: r.fullName,
       userAvatar: r.avatar
     }
@@ -499,10 +499,7 @@ export const productReviewHandlers = [
     const reviewIdx = reviews.findIndex((r) => r.reviewId === reviewId && r.status !== 'DELETED')
 
     if (reviewIdx === -1) {
-      return HttpResponse.json(
-        { code: 4003, message: 'Không tìm thấy đánh giá', success: false },
-        { status: 404 }
-      )
+      return HttpResponse.json({ code: 4003, message: 'Không tìm thấy đánh giá', success: false }, { status: 404 })
     }
 
     reviews[reviewIdx].status = body.status

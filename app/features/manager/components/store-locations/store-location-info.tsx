@@ -9,12 +9,7 @@ export interface StoreLocationInfoProps {
   onStartCreate: () => void
 }
 
-export function StoreLocationInfo({
-  currentLocation,
-  mode,
-  onStartUpdate,
-  onStartCreate
-}: StoreLocationInfoProps) {
+export function StoreLocationInfo({ currentLocation, mode, onStartUpdate, onStartCreate }: StoreLocationInfoProps) {
   const { t } = useTranslation('manager')
 
   const address = currentLocation?.address ?? ''
@@ -37,14 +32,8 @@ export function StoreLocationInfo({
 
             {currentLocation ? (
               <>
-                <h3 className='font-display text-lg font-bold text-foreground leading-snug'>
-                  {mainTitle}
-                </h3>
-                {subAddress && (
-                  <p className='text-xs text-muted-foreground mt-1 leading-relaxed'>
-                    {subAddress}
-                  </p>
-                )}
+                <h3 className='font-display text-lg font-bold text-foreground leading-snug'>{mainTitle}</h3>
+                {subAddress && <p className='text-xs text-muted-foreground mt-1 leading-relaxed'>{subAddress}</p>}
               </>
             ) : (
               <h3 className='font-display text-lg font-bold text-muted-foreground leading-snug'>

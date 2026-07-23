@@ -10,7 +10,7 @@ export interface OutOfStockModalProps {
 export function OutOfStockModal({ productName, onClose }: OutOfStockModalProps) {
   const { t } = useTranslation('products')
   const [progress, setProgress] = useState(100)
-  
+
   useEffect(() => {
     const total = 5000
     const interval = 50
@@ -58,13 +58,14 @@ export function OutOfStockModal({ productName, onClose }: OutOfStockModalProps) 
           </h3>
           <div className='mx-auto mb-4 flex items-center gap-2 rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-2.5'>
             <MaterialIcon name='remove_shopping_cart' className='shrink-0 text-[18px] text-destructive' />
-            <p className='text-sm font-semibold text-destructive line-clamp-2 text-center flex-1'>
-              {productName}
-            </p>
+            <p className='text-sm font-semibold text-destructive line-clamp-2 text-center flex-1'>{productName}</p>
           </div>
 
           <p className='text-center text-xs text-muted-foreground mb-5 leading-relaxed whitespace-pre-line'>
-            {t('outOfStockModal.description', 'Rất tiếc! Sản phẩm này vừa được người khác mua hết. Sản phẩm đã được tự động xóa khỏi giỏ hàng của bạn.')}
+            {t(
+              'outOfStockModal.description',
+              'Rất tiếc! Sản phẩm này vừa được người khác mua hết. Sản phẩm đã được tự động xóa khỏi giỏ hàng của bạn.'
+            )}
           </p>
 
           <button

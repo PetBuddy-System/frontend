@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { parseSurchargeConfig } from '~/shared/lib/catalog-pricing'
+import { getCatalogPriceForWeight } from '~/shared/lib/catalog-pricing'
 import { MaterialIcon } from '~/shared/ui'
 
 import type { CatalogResponse } from '../../services'
@@ -24,14 +24,11 @@ function formatPrice(value: number): string {
 }
 
 function getPriceColumns(catalog: CatalogResponse) {
-  const basePrice = Number(catalog.price ?? 0)
-  const surcharges = parseSurchargeConfig(catalog.surchargeConfig)
-
   return {
-    under5: basePrice,
-    fiveTo10: basePrice,
-    tenTo20: basePrice + (surcharges.LARGE ?? 0),
-    over20: basePrice + (surcharges.EXTRA_EXTRA_LARGE ?? surcharges.EXTRA_LARGE ?? surcharges.LARGE ?? 0)
+    under5: getCatalogPriceForWeight(catalog, 4).totalPrice,
+    fiveTo10: getCatalogPriceForWeight(catalog, 7).totalPrice,
+    tenTo20: getCatalogPriceForWeight(catalog, 15).totalPrice,
+    over20: getCatalogPriceForWeight(catalog, 26).totalPrice
   }
 }
 

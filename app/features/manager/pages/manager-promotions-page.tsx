@@ -18,9 +18,9 @@ export function ManagerPromotionsPage() {
   const navigate = useNavigate()
 
   const [selectedStatus, setSelectedStatus] = useState('all')
-  const [selectedSort, setSelectedSort] = useState<
-    'createdAt_desc' | 'createdAt_asc' | 'startDate_desc'
-  >('createdAt_desc')
+  const [selectedSort, setSelectedSort] = useState<'createdAt_desc' | 'createdAt_asc' | 'startDate_desc'>(
+    'createdAt_desc'
+  )
   const [keywordInput, setKeywordInput] = useState('')
   const [keyword, setKeyword] = useState('')
   const [page, setPage] = useState(0)
@@ -77,9 +77,7 @@ export function ManagerPromotionsPage() {
     setPage(0)
   }
 
-  const handleSortSelect = (
-    sort: 'createdAt_desc' | 'createdAt_asc' | 'startDate_desc'
-  ) => {
+  const handleSortSelect = (sort: 'createdAt_desc' | 'createdAt_asc' | 'startDate_desc') => {
     setSelectedSort(sort)
     setPage(0)
   }
@@ -187,10 +185,7 @@ export function ManagerPromotionsPage() {
         </main>
       </div>
 
-      <ManagerPromotionDetailDialog
-        promotionId={viewingPromotionId}
-        onClose={() => setViewingPromotionId(null)}
-      />
+      <ManagerPromotionDetailDialog promotionId={viewingPromotionId} onClose={() => setViewingPromotionId(null)} />
     </div>
   )
 }

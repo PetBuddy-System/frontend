@@ -348,6 +348,7 @@
   "sidebar": {
     "branch": "Main Branch",
     "brand": "PawAdmin",
+    "close": "Close menu",
     "logoAlt": "PetBuddy logo",
     "logout": "Logout",
     "nav": {
@@ -403,8 +404,10 @@
       "pending": "Pending",
       "PENDING_PAYMENT": "Pending payment",
       "FAILED": "Failed",
+      "WAITING_STAFF": "Waiting for groomer",
       "PENDING_ACCEPTANCE": "Pending",
       "ACCEPTED": "Accepted",
+      "ON_THE_WAY": "On the way",
       "IN_PROGRESS": "In progress",
       "READY_FOR_PICKUP": "Ready for pickup",
       "COMPLETED": "Completed",
@@ -449,8 +452,10 @@
       "ALL": "All",
       "PENDING_PAYMENT": "Pending payment",
       "FAILED": "Failed",
+      "WAITING_STAFF": "Waiting for groomer",
       "PENDING_ACCEPTANCE": "Pending acceptance",
       "ACCEPTED": "Accepted",
+      "ON_THE_WAY": "On the way",
       "IN_PROGRESS": "In progress",
       "READY_FOR_PICKUP": "Ready for pickup",
       "COMPLETED": "Completed",
@@ -468,7 +473,10 @@
       "updateFailed": "Could not update booking status.",
       "updateSuccess": "Booking status updated.",
       "emptyTitle": "No bookings found",
-      "emptyText": "Try another status tab or adjust the date range."
+      "emptyText": "Try another status tab or adjust the date range.",
+      "groomerLoadFailed": "Could not load available groomers.",
+      "assignFailed": "Could not assign groomer to this booking.",
+      "assignSuccess": "Groomer assigned to booking."
     },
     "cancelModal": {
       "close": "Close cancellation dialog",
@@ -520,8 +528,36 @@
         "note": "Note",
         "staff": "Staff",
         "address": "Address",
-        "cancelReason": "Cancel reason"
-      }
+        "cancelReason": "Cancel reason",
+        "addressNote": "Address note",
+        "distance": "Distance",
+        "travelFee": "Travel fee",
+        "baseDuration": "Base duration",
+        "additionalDuration": "Additional duration",
+        "totalDuration": "Total duration",
+        "basePrice": "Base price",
+        "additionalPrice": "Surcharge"
+      },
+      "distanceValue": "{{value}} km",
+      "petLabel": "Pet",
+      "serviceLabel": "Service package",
+      "beforeMedia": "Before service photos",
+      "afterMedia": "After service photos",
+      "noMedia": "No photos yet.",
+      "sections": {
+        "items": "Pets and services"
+      },
+      "minuteValue": "{{value}} min"
+    },
+    "assign": {
+      "title": "Assign groomer",
+      "subtitle": "Only available staff for this booking time are shown.",
+      "groomerLabel": "Available groomer",
+      "placeholder": "Choose a groomer",
+      "loading": "Loading available groomers...",
+      "empty": "No groomers are available for this time slot.",
+      "submit": "Assign groomer",
+      "submitting": "Assigning..."
     }
   },
   "serviceManagement": {
@@ -555,9 +591,12 @@
         "catalogType": "Catalog type",
         "petSpecies": "Pet species",
         "price": "Base price",
+        "additionalPricePerMinute": "Extra fee per additional minute",
         "weightRange": "Weight range",
         "durationMinute": "Duration minute",
-        "bufferTime": "Buffer time"
+        "bufferTime": "Buffer time",
+        "image": "Catalog image",
+        "imagePreview": "Catalog image preview"
       },
       "media": {
         "hint": "PNG, JPG up to 10MB",
@@ -591,7 +630,7 @@
       "dto": {
         "label": "CONFIGURATION GUIDE",
         "title": "Notes on setting up service",
-        "text": "1. Service Type: Choose 'At store' if customers bring pets in, choose 'At home' if a staff member goes to their place.\n2. Base price applies to EXTRA_SMALL, SMALL, and MEDIUM pets.\n3. Add surcharges only for LARGE, EXTRA_LARGE, and EXTRA_EXTRA_LARGE pets.\n4. Buffer time is the cleaning/prep slot between appointments."
+        "text": "1. Service type: Choose 'At store' when customers bring pets in, or 'At home' when a staff member visits them.\n2. Base price is the standard service price before any extra time is added.\n3. For larger pets, enter the extra minutes needed. The system will calculate the extra fee from the price per minute.\n4. Buffer time is the cleanup and preparation time between appointments."
       }
     },
     "categories": {
@@ -623,7 +662,7 @@
       "saving": "Saving..."
     },
     "pagination": {
-      "showing": "Showing {{shown}} of {{total}} services",
+      "showing": "Showing {{from}} - {{to}} of {{total}} services",
       "previous": "Previous page",
       "next": "Next page"
     },
@@ -670,7 +709,7 @@
       "currency": "VND",
       "editDetails": "Edit details",
       "save": "Update pricing",
-      "serviceId": "Service ID: {{id}}",
+      "serviceId": "Service code: {{id}}",
       "subtitle": "Configure flexible pricing for spa and grooming services. Prices are grouped by body weight to keep operations fair and professional.",
       "title": "Service Pricing Management",
       "weightTiers": {
@@ -702,19 +741,9 @@
       "EXTRA_LARGE": "18kg to 25kg",
       "EXTRA_EXTRA_LARGE": "Over 25kg"
     },
-    "surcharge": {
-      "title": "Weight surcharges",
-      "help": "Leave a surcharge empty or 0 to omit it from surchargeConfig. Base price applies to EXTRA_SMALL and SMALL pets.",
-      "ranges": {
-        "MEDIUM": "MEDIUM (8kg - 12kg)",
-        "LARGE": "LARGE (12kg - 18kg)",
-        "EXTRA_LARGE": "EXTRA_LARGE (18kg - 25kg)",
-        "EXTRA_EXTRA_LARGE": "EXTRA_EXTRA_LARGE (Above 25kg)"
-      }
-    },
     "durationConfig": {
       "title": "Duration by weight",
-      "help": "Enter extra minutes on top of the base duration. The system sends durationConfig as the final duration minutes for each weight range.",
+      "help": "Enter the extra minutes needed on top of the base duration. Leave a field empty or enter 0 when that weight group does not need extra time.",
       "unit": "extra min",
       "ranges": {
         "MEDIUM": "Medium",
@@ -723,7 +752,7 @@
         "EXTRA_EXTRA_LARGE": "Extra extra large"
       }
     },
-    "searchPlaceholder": "Search service name or catalog ID...",
+    "searchPlaceholder": "Search service name or service code...",
     "catalogTypes": {
       "AT_STORE": "At store",
       "AT_HOME": "At home"
@@ -745,10 +774,15 @@
         "petSpecies": "Pet species",
         "weightRange": "Weight range",
         "price": "Base price",
+        "additionalPricePerMinute": "Extra fee per additional minute",
         "durationMinute": "Duration minute",
         "bufferTime": "Buffer time",
         "status": "Status",
-        "description": "Description"
+        "description": "Description",
+        "image": "Catalog image",
+        "imageUrl": "Image URL",
+        "noImage": "No image uploaded",
+        "deleteImage": "Delete current image"
       }
     },
     "schedule": {
@@ -1201,7 +1235,9 @@
       "UPDATED": "Updated",
       "PAY": "Pay",
       "REFUND": "Refund",
-      "USE": "Use"
+      "USE": "Use",
+      "BOMBED": "Delivery Failed",
+      "COORDINATOR_NEGOTIATING": "Return to Coordinator"
     },
     "entityTypes": {
       "PRODUCT": "Product",
@@ -1210,6 +1246,7 @@
       "ORDER": "Order",
       "USER": "User",
       "PAYMENT": "Payment",
+      "VOUCHER": "Voucher",
       "VOUCHER_USAGE": "Voucher Usage"
     },
     "fields": {
@@ -1252,7 +1289,8 @@
       "PAYMENT_BY_MOMO": "Payment by MoMo",
       "PAYMENT_BY_CARD": "Payment by Card",
       "CREATE_VOUCHER": "Create new voucher",
-      "VOUCHER_USED": "Voucher used"
+      "VOUCHER_USED": "Voucher used",
+      "PAYMENT_BY_VNPAY": "Payment by VNPay"
     },
     "pagination": {
       "showing": "Showing",
@@ -1276,50 +1314,45 @@
     }
   },
   "voucherModal": {
-    "createTitle": "Create New Voucher",
-    "editTitle": "Edit Voucher",
-    "detailTitle": "Voucher Details",
-    "code": "Voucher Code",
+    "createTitle": "Create new voucher",
+    "editTitle": "Edit voucher",
+    "code": "Voucher code",
+    "codePlaceholder": "e.g. SUMMER2024",
+    "codeDisabledHint": "Voucher code cannot be changed after creation",
     "codeRequired": "Voucher code must be at most 20 characters",
-    "codeDisabledHint": "Voucher code cannot be changed.",
-    "codePlaceholder": "E.g., SUMMER2025",
-    "name": "Voucher Name",
+    "name": "Voucher name",
+    "namePlaceholder": "e.g. Summer sale 2024",
     "nameRequired": "Voucher name must be at most 100 characters",
-    "namePlaceholder": "E.g., Save 50k for order from 500k",
-    "discountType": "Discount Type",
-    "fixedAmount": "Fixed Amount (VND)",
-    "percentage": "Percentage (%)",
-    "discountValue": "Discount Value",
-    "discountPercentRange": "Discount percentage must be between 0% and 100%",
-    "discountAmountRange": "Discount value must be between 0.01 and 999,999,999.99 VND",
-    "maxDiscount": "Max Discount (VND)",
-    "maxDiscountRange": "Max discount must be between 0 and 999,999,999.99 VND",
-    "minOrderValue": "Min Order Value (VND)",
-    "minOrderValueRange": "Min order value must be between 0 and 999,999,999.99 VND",
-    "usageLimit": "Total Usage Limit",
-    "usageLimitRange": "Total usage limit must be between 1 and 999,999",
-    "usageLimitRelation": "Total usage limit must be greater than or equal to per-user limit",
-    "perUserLimit": "Per-User Limit",
-    "perUserLimitRange": "Per-user limit must be between 1 and 1,000",
-    "perUserLimitRelation": "Per-user limit must be less than or equal to total usage limit",
-    "startAt": "Start Date",
-    "expiredAt": "Expiration Date",
+    "discountType": "Discount type",
+    "fixedAmount": "Fixed amount",
+    "percentage": "Percentage",
+    "discountValue": "Discount value",
+    "discountPercentRange": "Percentage discount must be between 0 and 100",
+    "discountAmountRange": "Discount amount must be between 0.01 and 999,999,999.99",
+    "maxDiscount": "Max discount amount",
+    "maxDiscountPlaceholder": "No limit",
+    "maxDiscountRange": "Max discount must be between 0 and 999,999,999.99",
+    "minOrderValue": "Minimum order value",
+    "minOrderPlaceholder": "No minimum",
+    "minOrderValueRange": "Minimum order value must be between 0 and 999,999,999.99",
+    "usageLimit": "Total usage limit",
+    "usageLimitPlaceholder": "Unlimited",
+    "usageLimitRange": "Usage limit must be between 1 and 999,999",
+    "usageLimitRelation": "Total usage limit cannot be less than the per-user limit",
+    "perUserLimit": "Limit per user",
+    "perUserLimitPlaceholder": "Unlimited",
+    "perUserLimitRange": "Limit per user must be between 1 and 1,000",
+    "perUserLimitRelation": "Limit per user cannot exceed the total usage limit",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "applyScope": "Apply scope",
+    "scopeAll": "All products",
     "status": "Status",
-    "expired": "Expired",
-    "expiredDescription": "Voucher has passed its expiration date and cannot be reactivated.",
     "statusActive": "Active",
-    "statusInactive": "Inactive",
-    "activeDescription": "Voucher is activated for customers to use.",
-    "inactiveDescription": "Voucher is inactive, customers cannot use it.",
-    "upcomingDescription": "Start date has not arrived yet — voucher will activate automatically on time.",
+    "statusInactive": "Paused",
     "cancel": "Cancel",
-    "close": "Close",
-    "save": "Save Changes",
-    "create": "Create Voucher",
-    "saving": "Saving...",
-    "unexpectedError": "An error occurred. Please try again.",
-    "emptyPlaceholder": "Leave blank = unlimited",
-    "emptyOrderPlaceholder": "Leave blank = no requirement"
+    "save": "Save",
+    "unexpectedError": "An unexpected error occurred. Please try again."
   },
   "footer": {
     "label": "Admin footer",
