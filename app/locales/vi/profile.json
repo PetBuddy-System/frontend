@@ -542,6 +542,14 @@
     }
   },
   "returnWarranty": {
+    "refundDetails": "Chi tiết hoàn tiền",
+    "products": "sản phẩm",
+    "product": "Sản phẩm",
+    "quantity": "Số lượng",
+    "total": "Tổng",
+    "estimatedRefund": "Ước tính hoàn lại",
+    "calculating": "Đang tính toán...",
+    "loading": "Đang tải...",
     "headerTitle": "Gửi yêu cầu đổi trả / Bảo hành",
     "headerSubtitle": "Vui lòng điền đầy đủ thông tin dưới đây để chúng tôi hỗ trợ bạn nhanh nhất.",
     "breadcrumb": {
@@ -600,6 +608,18 @@
       "description": "Nhân viên của chúng tôi luôn sẵn sàng hỗ trợ bạn từ 8:00 - 22:00 hàng ngày.",
       "hotline": "1900 1234 (Miễn phí)",
       "zalo": "Chat Zalo hỗ trợ"
+    },
+    "errors": {
+      "loadOrderFailed": "Không thể tải thông tin đơn hàng",
+      "orderNotFound": "Không tìm thấy đơn hàng",
+      "selectProduct": "Vui lòng chọn ít nhất một sản phẩm",
+      "reasonRequired": "Vui lòng chọn lý do",
+      "descriptionMinLength": "Mô tả phải có ít nhất 10 ký tự",
+      "bankNameRequired": "Vui lòng nhập tên ngân hàng",
+      "bankAccountNumberRequired": "Vui lòng nhập số tài khoản",
+      "bankAccountHolderRequired": "Vui lòng nhập tên chủ tài khoản",
+      "createFailed": "Không thể tạo yêu cầu đổi trả",
+      "systemError": "Lỗi hệ thống, vui lòng thử lại"
     }
   },
   "orderDetail": {
