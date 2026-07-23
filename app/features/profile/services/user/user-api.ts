@@ -30,19 +30,40 @@ export interface UpdateUserProfilePayload {
   fullName?: string
   dateOfBirth?: string
   gender?: string
-  mediaFiles?: Array<{
-    fileUrl?: string
-    fileKey?: string
-    fileSize?: number
-    fileType?: string
-    mediaPurpose?: string
-  }>
 }
 
-export async function updateCurrentUserApi(payload: UpdateUserProfilePayload): Promise<ApiResponse<UserResponse>> {
+export async function updateCurrentUserApi(
+  payload: UpdateUserProfilePayload,
+  avatarFile: File | null = null
+): Promise<ApiResponse<UserResponse>> {
+  const formData = new FormData()
+  formData.append('data', JSON.stringify(payload))
+  if (avatarFile) {
+    formData.append('images', avatarFile)
+  }
+
   return customFetch<ApiResponse<UserResponse>>({
     url: `${USERS_BASE_URL}/me`,
     method: 'PUT',
-    data: payload
+    data: formData
   })
 }
+
+export async function updateUserByIdApi(
+  userId: string,
+  payload: UpdateUserProfilePayload,
+  avatarFile: File | null = null
+): Promise<ApiResponse<UserResponse>> {
+  const formData = new FormData()
+  formData.append('data', JSON.stringify(payload))
+  if (avatarFile) {
+    formData.append('images', avatarFile)
+  }
+
+  return customFetch<ApiResponse<UserResponse>>({
+    url: `${USERS_BASE_URL}/${userId}`,
+    method: 'PUT',
+    data: formData
+  })
+}
+

@@ -41,7 +41,7 @@
     "avatarAlt": "Large profile photo",
     "changePhoto": "Change profile photo",
     "goldMember": "Gold member",
-    "memberSince": "Joined January 2023 • 150 reward points",
+    "memberSince": "Member since {{date}}",
     "edit": "Edit",
     "editProfile": {
       "title": "Edit personal information",
@@ -542,6 +542,14 @@
     }
   },
   "returnWarranty": {
+    "refundDetails": "Refund Details",
+    "products": "products",
+    "product": "Product",
+    "quantity": "Quantity",
+    "total": "Total",
+    "estimatedRefund": "Estimated Refund",
+    "calculating": "Calculating...",
+    "loading": "Loading...",
     "headerTitle": "Submit Return / Warranty Request",
     "headerSubtitle": "Please fill in all the details below so we can support you as fast as possible.",
     "breadcrumb": {
@@ -600,6 +608,18 @@
       "description": "Our staff is always ready to support you from 8:00 to 22:00 daily.",
       "hotline": "1900 1234 (Free)",
       "zalo": "Chat Zalo Support"
+    },
+    "errors": {
+      "loadOrderFailed": "Failed to load order information",
+      "orderNotFound": "Order not found",
+      "selectProduct": "Please select at least one product",
+      "reasonRequired": "Please select a reason",
+      "descriptionMinLength": "Description must be at least 10 characters",
+      "bankNameRequired": "Please enter bank name",
+      "bankAccountNumberRequired": "Please enter account number",
+      "bankAccountHolderRequired": "Please enter account holder name",
+      "createFailed": "Failed to create return/warranty request",
+      "systemError": "System error, please try again"
     }
   },
   "orderDetail": {

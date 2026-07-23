@@ -8,10 +8,15 @@ import { AdminFooter } from '../components/layout/admin-footer'
 import { AdminSidebar } from '../components/layout/admin-sidebar'
 import { AdminTopNav } from '../components/layout/admin-top-nav'
 import {
+  assignBookingManagementGroomer,
   BookingStatus,
+  getBookingManagementAvailableGroomers,
   getBookingManagementDetail,
   getBookingManagementList,
   updateBookingManagementStatus,
+  type AvailableGroomerRequest,
+  type AvailableGroomerResponse,
+  type BookingDetailResponse,
   type BookingResponse
 } from '../services'
 
@@ -55,6 +60,10 @@ const STATUS_ACTIONS: Partial<Record<BookingStatus, BookingStatus[]>> = {
   [BookingStatus.READY_FOR_PICKUP]: [BookingStatus.COMPLETED, BookingStatus.CANCELLED]
 }
 
+const EMPTY_MEDIA: MediaFileLike[] = []
+
+type MediaFileLike = BookingDetailResponse['mediaFiles'][number]
+
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -93,6 +102,35 @@ function getBookingTime(booking: BookingResponse): string {
   return booking.bookingDetails.find((detail) => detail.timeSlot)?.timeSlot ?? ''
 }
 
+function getBookingStaffName(booking: BookingResponse): string {
+  return booking.assignedStaffName || booking.staffName || booking.requestedStaffName || ''
+}
+
+function buildAvailableGroomerPayload(booking: BookingResponse): AvailableGroomerRequest {
+  return {
+    scheduledAt: booking.scheduledAt,
+    bookingType: booking.bookingType,
+    latitude: booking.latitude,
+    longitude: booking.longitude,
+    estimatedTravelMinute: booking.estimatedTravelMinute,
+    bookingDetails: booking.bookingDetails.map((detail) => ({
+      petId: detail.petId,
+      catalogId: detail.catalogId,
+      timeSlotId: detail.timeSlotId,
+      note: detail.note
+    }))
+  }
+}
+
+function getMediaByType(mediaFiles: MediaFileLike[] | undefined, type: 'BEFORE_SERVICE' | 'AFTER_SERVICE') {
+  return (mediaFiles ?? EMPTY_MEDIA).filter(
+    (media) =>
+      media.fileUrl &&
+      media.bookingMediaType === type &&
+      (!media.mediaStatus || media.mediaStatus.toUpperCase() === 'ACTIVE')
+  )
+}
+
 export interface AdminServiceBookingsPageProps {
   sidebar?: ReactNode
   topNav?: ReactNode
@@ -113,9 +151,12 @@ export function AdminServiceBookingsPage({
   const [pendingStatusChange, setPendingStatusChange] = useState<PendingStatusChange>(null)
   const [cancelReason, setCancelReason] = useState('')
   const [openActionBookingId, setOpenActionBookingId] = useState<number | null>(null)
+  const [availableGroomers, setAvailableGroomers] = useState<AvailableGroomerResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isDetailLoading, setIsDetailLoading] = useState(false)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
+  const [isLoadingGroomers, setIsLoadingGroomers] = useState(false)
+  const [isAssigningGroomer, setIsAssigningGroomer] = useState(false)
   const [toast, setToast] = useState<ToastState>(null)
 
   const stats = useMemo(() => {
@@ -167,7 +208,13 @@ export function AdminServiceBookingsPage({
   async function handleViewDetail(bookingId: number) {
     try {
       setIsDetailLoading(true)
-      setSelectedBooking(await getBookingManagementDetail(bookingId))
+      setAvailableGroomers([])
+      const booking = await getBookingManagementDetail(bookingId)
+      setSelectedBooking(booking)
+
+      if (canManageStatus) {
+        void loadAvailableGroomers(booking)
+      }
     } catch (error) {
       setToast({
         type: 'error',
@@ -175,6 +222,21 @@ export function AdminServiceBookingsPage({
       })
     } finally {
       setIsDetailLoading(false)
+    }
+  }
+
+  async function loadAvailableGroomers(booking: BookingResponse) {
+    try {
+      setIsLoadingGroomers(true)
+      setAvailableGroomers(await getBookingManagementAvailableGroomers(buildAvailableGroomerPayload(booking)))
+    } catch (error) {
+      setAvailableGroomers([])
+      setToast({
+        type: 'error',
+        message: error instanceof Error ? error.message : t('serviceBookings.feedback.groomerLoadFailed')
+      })
+    } finally {
+      setIsLoadingGroomers(false)
     }
   }
 
@@ -213,6 +275,29 @@ export function AdminServiceBookingsPage({
       })
     } finally {
       setIsUpdatingStatus(false)
+    }
+  }
+
+  async function handleAssignGroomer(booking: BookingResponse, groomerId: string) {
+    if (!groomerId) return
+
+    try {
+      setIsAssigningGroomer(true)
+      const updatedBooking = await assignBookingManagementGroomer(booking.bookingId, groomerId)
+      setBookings((current) =>
+        current.map((currentBooking) =>
+          currentBooking.bookingId === updatedBooking.bookingId ? updatedBooking : currentBooking
+        )
+      )
+      setSelectedBooking(updatedBooking)
+      setToast({ type: 'success', message: t('serviceBookings.feedback.assignSuccess') })
+    } catch (error) {
+      setToast({
+        type: 'error',
+        message: error instanceof Error ? error.message : t('serviceBookings.feedback.assignFailed')
+      })
+    } finally {
+      setIsAssigningGroomer(false)
     }
   }
 
@@ -287,6 +372,11 @@ export function AdminServiceBookingsPage({
       <BookingDetailModal
         booking={selectedBooking}
         isLoading={isDetailLoading}
+        canManageStatus={canManageStatus}
+        availableGroomers={availableGroomers}
+        isLoadingGroomers={isLoadingGroomers}
+        isAssigningGroomer={isAssigningGroomer}
+        onAssignGroomer={(booking, groomerId) => void handleAssignGroomer(booking, groomerId)}
         onClose={() => setSelectedBooking(null)}
       />
       <CancelReasonModal
@@ -612,11 +702,26 @@ function BookingManagementTable({
 interface BookingDetailModalProps {
   booking: BookingResponse | null
   isLoading: boolean
+  canManageStatus: boolean
+  availableGroomers: AvailableGroomerResponse[]
+  isLoadingGroomers: boolean
+  isAssigningGroomer: boolean
+  onAssignGroomer: (booking: BookingResponse, groomerId: string) => void
   onClose: () => void
 }
 
-function BookingDetailModal({ booking, isLoading, onClose }: BookingDetailModalProps) {
+function BookingDetailModal({
+  booking,
+  isLoading,
+  canManageStatus,
+  availableGroomers,
+  isLoadingGroomers,
+  isAssigningGroomer,
+  onAssignGroomer,
+  onClose
+}: BookingDetailModalProps) {
   const { t } = useTranslation('admin')
+  const [selectedGroomerId, setSelectedGroomerId] = useState('')
 
   if (!booking && !isLoading) return null
 
@@ -656,63 +761,251 @@ function BookingDetailModal({ booking, isLoading, onClose }: BookingDetailModalP
                 {t('serviceBookings.detail.cancel')}
               </Button>
             </header>
-            <div className='grid max-h-[calc(100vh-12rem)] gap-5 overflow-y-auto p-5 lg:grid-cols-[1fr_18rem]'>
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                <InfoCard label={t('serviceBookings.detail.fields.service')} value={getBookingServices(booking)} />
-                <InfoCard label={t('serviceBookings.detail.fields.pet')} value={getBookingPets(booking)} />
-                <InfoCard
-                  label={t('serviceBookings.detail.fields.schedule')}
-                  value={`${formatDateTime(booking.scheduledAt)} · ${getBookingTime(booking) || '-'}`}
-                />
-                {booking.estimatedEndAt ? (
+            <div className='grid max-h-[calc(100vh-12rem)] gap-5 overflow-y-auto p-5 lg:grid-cols-[1fr_20rem]'>
+              <div className='space-y-5'>
+                <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                  <InfoCard label={t('serviceBookings.detail.fields.service')} value={getBookingServices(booking)} />
+                  <InfoCard label={t('serviceBookings.detail.fields.pet')} value={getBookingPets(booking)} />
                   <InfoCard
-                    label={t('serviceBookings.detail.fields.estimatedEndAt')}
-                    value={formatDateTime(booking.estimatedEndAt)}
+                    label={t('serviceBookings.detail.fields.schedule')}
+                    value={`${formatDateTime(booking.scheduledAt)} · ${getBookingTime(booking) || '-'}`}
                   />
-                ) : null}
-                <InfoCard
-                  label={t('serviceBookings.detail.fields.bookingType')}
-                  value={t(`serviceBookings.bookingTypes.${booking.bookingType}`)}
-                />
-                <InfoCard
-                  label={t('serviceBookings.detail.fields.totalAmount')}
-                  value={formatCurrency(booking.totalAmount)}
-                />
-                <InfoCard
-                  label={t('serviceBookings.detail.fields.status')}
-                  value={t(`serviceBookings.status.${getBookingStatus(booking)}`)}
-                />
-                {booking.address && (
-                  <InfoCard label={t('serviceBookings.detail.fields.address')} value={booking.address} />
-                )}
-                {booking.cancelReason && (
-                  <InfoCard label={t('serviceBookings.detail.fields.cancelReason')} value={booking.cancelReason} />
-                )}
-              </div>
-              <aside className='rounded-xl border border-border bg-muted p-5'>
-                <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-secondary-foreground'>
-                  <MaterialIcon name='payments' className='text-2xl' />
+                  {booking.estimatedEndAt ? (
+                    <InfoCard
+                      label={t('serviceBookings.detail.fields.estimatedEndAt')}
+                      value={formatDateTime(booking.estimatedEndAt)}
+                    />
+                  ) : null}
+                  <InfoCard
+                    label={t('serviceBookings.detail.fields.bookingType')}
+                    value={t(`serviceBookings.bookingTypes.${booking.bookingType}`)}
+                  />
+                  <InfoCard
+                    label={t('serviceBookings.detail.fields.totalAmount')}
+                    value={formatCurrency(booking.totalAmount)}
+                  />
+                  <InfoCard
+                    label={t('serviceBookings.detail.fields.status')}
+                    value={t(`serviceBookings.status.${getBookingStatus(booking)}`)}
+                  />
+                  {booking.address && (
+                    <InfoCard label={t('serviceBookings.detail.fields.address')} value={booking.address} />
+                  )}
+                  {booking.addressNote ? (
+                    <InfoCard label={t('serviceBookings.detail.fields.addressNote')} value={booking.addressNote} />
+                  ) : null}
+                  {booking.distanceKm ? (
+                    <InfoCard
+                      label={t('serviceBookings.detail.fields.distance')}
+                      value={t('serviceBookings.detail.distanceValue', { value: booking.distanceKm.toFixed(1) })}
+                    />
+                  ) : null}
+                  {booking.travelFee ? (
+                    <InfoCard
+                      label={t('serviceBookings.detail.fields.travelFee')}
+                      value={formatCurrency(booking.travelFee)}
+                    />
+                  ) : null}
+                  {booking.note ? (
+                    <InfoCard label={t('serviceBookings.detail.fields.note')} value={booking.note} />
+                  ) : null}
+                  {booking.cancelReason && (
+                    <InfoCard label={t('serviceBookings.detail.fields.cancelReason')} value={booking.cancelReason} />
+                  )}
                 </div>
-                <h3 className='mt-4 font-bold text-card-foreground'>{t('serviceBookings.detail.paymentTitle')}</h3>
-                <dl className='mt-4 space-y-3 text-sm'>
-                  <DetailRow
-                    label={t('serviceBookings.detail.fields.depositAmount')}
-                    value={formatCurrency(booking.depositAmount)}
-                  />
-                  <DetailRow
-                    label={t('serviceBookings.detail.fields.remainingAmount')}
-                    value={formatCurrency(booking.remainingAmount)}
-                  />
-                  <DetailRow
-                    label={t('serviceBookings.detail.fields.staff')}
-                    value={booking.staffName || t('serviceBookings.detail.unassigned')}
-                  />
-                </dl>
+                <section className='rounded-xl border border-border bg-background p-4'>
+                  <h3 className='font-display text-lg font-bold'>{t('serviceBookings.detail.sections.items')}</h3>
+                  <div className='mt-4 space-y-4'>
+                    {booking.bookingDetails.map((detail) => (
+                      <BookingDetailItem key={detail.bookingDetailId} detail={detail} />
+                    ))}
+                  </div>
+                </section>
+              </div>
+              <aside className='space-y-4'>
+                <div className='rounded-xl border border-border bg-muted p-5'>
+                  <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-secondary-foreground'>
+                    <MaterialIcon name='payments' className='text-2xl' />
+                  </div>
+                  <h3 className='mt-4 font-bold text-card-foreground'>{t('serviceBookings.detail.paymentTitle')}</h3>
+                  <dl className='mt-4 space-y-3 text-sm'>
+                    <DetailRow
+                      label={t('serviceBookings.detail.fields.depositAmount')}
+                      value={formatCurrency(booking.depositAmount)}
+                    />
+                    <DetailRow
+                      label={t('serviceBookings.detail.fields.remainingAmount')}
+                      value={formatCurrency(booking.remainingAmount)}
+                    />
+                    <DetailRow
+                      label={t('serviceBookings.detail.fields.staff')}
+                      value={getBookingStaffName(booking) || t('serviceBookings.detail.unassigned')}
+                    />
+                  </dl>
+                </div>
+                {canManageStatus ? (
+                  <section className='rounded-xl border border-border bg-background p-4'>
+                    <div className='flex items-center gap-3'>
+                      <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary'>
+                        <MaterialIcon name='assignment_ind' />
+                      </div>
+                      <div>
+                        <h3 className='font-bold'>{t('serviceBookings.assign.title')}</h3>
+                        <p className='text-xs text-muted-foreground'>{t('serviceBookings.assign.subtitle')}</p>
+                      </div>
+                    </div>
+                    <label className='mt-4 block'>
+                      <span className='mb-2 block text-sm font-semibold'>
+                        {t('serviceBookings.assign.groomerLabel')}
+                      </span>
+                      <select
+                        value={selectedGroomerId}
+                        onChange={(event) => setSelectedGroomerId(event.target.value)}
+                        className='h-11 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus:ring-2 focus:ring-ring'
+                        disabled={isLoadingGroomers || isAssigningGroomer || availableGroomers.length === 0}
+                      >
+                        <option value=''>
+                          {isLoadingGroomers
+                            ? t('serviceBookings.assign.loading')
+                            : t('serviceBookings.assign.placeholder')}
+                        </option>
+                        {availableGroomers.map((groomer) => (
+                          <option key={groomer.staffId} value={groomer.staffId}>
+                            {groomer.fullName} · {groomer.shiftStart.slice(0, 5)}-{groomer.shiftEnd.slice(0, 5)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    {!isLoadingGroomers && availableGroomers.length === 0 ? (
+                      <p className='mt-3 rounded-md bg-muted px-3 py-2 text-sm text-muted-foreground'>
+                        {t('serviceBookings.assign.empty')}
+                      </p>
+                    ) : null}
+                    <Button
+                      type='button'
+                      className='mt-4 w-full'
+                      disabled={!selectedGroomerId || isAssigningGroomer}
+                      onClick={() => onAssignGroomer(booking, selectedGroomerId)}
+                    >
+                      <MaterialIcon
+                        name={isAssigningGroomer ? 'progress_activity' : 'how_to_reg'}
+                        className={cn(isAssigningGroomer && 'animate-spin')}
+                      />
+                      {isAssigningGroomer ? t('serviceBookings.assign.submitting') : t('serviceBookings.assign.submit')}
+                    </Button>
+                  </section>
+                ) : null}
               </aside>
             </div>
           </>
         )}
       </section>
+    </div>
+  )
+}
+
+function BookingDetailItem({ detail }: { detail: BookingDetailResponse }) {
+  const { t } = useTranslation('admin')
+  const beforeMedia = getMediaByType(detail.mediaFiles, 'BEFORE_SERVICE')
+  const afterMedia = getMediaByType(detail.mediaFiles, 'AFTER_SERVICE')
+  const extraDuration = detail.additionalDurationMinute ?? 0
+  const extraPrice = detail.additionalPrice ?? 0
+
+  return (
+    <article className='rounded-xl border border-border bg-card p-4'>
+      <div className='flex flex-col gap-4 md:flex-row'>
+        <div className='flex gap-3 md:w-64'>
+          <div className='h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-border bg-muted'>
+            {detail.petImage ? (
+              <img src={detail.petImage} alt={detail.petName} className='h-full w-full object-cover' />
+            ) : (
+              <div className='flex h-full w-full items-center justify-center text-primary'>
+                <MaterialIcon name='pets' />
+              </div>
+            )}
+          </div>
+          <div>
+            <p className='text-xs font-bold uppercase tracking-normal text-muted-foreground'>
+              {t('serviceBookings.detail.petLabel')}
+            </p>
+            <h4 className='font-bold text-card-foreground'>{detail.petName || '-'}</h4>
+            <p className='text-sm text-muted-foreground'>
+              {[detail.petSpecies, detail.petWeight ? `${detail.petWeight}kg` : ''].filter(Boolean).join(' · ') ||
+                t('serviceBookings.table.emptyValue')}
+            </p>
+          </div>
+        </div>
+        <div className='min-w-0 flex-1'>
+          <p className='text-xs font-bold uppercase tracking-normal text-muted-foreground'>
+            {t('serviceBookings.detail.serviceLabel')}
+          </p>
+          <h4 className='font-display text-lg font-bold'>{detail.catalogName}</h4>
+          <div className='mt-3 grid gap-2 text-sm md:grid-cols-2'>
+            <DetailRow
+              label={t('serviceBookings.detail.fields.baseDuration')}
+              value={t('serviceBookings.detail.minuteValue', {
+                value: detail.baseDurationMinute ?? detail.durationMinute
+              })}
+            />
+            <DetailRow
+              label={t('serviceBookings.detail.fields.additionalDuration')}
+              value={t('serviceBookings.detail.minuteValue', { value: extraDuration })}
+            />
+            <DetailRow
+              label={t('serviceBookings.detail.fields.basePrice')}
+              value={formatCurrency(detail.basePrice ?? detail.unitPrice)}
+            />
+            <DetailRow label={t('serviceBookings.detail.fields.additionalPrice')} value={formatCurrency(extraPrice)} />
+            <DetailRow
+              label={t('serviceBookings.detail.fields.totalDuration')}
+              value={t('serviceBookings.detail.minuteValue', {
+                value: detail.totalDurationMinute ?? detail.durationMinute
+              })}
+            />
+            <DetailRow
+              label={t('serviceBookings.detail.fields.totalAmount')}
+              value={formatCurrency(detail.totalPrice)}
+            />
+          </div>
+          {detail.petHealthNote ? (
+            <p className='mt-3 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-sm font-semibold text-warning'>
+              {detail.petHealthNote}
+            </p>
+          ) : null}
+          {detail.note ? <p className='mt-3 text-sm text-muted-foreground'>{detail.note}</p> : null}
+          <div className='mt-4 grid gap-3 md:grid-cols-2'>
+            <MediaPreview title={t('serviceBookings.detail.beforeMedia')} mediaFiles={beforeMedia} />
+            <MediaPreview title={t('serviceBookings.detail.afterMedia')} mediaFiles={afterMedia} />
+          </div>
+        </div>
+      </div>
+    </article>
+  )
+}
+
+function MediaPreview({ title, mediaFiles }: { title: string; mediaFiles: MediaFileLike[] }) {
+  const { t } = useTranslation('admin')
+
+  return (
+    <div className='rounded-lg border border-border bg-background p-3'>
+      <p className='text-sm font-bold'>{title}</p>
+      {mediaFiles.length > 0 ? (
+        <div className='mt-3 flex flex-wrap gap-2'>
+          {mediaFiles.map((media) => (
+            <a
+              key={media.mediaFileId}
+              href={media.fileUrl}
+              target='_blank'
+              rel='noreferrer'
+              className='h-16 w-16 overflow-hidden rounded-md border border-border bg-muted'
+            >
+              <img src={media.fileUrl} alt={title} className='h-full w-full object-cover' />
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p className='mt-2 text-sm text-muted-foreground'>{t('serviceBookings.detail.noMedia')}</p>
+      )}
     </div>
   )
 }

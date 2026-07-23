@@ -473,7 +473,10 @@
       "updateFailed": "Không thể cập nhật trạng thái booking.",
       "updateSuccess": "Đã cập nhật trạng thái booking.",
       "emptyTitle": "Không tìm thấy booking",
-      "emptyText": "Thử chọn tab trạng thái khác hoặc điều chỉnh khoảng ngày."
+      "emptyText": "Thử chọn tab trạng thái khác hoặc điều chỉnh khoảng ngày.",
+      "groomerLoadFailed": "Không thể tải danh sách groomer rảnh.",
+      "assignFailed": "Không thể gán groomer cho booking này.",
+      "assignSuccess": "Đã gán groomer cho booking."
     },
     "cancelModal": {
       "close": "Đóng hộp thoại hủy lịch",
@@ -525,8 +528,36 @@
         "note": "Ghi chú",
         "staff": "Nhân viên",
         "address": "Địa chỉ",
-        "cancelReason": "Lý do hủy"
-      }
+        "cancelReason": "Lý do hủy",
+        "addressNote": "Ghi chú địa chỉ",
+        "distance": "Khoảng cách",
+        "travelFee": "Phí di chuyển",
+        "baseDuration": "Thời lượng cơ bản",
+        "additionalDuration": "Thời lượng cộng thêm",
+        "totalDuration": "Tổng thời lượng",
+        "basePrice": "Giá dịch vụ",
+        "additionalPrice": "Phụ phí"
+      },
+      "distanceValue": "{{value}} km",
+      "petLabel": "Thú cưng",
+      "serviceLabel": "Gói dịch vụ",
+      "beforeMedia": "Ảnh trước khi thực hiện",
+      "afterMedia": "Ảnh sau khi thực hiện",
+      "noMedia": "Chưa có ảnh.",
+      "sections": {
+        "items": "Thú cưng và dịch vụ"
+      },
+      "minuteValue": "{{value}} phút"
+    },
+    "assign": {
+      "title": "Gán groomer",
+      "subtitle": "Chỉ hiển thị nhân viên rảnh theo lịch hẹn này.",
+      "groomerLabel": "Nhân viên phù hợp",
+      "placeholder": "Chọn groomer để gán",
+      "loading": "Đang tải nhân viên rảnh...",
+      "empty": "Chưa có groomer rảnh phù hợp với khung giờ này.",
+      "submit": "Gán groomer",
+      "submitting": "Đang gán..."
     }
   },
   "serviceManagement": {

@@ -473,7 +473,10 @@
       "updateFailed": "Could not update booking status.",
       "updateSuccess": "Booking status updated.",
       "emptyTitle": "No bookings found",
-      "emptyText": "Try another status tab or adjust the date range."
+      "emptyText": "Try another status tab or adjust the date range.",
+      "groomerLoadFailed": "Could not load available groomers.",
+      "assignFailed": "Could not assign groomer to this booking.",
+      "assignSuccess": "Groomer assigned to booking."
     },
     "cancelModal": {
       "close": "Close cancellation dialog",
@@ -525,8 +528,36 @@
         "note": "Note",
         "staff": "Staff",
         "address": "Address",
-        "cancelReason": "Cancel reason"
-      }
+        "cancelReason": "Cancel reason",
+        "addressNote": "Address note",
+        "distance": "Distance",
+        "travelFee": "Travel fee",
+        "baseDuration": "Base duration",
+        "additionalDuration": "Additional duration",
+        "totalDuration": "Total duration",
+        "basePrice": "Base price",
+        "additionalPrice": "Surcharge"
+      },
+      "distanceValue": "{{value}} km",
+      "petLabel": "Pet",
+      "serviceLabel": "Service package",
+      "beforeMedia": "Before service photos",
+      "afterMedia": "After service photos",
+      "noMedia": "No photos yet.",
+      "sections": {
+        "items": "Pets and services"
+      },
+      "minuteValue": "{{value}} min"
+    },
+    "assign": {
+      "title": "Assign groomer",
+      "subtitle": "Only available staff for this booking time are shown.",
+      "groomerLabel": "Available groomer",
+      "placeholder": "Choose a groomer",
+      "loading": "Loading available groomers...",
+      "empty": "No groomers are available for this time slot.",
+      "submit": "Assign groomer",
+      "submitting": "Assigning..."
     }
   },
   "serviceManagement": {
