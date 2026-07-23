@@ -258,12 +258,16 @@ export function StaffReturnDetailDialog({
       }
 
       // RETURNED_TO_STORE -> phân biệt theo type
+      // SỬA ĐOẠN NÀY (dòng ~208-218)
       if (status === 'RETURNED_TO_STORE') {
         if (type === 'RETURN') {
-          // RETURN: hàng về kho -> hoàn tiền
-          actions.push({ value: 'COMPLETED', label: t('returns.detail.btnComplete'), variant: 'success' })
+          // ✅ RETURN: 2 nút COMPLETED và REJECTED_RETURN_SHIPPING
+          actions.push(
+            { value: 'COMPLETED', label: t('returns.detail.btnComplete'), variant: 'success' },
+            { value: 'REJECTED_RETURN_SHIPPING', label: t('returns.detail.btnRejectReturnShipping'), variant: 'danger' }
+          )
         } else if (type === 'EXCHANGE') {
-          // ✅ EXCHANGE: hàng cũ về kho -> gán shipper (để giao hàng mới) hoặc từ chối
+          // ✅ EXCHANGE: giữ nguyên
           actions.push(
             { value: 'ASSIGN_SHIPPER', label: t('returns.detail.assignShipper'), variant: 'primary' },
             { value: 'REJECTED_RETURN_SHIPPING', label: t('returns.detail.btnRejectReturnShipping'), variant: 'danger' }
