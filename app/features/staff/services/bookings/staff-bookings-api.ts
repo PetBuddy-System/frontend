@@ -82,10 +82,11 @@ export interface BookingResponse {
   requestedStaffName?: string
   assignedStaffId?: string
   assignedStaffName?: string
-  departedAt?: string
-  actualStartedAt?: string
-  actualCompletedAt?: string
+  departedAt?: string | null
+  actualStartedAt?: string | null
+  actualCompletedAt?: string | null
   scheduledAt: string
+  estimatedEndAt?: string | null
   bookingStatus: BookingStatus
   totalAmount: number
   depositAmount: number

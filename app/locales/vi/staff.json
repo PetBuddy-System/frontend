@@ -268,7 +268,16 @@
       "scheduledAt": "Ngày giờ hẹn",
       "title": "Chi tiết booking",
       "totalAmount": "Tổng tiền",
-      "unitPrice": "Giá dịch vụ"
+      "unitPrice": "Giá dịch vụ",
+      "travelTimingTitle": "Thời gian di chuyển tại nhà",
+      "serviceAppointmentAt": "Giờ hẹn làm dịch vụ",
+      "estimatedTravelMinute": "Thời gian di chuyển dự kiến",
+      "earliestDepartureAt": "Có thể bắt đầu di chuyển từ",
+      "estimatedArrivalAt": "Dự kiến tới nơi / bắt đầu dịch vụ",
+      "estimatedEndAt": "Dự kiến hoàn thành",
+      "departureHelper": "Bạn có thể bắt đầu di chuyển từ {{time}}.",
+      "departureAvailable": "Đã có thể di chuyển",
+      "departureWaiting": "Chưa tới giờ di chuyển"
     },
     "confirm": {
       "IN_PROGRESS": {

@@ -43,6 +43,32 @@ function formatDateTime(value: string): string {
   }).format(date)
 }
 
+function formatTime(value: string | Date): string {
+  const date = value instanceof Date ? value : new Date(value)
+  if (Number.isNaN(date.getTime())) return typeof value === 'string' ? value : '-'
+
+  return new Intl.DateTimeFormat('vi-VN', {
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(date)
+}
+
+function getEstimatedTravelMinute(booking: BookingResponse): number {
+  const travelMinute = Number(booking.estimatedTravelMinute ?? 0)
+  return Number.isFinite(travelMinute) && travelMinute > 0 ? travelMinute : 30
+}
+
+function getEarliestDepartureAt(booking: BookingResponse): Date | null {
+  const scheduledAt = new Date(booking.scheduledAt)
+
+  if (Number.isNaN(scheduledAt.getTime())) {
+    return null
+  }
+
+  const travelBufferMinute = getEstimatedTravelMinute(booking) + 15
+  return new Date(scheduledAt.getTime() - travelBufferMinute * 60_000)
+}
+
 function getNextStatus(booking: BookingResponse): GroomerBookingStatus | null {
   const status = booking.bookingStatus as GroomerBookingStatus
   const isAtHome = booking.bookingType === 'AT_HOME'
@@ -290,6 +316,7 @@ export function StaffGroomerBookingDetailPage() {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
   const [previewByDetailId, setPreviewByDetailId] = useState<Record<number, { file: File; url: string }>>({})
+  const [nowMs, setNowMs] = useState(() => Date.now())
 
   const nextStatus = booking ? getNextStatus(booking) : null
   const isNextAllowed = booking ? canMoveToNextStatus(booking, nextStatus) : false
@@ -319,6 +346,11 @@ export function StaffGroomerBookingDetailPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Detail route loads the booking payload on entry.
     void loadBooking()
   }, [loadBooking])
+
+  useEffect(() => {
+    const timerId = window.setInterval(() => setNowMs(Date.now()), 30_000)
+    return () => window.clearInterval(timerId)
+  }, [])
 
   async function reloadBooking() {
     if (!booking) return null
@@ -453,6 +485,7 @@ export function StaffGroomerBookingDetailPage() {
                 isLoading={isLoading}
                 isNextAllowed={isNextAllowed}
                 nextStatus={nextStatus}
+                nowMs={nowMs}
                 previewByDetailId={previewByDetailId}
                 onCancelClick={() => setIsCancelModalOpen(true)}
                 onFileChange={handleFileChange}
@@ -506,6 +539,7 @@ function BookingDetailPanel({
   isLoading,
   isNextAllowed,
   nextStatus,
+  nowMs,
   previewByDetailId,
   onCancelClick,
   onFileChange,
@@ -517,6 +551,7 @@ function BookingDetailPanel({
   isLoading: boolean
   isNextAllowed: boolean
   nextStatus: GroomerBookingStatus | null
+  nowMs: number
   previewByDetailId: Record<number, { file: File; url: string }>
   onCancelClick: () => void
   onFileChange: (detailId: number, event: ChangeEvent<HTMLInputElement>) => void
@@ -527,6 +562,9 @@ function BookingDetailPanel({
   const status = booking.bookingStatus as GroomerBookingStatus
   const uploadType = getUploadType(booking)
   const isAtHome = booking.bookingType === 'AT_HOME'
+  const earliestDepartureAt = isAtHome ? getEarliestDepartureAt(booking) : null
+  const canDepartAtHome = !earliestDepartureAt || nowMs >= earliestDepartureAt.getTime()
+  const shouldGateDeparture = isAtHome && status === 'ACCEPTED'
 
   return (
     <aside className='rounded-2xl border border-border bg-card p-5 shadow-sm'>
@@ -564,6 +602,53 @@ function BookingDetailPanel({
         />
       </div>
 
+      {isAtHome && (
+        <section className='mt-4 rounded-2xl border border-border bg-background p-4'>
+          <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
+            <h3 className='font-semibold text-card-foreground'>{t('groomerBookings.detail.travelTimingTitle')}</h3>
+            {shouldGateDeparture && earliestDepartureAt ? (
+              <span
+                className={cn(
+                  'w-fit rounded-full px-3 py-1 text-xs font-semibold',
+                  canDepartAtHome ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'
+                )}
+              >
+                {canDepartAtHome
+                  ? t('groomerBookings.detail.departureAvailable')
+                  : t('groomerBookings.detail.departureWaiting')}
+              </span>
+            ) : null}
+          </div>
+          <div className='mt-3 grid gap-2 md:grid-cols-2'>
+            <InfoLine
+              label={t('groomerBookings.detail.serviceAppointmentAt')}
+              value={formatDateTime(booking.scheduledAt)}
+            />
+            <InfoLine
+              label={t('groomerBookings.detail.estimatedTravelMinute')}
+              value={t('groomerBookings.card.minutesValue', { value: getEstimatedTravelMinute(booking) })}
+            />
+            <InfoLine
+              label={t('groomerBookings.detail.earliestDepartureAt')}
+              value={earliestDepartureAt ? formatDateTime(earliestDepartureAt.toISOString()) : '-'}
+            />
+            <InfoLine
+              label={t('groomerBookings.detail.estimatedArrivalAt')}
+              value={formatDateTime(booking.scheduledAt)}
+            />
+            <InfoLine
+              label={t('groomerBookings.detail.estimatedEndAt')}
+              value={booking.estimatedEndAt ? formatDateTime(booking.estimatedEndAt) : '-'}
+            />
+          </div>
+          {shouldGateDeparture && earliestDepartureAt && !canDepartAtHome ? (
+            <p className='mt-3 rounded-xl bg-muted px-3 py-2 text-sm text-muted-foreground'>
+              {t('groomerBookings.detail.departureHelper', { time: formatTime(earliestDepartureAt) })}
+            </p>
+          ) : null}
+        </section>
+      )}
+
       {status === 'CANCELLED' && (
         <div className='mt-4 rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive'>
           <p className='font-semibold'>{t('groomerBookings.detail.cancelReason')}</p>
@@ -575,7 +660,7 @@ function BookingDetailPanel({
         {status === 'ACCEPTED' && (
           <>
             <Button
-              disabled={isLoading || !nextStatus || !isNextAllowed}
+              disabled={isLoading || !nextStatus || !isNextAllowed || (shouldGateDeparture && !canDepartAtHome)}
               onClick={() => nextStatus && onRequestStatus(nextStatus)}
             >
               <MaterialIcon name={isAtHome ? 'directions_bike' : 'play_circle'} className='text-[18px]' />
@@ -588,6 +673,11 @@ function BookingDetailPanel({
             {!isNextAllowed && (
               <p className='w-full text-sm text-muted-foreground'>{t('groomerBookings.messages.beforeRequired')}</p>
             )}
+            {shouldGateDeparture && !canDepartAtHome && earliestDepartureAt ? (
+              <p className='w-full text-sm text-muted-foreground'>
+                {t('groomerBookings.detail.departureHelper', { time: formatTime(earliestDepartureAt) })}
+              </p>
+            ) : null}
           </>
         )}
         {status === 'ON_THE_WAY' && nextStatus && (

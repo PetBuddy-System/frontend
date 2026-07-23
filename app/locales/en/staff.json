@@ -268,7 +268,16 @@
       "scheduledAt": "Scheduled at",
       "title": "Booking detail",
       "totalAmount": "Total amount",
-      "unitPrice": "Service price"
+      "unitPrice": "Service price",
+      "travelTimingTitle": "At-home travel timing",
+      "serviceAppointmentAt": "Service appointment time",
+      "estimatedTravelMinute": "Estimated travel time",
+      "earliestDepartureAt": "Earliest departure time",
+      "estimatedArrivalAt": "Estimated arrival / service start",
+      "estimatedEndAt": "Estimated completion",
+      "departureHelper": "You can start traveling from {{time}}.",
+      "departureAvailable": "Travel can start now",
+      "departureWaiting": "Waiting for departure time"
     },
     "confirm": {
       "IN_PROGRESS": {

@@ -207,14 +207,7 @@ export function ServicesIndividual({ catalogs, errorMessage, isLoading = false }
                       <span className='font-display text-2xl font-bold text-primary'>
                         {t('catalog.startingPrice', { price: formatStartingPrice(catalog.price) })}
                       </span>
-                      <div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
-                        <a
-                          href={`/services/${catalog.catalogId}`}
-                          className='flex items-center justify-center gap-2 rounded-lg border border-primary px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground'
-                        >
-                          <MaterialIcon name='info' className='text-[18px]' />
-                          {t('individual.detailsCta')}
-                        </a>
+                      <div className='grid grid-cols-1 gap-2'>
                         <a
                           href={`/booking?catalogId=${catalog.catalogId}`}
                           className='flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:opacity-90'
