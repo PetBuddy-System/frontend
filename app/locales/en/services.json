@@ -467,6 +467,7 @@
       "distance": "Distance",
       "distanceValue": "{{value}} km",
       "previewLoading": "PetBuddy is calculating the final price...",
+      "homeFinalPriceNote": "Travel fee, if any, will be finalized by PetBuddy when the booking is created.",
       "groomer": "Assigned groomer",
       "empty": "Not selected",
       "depositNote": "The booking uses one shared time slot for all selected pets. At-home bookings include the service address."
@@ -567,6 +568,10 @@
       "TIME_SLOT_FULL": "This time slot is full. Please choose another time slot.",
       "PET_NOT_FOUND": "We could not find this pet profile. Please check your pet list again.",
       "PET_INACTIVE": "This pet profile cannot be booked right now. Please choose another pet.",
+      "PET_SPECIES_MISMATCH": "This service does not match the selected pet's species. Please choose a suitable service or select another pet.",
+      "STORE_LOCATION_NOT_FOUND": "PetBuddy does not have an active store location to calculate at-home booking details yet. Please try again later or contact the store for help.",
+      "9031": "This service does not match the selected pet's species. Please choose a suitable service or select another pet.",
+      "5408": "PetBuddy does not have an active store location to calculate at-home booking details yet. Please try again later or contact the store for help.",
       "PAYMENT_FAILED": "Payment was not successful. Please check your card and try again.",
       "PAYMENT_NOT_FOUND": "We could not find this payment attempt. Please try again in a moment.",
       "PAYMENT_ALREADY_PAID": "This booking deposit has already been paid.",

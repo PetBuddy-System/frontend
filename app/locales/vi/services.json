@@ -467,6 +467,7 @@
       "distance": "Khoảng cách",
       "distanceValue": "{{value}} km",
       "previewLoading": "PetBuddy đang tính lại chi phí chính xác...",
+      "homeFinalPriceNote": "Phí di chuyển nếu có sẽ được PetBuddy tính chính xác khi tạo lịch đặt.",
       "groomer": "Nhân viên phụ trách",
       "empty": "Chưa chọn",
       "depositNote": "Lịch hẹn áp dụng chung cho tất cả thú cưng được chọn. Dịch vụ tại nhà sẽ được phục vụ theo địa chỉ bạn cung cấp."
@@ -536,6 +537,8 @@
       "paymentConfirmationFailed": "Thanh toán chưa hoàn tất trên hệ thống PetBuddy. Bạn vui lòng thanh toán lại nhé."
     },
     "apiErrors": {
+      "5408": "PetBuddy chưa có vị trí cửa hàng hoạt động để tính lịch tại nhà. Bạn vui lòng thử lại sau hoặc liên hệ cửa hàng để được hỗ trợ nhé.",
+      "9031": "Dịch vụ này chưa phù hợp với loài của thú cưng đã chọn. Bạn vui lòng chọn dịch vụ đúng cho bé hoặc chọn thú cưng khác nhé.",
       "BOOKING_NOT_FOUND": "Mình chưa tìm thấy lịch đặt này. Bạn thử tải lại trang rồi kiểm tra lại nhé.",
       "BOOKING_DETAIL_NOT_FOUND": "Mình chưa tìm thấy chi tiết lịch đặt. Bạn vui lòng thử lại sau ít phút.",
       "BOOKING_ALREADY_CANCELLED": "Lịch đặt này đã được hủy trước đó.",
@@ -550,6 +553,8 @@
       "TIME_SLOT_FULL": "Khung giờ này đã đủ số lượng thú cưng. Bạn vui lòng chọn khung giờ khác nhé.",
       "PET_NOT_FOUND": "Mình chưa tìm thấy hồ sơ thú cưng này. Bạn vui lòng kiểm tra lại danh sách thú cưng nhé.",
       "PET_INACTIVE": "Hồ sơ thú cưng này hiện chưa thể đặt lịch. Bạn vui lòng chọn thú cưng khác nhé.",
+      "PET_SPECIES_MISMATCH": "Dịch vụ này chưa phù hợp với loài của thú cưng đã chọn. Bạn vui lòng chọn dịch vụ đúng cho bé hoặc chọn thú cưng khác nhé.",
+      "STORE_LOCATION_NOT_FOUND": "PetBuddy chưa có vị trí cửa hàng hoạt động để tính lịch tại nhà. Bạn vui lòng thử lại sau hoặc liên hệ cửa hàng để được hỗ trợ nhé.",
       "PAYMENT_FAILED": "Thanh toán chưa thành công. Bạn vui lòng kiểm tra thẻ và thử lại nhé.",
       "PAYMENT_NOT_FOUND": "Mình chưa tìm thấy lượt thanh toán này. Bạn vui lòng thử lại sau ít phút.",
       "PAYMENT_ALREADY_PAID": "Lịch đặt này đã được thanh toán cọc rồi.",

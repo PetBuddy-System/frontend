@@ -5,6 +5,11 @@ import { MaterialIcon } from '~/shared/ui'
 
 const DEFAULT_LATITUDE = 10.776889
 const DEFAULT_LONGITUDE = 106.700806
+const DEFAULT_ZOOM = 15
+const HCMC_BOUNDS: [[number, number], [number, number]] = [
+  [10.34, 106.35],
+  [11.18, 107.05]
+]
 
 const LEAFLET_OVERRIDE_STYLES = `
   .pb-booking-map-wrapper {
@@ -64,6 +69,14 @@ export interface BookingAddressMapProps {
 
 function formatCoordinate(value: number): string {
   return value.toFixed(6)
+}
+
+function isInsideHoChiMinhCityBounds(latitude: number, longitude: number): boolean {
+  const [[southLatitude, westLongitude], [northLatitude, eastLongitude]] = HCMC_BOUNDS
+
+  return (
+    latitude >= southLatitude && latitude <= northLatitude && longitude >= westLongitude && longitude <= eastLongitude
+  )
 }
 
 function cleanAddress(address: string): string {
@@ -228,8 +241,12 @@ export function BookingAddressMap({
 
   const parsedLatitude = Number(latitude)
   const parsedLongitude = Number(longitude)
-  const initialLatitude = Number.isFinite(parsedLatitude) ? parsedLatitude : DEFAULT_LATITUDE
-  const initialLongitude = Number.isFinite(parsedLongitude) ? parsedLongitude : DEFAULT_LONGITUDE
+  const hasValidSavedCoords =
+    Number.isFinite(parsedLatitude) &&
+    Number.isFinite(parsedLongitude) &&
+    isInsideHoChiMinhCityBounds(parsedLatitude, parsedLongitude)
+  const initialLatitude = hasValidSavedCoords ? parsedLatitude : DEFAULT_LATITUDE
+  const initialLongitude = hasValidSavedCoords ? parsedLongitude : DEFAULT_LONGITUDE
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -349,7 +366,10 @@ export function BookingAddressMap({
 
     const map = L.map(mapContainerRef.current, {
       center: [initialLatitude, initialLongitude],
-      zoom: 13,
+      zoom: DEFAULT_ZOOM,
+      minZoom: 11,
+      maxBounds: HCMC_BOUNDS,
+      maxBoundsViscosity: 0.8,
       scrollWheelZoom: true
     })
 

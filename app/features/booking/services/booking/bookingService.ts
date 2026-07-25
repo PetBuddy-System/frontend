@@ -189,12 +189,6 @@ export interface AvailableGroomerResponse {
   shiftEnd: string
 }
 
-export interface BookingListParams {
-  status?: BookingStatus
-  fromDate?: string
-  toDate?: string
-}
-
 export interface BookingPreviewResponse {
   serviceAmount: number
   surchargeAmount: number
@@ -204,6 +198,12 @@ export interface BookingPreviewResponse {
   estimatedServiceMinute: number
   totalAmount: number
   depositAmount: number
+}
+
+export interface BookingListParams {
+  status?: BookingStatus
+  fromDate?: string
+  toDate?: string
 }
 
 interface ApiResponse<T> {

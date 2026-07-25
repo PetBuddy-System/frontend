@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import {
@@ -104,6 +104,8 @@ const BACKEND_CONFIRMED_PAYMENT_STATUSES = new Set<string>([
 const PAYMENT_SYNC_ATTEMPTS = 6
 const PAYMENT_SYNC_DELAY_MS = 1200
 const BOOKING_API_ERROR_KEYS = [
+  '9031',
+  '5408',
   'BOOKING_NOT_FOUND',
   'BOOKING_DETAIL_NOT_FOUND',
   'BOOKING_ALREADY_CANCELLED',
@@ -118,6 +120,8 @@ const BOOKING_API_ERROR_KEYS = [
   'TIME_SLOT_FULL',
   'PET_NOT_FOUND',
   'PET_INACTIVE',
+  'PET_SPECIES_MISMATCH',
+  'STORE_LOCATION_NOT_FOUND',
   'PAYMENT_FAILED',
   'PAYMENT_NOT_FOUND',
   'PAYMENT_ALREADY_PAID',
@@ -125,6 +129,12 @@ const BOOKING_API_ERROR_KEYS = [
   'UNAUTHENTICATED',
   'FORBIDDEN'
 ] as const
+const BOOKING_API_ERROR_ALIAS_BY_CODE: Record<string, (typeof BOOKING_API_ERROR_KEYS)[number]> = {
+  PET_SPECIES_DOES_NOT_MATCH_THE_SERVICE: 'PET_SPECIES_MISMATCH',
+  PET_SPECIES_NOT_MATCH_THE_SERVICE: 'PET_SPECIES_MISMATCH',
+  CATALOG_SPECIES_DOES_NOT_MATCH_PET: 'PET_SPECIES_MISMATCH',
+  STORE_LOCATION_NOT_FOUND: 'STORE_LOCATION_NOT_FOUND'
+}
 
 const stripeElementStyle = {
   base: {
@@ -229,6 +239,11 @@ function getBookingApiErrorKey(error: unknown): string | null {
 
   for (const candidate of candidates) {
     const normalizedCode = normalizeBookingErrorCode(candidate)
+    const aliasCode = normalizedCode ? BOOKING_API_ERROR_ALIAS_BY_CODE[normalizedCode] : null
+
+    if (aliasCode) {
+      return `bookingFlow.apiErrors.${aliasCode}`
+    }
 
     if (normalizedCode && BOOKING_API_ERROR_KEYS.includes(normalizedCode as (typeof BOOKING_API_ERROR_KEYS)[number])) {
       return `bookingFlow.apiErrors.${normalizedCode}`
@@ -517,6 +532,12 @@ export function BookingPage() {
         return
       }
 
+      if (bookingType === 'AT_HOME' && !bookingPreview) {
+        setAvailableGroomers([])
+        setRequestedStaffId('')
+        return
+      }
+
       const bookingDetails = selectedPetIds.map((petId) => ({
         petId,
         catalogId: selectedCatalog.catalogId,
@@ -530,6 +551,7 @@ export function BookingPage() {
           bookingType,
           latitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(latitude) : undefined,
           longitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(longitude) : undefined,
+          estimatedTravelMinute: bookingType === 'AT_HOME' ? bookingPreview?.estimatedTravelMinute : undefined,
           bookingDetails
         })
 
@@ -561,7 +583,17 @@ export function BookingPage() {
     return () => {
       isMounted = false
     }
-  }, [bookingType, latitude, longitude, scheduledAt, selectedCatalog, selectedPetIds, selectedTimeSlot, t])
+  }, [
+    bookingPreview,
+    bookingType,
+    latitude,
+    longitude,
+    scheduledAt,
+    selectedCatalog,
+    selectedPetIds,
+    selectedTimeSlot,
+    t
+  ])
 
   useEffect(() => {
     if (!toast) {
@@ -678,6 +710,7 @@ export function BookingPage() {
     setActiveBooking(null)
     setActivePayment(null)
     setPaymentError('')
+    setBookingPreview(null)
   }
 
   function resetBookingForm() {
@@ -698,6 +731,7 @@ export function BookingPage() {
     setNote('')
     setAssignmentMode('AUTO')
     setRequestedStaffId('')
+    setBookingPreview(null)
     setAvailableGroomers([])
     resetCheckoutState()
     setToast({ type: 'success', message: t('bookingFlow.toast.resetSuccess') })
@@ -785,6 +819,49 @@ export function BookingPage() {
     }
   }
 
+  const buildBookingPreviewPayload = useCallback((): BookingCreationRequest | null => {
+    if (!selectedCatalog || !selectedTimeSlot) {
+      return null
+    }
+
+    return {
+      customerName: customerName.trim(),
+      customerPhone: customerPhone.trim(),
+      address: bookingType === 'AT_HOME' ? address.trim() : undefined,
+      latitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(latitude) : undefined,
+      longitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(longitude) : undefined,
+      addressNote: bookingType === 'AT_HOME' ? addressNote.trim() || undefined : undefined,
+      homeServiceRequirementsAccepted: bookingType === 'AT_HOME' ? homeServiceRequirementsAccepted : undefined,
+      note: note.trim() || undefined,
+      bookingType,
+      scheduledAt,
+      assignmentMode: assignmentMode === 'SELECTED' && requestedStaffId ? 'SELECTED' : 'AUTO',
+      requestedStaffId: assignmentMode === 'SELECTED' && requestedStaffId ? requestedStaffId : undefined,
+      bookingDetails: selectedPetIds.map((petId) => ({
+        petId,
+        catalogId: selectedCatalog.catalogId,
+        timeSlotId: selectedTimeSlot.timeSlotId,
+        note: note.trim() || undefined
+      }))
+    }
+  }, [
+    address,
+    addressNote,
+    assignmentMode,
+    bookingType,
+    customerName,
+    customerPhone,
+    homeServiceRequirementsAccepted,
+    latitude,
+    longitude,
+    note,
+    requestedStaffId,
+    scheduledAt,
+    selectedCatalog,
+    selectedPetIds,
+    selectedTimeSlot
+  ])
+
   useEffect(() => {
     let isMounted = true
 
@@ -811,25 +888,10 @@ export function BookingPage() {
         }
       }
 
-      const payload: BookingCreationRequest = {
-        customerName: customerName.trim(),
-        customerPhone: customerPhone.trim(),
-        address: bookingType === 'AT_HOME' ? address.trim() : undefined,
-        latitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(latitude) : undefined,
-        longitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(longitude) : undefined,
-        addressNote: bookingType === 'AT_HOME' ? addressNote.trim() || undefined : undefined,
-        homeServiceRequirementsAccepted: bookingType === 'AT_HOME' ? homeServiceRequirementsAccepted : undefined,
-        note: note.trim() || undefined,
-        bookingType,
-        scheduledAt,
-        assignmentMode,
-        requestedStaffId: assignmentMode === 'SELECTED' ? requestedStaffId : undefined,
-        bookingDetails: selectedPetIds.map((petId) => ({
-          petId,
-          catalogId: selectedCatalog.catalogId,
-          timeSlotId: selectedTimeSlot.timeSlotId,
-          note: note.trim() || undefined
-        }))
+      const payload = buildBookingPreviewPayload()
+      if (!payload) {
+        setBookingPreview(null)
+        return
       }
 
       try {
@@ -864,6 +926,7 @@ export function BookingPage() {
     addressNote,
     assignmentMode,
     bookingType,
+    buildBookingPreviewPayload,
     checkoutPhase,
     currentStep,
     customerName,
@@ -1778,6 +1841,7 @@ function ReviewPaymentStep({
     assignmentMode === 'SELECTED' && selectedGroomer
       ? t('bookingFlow.assignment.selectedSummary', { name: selectedGroomer.fullName })
       : t('bookingFlow.assignment.autoSummary')
+  const isAssignmentLoading = isGroomersLoading || (bookingType === 'AT_HOME' && isPreviewLoading)
 
   if (checkoutPhase === 'payment' && activeBooking && activePayment) {
     return (
@@ -1785,7 +1849,7 @@ function ReviewPaymentStep({
         key={`${activeBooking.bookingId}-${paymentAttemptKey}`}
         booking={activeBooking}
         payment={activePayment}
-        amount={deposit}
+        amount={activeBooking.depositAmount ?? deposit}
         onPaymentSuccess={onPaymentSuccess}
         onPaymentFailure={onPaymentFailure}
       />
@@ -1938,7 +2002,7 @@ function ReviewPaymentStep({
 
         {assignmentMode === 'SELECTED' && (
           <div className='mt-4 space-y-3'>
-            {isGroomersLoading ? (
+            {isAssignmentLoading ? (
               <div className='grid gap-3 md:grid-cols-2'>
                 {Array.from({ length: 2 }).map((_, index) => (
                   <div key={index} className='h-24 animate-pulse rounded-md bg-muted' />
