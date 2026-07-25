@@ -20,10 +20,10 @@ import {
 
 type GroomerBookingStatus = Extract<
   BookingStatus,
-  'ACCEPTED' | 'IN_PROGRESS' | 'READY_FOR_PICKUP' | 'COMPLETED' | 'CANCELLED'
+  'ACCEPTED' | 'ON_THE_WAY' | 'IN_PROGRESS' | 'READY_FOR_PICKUP' | 'COMPLETED' | 'CANCELLED'
 >
 
-const STATUS_TABS = ['ACCEPTED', 'IN_PROGRESS', 'READY_FOR_PICKUP', 'COMPLETED', 'CANCELLED'] as const
+const STATUS_TABS = ['ACCEPTED', 'ON_THE_WAY', 'IN_PROGRESS', 'READY_FOR_PICKUP', 'COMPLETED', 'CANCELLED'] as const
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('vi-VN', {
@@ -43,15 +43,20 @@ function formatDateTime(value: string): string {
   }).format(date)
 }
 
-function getNextStatus(status: GroomerBookingStatus): GroomerBookingStatus | null {
-  if (status === 'ACCEPTED') return 'IN_PROGRESS'
-  if (status === 'IN_PROGRESS') return 'READY_FOR_PICKUP'
+function getNextStatus(booking: BookingResponse): GroomerBookingStatus | null {
+  const status = booking.bookingStatus as GroomerBookingStatus
+  const isAtHome = booking.bookingType === 'AT_HOME'
+
+  if (status === 'ACCEPTED') return isAtHome ? 'ON_THE_WAY' : 'IN_PROGRESS'
+  if (status === 'ON_THE_WAY') return 'IN_PROGRESS'
+  if (status === 'IN_PROGRESS') return isAtHome ? 'COMPLETED' : 'READY_FOR_PICKUP'
   if (status === 'READY_FOR_PICKUP') return 'COMPLETED'
   return null
 }
 
 function getStatusTone(status: GroomerBookingStatus): string {
   if (status === 'ACCEPTED') return 'bg-info/10 text-info'
+  if (status === 'ON_THE_WAY') return 'bg-primary/10 text-primary'
   if (status === 'IN_PROGRESS') return 'bg-warning/10 text-warning'
   if (status === 'READY_FOR_PICKUP') return 'bg-primary/10 text-primary'
   if (status === 'COMPLETED') return 'bg-success/10 text-success'
@@ -70,8 +75,10 @@ function hasBookingMediaType(booking: BookingResponse, type: BookingMediaType) {
   return booking.bookingDetails.some((detail) => getMediaByType(detail, type).length > 0)
 }
 
-function getUploadType(status: GroomerBookingStatus): BookingMediaType | null {
-  if (status === 'ACCEPTED') return 'BEFORE_SERVICE'
+function getUploadType(booking: BookingResponse): BookingMediaType | null {
+  const status = booking.bookingStatus as GroomerBookingStatus
+  if (booking.bookingType === 'AT_HOME' && status === 'ON_THE_WAY') return 'BEFORE_SERVICE'
+  if (booking.bookingType === 'AT_STORE' && status === 'ACCEPTED') return 'BEFORE_SERVICE'
   if (status === 'IN_PROGRESS') return 'AFTER_SERVICE'
   return null
 }
@@ -79,7 +86,9 @@ function getUploadType(status: GroomerBookingStatus): BookingMediaType | null {
 function canMoveToNextStatus(booking: BookingResponse, nextStatus: GroomerBookingStatus | null) {
   if (!nextStatus) return false
   if (nextStatus === 'IN_PROGRESS') return hasBookingMediaType(booking, 'BEFORE_SERVICE')
-  if (nextStatus === 'READY_FOR_PICKUP') return hasBookingMediaType(booking, 'AFTER_SERVICE')
+  if (nextStatus === 'READY_FOR_PICKUP' || (booking.bookingType === 'AT_HOME' && nextStatus === 'COMPLETED')) {
+    return hasBookingMediaType(booking, 'AFTER_SERVICE')
+  }
   return true
 }
 
@@ -91,7 +100,7 @@ export function StaffGroomerBookingsPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const filteredBookings = useMemo(
-    () => bookings.filter((booking) => booking.bookingType === 'AT_STORE' && booking.bookingStatus === activeStatus),
+    () => bookings.filter((booking) => booking.bookingStatus === activeStatus),
     [activeStatus, bookings]
   )
   function showMessage(type: 'success' | 'error', text: string) {
@@ -103,7 +112,7 @@ export function StaffGroomerBookingsPage() {
     setIsLoading(true)
     try {
       const lists = await Promise.all(STATUS_TABS.map((status) => fetchStaffBookings({ status })))
-      const nextBookings = lists.flat().filter((booking) => booking.bookingType === 'AT_STORE')
+      const nextBookings = lists.flat()
       setBookings(nextBookings)
     } catch (error) {
       showMessage('error', error instanceof Error ? error.message : t('groomerBookings.messages.loadFailed'))
@@ -282,7 +291,7 @@ export function StaffGroomerBookingDetailPage() {
   const [cancelReason, setCancelReason] = useState('')
   const [previewByDetailId, setPreviewByDetailId] = useState<Record<number, { file: File; url: string }>>({})
 
-  const nextStatus = booking ? getNextStatus(booking.bookingStatus as GroomerBookingStatus) : null
+  const nextStatus = booking ? getNextStatus(booking) : null
   const isNextAllowed = booking ? canMoveToNextStatus(booking, nextStatus) : false
 
   function showMessage(type: 'success' | 'error', text: string) {
@@ -516,7 +525,8 @@ function BookingDetailPanel({
   t: (key: string, options?: Record<string, unknown>) => string
 }) {
   const status = booking.bookingStatus as GroomerBookingStatus
-  const uploadType = getUploadType(status)
+  const uploadType = getUploadType(booking)
+  const isAtHome = booking.bookingType === 'AT_HOME'
 
   return (
     <aside className='rounded-2xl border border-border bg-card p-5 shadow-sm'>
@@ -532,7 +542,7 @@ function BookingDetailPanel({
         </span>
       </div>
 
-      <Timeline status={status} t={t} />
+      <Timeline bookingType={booking.bookingType} status={status} t={t} />
 
       <div className='mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2'>
         <InfoGroup
@@ -568,8 +578,8 @@ function BookingDetailPanel({
               disabled={isLoading || !nextStatus || !isNextAllowed}
               onClick={() => nextStatus && onRequestStatus(nextStatus)}
             >
-              <MaterialIcon name='play_circle' className='text-[18px]' />
-              {t('groomerBookings.actions.start')}
+              <MaterialIcon name={isAtHome ? 'directions_bike' : 'play_circle'} className='text-[18px]' />
+              {isAtHome ? t('groomerBookings.actions.onTheWay') : t('groomerBookings.actions.start')}
             </Button>
             <Button variant='destructive' disabled={isLoading} onClick={onCancelClick}>
               <MaterialIcon name='cancel' className='text-[18px]' />
@@ -580,11 +590,22 @@ function BookingDetailPanel({
             )}
           </>
         )}
+        {status === 'ON_THE_WAY' && nextStatus && (
+          <>
+            <Button disabled={isLoading || !isNextAllowed} onClick={() => onRequestStatus(nextStatus)}>
+              <MaterialIcon name='play_circle' className='text-[18px]' />
+              {t('groomerBookings.actions.start')}
+            </Button>
+            {!isNextAllowed && (
+              <p className='w-full text-sm text-muted-foreground'>{t('groomerBookings.messages.beforeRequired')}</p>
+            )}
+          </>
+        )}
         {status === 'IN_PROGRESS' && nextStatus && (
           <>
             <Button disabled={isLoading || !isNextAllowed} onClick={() => onRequestStatus(nextStatus)}>
               <MaterialIcon name='task_alt' className='text-[18px]' />
-              {t('groomerBookings.actions.readyForPickup')}
+              {isAtHome ? t('groomerBookings.actions.completeHome') : t('groomerBookings.actions.readyForPickup')}
             </Button>
             {!isNextAllowed && (
               <p className='w-full text-sm text-muted-foreground'>{t('groomerBookings.messages.afterRequired')}</p>
@@ -742,8 +763,19 @@ function MediaStrip({
   )
 }
 
-function Timeline({ status, t }: { status: GroomerBookingStatus; t: (key: string) => string }) {
-  const steps: GroomerBookingStatus[] = ['ACCEPTED', 'IN_PROGRESS', 'READY_FOR_PICKUP', 'COMPLETED']
+function Timeline({
+  bookingType,
+  status,
+  t
+}: {
+  bookingType: string
+  status: GroomerBookingStatus
+  t: (key: string) => string
+}) {
+  const steps: GroomerBookingStatus[] =
+    bookingType === 'AT_HOME'
+      ? ['ACCEPTED', 'ON_THE_WAY', 'IN_PROGRESS', 'COMPLETED']
+      : ['ACCEPTED', 'IN_PROGRESS', 'READY_FOR_PICKUP', 'COMPLETED']
   const activeIndex = status === 'CANCELLED' ? -1 : steps.indexOf(status)
 
   return (

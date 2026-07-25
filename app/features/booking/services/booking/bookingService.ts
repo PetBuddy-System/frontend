@@ -8,6 +8,7 @@ export enum BookingStatus {
   PENDING_PAYMENT = 'PENDING_PAYMENT',
   PENDING_ACCEPTANCE = 'PENDING_ACCEPTANCE',
   ACCEPTED = 'ACCEPTED',
+  ON_THE_WAY = 'ON_THE_WAY',
   IN_PROGRESS = 'IN_PROGRESS',
   READY_FOR_PICKUP = 'READY_FOR_PICKUP',
   COMPLETED = 'COMPLETED',
@@ -22,6 +23,10 @@ export interface BookingCreationRequest {
   customerName: string
   customerPhone: string
   address?: string
+  latitude?: number
+  longitude?: number
+  addressNote?: string
+  homeServiceRequirementsAccepted?: boolean
   note?: string
   bookingType: string
   scheduledAt: string
@@ -48,7 +53,14 @@ export interface BookingResponse {
   bookingType: string
   customerName: string
   customerPhone: string
-  address: string
+  address?: string
+  latitude?: number
+  longitude?: number
+  addressNote?: string
+  distanceKm?: number
+  travelFee?: number
+  estimatedTravelMinute?: number
+  homeServiceRequirementsAccepted?: boolean
   scheduledAt: string
   totalAmount: number
   depositAmount: number
@@ -59,6 +71,10 @@ export interface BookingResponse {
   estimatedEndAt?: string
   stripeClientSecret?: string
   assignmentMode?: StaffAssignmentMode
+  requestedStaffId?: string
+  requestedStaffName?: string
+  assignedStaffId?: string
+  assignedStaffName?: string
   staffId?: string
   staffName?: string
   bookingDetails: BookingDetailResponse[]
@@ -155,6 +171,10 @@ export interface TimeSlotResponse {
 
 export interface AvailableGroomerRequest {
   scheduledAt: string
+  bookingType?: string
+  latitude?: number
+  longitude?: number
+  estimatedTravelMinute?: number
   bookingDetails: BookingDetailCreationRequest[]
 }
 
@@ -173,6 +193,17 @@ export interface BookingListParams {
   status?: BookingStatus
   fromDate?: string
   toDate?: string
+}
+
+export interface BookingPreviewResponse {
+  serviceAmount: number
+  surchargeAmount: number
+  travelFee: number
+  distanceKm?: number
+  estimatedTravelMinute?: number
+  estimatedServiceMinute: number
+  totalAmount: number
+  depositAmount: number
 }
 
 interface ApiResponse<T> {
@@ -293,7 +324,7 @@ export function getAvailableCatalogTimeSlots(catalogId: number, selectedDate: st
   return request<TimeSlotResponse[]>({
     url: `${CATALOG_TIME_SLOTS_URL}/catalogs/${catalogId}/available`,
     method: 'GET',
-    params: { selectedDate }
+    params: { date: selectedDate, selectedDate }
   })
 }
 
@@ -307,6 +338,14 @@ export function toggleCatalogTimeSlot(timeSlotId: number): Promise<TimeSlotRespo
 export function createBooking(payload: BookingCreationRequest): Promise<BookingResponse> {
   return request<BookingResponse>({
     url: BOOKINGS_URL,
+    method: 'POST',
+    data: payload
+  })
+}
+
+export function previewBooking(payload: BookingCreationRequest): Promise<BookingPreviewResponse> {
+  return request<BookingPreviewResponse>({
+    url: `${BOOKINGS_URL}/preview`,
     method: 'POST',
     data: payload
   })
@@ -348,7 +387,7 @@ export function updateBookingStatus(
 ): Promise<BookingResponse> {
   return request<BookingResponse>({
     url: `${BOOKINGS_URL}/${bookingId}/status`,
-    method: 'PUT',
+    method: 'PATCH',
     data: payload
   })
 }

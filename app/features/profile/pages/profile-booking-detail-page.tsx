@@ -151,45 +151,22 @@ function BookingDetailContent({ booking, formatCurrency }: BookingDetailContentP
           <h2 className='font-display text-xl font-bold text-card-foreground'>{t('myBookings.card.services')}</h2>
         </div>
         <div className='divide-y divide-border'>
-          {booking.bookingDetails.map((detail) => {
-            const petAvatarUrl = getDetailPetAvatarUrl(detail)
-
-            return (
-              <article key={detail.bookingDetailId} className='grid gap-4 p-5'>
-                <div className='grid gap-4 lg:grid-cols-[1fr_auto]'>
-                  <div className='flex min-w-0 items-start gap-4'>
-                    {petAvatarUrl ? (
-                      <img
-                        src={petAvatarUrl}
-                        alt={detail.petName}
-                        className='h-16 w-16 shrink-0 rounded-2xl border border-border object-cover'
-                      />
-                    ) : (
-                      <span className='flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-muted text-primary'>
-                        <MaterialIcon name='pets' className='text-[28px]' />
-                      </span>
-                    )}
-                    <div className='min-w-0'>
-                      <p className='font-display text-lg font-bold text-foreground'>{detail.catalogName}</p>
-                      <p className='mt-1 text-sm text-muted-foreground'>
-                        {detail.petName} • {formatTime(detail.timeSlot)} •{' '}
-                        {t('myBookings.detail.durationMinute', { minutes: detail.durationMinute ?? 0 })}
-                      </p>
-                      <BookingDetailPriceLines detail={detail} formatCurrency={formatCurrency} />
-                    </div>
-                  </div>
-                  <p className='text-right font-display text-lg font-bold text-primary'>
-                    {formatCurrency(detail.totalPrice ?? detail.unitPrice ?? 0)}
-                  </p>
-                </div>
-                <BookingPetInfo detail={detail} />
-                <BookingDetailMediaGrid
-                  beforeMedia={getDetailMediaByType(detail, 'BEFORE_SERVICE')}
-                  afterMedia={getDetailMediaByType(detail, 'AFTER_SERVICE')}
-                />
-              </article>
-            )
-          })}
+          {booking.bookingDetails.map((detail) => (
+            <article key={detail.bookingDetailId} className='grid gap-4 p-5'>
+              <div className='min-w-0'>
+                <p className='text-xs font-semibold uppercase tracking-wide text-primary'>
+                  {t('myBookings.detail.servicePackage')}
+                </p>
+                <p className='mt-1 font-display text-lg font-bold text-foreground'>{detail.catalogName}</p>
+                <BookingDetailServiceLines detail={detail} formatCurrency={formatCurrency} />
+              </div>
+              <BookingPetInfo detail={detail} />
+              <BookingDetailMediaGrid
+                beforeMedia={getDetailMediaByType(detail, 'BEFORE_SERVICE')}
+                afterMedia={getDetailMediaByType(detail, 'AFTER_SERVICE')}
+              />
+            </article>
+          ))}
         </div>
       </section>
 
@@ -229,6 +206,11 @@ const BOOKING_PROGRESS_STEPS = [
     statuses: [BookingStatus.ACCEPTED],
     icon: 'event_available',
     labelKey: 'myBookings.progress.accepted'
+  },
+  {
+    statuses: [BookingStatus.ON_THE_WAY],
+    icon: 'directions_bike',
+    labelKey: 'myBookings.progress.onTheWay'
   },
   {
     statuses: [BookingStatus.IN_PROGRESS],
@@ -329,37 +311,71 @@ function DetailItem({ label, value }: DetailItemProps) {
   )
 }
 
-interface BookingDetailPriceLinesProps {
+interface BookingDetailServiceLinesProps {
   detail: BookingDetailResponse
   formatCurrency: (value: number) => string
 }
 
-function BookingDetailPriceLines({ detail, formatCurrency }: BookingDetailPriceLinesProps) {
+function BookingDetailServiceLines({ detail, formatCurrency }: BookingDetailServiceLinesProps) {
   const { t } = useTranslation('profile')
+  const baseDurationMinute = detail.baseDurationMinute ?? detail.durationMinute ?? 0
+  const additionalDurationMinute = detail.additionalDurationMinute ?? 0
+  const totalDurationMinute =
+    detail.totalDurationMinute ?? Number(baseDurationMinute ?? 0) + Number(additionalDurationMinute ?? 0)
   const basePrice = detail.basePrice ?? detail.unitPrice ?? detail.totalPrice ?? 0
   const additionalPrice = detail.additionalPrice ?? 0
-  const additionalDurationMinute = detail.additionalDurationMinute ?? 0
-
-  if (additionalPrice <= 0 && additionalDurationMinute <= 0) {
-    return null
-  }
+  const totalPrice = detail.totalPrice ?? Number(basePrice ?? 0) + Number(additionalPrice ?? 0)
 
   return (
-    <dl className='mt-3 space-y-1 text-xs text-muted-foreground'>
-      <div className='flex items-center justify-between gap-3'>
-        <dt>{t('myBookings.detail.basePrice')}</dt>
-        <dd className='font-semibold text-foreground'>{formatCurrency(basePrice)}</dd>
+    <dl className='mt-3 grid gap-2 rounded-2xl border border-border bg-muted/30 p-3 text-sm sm:grid-cols-2'>
+      <div className='rounded-xl bg-background p-3'>
+        <dt className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+          {t('myBookings.detail.appointmentTime')}
+        </dt>
+        <dd className='mt-1 font-semibold text-foreground'>{formatTime(detail.timeSlot)}</dd>
       </div>
-      {additionalPrice > 0 ? (
-        <div className='flex items-center justify-between gap-3'>
-          <dt>
-            {additionalDurationMinute > 0
-              ? t('myBookings.detail.extraPriceWithDuration', { minutes: additionalDurationMinute })
-              : t('myBookings.detail.extraPrice')}
+      <div className='rounded-xl bg-background p-3'>
+        <dt className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+          {t('myBookings.detail.baseDuration')}
+        </dt>
+        <dd className='mt-1 font-semibold text-foreground'>
+          {t('myBookings.detail.durationMinute', { minutes: baseDurationMinute })}
+        </dd>
+      </div>
+      {additionalDurationMinute > 0 ? (
+        <div className='rounded-xl bg-background p-3'>
+          <dt className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+            {t('myBookings.detail.additionalDuration')}
           </dt>
-          <dd className='font-semibold text-foreground'>{formatCurrency(additionalPrice)}</dd>
+          <dd className='mt-1 font-semibold text-foreground'>
+            {t('myBookings.detail.durationMinute', { minutes: additionalDurationMinute })}
+          </dd>
         </div>
       ) : null}
+      <div className='rounded-xl bg-background p-3'>
+        <dt className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+          {t('myBookings.detail.totalDuration')}
+        </dt>
+        <dd className='mt-1 font-semibold text-foreground'>
+          {t('myBookings.detail.durationMinute', { minutes: totalDurationMinute })}
+        </dd>
+      </div>
+      <div className='rounded-xl bg-background p-3'>
+        <dt>{t('myBookings.detail.basePrice')}</dt>
+        <dd className='mt-1 font-semibold text-foreground'>{formatCurrency(basePrice)}</dd>
+      </div>
+      {additionalPrice > 0 ? (
+        <div className='rounded-xl bg-background p-3'>
+          <dt>{t('myBookings.detail.extraPrice')}</dt>
+          <dd className='mt-1 font-semibold text-foreground'>{formatCurrency(additionalPrice)}</dd>
+        </div>
+      ) : null}
+      <div className='rounded-xl bg-primary/10 p-3 sm:col-span-2'>
+        <dt className='text-xs font-semibold uppercase tracking-wide text-primary'>
+          {t('myBookings.detail.totalServicePrice')}
+        </dt>
+        <dd className='mt-1 font-display text-lg font-bold text-primary'>{formatCurrency(totalPrice)}</dd>
+      </div>
     </dl>
   )
 }
@@ -371,6 +387,7 @@ interface BookingPetInfoProps {
 function BookingPetInfo({ detail }: BookingPetInfoProps) {
   const { t } = useTranslation('profile')
   const petInfoItems = getPetInfoItems(detail, t)
+  const petAvatarUrl = getDetailPetAvatarUrl(detail)
 
   if (petInfoItems.length === 0) {
     return null
@@ -378,11 +395,24 @@ function BookingPetInfo({ detail }: BookingPetInfoProps) {
 
   return (
     <section className='rounded-2xl border border-border bg-muted/30 p-4'>
-      <div className='mb-3 flex items-center gap-2'>
-        <span className='flex h-9 w-9 items-center justify-center rounded-xl bg-background text-primary'>
-          <MaterialIcon name='pets' className='text-[20px]' />
-        </span>
-        <h3 className='font-display text-base font-bold text-foreground'>{t('myBookings.detail.petInfoTitle')}</h3>
+      <div className='mb-3 flex items-center gap-3'>
+        {petAvatarUrl ? (
+          <img
+            src={petAvatarUrl}
+            alt={detail.petName}
+            className='h-14 w-14 shrink-0 rounded-2xl border border-border object-cover'
+          />
+        ) : (
+          <span className='flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-background text-primary'>
+            <MaterialIcon name='pets' className='text-[24px]' />
+          </span>
+        )}
+        <div>
+          <p className='text-xs font-semibold uppercase tracking-wide text-primary'>
+            {t('myBookings.detail.petInfoTitle')}
+          </p>
+          <h3 className='font-display text-base font-bold text-foreground'>{detail.petName || '-'}</h3>
+        </div>
       </div>
       <dl className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
         {petInfoItems.map((item) => (

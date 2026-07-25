@@ -20,6 +20,7 @@ import { readStorage, removeStorage, writeStorage } from '~/shared/lib/storage'
 import { Button, MaterialIcon } from '~/shared/ui'
 import { useAuth } from '~/providers/auth-provider'
 
+import { BookingAddressMap } from '../components/booking-address-map'
 import {
   createBooking,
   getAvailableGroomers,
@@ -28,9 +29,11 @@ import {
   getCatalogs,
   getMyBookings,
   getPets,
+  previewBooking,
   retryBookingPayment,
   type AvailableGroomerResponse,
   type BookingCreationRequest,
+  type BookingPreviewResponse,
   type BookingResponse,
   type CatalogResponse,
   type PaymentResponse,
@@ -54,6 +57,10 @@ type BookingDraft = {
   customerName: string
   customerPhone: string
   address: string
+  latitude: string
+  longitude: string
+  addressNote: string
+  homeServiceRequirementsAccepted: boolean
   note: string
   assignmentMode: StaffAssignmentMode
   requestedStaffId: string
@@ -77,6 +84,7 @@ const BOOKING_STATUS_KEYS = [
   'PENDING_PAYMENT',
   'PENDING_ACCEPTANCE',
   'ACCEPTED',
+  'ON_THE_WAY',
   'IN_PROGRESS',
   'READY_FOR_PICKUP',
   'COMPLETED',
@@ -88,6 +96,7 @@ const BACKEND_CONFIRMED_PAYMENT_STATUSES = new Set<string>([
   'PENDING_ACCEPTANCE',
   'WAITING_STAFF',
   'ACCEPTED',
+  'ON_THE_WAY',
   'IN_PROGRESS',
   'READY_FOR_PICKUP',
   'COMPLETED'
@@ -176,7 +185,7 @@ function formatGroomerAvatarName(name: string): string {
 }
 
 function isCatalogBookable(catalog: CatalogResponse): boolean {
-  return catalog.status === 'AVAILABLE' && catalog.catalogType !== 'AT_HOME'
+  return catalog.status === 'AVAILABLE'
 }
 
 function getBookingStatusLabelKey(status: string): string | null {
@@ -288,6 +297,12 @@ function getFirstPaymentWithClientSecret(booking: BookingResponse): PaymentRespo
   return null
 }
 
+function parseOptionalCoordinate(value: string): number | undefined {
+  const coordinate = Number(value)
+
+  return Number.isFinite(coordinate) ? coordinate : undefined
+}
+
 export function BookingPage() {
   const { t } = useTranslation('services')
   const { user } = useAuth()
@@ -308,10 +323,15 @@ export function BookingPage() {
   const [customerName, setCustomerName] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
   const [address, setAddress] = useState('')
+  const [latitude, setLatitude] = useState('')
+  const [longitude, setLongitude] = useState('')
+  const [addressNote, setAddressNote] = useState('')
+  const [homeServiceRequirementsAccepted, setHomeServiceRequirementsAccepted] = useState(false)
   const [note, setNote] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isTimeSlotsLoading, setIsTimeSlotsLoading] = useState(false)
   const [isGroomersLoading, setIsGroomersLoading] = useState(false)
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false)
   const [isCreatingBooking, setIsCreatingBooking] = useState(false)
   const [isRetryingPayment, setIsRetryingPayment] = useState(false)
   const [toast, setToast] = useState<ToastState>(null)
@@ -325,6 +345,7 @@ export function BookingPage() {
   const [assignmentMode, setAssignmentMode] = useState<StaffAssignmentMode>('AUTO')
   const [requestedStaffId, setRequestedStaffId] = useState('')
   const [availableGroomers, setAvailableGroomers] = useState<AvailableGroomerResponse[]>([])
+  const [bookingPreview, setBookingPreview] = useState<BookingPreviewResponse | null>(null)
 
   const selectedCatalog = useMemo(
     () => catalogs.find((catalog) => catalog.catalogId === selectedCatalogId) ?? null,
@@ -353,8 +374,9 @@ export function BookingPage() {
     }))
   }, [selectedCatalog, selectedPets])
   const subtotal = petPricePreviews.reduce((total, preview) => total + preview.totalPrice, 0)
-  const deposit = subtotal * DEPOSIT_RATE
-  const remaining = subtotal - deposit
+  const previewTotal = bookingPreview?.totalAmount ?? subtotal
+  const deposit = bookingPreview?.depositAmount ?? subtotal * DEPOSIT_RATE
+  const remaining = previewTotal - deposit
 
   useEffect(() => {
     const intervalId = window.setInterval(() => setCurrentTimeMs(Date.now()), 30_000)
@@ -390,13 +412,22 @@ export function BookingPage() {
         setPets(petResults)
         setMyBookings(bookingResults)
         setSelectedCatalogId(nextCatalogId)
-        setBookingType('AT_STORE')
+        setBookingType(
+          savedDraft?.bookingType === 'AT_HOME' ||
+            bookableCatalogs.find((catalog) => catalog.catalogId === nextCatalogId)?.catalogType === 'AT_HOME'
+            ? 'AT_HOME'
+            : 'AT_STORE'
+        )
         setSelectedPetIds(Array.isArray(savedDraft?.selectedPetIds) ? savedDraft.selectedPetIds : [])
         setScheduledAt(savedDraft?.scheduledAt || getTodayInputValue())
         setSelectedTimeSlotId(Number(savedDraft?.selectedTimeSlotId) || null)
         setCustomerName(savedDraft?.customerName || user?.fullName || '')
         setCustomerPhone(savedDraft?.customerPhone || getUserPhone(user))
         setAddress(savedDraft?.address ?? '')
+        setLatitude(savedDraft?.latitude ?? '')
+        setLongitude(savedDraft?.longitude ?? '')
+        setAddressNote(savedDraft?.addressNote ?? '')
+        setHomeServiceRequirementsAccepted(Boolean(savedDraft?.homeServiceRequirementsAccepted))
         setNote(savedDraft?.note ?? '')
         setAssignmentMode(savedAssignmentMode)
         setRequestedStaffId(savedAssignmentMode === 'SELECTED' ? (savedDraft?.requestedStaffId ?? '') : '')
@@ -480,6 +511,12 @@ export function BookingPage() {
         return
       }
 
+      if (bookingType === 'AT_HOME' && (!latitude.trim() || !longitude.trim())) {
+        setAvailableGroomers([])
+        setRequestedStaffId('')
+        return
+      }
+
       const bookingDetails = selectedPetIds.map((petId) => ({
         petId,
         catalogId: selectedCatalog.catalogId,
@@ -490,6 +527,9 @@ export function BookingPage() {
         setIsGroomersLoading(true)
         const groomers = await getAvailableGroomers({
           scheduledAt: `${scheduledAt}T${selectedTimeSlot.startTime}`,
+          bookingType,
+          latitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(latitude) : undefined,
+          longitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(longitude) : undefined,
           bookingDetails
         })
 
@@ -521,7 +561,7 @@ export function BookingPage() {
     return () => {
       isMounted = false
     }
-  }, [scheduledAt, selectedCatalog, selectedPetIds, selectedTimeSlot, t])
+  }, [bookingType, latitude, longitude, scheduledAt, selectedCatalog, selectedPetIds, selectedTimeSlot, t])
 
   useEffect(() => {
     if (!toast) {
@@ -547,6 +587,10 @@ export function BookingPage() {
       customerName,
       customerPhone,
       address,
+      latitude,
+      longitude,
+      addressNote,
+      homeServiceRequirementsAccepted,
       note,
       assignmentMode,
       requestedStaffId
@@ -555,12 +599,16 @@ export function BookingPage() {
     writeStorage(STORAGE_KEYS.bookingDraft, JSON.stringify(draft))
   }, [
     address,
+    addressNote,
     assignmentMode,
     bookingType,
     currentStep,
     customerName,
     customerPhone,
+    homeServiceRequirementsAccepted,
     isDraftReady,
+    latitude,
+    longitude,
     note,
     requestedStaffId,
     scheduledAt,
@@ -582,6 +630,16 @@ export function BookingPage() {
 
       if (bookingType === 'AT_HOME' && !address.trim()) {
         showStepError(t('bookingFlow.toast.addressMissing'))
+        return false
+      }
+
+      if (bookingType === 'AT_HOME' && (!latitude.trim() || !longitude.trim())) {
+        showStepError(t('bookingFlow.toast.coordinateMissing'))
+        return false
+      }
+
+      if (bookingType === 'AT_HOME' && !homeServiceRequirementsAccepted) {
+        showStepError(t('bookingFlow.toast.homeRequirementsMissing'))
         return false
       }
 
@@ -633,6 +691,10 @@ export function BookingPage() {
     setCustomerName(user?.fullName ?? '')
     setCustomerPhone(getUserPhone(user))
     setAddress('')
+    setLatitude('')
+    setLongitude('')
+    setAddressNote('')
+    setHomeServiceRequirementsAccepted(false)
     setNote('')
     setAssignmentMode('AUTO')
     setRequestedStaffId('')
@@ -657,10 +719,20 @@ export function BookingPage() {
   function handleCatalogChange(catalogId: number) {
     const nextCatalog = catalogs.find((catalog) => catalog.catalogId === catalogId)
     setSelectedCatalogId(catalogId)
-    if (nextCatalog?.catalogType === 'AT_STORE') {
+    if (nextCatalog?.catalogType === 'AT_STORE' || nextCatalog?.catalogType === 'AT_HOME') {
       setBookingType(nextCatalog.catalogType)
     }
     setSelectedTimeSlotId(null)
+    resetCheckoutState()
+  }
+
+  function handleBookingTypeChange(value: BookingType) {
+    setBookingType(value)
+    const nextCatalogId = catalogs.find((catalog) => catalog.catalogType === value)?.catalogId ?? null
+    setSelectedCatalogId(nextCatalogId)
+    setSelectedTimeSlotId(null)
+    setRequestedStaffId('')
+    setAssignmentMode('AUTO')
     resetCheckoutState()
   }
 
@@ -695,6 +767,10 @@ export function BookingPage() {
       customerName: customerName.trim(),
       customerPhone: customerPhone.trim(),
       address: bookingType === 'AT_HOME' ? address.trim() : undefined,
+      latitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(latitude) : undefined,
+      longitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(longitude) : undefined,
+      addressNote: bookingType === 'AT_HOME' ? addressNote.trim() || undefined : undefined,
+      homeServiceRequirementsAccepted: bookingType === 'AT_HOME' ? homeServiceRequirementsAccepted : undefined,
       note: note.trim() || undefined,
       bookingType,
       scheduledAt,
@@ -708,6 +784,101 @@ export function BookingPage() {
       }))
     }
   }
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadBookingPreview() {
+      if (currentStep !== 4 || checkoutPhase !== 'summary') {
+        return
+      }
+
+      if (
+        !selectedCatalog ||
+        !selectedTimeSlot ||
+        selectedPetIds.length === 0 ||
+        !customerName.trim() ||
+        !customerPhone.trim()
+      ) {
+        setBookingPreview(null)
+        return
+      }
+
+      if (bookingType === 'AT_HOME') {
+        if (!address.trim() || !latitude.trim() || !longitude.trim() || !homeServiceRequirementsAccepted) {
+          setBookingPreview(null)
+          return
+        }
+      }
+
+      const payload: BookingCreationRequest = {
+        customerName: customerName.trim(),
+        customerPhone: customerPhone.trim(),
+        address: bookingType === 'AT_HOME' ? address.trim() : undefined,
+        latitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(latitude) : undefined,
+        longitude: bookingType === 'AT_HOME' ? parseOptionalCoordinate(longitude) : undefined,
+        addressNote: bookingType === 'AT_HOME' ? addressNote.trim() || undefined : undefined,
+        homeServiceRequirementsAccepted: bookingType === 'AT_HOME' ? homeServiceRequirementsAccepted : undefined,
+        note: note.trim() || undefined,
+        bookingType,
+        scheduledAt,
+        assignmentMode,
+        requestedStaffId: assignmentMode === 'SELECTED' ? requestedStaffId : undefined,
+        bookingDetails: selectedPetIds.map((petId) => ({
+          petId,
+          catalogId: selectedCatalog.catalogId,
+          timeSlotId: selectedTimeSlot.timeSlotId,
+          note: note.trim() || undefined
+        }))
+      }
+
+      try {
+        setIsPreviewLoading(true)
+        const preview = await previewBooking(payload)
+
+        if (isMounted) {
+          setBookingPreview(preview)
+        }
+      } catch (error) {
+        if (isMounted) {
+          setBookingPreview(null)
+          setToast({
+            type: 'error',
+            message: getBookingErrorMessage(error, t('bookingFlow.toast.previewError'), t)
+          })
+        }
+      } finally {
+        if (isMounted) {
+          setIsPreviewLoading(false)
+        }
+      }
+    }
+
+    void loadBookingPreview()
+
+    return () => {
+      isMounted = false
+    }
+  }, [
+    address,
+    addressNote,
+    assignmentMode,
+    bookingType,
+    checkoutPhase,
+    currentStep,
+    customerName,
+    customerPhone,
+    homeServiceRequirementsAccepted,
+    latitude,
+    longitude,
+    note,
+    requestedStaffId,
+    scheduledAt,
+    selectedCatalog,
+    selectedPetIds,
+    selectedTimeSlot,
+    t
+  ])
 
   async function refreshMyBookingsAfterPayment() {
     try {
@@ -903,16 +1074,21 @@ export function BookingPage() {
                   {currentStep === 1 && (
                     <CustomerInfoStep
                       bookingType={bookingType}
-                      onBookingTypeChange={(value) => {
-                        setBookingType(value)
-                        resetCheckoutState()
-                      }}
+                      onBookingTypeChange={handleBookingTypeChange}
                       customerName={customerName}
                       onCustomerNameChange={setCustomerName}
                       customerPhone={customerPhone}
                       onCustomerPhoneChange={setCustomerPhone}
                       address={address}
                       onAddressChange={setAddress}
+                      latitude={latitude}
+                      onLatitudeChange={setLatitude}
+                      longitude={longitude}
+                      onLongitudeChange={setLongitude}
+                      addressNote={addressNote}
+                      onAddressNoteChange={setAddressNote}
+                      homeServiceRequirementsAccepted={homeServiceRequirementsAccepted}
+                      onHomeServiceRequirementsAcceptedChange={setHomeServiceRequirementsAccepted}
                       note={note}
                       onNoteChange={setNote}
                       pets={pets}
@@ -925,6 +1101,7 @@ export function BookingPage() {
                   {currentStep === 2 && (
                     <ServiceStep
                       catalogs={catalogs}
+                      bookingType={bookingType}
                       selectedCatalogId={selectedCatalogId}
                       selectedPets={selectedPets}
                       onCatalogChange={handleCatalogChange}
@@ -961,6 +1138,9 @@ export function BookingPage() {
                       customerName={customerName}
                       customerPhone={customerPhone}
                       address={address}
+                      addressNote={addressNote}
+                      latitude={latitude}
+                      longitude={longitude}
                       note={note}
                       selectedCatalog={selectedCatalog}
                       selectedPets={selectedPets}
@@ -970,6 +1150,8 @@ export function BookingPage() {
                       requestedStaffId={requestedStaffId}
                       availableGroomers={availableGroomers}
                       isGroomersLoading={isGroomersLoading}
+                      bookingPreview={bookingPreview}
+                      isPreviewLoading={isPreviewLoading}
                       onAssignmentModeChange={(mode) => {
                         setAssignmentMode(mode)
                         if (mode === 'AUTO') {
@@ -984,6 +1166,7 @@ export function BookingPage() {
                       }}
                       petPricePreviews={petPricePreviews}
                       subtotal={subtotal}
+                      total={previewTotal}
                       deposit={deposit}
                       remaining={remaining}
                       checkoutPhase={checkoutPhase}
@@ -1027,6 +1210,7 @@ export function BookingPage() {
               subtotal={subtotal}
               deposit={deposit}
               remaining={remaining}
+              bookingPreview={bookingPreview}
               myBookings={myBookings}
             />
           )}
@@ -1063,6 +1247,14 @@ interface CustomerInfoStepProps {
   onCustomerPhoneChange: (value: string) => void
   address: string
   onAddressChange: (value: string) => void
+  latitude: string
+  onLatitudeChange: (value: string) => void
+  longitude: string
+  onLongitudeChange: (value: string) => void
+  addressNote: string
+  onAddressNoteChange: (value: string) => void
+  homeServiceRequirementsAccepted: boolean
+  onHomeServiceRequirementsAcceptedChange: (value: boolean) => void
   note: string
   onNoteChange: (value: string) => void
   pets: PetProfileResponse[]
@@ -1080,6 +1272,14 @@ function CustomerInfoStep({
   onCustomerPhoneChange,
   address,
   onAddressChange,
+  latitude,
+  onLatitudeChange,
+  longitude,
+  onLongitudeChange,
+  addressNote,
+  onAddressNoteChange,
+  homeServiceRequirementsAccepted,
+  onHomeServiceRequirementsAcceptedChange,
   note,
   onNoteChange,
   pets,
@@ -1095,29 +1295,20 @@ function CustomerInfoStep({
       <p className='mt-1 text-sm text-muted-foreground'>{t('bookingFlow.customer.subtitle')}</p>
 
       <div className='mt-5 grid grid-cols-2 gap-2 rounded-md bg-muted p-1'>
-        {BOOKING_TYPES.map((type) => {
-          const isDisabled = type === 'AT_HOME'
-
-          return (
-            <button
-              key={type}
-              type='button'
-              disabled={isDisabled}
-              onClick={() => onBookingTypeChange(type)}
-              className={cn(
-                'flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-semibold transition-colors',
-                bookingType === type ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground',
-                isDisabled && 'cursor-not-allowed opacity-60 hover:text-muted-foreground'
-              )}
-            >
-              <MaterialIcon name={type === 'AT_STORE' ? 'storefront' : 'home_pin'} className='text-[18px]' />
-              <span>
-                {t(`bookingFlow.bookingTypes.${type}`)}
-                {isDisabled ? ` (${t('bookingFlow.bookingTypes.paused')})` : ''}
-              </span>
-            </button>
-          )
-        })}
+        {BOOKING_TYPES.map((type) => (
+          <button
+            key={type}
+            type='button'
+            onClick={() => onBookingTypeChange(type)}
+            className={cn(
+              'flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-semibold transition-colors',
+              bookingType === type ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            <MaterialIcon name={type === 'AT_STORE' ? 'storefront' : 'home_pin'} className='text-[18px]' />
+            <span>{t(`bookingFlow.bookingTypes.${type}`)}</span>
+          </button>
+        ))}
       </div>
 
       <div className='mt-5 grid gap-4 md:grid-cols-2'>
@@ -1129,7 +1320,33 @@ function CustomerInfoStep({
           required
         />
         {bookingType === 'AT_HOME' && (
-          <Field label={t('bookingFlow.customer.address')} value={address} onChange={onAddressChange} required />
+          <>
+            <BookingAddressMap
+              address={address}
+              latitude={latitude}
+              longitude={longitude}
+              onAddressChange={onAddressChange}
+              onLatitudeChange={onLatitudeChange}
+              onLongitudeChange={onLongitudeChange}
+            />
+            <label className='md:col-span-2'>
+              <span className='text-sm font-medium'>{t('bookingFlow.customer.addressNote')}</span>
+              <input
+                value={addressNote}
+                onChange={(event) => onAddressNoteChange(event.target.value)}
+                className='mt-2 h-11 w-full rounded-md border border-border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring'
+              />
+            </label>
+            <label className='md:col-span-2 flex items-start gap-3 rounded-md border border-border bg-muted/60 p-3 text-sm'>
+              <input
+                type='checkbox'
+                className='mt-1 h-4 w-4 accent-current'
+                checked={homeServiceRequirementsAccepted}
+                onChange={(event) => onHomeServiceRequirementsAcceptedChange(event.target.checked)}
+              />
+              <span className='font-medium text-foreground'>{t('bookingFlow.customer.homeRequirements')}</span>
+            </label>
+          </>
         )}
         <label className='md:col-span-2'>
           <span className='text-sm font-medium'>{t('bookingFlow.customer.note')}</span>
@@ -1154,21 +1371,30 @@ function CustomerInfoStep({
 
 interface ServiceStepProps {
   catalogs: CatalogResponse[]
+  bookingType: BookingType
   selectedCatalogId: number | null
   selectedPets: PetProfileResponse[]
   onCatalogChange: (catalogId: number) => void
   formatCurrency: (value: number) => string
 }
 
-function ServiceStep({ catalogs, selectedCatalogId, selectedPets, onCatalogChange, formatCurrency }: ServiceStepProps) {
+function ServiceStep({
+  catalogs,
+  bookingType,
+  selectedCatalogId,
+  selectedPets,
+  onCatalogChange,
+  formatCurrency
+}: ServiceStepProps) {
   const { t } = useTranslation('services')
+  const visibleCatalogs = catalogs.filter((catalog) => catalog.catalogType === bookingType)
 
   return (
     <div>
       <h2 className='text-xl font-bold'>{t('bookingFlow.service.title')}</h2>
       <p className='mt-1 text-sm text-muted-foreground'>{t('bookingFlow.service.subtitle')}</p>
       <div className='mt-5 grid gap-4 md:grid-cols-2'>
-        {catalogs.map((catalog) => (
+        {visibleCatalogs.map((catalog) => (
           <ServiceCatalogCard
             key={catalog.catalogId}
             catalog={catalog}
@@ -1179,6 +1405,11 @@ function ServiceStep({ catalogs, selectedCatalogId, selectedPets, onCatalogChang
           />
         ))}
       </div>
+      {visibleCatalogs.length === 0 ? (
+        <p className='mt-5 rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground'>
+          {t('bookingFlow.service.empty')}
+        </p>
+      ) : null}
     </div>
   )
 }
@@ -1469,6 +1700,9 @@ interface ReviewPaymentStepProps {
   customerName: string
   customerPhone: string
   address: string
+  addressNote: string
+  latitude: string
+  longitude: string
   note: string
   selectedCatalog: CatalogResponse | null
   selectedPets: PetProfileResponse[]
@@ -1478,10 +1712,13 @@ interface ReviewPaymentStepProps {
   requestedStaffId: string
   availableGroomers: AvailableGroomerResponse[]
   isGroomersLoading: boolean
+  bookingPreview: BookingPreviewResponse | null
+  isPreviewLoading: boolean
   onAssignmentModeChange: (mode: StaffAssignmentMode) => void
   onRequestedStaffChange: (staffId: string) => void
   petPricePreviews: PetPricePreview[]
   subtotal: number
+  total: number
   deposit: number
   remaining: number
   checkoutPhase: CheckoutPhase
@@ -1502,6 +1739,9 @@ function ReviewPaymentStep({
   customerName,
   customerPhone,
   address,
+  addressNote,
+  latitude,
+  longitude,
   note,
   selectedCatalog,
   selectedPets,
@@ -1511,10 +1751,13 @@ function ReviewPaymentStep({
   requestedStaffId,
   availableGroomers,
   isGroomersLoading,
+  bookingPreview,
+  isPreviewLoading,
   onAssignmentModeChange,
   onRequestedStaffChange,
   petPricePreviews,
   subtotal,
+  total,
   deposit,
   remaining,
   checkoutPhase,
@@ -1586,7 +1829,21 @@ function ReviewPaymentStep({
             value={customerPhone || t('bookingFlow.summary.empty')}
           />
           {bookingType === 'AT_HOME' && (
-            <SummaryLine label={t('bookingFlow.customer.address')} value={address || t('bookingFlow.summary.empty')} />
+            <>
+              <SummaryLine
+                label={t('bookingFlow.customer.address')}
+                value={address || t('bookingFlow.summary.empty')}
+              />
+              <SummaryLine
+                label={t('bookingFlow.customer.latitude')}
+                value={latitude || t('bookingFlow.summary.empty')}
+              />
+              <SummaryLine
+                label={t('bookingFlow.customer.longitude')}
+                value={longitude || t('bookingFlow.summary.empty')}
+              />
+              {addressNote && <SummaryLine label={t('bookingFlow.customer.addressNote')} value={addressNote} />}
+            </>
           )}
           {note && <SummaryLine label={t('bookingFlow.customer.note')} value={note} />}
         </ReviewCard>
@@ -1781,7 +2038,34 @@ function ReviewPaymentStep({
             ))}
           </div>
         ) : null}
-        <SummaryRow label={t('bookingFlow.summary.subtotal')} value={formatCurrency(subtotal)} />
+        {isPreviewLoading ? (
+          <p className='rounded-md bg-muted p-3 text-sm text-muted-foreground'>
+            {t('bookingFlow.summary.previewLoading')}
+          </p>
+        ) : null}
+        <SummaryRow
+          label={t('bookingFlow.summary.serviceAmount')}
+          value={formatCurrency(bookingPreview?.serviceAmount ?? subtotal)}
+        />
+        <SummaryRow
+          label={t('bookingFlow.summary.surchargeAmount')}
+          value={formatCurrency(bookingPreview?.surchargeAmount ?? 0)}
+        />
+        {bookingType === 'AT_HOME' ? (
+          <>
+            <SummaryRow
+              label={t('bookingFlow.summary.travelFee')}
+              value={formatCurrency(bookingPreview?.travelFee ?? 0)}
+            />
+            {bookingPreview?.distanceKm !== undefined ? (
+              <SummaryRow
+                label={t('bookingFlow.summary.distance')}
+                value={t('bookingFlow.summary.distanceValue', { value: bookingPreview.distanceKm.toFixed(1) })}
+              />
+            ) : null}
+          </>
+        ) : null}
+        <SummaryRow label={t('bookingFlow.summary.subtotal')} value={formatCurrency(total)} />
         <SummaryRow label={t('bookingFlow.summary.deposit')} value={formatCurrency(deposit)} strong />
         <SummaryRow label={t('bookingFlow.summary.remaining')} value={formatCurrency(remaining)} />
       </div>
@@ -1791,7 +2075,7 @@ function ReviewPaymentStep({
         variant='secondary'
         className='mt-5 w-full'
         onClick={onCheckout}
-        disabled={isCreatingBooking || deposit <= 0}
+        disabled={isCreatingBooking || isPreviewLoading || deposit <= 0 || !bookingPreview}
       >
         <MaterialIcon
           name={isCreatingBooking ? 'progress_activity' : 'lock'}
@@ -2019,6 +2303,7 @@ interface BookingSidebarProps {
   subtotal: number
   deposit: number
   remaining: number
+  bookingPreview: BookingPreviewResponse | null
   myBookings: BookingResponse[]
 }
 
@@ -2031,6 +2316,7 @@ function BookingSidebar({
   subtotal,
   deposit,
   remaining,
+  bookingPreview,
   myBookings
 }: BookingSidebarProps) {
   const { t } = useTranslation('services')
@@ -2065,7 +2351,22 @@ function BookingSidebar({
             value={formatCurrency(preview.totalPrice)}
           />
         ))}
-        <SummaryRow label={t('bookingFlow.summary.subtotal')} value={formatCurrency(subtotal)} strong />
+        <SummaryRow
+          label={t('bookingFlow.summary.serviceAmount')}
+          value={formatCurrency(bookingPreview?.serviceAmount ?? subtotal)}
+        />
+        <SummaryRow
+          label={t('bookingFlow.summary.surchargeAmount')}
+          value={formatCurrency(bookingPreview?.surchargeAmount ?? 0)}
+        />
+        {bookingPreview && bookingPreview.travelFee > 0 ? (
+          <SummaryRow label={t('bookingFlow.summary.travelFee')} value={formatCurrency(bookingPreview.travelFee)} />
+        ) : null}
+        <SummaryRow
+          label={t('bookingFlow.summary.subtotal')}
+          value={formatCurrency(bookingPreview?.totalAmount ?? subtotal)}
+          strong
+        />
         <SummaryRow label={t('bookingFlow.summary.deposit')} value={formatCurrency(deposit)} strong />
         <SummaryRow label={t('bookingFlow.summary.remaining')} value={formatCurrency(remaining)} />
       </dl>

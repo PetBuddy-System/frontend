@@ -6,8 +6,10 @@ import type { UserResponse } from '~/shared/lib/auth'
 export type BookingStatus =
   | 'PENDING_PAYMENT'
   | 'FAILED'
+  | 'WAITING_STAFF'
   | 'PENDING_ACCEPTANCE'
   | 'ACCEPTED'
+  | 'ON_THE_WAY'
   | 'IN_PROGRESS'
   | 'READY_FOR_PICKUP'
   | 'COMPLETED'
@@ -70,6 +72,19 @@ export interface BookingResponse {
   customerName: string
   customerPhone: string
   address?: string
+  latitude?: number
+  longitude?: number
+  addressNote?: string
+  distanceKm?: number
+  travelFee?: number
+  estimatedTravelMinute?: number
+  requestedStaffId?: string
+  requestedStaffName?: string
+  assignedStaffId?: string
+  assignedStaffName?: string
+  departedAt?: string
+  actualStartedAt?: string
+  actualCompletedAt?: string
   scheduledAt: string
   bookingStatus: BookingStatus
   totalAmount: number
