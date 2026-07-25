@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { MaterialIcon } from '~/shared/ui'
 import { useAuth } from '~/providers/auth-provider'
 
-export type SelectedPaymentMethod = 'CASH' | 'CARD' | 'MOMO'
+export type SelectedPaymentMethod = 'CASH' | 'CARD' | 'MOMO' | 'VNPAY'
 
 export interface CheckoutPaymentMethodsProps {
   selectedMethod: SelectedPaymentMethod
@@ -31,6 +31,12 @@ export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: Check
       label: t('checkout.payment.methods.momo'),
       description: t('checkout.payment.methods.momoDesc'),
       icon: 'qr_code_2',
+    },
+    {
+      key: 'VNPAY' as const,
+      label: t('checkout.payment.methods.vnpay'),
+      description: t('checkout.payment.methods.vnpayDesc'),
+      icon: 'account_balance',
     },
   ] as const
 
@@ -80,7 +86,7 @@ export function CheckoutPaymentMethods({ selectedMethod, onMethodChange }: Check
         })}
       </div>
 
-      {(selectedMethod === 'CARD' || selectedMethod === 'MOMO') && user && user.paymentFailStreak !== undefined && user.paymentFailStreak >= 3 && (
+      {(selectedMethod === 'CARD' || selectedMethod === 'MOMO' || selectedMethod === 'VNPAY') && user && user.paymentFailStreak !== undefined && user.paymentFailStreak >= 3 && (
         <div className='mt-4 flex items-start gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive dark:border-destructive/30 dark:bg-destructive/10 animate-fade-in'>
           <MaterialIcon name='warning' className='mt-0.5 shrink-0 text-[20px] text-destructive' />
           <div className='flex flex-col gap-1'>

@@ -22,9 +22,7 @@ export function OrderPaymentDetail({
 }: OrderPaymentDetailProps) {
   const { t } = useTranslation('profile')
 
-  // Đơn đã thanh toán online (CARD/MOMO): shipper vẫn thấy giá trị thật,
-  // nhưng được trừ luôn "Số tiền đã trả" để biết không cần thu thêm gì nữa.
-  const isOnlinePayment = order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO'
+  const isOnlinePayment = order.payment?.paymentMethod === 'CARD' || order.payment?.paymentMethod === 'MOMO' || order.payment?.paymentMethod === 'VNPAY'
   const showPaidDeduction = isShipper && isOnlinePayment
 
   return (
@@ -50,6 +48,8 @@ export function OrderPaymentDetail({
                     ? 'credit_card'
                     : order.payment?.paymentMethod === 'MOMO'
                     ? 'qr_code_2'
+                    : order.payment?.paymentMethod === 'VNPAY'
+                    ? 'account_balance'
                     : 'payments'
                 }
                 className="text-primary text-[28px]"
@@ -60,6 +60,8 @@ export function OrderPaymentDetail({
                     ? t('orderDetail.cardPayment', 'Thanh toán thẻ')
                     : order.payment?.paymentMethod === 'MOMO'
                     ? t('orderDetail.momoPayment', 'Ví MoMo')
+                    : order.payment?.paymentMethod === 'VNPAY'
+                    ? t('orderDetail.vnpayPayment', 'Ví VNPAY')
                     : t('orderDetail.cashPayment', 'Tiền mặt')}
                 </p>
                 <p className="text-[10px] text-muted-foreground">
@@ -67,6 +69,8 @@ export function OrderPaymentDetail({
                     ? t('orderDetail.viaGateway', 'Qua cổng thanh toán')
                     : order.payment?.paymentMethod === 'MOMO'
                     ? t('orderDetail.viaMomo', 'Qua ví điện tử MoMo')
+                    : order.payment?.paymentMethod === 'VNPAY'
+                    ? t('orderDetail.viaVnpay', 'Qua ví điện tử VNPAY')
                     : t('orderDetail.payOnDelivery', 'Thanh toán khi nhận hàng')}
                 </p>
               </div>
@@ -80,7 +84,7 @@ export function OrderPaymentDetail({
               className={cn(
                 'flex items-center gap-1.5 font-bold text-sm',
                 order.payment?.status === 'PAID' ? 'text-success' :
-                order.payment?.status === 'REFUNDED' ? 'text-success' :
+                order.payment?.status === 'REFUNDED' || order.payment?.status === 'PARTIALLY_REFUNDED' ? 'text-success' :
                 order.payment?.status === 'FAILED' ? 'text-destructive' :
                 'text-amber-500'
               )}
@@ -88,7 +92,7 @@ export function OrderPaymentDetail({
               <MaterialIcon
                 name={
                   order.payment?.status === 'PAID' ? 'verified_user' :
-                  order.payment?.status === 'REFUNDED' ? 'assignment_return' :
+                  order.payment?.status === 'REFUNDED' || order.payment?.status === 'PARTIALLY_REFUNDED' ? 'assignment_return' :
                   order.payment?.status === 'FAILED' ? 'cancel' :
                   'schedule'
                 }
@@ -97,7 +101,7 @@ export function OrderPaymentDetail({
               <span>
                 {order.payment?.status === 'PAID'
                   ? t('orderDetail.paid', 'Đã thanh toán')
-                  : order.payment?.status === 'REFUNDED'
+                  : order.payment?.status === 'REFUNDED' || order.payment?.status === 'PARTIALLY_REFUNDED'
                   ? t('orderDetail.refunded', 'Đã hoàn tiền')
                   : order.payment?.status === 'FAILED'
                   ? t('orderDetail.paymentFailed', 'Thanh toán thất bại')

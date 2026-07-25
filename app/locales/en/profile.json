@@ -43,6 +43,31 @@
     "goldMember": "Gold member",
     "memberSince": "Joined January 2023 • 150 reward points",
     "edit": "Edit",
+    "editProfile": {
+      "title": "Edit personal information",
+      "subtitle": "Update your information. Note: Email cannot be changed.",
+      "avatarLabel": "Avatar",
+      "avatarHint": "Click the camera icon to change photo",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "Enter your full name",
+      "emailLabel": "Email",
+      "emailHint": "Email cannot be changed",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "Enter phone number",
+      "dateOfBirthLabel": "Date of birth",
+      "genderLabel": "Gender",
+      "genderOptions": {
+        "MALE": "Male",
+        "FEMALE": "Female",
+        "OTHER": "Other"
+      },
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "saving": "Saving...",
+      "loadError": "Failed to load personal information. Please try again.",
+      "updateSuccess": "Information updated successfully!",
+      "updateError": "Failed to update information. Please try again."
+    },
     "fields": {
       "fullName": {
         "label": "Full name",
@@ -588,7 +613,7 @@
       "expired": "Expired",
       "cancel_requested": "Refund pending",
       "picked": "Picked",
-      "bombed": "Customer No-show",
+      "delivery_failed": "Delivery Failed",
       "returned_to_warehouse": "Returned to Warehouse"
     },
     "expiredBanner": "Order has expired due to payment timeout.",
@@ -597,10 +622,14 @@
     "cancelReasonLabel": "Cancellation reason:",
     "noCancelReason": "No reason provided",
     "refundPendingDesc": "Staff will review and confirm your refund as soon as possible.",
-    "bombedBannerTitle": "Delivery failed after 3 attempts",
-    "bombedBannerDesc": "Our shipper attempted delivery multiple times but was unable to reach you. If you paid online, a refund will be processed per our policy.",
+    "bombedBannerTitle": "Delivery Failed",
+    "bombedBannerDesc": "Our shipper attempted delivery multiple times but was unable to complete it. If you paid online, a refund will be processed per our policy.",
     "bombedReason": "Reason provided:",
     "returnedToWarehouseBanner": "The items in this order have been confirmed as returned to our warehouse.",
+    "cancelledTitle": "Order Cancelled",
+    "returnedToWarehouseTitle": "Order Returned to Warehouse / Awaiting Coordinator Review",
+    "returnedToWarehouseReason": "Delivery failed and order has been returned to warehouse for coordinator processing.",
+    "defaultDeliveryFailedReason": "Delivery attempt failed",
     "deliveryProofImage": "Delivery confirmation photo",
     "payNow": "Pay Now",
     "payAgain": "Pay Again",
@@ -612,6 +641,10 @@
     "notFound": "Order not found",
     "unexpectedError": "An error occurred.",
     "cancelledMessage": "This order has been cancelled",
+    "printShippingLabel": "Print Shipping Label",
+    "bombedTitle": "Delivery Failed",
+    "deliveryFailedTitle": "Delivery Failed",
+    "reasonLabel": "Reason:",
     "shippingInfo": "Shipping information",
     "recipient": "Recipient",
     "phone": "Phone number",
@@ -704,6 +737,10 @@
     "loadError": "Failed to load order details.",
     "loading": "Loading order details...",
     "notFound": "Order not found.",
-    "backToOrders": "Back to orders list"
+    "backToOrders": "Back to order list",
+    "refundSuccessTitle": "Order Cancelled & Refund Processed Successfully",
+    "refundSuccessDesc": "Order #{{code}} has been successfully processed for cancellation.",
+    "orderCodeLabel": "Order Code:",
+    "confirmBtn": "Back to Orders"
   }
 }

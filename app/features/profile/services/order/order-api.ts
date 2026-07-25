@@ -12,9 +12,7 @@ import type {
 
 const ORDER_BASE_URL = `${env.API_URL}${env.API_ORDERS_PATH}`
 
-export async function fetchMyOrdersApi(
-  params: PageableParams = {}
-): Promise<ApiResponse<PageResponse<OrderResponse>>> {
+export async function fetchMyOrdersApi(params: PageableParams = {}): Promise<ApiResponse<PageResponse<OrderResponse>>> {
   const { page, size, sort } = params
 
   return customFetch<ApiResponse<PageResponse<OrderResponse>>>({
@@ -57,10 +55,7 @@ export async function updateOrderApi(orderId: number, data: UpdateOrderRequest):
   })
 }
 
-export async function requestRefundCancelApi(
-  orderId: number,
-  cancelReason: string
-): Promise<ApiResponse<any>> {
+export async function requestRefundCancelApi(orderId: number, cancelReason: string): Promise<ApiResponse<any>> {
   return customFetch<ApiResponse<any>>({
     url: `${ORDER_BASE_URL}/${orderId}/cancel-request`,
     method: 'POST',
@@ -68,9 +63,7 @@ export async function requestRefundCancelApi(
   })
 }
 
-export async function confirmRefundApi(
-  orderId: number
-): Promise<ApiResponse<any>> {
+export async function confirmRefundApi(orderId: number): Promise<ApiResponse<any>> {
   return customFetch<ApiResponse<any>>({
     url: `${ORDER_BASE_URL}/${orderId}/cancel-confirm`,
     method: 'POST'

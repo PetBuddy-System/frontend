@@ -187,7 +187,10 @@
           "title": "Return process",
           "steps": [
             { "title": "Contact us", "description": "Email, call hotline, or chat directly on website" },
-            { "title": "Provide information", "description": "Order ID, photos/videos of defects, detailed description" },
+            {
+              "title": "Provide information",
+              "description": "Order ID, photos/videos of defects, detailed description"
+            },
             { "title": "PetBuddy confirms", "description": "Response within 24-48 business hours" },
             { "title": "Ship item back (if needed)", "description": "Send product to PetBuddy address" },
             { "title": "Process completed", "description": "Exchange or refund within 2 business days" }

@@ -37,12 +37,7 @@ export function ManagerStaffScheduleStaffPage() {
     } catch (error) {
       setMessage({
         type: 'error',
-        text: getWorkScheduleErrorMessage(
-          error,
-          t,
-          'staffSchedule.workSchedules.messages.loadDetailFailed',
-          'detail'
-        )
+        text: getWorkScheduleErrorMessage(error, t, 'staffSchedule.workSchedules.messages.loadDetailFailed', 'detail')
       })
     } finally {
       setIsLoading(false)
@@ -64,12 +59,7 @@ export function ManagerStaffScheduleStaffPage() {
     } catch (error) {
       setMessage({
         type: 'error',
-        text: getWorkScheduleErrorMessage(
-          error,
-          t,
-          'staffSchedule.workSchedules.messages.removeFailed',
-          'remove'
-        )
+        text: getWorkScheduleErrorMessage(error, t, 'staffSchedule.workSchedules.messages.removeFailed', 'remove')
       })
     } finally {
       setIsSubmitting(false)
@@ -184,17 +174,13 @@ function AssignedStaffCard({ staff, disabled, onRemove }: AssignedStaffCardProps
       <div className='flex items-start justify-between gap-3'>
         <div className='min-w-0'>
           <p className='truncate font-semibold text-foreground'>{staff.staffName}</p>
-          {staff.staffEmail && (
-            <p className='truncate text-xs text-muted-foreground'>{staff.staffEmail}</p>
-          )}
+          {staff.staffEmail && <p className='truncate text-xs text-muted-foreground'>{staff.staffEmail}</p>}
         </div>
         <div className='flex shrink-0 flex-wrap justify-end gap-1.5'>
           <span
             className={cn(
               'rounded-full px-2 py-1 text-xs font-bold',
-              staff.scheduleStatus === 'CANCELLED'
-                ? 'bg-destructive/10 text-destructive'
-                : 'bg-success/10 text-success'
+              staff.scheduleStatus === 'CANCELLED' ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success'
             )}
           >
             {t(`staffSchedule.workSchedules.statuses.${staff.scheduleStatus}`)}
@@ -212,16 +198,20 @@ function AssignedStaffCard({ staff, disabled, onRemove }: AssignedStaffCardProps
         </div>
       </div>
       <div className='mt-4 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3'>
-        <span>{t('staffSchedule.workSchedules.detail.assignedAt')}: {formatWorkScheduleDateTime(staff.assignedAt)}</span>
-        <span>{t('staffSchedule.workSchedules.detail.checkIn')}: {formatWorkScheduleDateTime(staff.checkInAt)}</span>
-        <span>{t('staffSchedule.workSchedules.detail.checkOut')}: {formatWorkScheduleDateTime(staff.checkOutAt)}</span>
+        <span>
+          {t('staffSchedule.workSchedules.detail.assignedAt')}: {formatWorkScheduleDateTime(staff.assignedAt)}
+        </span>
+        <span>
+          {t('staffSchedule.workSchedules.detail.checkIn')}: {formatWorkScheduleDateTime(staff.checkInAt)}
+        </span>
+        <span>
+          {t('staffSchedule.workSchedules.detail.checkOut')}: {formatWorkScheduleDateTime(staff.checkOutAt)}
+        </span>
       </div>
       <div className='mt-2 text-xs text-muted-foreground'>
-        {t('staffSchedule.workSchedules.detail.attendanceStatus')}: {' '}
+        {t('staffSchedule.workSchedules.detail.attendanceStatus')}:{' '}
         <span className='font-semibold text-foreground'>
-          {staff.attendanceStatus
-            ? t(`staffSchedule.workSchedules.attendanceStatuses.${staff.attendanceStatus}`)
-            : '-'}
+          {staff.attendanceStatus ? t(`staffSchedule.workSchedules.attendanceStatuses.${staff.attendanceStatus}`) : '-'}
         </span>
       </div>
       <Button

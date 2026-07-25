@@ -64,11 +64,7 @@ function getFallbackKey(info: ErrorInfo, context: PetProfileErrorContext) {
   return `petProfiles.messages.${context}Failed`
 }
 
-export function getPetProfileErrorMessage(
-  error: unknown,
-  t: TFunction,
-  context: PetProfileErrorContext
-) {
+export function getPetProfileErrorMessage(error: unknown, t: TFunction, context: PetProfileErrorContext) {
   const info = extractErrorInfo(error)
 
   if (info.message && !isGenericHttpMessage(info.message)) {

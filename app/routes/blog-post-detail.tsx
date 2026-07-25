@@ -13,4 +13,3 @@ export default function BlogPostDetail() {
 
   return <BlogDetailPage postId={postId ?? ''} />
 }
-

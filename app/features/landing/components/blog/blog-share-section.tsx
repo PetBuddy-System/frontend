@@ -14,9 +14,7 @@ export function BlogShareSection({ categoryLabel }: BlogShareSectionProps) {
       <div className='rounded-2xl border border-border/60 bg-card p-6'>
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
           <div className='flex items-center gap-3'>
-            <span className='text-sm font-semibold text-muted-foreground'>
-              {t('detail.share')}
-            </span>
+            <span className='text-sm font-semibold text-muted-foreground'>{t('detail.share')}</span>
             <div className='flex gap-2'>
               <button
                 type='button'
@@ -42,15 +40,11 @@ export function BlogShareSection({ categoryLabel }: BlogShareSectionProps) {
             </div>
           </div>
           <div className='flex flex-wrap gap-2'>
-            <span className='rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground'>
-              #PetCare
-            </span>
+            <span className='rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground'>#PetCare</span>
             <span className='rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground'>
               #{categoryLabel}
             </span>
-            <span className='rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground'>
-              #Health
-            </span>
+            <span className='rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground'>#Health</span>
           </div>
         </div>
       </div>

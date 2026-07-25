@@ -118,7 +118,10 @@ export function ProfilePetsPage() {
                             </span>
                           </div>
                           <div className='mt-4 grid grid-cols-2 gap-3 text-sm'>
-                            <InfoPill label={t('petProfiles.fields.birthDate')} value={formatPetDate(pet.dateOfBirth)} />
+                            <InfoPill
+                              label={t('petProfiles.fields.birthDate')}
+                              value={formatPetDate(pet.dateOfBirth)}
+                            />
                             <InfoPill
                               label={t('petProfiles.fields.vaccination')}
                               value={t(`petProfiles.vaccinationStatus.${pet.vaccinationStatus}`)}
@@ -134,10 +137,7 @@ export function ProfilePetsPage() {
                             <MaterialIcon name='visibility' className='text-lg' />
                             {t('petProfiles.actions.viewDetails')}
                           </Button>
-                          <Button
-                            type='button'
-                            onClick={() => void navigate(`/profile/pets/${pet.petId}/edit`)}
-                          >
+                          <Button type='button' onClick={() => void navigate(`/profile/pets/${pet.petId}/edit`)}>
                             <MaterialIcon name='edit' className='text-lg' />
                             {t('petProfiles.actions.edit')}
                           </Button>

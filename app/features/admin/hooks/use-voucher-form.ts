@@ -16,7 +16,7 @@ const INITIAL_FORM: VoucherRequest = {
   perUserLimit: null,
   startAt: '',
   expiredAt: '',
-  status: 'ACTIVE',
+  status: 'ACTIVE'
 }
 
 function validateForm(form: VoucherRequest, t: (key: string) => string): Record<string, string> {
@@ -107,7 +107,7 @@ export function useVoucherForm({ editingVoucher, onClose, onSuccess }: UseVouche
       perUserLimit: editingVoucher.perUserLimit,
       startAt: toDateTimeLocal(editingVoucher.startAt),
       expiredAt: toDateTimeLocal(editingVoucher.expiredAt),
-      status: editingVoucher.status,
+      status: editingVoucher.status
     }
   }, [editingVoucher])
 
@@ -118,18 +118,17 @@ export function useVoucherForm({ editingVoucher, onClose, onSuccess }: UseVouche
   const displayStatus = isExpired ? 'EXPIRED' : form.status
   const isToggleActive = displayStatus === 'ACTIVE'
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target
 
     setForm((prev: VoucherRequest) => {
       const updated = {
         ...prev,
-        [name]:
-          ['discountValue', 'maxDiscount', 'minOrderValue', 'usageLimit', 'perUserLimit'].includes(name)
-            ? value === '' ? null : Number(value)
-            : value,
+        [name]: ['discountValue', 'maxDiscount', 'minOrderValue', 'usageLimit', 'perUserLimit'].includes(name)
+          ? value === ''
+            ? null
+            : Number(value)
+          : value
       }
       if (name === 'startAt' || name === 'expiredAt') {
         const newStart = name === 'startAt' ? value : prev.startAt
@@ -166,7 +165,7 @@ export function useVoucherForm({ editingVoucher, onClose, onSuccess }: UseVouche
       const payload: VoucherRequest = {
         ...form,
         startAt: toISOString(form.startAt),
-        expiredAt: toISOString(form.expiredAt),
+        expiredAt: toISOString(form.expiredAt)
       }
       let result: VoucherResponse
       if (isEditMode && editingVoucher) {

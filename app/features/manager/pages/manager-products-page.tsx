@@ -16,7 +16,7 @@ import {
   fetchProductsManagementApi,
   fetchCategoriesApi,
   fetchProductStatsApi,
-  updateProductApi,
+  updateProductApi
 } from '../services/product'
 import type { ProductManagementItem, CategoryData } from '~/shared/lib/product'
 
@@ -95,7 +95,7 @@ export function ManagerProductsPage() {
         const statsData = await fetchProductStatsApi({
           keyword,
           categoryId: category !== 'all' ? Number(category) : undefined,
-          status: status !== 'all' ? (status as 'ACTIVE' | 'INACTIVE' | 'DELETED') : undefined,
+          status: status !== 'all' ? (status as 'ACTIVE' | 'INACTIVE' | 'DELETED') : undefined
         })
         if (active) {
           setStats({
@@ -162,7 +162,7 @@ export function ManagerProductsPage() {
   }
 
   const handleDelete = (productId: string) => {
-    const product = products.find(p => p.productId === productId)
+    const product = products.find((p) => p.productId === productId)
     if (product) {
       setDeletingProductId(productId)
       setDeletingProductName(product.name)
@@ -178,7 +178,7 @@ export function ManagerProductsPage() {
     setDeleteError(null)
 
     try {
-      const product = products.find(p => p.productId === deletingProductId)
+      const product = products.find((p) => p.productId === deletingProductId)
       const response = await updateProductApi(deletingProductId, {
         name: product?.name ?? '',
         salePrice: product?.salePrice ?? 0,
@@ -189,7 +189,7 @@ export function ManagerProductsPage() {
       if (response.success) {
         setIsDeleteConfirmOpen(false)
         setDeletingProductId(null)
-        setRefreshKey(prev => prev + 1)
+        setRefreshKey((prev) => prev + 1)
       } else {
         setDeleteError(response.message || 'Không thể xóa sản phẩm')
       }

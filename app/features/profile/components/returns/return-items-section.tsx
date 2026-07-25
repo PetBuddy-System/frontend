@@ -25,8 +25,7 @@ export function ReturnItemsSection({ detail }: ReturnItemsSectionProps) {
             <div className='font-semibold text-foreground'>{item.productName}</div>
             <div className='flex items-center gap-6 shrink-0 text-xs'>
               <span className='text-muted-foreground'>
-                {t('list.detail.items.quantity')}{' '}
-                <strong className='text-foreground'>{item.quantity}</strong>
+                {t('list.detail.items.quantity')} <strong className='text-foreground'>{item.quantity}</strong>
               </span>
               {showRefundColumn ? (
                 <span className='text-muted-foreground'>

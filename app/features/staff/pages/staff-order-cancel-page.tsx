@@ -35,15 +35,33 @@ const CANCEL_REASON_MAP: Record<string, string> = {
   'Khác': 'orderCancel.reasons.other',
 }
 
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  CARD: 'orderCancel.paymentMethodCard',
+  MOMO: 'orderCancel.paymentMethodMomo',
+  VNPAY: 'orderCancel.paymentMethodVnpay',
+  STRIPE: 'orderCancel.paymentMethodStripe',
+  COD: 'orderCancel.paymentMethodCOD',
+}
+
+const PAYMENT_METHOD_DEFAULTS: Record<string, string> = {
+  CARD: 'Thẻ ngân hàng',
+  MOMO: 'Ví MoMo',
+  VNPAY: 'VNPay',
+  STRIPE: 'Thẻ quốc tế (Stripe)',
+  COD: 'Tiền mặt (COD)',
+}
+
 export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
   const navigate = useNavigate()
   const { t } = useTranslation('staff')
   const [order, setOrder] = useState<OrderDetailFull | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
   const [customReason, setCustomReason] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
+  const [submittedReason, setSubmittedReason] = useState('')
 
   useEffect(() => {
     async function loadOrder() {
@@ -78,17 +96,8 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
     try {
       const res = await updateOrderStatusApi(orderId, 'CANCELLED')
       if (res.success) {
-      alert(
-        t(
-          'orderCancel.successMessage',
-          {
-            code: order.orderCode,
-            reason: finalReason,
-            defaultValue: `Đơn hàng #${order.orderCode} đã được hủy thành công.\nLý do: ${finalReason}`,
-          }
-        )
-      )
-      navigate('/staff/orders')
+        setSubmittedReason(finalReason)
+        setShowSuccessModal(true)
       } else {
         alert(res.message || t('orderCancel.submitError', 'Không thể hủy đơn hàng.'))
       }
@@ -242,9 +251,11 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
                     <div className='flex justify-between text-sm mb-4'>
                       <span className='text-muted-foreground'>{t('orderCancel.paymentMethod', 'Phương thức TT')}</span>
                       <span className='font-semibold text-foreground'>
-                        {order.payment?.paymentMethod === 'CARD' ? t('orderCancel.paymentMethodCard', 'Thẻ ngân hàng') :
-                         order.payment?.paymentMethod === 'MOMO' ? t('orderCancel.paymentMethodMomo', 'Ví MoMo') : t('orderCancel.paymentMethodCOD', 'Tiền mặt (COD)')}
-                      </span>
+                      {t(
+                        PAYMENT_METHOD_LABELS[order.payment?.paymentMethod ?? 'COD'],
+                        PAYMENT_METHOD_DEFAULTS[order.payment?.paymentMethod ?? 'COD']
+                      )}
+                    </span>
                     </div>
 
                     <div className='flex flex-col gap-3 mt-4 border-t border-border pt-4'>
@@ -280,6 +291,40 @@ export function StaffOrderCancelPage({ orderId }: StaffOrderCancelPageProps) {
           </div>
         </main>
       </div>
+
+      {showSuccessModal && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-fadeIn'>
+          <div className='relative w-full max-w-md rounded-2xl bg-card p-6 shadow-2xl border border-border text-center'>
+            <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'>
+              <MaterialIcon name='check_circle' className='text-[40px]' />
+            </div>
+            <h3 className='font-display text-xl font-bold text-foreground'>
+              {t('orderCancel.refundSuccessTitle', 'Đã hủy đơn hàng & Hoàn tiền thành công')}
+            </h3>
+            <p className='mt-2 text-sm text-muted-foreground'>
+              {t('orderCancel.refundSuccessDesc', { code: order?.orderCode, defaultValue: `Đơn hàng #${order?.orderCode} đã được cập nhật hủy thành công.` })}
+            </p>
+            <div className='mt-4 rounded-xl bg-muted/40 p-3.5 text-left text-xs space-y-1.5 border border-border/50'>
+              <p className='font-semibold text-foreground'>
+                <span className='text-muted-foreground'>{t('orderCancel.orderCodeLabel', 'Mã đơn:')}</span> #{order?.orderCode}
+              </p>
+              <p className='font-semibold text-foreground'>
+                <span className='text-muted-foreground'>{t('orderCancel.refundAmountLabel', 'Số tiền hoàn:')}</span> {formatPrice(order?.finalAmount ?? 0)}
+              </p>
+              <p className='font-semibold text-foreground'>
+                <span className='text-muted-foreground'>{t('orderCancel.reasonLabel', 'Lý do:')}</span> {submittedReason}
+              </p>
+            </div>
+            <button
+              type='button'
+              onClick={() => navigate('/staff/orders')}
+              className='mt-6 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-md transition-all hover:bg-primary/90 active:scale-95'
+            >
+              {t('orderCancel.confirmBtn', 'Quay về danh sách đơn hàng')}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

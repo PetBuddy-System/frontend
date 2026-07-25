@@ -715,10 +715,10 @@
       "help": "Nhập số phút cần cộng thêm so với thời lượng gốc. Có thể để trống hoặc nhập 0 nếu hạng cân đó không cần thêm thời gian.",
       "unit": "phút",
       "ranges": {
-        "MEDIUM": "Cỡ vừa",
-        "LARGE": "Cỡ lớn",
-        "EXTRA_LARGE": "Cỡ rất lớn",
-        "EXTRA_EXTRA_LARGE": "Cỡ siêu lớn"
+        "MEDIUM": "Từ 8kg đến 12kg",
+        "LARGE": "Từ 12kg đến 18kg",
+        "EXTRA_LARGE": "Từ 18kg đến 25kg",
+        "EXTRA_EXTRA_LARGE": "Trên 25kg"
       }
     },
     "searchPlaceholder": "Tìm tên dịch vụ hoặc mã dịch vụ...",

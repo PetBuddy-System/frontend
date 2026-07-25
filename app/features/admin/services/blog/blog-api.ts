@@ -15,9 +15,7 @@ import type {
 
 const BLOGS_BASE_URL = `${env.API_URL}${env.API_BLOGS_PATH}`
 
-export async function fetchBlogsApi(
-  params: FetchBlogsParams = {}
-): Promise<PagedBlogResponse> {
+export async function fetchBlogsApi(params: FetchBlogsParams = {}): Promise<PagedBlogResponse> {
   const { keyword = '', page = 0, size = 9 } = params
 
   return customFetch<PagedBlogResponse>({

@@ -16,9 +16,7 @@ export function RelatedPosts({ posts, currentPostId, className }: RelatedPostsPr
 
   return (
     <aside className={cn('space-y-6', className)}>
-      <h3 className='text-sm font-bold uppercase tracking-wider text-muted-foreground'>
-        {t('detail.relatedTitle')}
-      </h3>
+      <h3 className='text-sm font-bold uppercase tracking-wider text-muted-foreground'>{t('detail.relatedTitle')}</h3>
       <div className='space-y-4'>
         {relatedPosts.map((post) => (
           <a

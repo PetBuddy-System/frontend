@@ -60,7 +60,9 @@ export function ManagerPromotionsStats({
           key={item.key}
           className='flex items-center gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:shadow-md'
         >
-          <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${item.bgColorClass} ${item.iconColorClass}`}>
+          <div
+            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${item.bgColorClass} ${item.iconColorClass}`}
+          >
             <MaterialIcon name={item.icon} filled className='text-2xl' />
           </div>
           <div className='min-w-0 flex-1'>

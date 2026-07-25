@@ -2,47 +2,48 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
-import { StaffSidebar } from '../components/layout/staff-sidebar'
-import { StaffTopNav } from '../components/layout/staff-top-nav'
-import { fetchAllOrdersApi, updateOrderStatusApi } from '../services/order'
+import { AdminSidebar } from '~/features/admin/components/layout/admin-sidebar'
+import { AdminTopNav } from '~/features/admin/components/layout/admin-top-nav'
+import { StaffSidebar } from '~/features/staff/components/layout/staff-sidebar'
+import { StaffTopNav } from '~/features/staff/components/layout/staff-top-nav'
+import { fetchAllOrdersApi, updateOrderStatusApi } from '~/features/staff/services/order'
 import type { OrderResponse, OrderStatus } from '~/shared/lib/order'
 import { MaterialIcon } from '~/shared/ui'
 import { cn } from '~/shared/lib/cn'
-import { StaffOrdersStats } from '../components/orders/staff-orders-stats'
-import { StaffOrdersTable } from '../components/orders/staff-orders-table'
-import { StaffOrderPickingDialog } from '../components/orders/staff-order-picking-dialog'
-import { DeliveryProofDialog } from '../components/orders/delivery-proof-dialog'
+import { StaffOrdersStats } from '~/features/staff/components/orders/staff-orders-stats'
+import { StaffOrdersTable } from '~/features/staff/components/orders/staff-orders-table'
+import { StaffOrderPickingDialog } from '~/features/staff/components/orders/staff-order-picking-dialog'
+import { DeliveryProofDialog } from '~/features/staff/components/orders/delivery-proof-dialog'
+import { DeliveryRouteDialog } from '~/features/staff/components/orders/delivery-route-dialog'
+import { DeliveryFailedDialog } from '~/features/staff/components/orders/delivery-failed-dialog'
+import { ConfirmReturnedWarehouseDialog } from '~/features/staff/components/orders/confirm-returned-warehouse-dialog'
+import { CoordinatorReviewDialog } from '~/features/staff/components/orders/coordinator-review-dialog'
 import { useAuth } from '~/providers/auth-provider'
-import { DeliveryRouteDialog } from '../components/orders/delivery-route-dialog'
-import { DeliveryFailedDialog } from '../components/orders/delivery-failed-dialog'
-import { ConfirmReturnedWarehouseDialog } from '../components/orders/confirm-returned-warehouse-dialog'
 
-const PAGE_SIZE = 6
+const PAGE_SIZE = 5
+const HISTORY_STATUSES = ['DELIVERED', 'COMPLETED', 'DELIVERY_FAILED', 'AWAITING_REDELIVERY', 'CANCELLED', 'RETURNED_TO_WAREHOUSE', 'COORDINATOR_REVIEW']
 
-const HISTORY_STATUSES = ['DELIVERED', 'COMPLETED', 'BOMBED', 'CANCELLED', 'RETURNED_TO_WAREHOUSE']
-
-export function StaffOrdersPage() {
+export function OrdersManagementPage() {
     const { t } = useTranslation('staff')
     const navigate = useNavigate()
     const { user } = useAuth()
+    const isAdmin = user?.role === 'ADMIN'
     const isShipper = user?.role === 'STAFF' && user?.staffTask === 'SHIPPER'
-    const [isRouteOpen, setIsRouteOpen] = useState(false)
 
+    const [isRouteOpen, setIsRouteOpen] = useState(false)
     const [searchParams] = useSearchParams()
     const isHistoryView = searchParams.get('view') === 'history'
 
     const [allOrders, setAllOrders] = useState<OrderResponse[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(0)
-
     const [searchQuery, setSearchQuery] = useState('')
     const [statusFilter, setStatusFilter] = useState<string>('ALL')
-
     const [selectedOrderForPicking, setSelectedOrderForPicking] = useState<OrderResponse | null>(null)
     const [selectedOrderForProof, setSelectedOrderForProof] = useState<OrderResponse | null>(null)
     const [selectedOrderForFail, setSelectedOrderForFail] = useState<OrderResponse | null>(null)
     const [selectedOrderForWarehouse, setSelectedOrderForWarehouse] = useState<OrderResponse | null>(null)
-
+    const [selectedOrderForCoordinator, setSelectedOrderForCoordinator] = useState<OrderResponse | null>(null)
     const [dateFrom, setDateFrom] = useState<string>('')
     const [dateTo, setDateTo] = useState<string>('')
 
@@ -83,13 +84,8 @@ export function StaffOrdersPage() {
         }
     }
 
-    useEffect(() => {
-        setTimeout(() => {
-            void loadData()
-        }, 0)
-    }, [])
+    useEffect(() => { setTimeout(() => { void loadData() }, 0) }, [])
 
-    // Số liệu thống kê luôn tính trên toàn bộ đơn hàng, không áp dụng filter hiện tại
     const stats = useMemo(() => ({
         pending: allOrders.filter((o) => o.status === 'PENDING').length,
         confirmed: allOrders.filter((o) => o.status === 'CONFIRMED').length,
@@ -98,7 +94,7 @@ export function StaffOrdersPage() {
         completed: allOrders.filter((o) => o.status === 'COMPLETED').length,
         cancelled: allOrders.filter((o) => o.status === 'CANCELLED').length,
         refundPending: allOrders.filter((o) => o.status === 'CANCEL_REQUESTED').length,
-        bombed: allOrders.filter((o) => o.status === 'BOMBED').length,
+        deliveryFailed: allOrders.filter((o) => o.status === 'DELIVERY_FAILED' || o.status === 'AWAITING_REDELIVERY').length,
     }), [allOrders])
 
     const filteredOrders = useMemo(() => {
@@ -138,18 +134,14 @@ export function StaffOrdersPage() {
     const totalPages = Math.max(1, Math.ceil(totalElements / PAGE_SIZE))
 
     useEffect(() => {
-        if (currentPage > 0 && currentPage >= totalPages) {
-            setCurrentPage(0)
-        }
+        if (currentPage > 0 && currentPage >= totalPages) setCurrentPage(0)
     }, [totalPages, currentPage])
 
-    // Slice đúng trang hiện tại
     const pagedOrders = useMemo(() => {
         const start = currentPage * PAGE_SIZE
         return filteredOrders.slice(start, start + PAGE_SIZE)
     }, [filteredOrders, currentPage])
 
-    // Handle status transitions
     async function handleTransition(orderId: number, nextStatus: OrderStatus) {
         try {
             const res = await updateOrderStatusApi(orderId, nextStatus)
@@ -163,19 +155,24 @@ export function StaffOrdersPage() {
         }
     }
 
-    function handleOpenPicking(order: OrderResponse) {
-        setSelectedOrderForPicking(order)
-    }
+    const orderDetailBasePath = isAdmin ? '/admin' : '/staff'
 
     return (
         <div className='flex h-screen overflow-hidden bg-background text-foreground'>
-            <StaffSidebar activeItem='orders' />
+            {isAdmin ? <AdminSidebar activeItem='orders' /> : <StaffSidebar activeItem='orders' />}
 
             <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
-                <StaffTopNav
-                    titleKey={isHistoryView ? 'deliveryHistory.topNav.title' : 'staffOrdersPage.topNav.title'}
-                    subtitleKey={isHistoryView ? 'deliveryHistory.topNav.subtitle' : 'staffOrdersPage.topNav.subtitle'}
-                />
+                {isAdmin ? (
+                    <AdminTopNav
+                        titleKey={isHistoryView ? 'deliveryHistory.topNav.title' : 'staffOrdersPage.topNav.title'}
+                        subtitleKey={isHistoryView ? 'deliveryHistory.topNav.subtitle' : 'staffOrdersPage.topNav.subtitle'}
+                    />
+                ) : (
+                    <StaffTopNav
+                        titleKey={isHistoryView ? 'deliveryHistory.topNav.title' : 'staffOrdersPage.topNav.title'}
+                        subtitleKey={isHistoryView ? 'deliveryHistory.topNav.subtitle' : 'staffOrdersPage.topNav.subtitle'}
+                    />
+                )}
 
                 <main className='flex-1 overflow-y-auto p-4 md:p-6 pb-20'>
                     <div className='mx-auto flex max-w-7xl flex-col gap-6'>
@@ -196,18 +193,20 @@ export function StaffOrdersPage() {
                             dateTo={dateTo}
                             onSearchChange={handleSearchChange}
                             onStatusFilterChange={handleStatusFilterChange}
-                            onViewDetail={(order) => navigate(`/staff/orders/${order.orderId}`)}
+                            onViewDetail={(order) => navigate(`${orderDetailBasePath}/orders/${order.orderId}`)}
                             onDateFromChange={handleDateFromChange}
                             onDateToChange={handleDateToChange}
                             onTransition={handleTransition}
-                            onOpenPicking={handleOpenPicking}
+                            onOpenPicking={(order) => setSelectedOrderForPicking(order)}
                             onTransitionToShipped={(orderId) => {
-                                const o = allOrders.find(x => x.orderId === orderId)
+                                const o = allOrders.find((x) => x.orderId === orderId)
                                 if (o) setSelectedOrderForProof(o)
                             }}
                             onRefresh={() => void loadData()}
                             onDeliveryFailed={(order) => setSelectedOrderForFail(order)}
                             onConfirmReturnedWarehouse={(order) => setSelectedOrderForWarehouse(order)}
+                            onOpenCoordinatorReview={(order) => setSelectedOrderForCoordinator(order)}
+                            onCancelOrder={(order) => navigate(`${orderDetailBasePath}/orders/${order.orderId}/cancel`)}
                         />
 
                         <div className='flex items-center justify-between border-t border-border bg-muted/20 px-5 py-4 text-xs font-semibold text-muted-foreground'>
@@ -215,7 +214,7 @@ export function StaffOrdersPage() {
                                 {t('staffOrdersPage.pagination.showing', {
                                     from: totalElements > 0 ? currentPage * PAGE_SIZE + 1 : 0,
                                     to: Math.min((currentPage + 1) * PAGE_SIZE, totalElements),
-                                    total: totalElements
+                                    total: totalElements,
                                 })}
                             </span>
                             <div className='flex items-center gap-1.5'>
@@ -291,6 +290,14 @@ export function StaffOrdersPage() {
                 onClose={() => setSelectedOrderForWarehouse(null)}
                 onSuccess={() => void loadData()}
             />
+
+            <CoordinatorReviewDialog
+                order={selectedOrderForCoordinator}
+                isOpen={!!selectedOrderForCoordinator}
+                onClose={() => setSelectedOrderForCoordinator(null)}
+                onSuccess={() => void loadData()}
+            />
         </div>
     )
 }
+

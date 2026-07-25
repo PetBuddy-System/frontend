@@ -41,21 +41,13 @@ export function ManagerProductImageUploader({
 
       {/* Image Upload Input */}
       <div className='flex flex-col gap-1.5'>
-        <span className='text-xs font-bold text-muted-foreground'>
-          {t('productManagement.editModal.uploadNew')}
-        </span>
+        <span className='text-xs font-bold text-muted-foreground'>{t('productManagement.editModal.uploadNew')}</span>
         <label className='flex h-20 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/20 transition-all hover:bg-muted/50 hover:border-primary/50'>
           <div className='flex flex-col items-center justify-center pb-2 pt-2'>
             <MaterialIcon name='cloud_upload' className='text-2xl text-muted-foreground' />
             <p className='text-xs text-muted-foreground mt-1'>Chọn tệp hình ảnh để tải lên</p>
           </div>
-          <input
-            type='file'
-            multiple
-            accept='image/*'
-            className='hidden'
-            onChange={onFileChange}
-          />
+          <input type='file' multiple accept='image/*' className='hidden' onChange={onFileChange} />
         </label>
       </div>
 

@@ -169,9 +169,7 @@ export function BlogDetailPage({ postId }: BlogDetailPageProps) {
     )
   }
 
-  const categoryLabel = post.label
-    ? post.label.charAt(0).toUpperCase() + post.label.slice(1)
-    : ''
+  const categoryLabel = post.label ? post.label.charAt(0).toUpperCase() + post.label.slice(1) : ''
 
   const formattedDate = new Date(post.createdAt).toLocaleDateString('vi-VN', {
     day: '2-digit',

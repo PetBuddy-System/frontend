@@ -13,12 +13,7 @@ export interface BlogImageUploadProps {
 const MAX_FILE_SIZE_MB = 5
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 
-export function BlogImageUpload({
-  imageFiles,
-  imagePreviewUrl,
-  onChange,
-  onRemove
-}: BlogImageUploadProps) {
+export function BlogImageUpload({ imageFiles, imagePreviewUrl, onChange, onRemove }: BlogImageUploadProps) {
   const { t } = useTranslation('admin')
   const imageInputRef = useRef<HTMLInputElement>(null)
   const [imageError, setImageError] = useState('')
@@ -87,9 +82,7 @@ export function BlogImageUpload({
 
   return (
     <div className='space-y-2'>
-      <span className='text-sm font-semibold text-card-foreground'>
-        {t('blogManagement.create.fields.coverImage')}
-      </span>
+      <span className='text-sm font-semibold text-card-foreground'>{t('blogManagement.create.fields.coverImage')}</span>
 
       {hasImage ? (
         <div className='group relative h-12 overflow-hidden rounded-2xl border border-border bg-card'>

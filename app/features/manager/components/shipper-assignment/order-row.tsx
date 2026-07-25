@@ -53,7 +53,9 @@ export function OrderRow({ order, onAssignSuccess }: OrderRowProps) {
             <p className='text-sm font-semibold text-muted-foreground'>{formatDateTime(order.createdAt)}</p>
           </div>
           <div className='text-left md:text-right space-y-0.5'>
-            <p className='text-xs text-muted-foreground font-medium'>{t('shipperAssignment.totalAmount', 'Tổng tiền')}</p>
+            <p className='text-xs text-muted-foreground font-medium'>
+              {t('shipperAssignment.totalAmount', 'Tổng tiền')}
+            </p>
             <p className='text-base font-bold text-foreground'>{formatPrice(order.finalAmount)}</p>
           </div>
         </div>

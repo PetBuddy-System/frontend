@@ -30,9 +30,7 @@ export async function fetchReturnsApi(
   })
 }
 
-export async function fetchReturnDetailApi(
-  returnId: number
-): Promise<ApiResponse<ManagementReturnResponse>> {
+export async function fetchReturnDetailApi(returnId: number): Promise<ApiResponse<ManagementReturnResponse>> {
   return customFetch<ApiResponse<ManagementReturnResponse>>({
     url: `${RETURNS_MANAGEMENT_URL}/${returnId}`,
     method: 'GET'
@@ -63,17 +61,16 @@ export async function updateShipperReturnStatusApi(
   })
 }
 
-export async function fetchAvailableShippersApi(): Promise<ApiResponse<import('~/shared/lib/returns').ReturnShipperResponse[]>> {
+export async function fetchAvailableShippersApi(): Promise<
+  ApiResponse<import('~/shared/lib/returns').ReturnShipperResponse[]>
+> {
   return customFetch<ApiResponse<import('~/shared/lib/returns').ReturnShipperResponse[]>>({
     url: `${env.API_URL}/api/shipper-assignment/available-shippers`,
     method: 'GET'
   })
 }
 
-export async function assignShipperApi(
-  returnRequestId: number,
-  shipperId: string
-): Promise<ApiResponse<void>> {
+export async function assignShipperApi(returnRequestId: number, shipperId: string): Promise<ApiResponse<void>> {
   return customFetch<ApiResponse<void>>({
     url: `${env.API_URL}/api/shipper-assignment/${returnRequestId}/assign-shipper`,
     method: 'PATCH',

@@ -25,9 +25,7 @@ export function AreaOrderGroup({ areaName, orders, onAssignSuccess }: AreaOrderG
           </div>
           <div>
             <h3 className='font-display text-lg font-bold text-foreground'>{areaName}</h3>
-            <p className='text-xs text-muted-foreground font-semibold'>
-              {orders.length} đơn hàng cần giao
-            </p>
+            <p className='text-xs text-muted-foreground font-semibold'>{orders.length} đơn hàng cần giao</p>
           </div>
         </div>
 

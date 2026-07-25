@@ -20,7 +20,6 @@ export function LandingProducts() {
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-
   useEffect(() => {
     let active = true
     async function loadProducts() {
@@ -67,8 +66,8 @@ export function LandingProducts() {
         quantity: 1,
         productName: product.name,
         price: product.salePrice ?? product.price ?? 0,
-        salePrice: product.hasActivePromotion ? product.promotionPrice ?? null : null,
-        imageUrl: product.imageUrls?.[0] || product.thumbnailUrl || product.thumbnail,
+        salePrice: product.hasActivePromotion ? (product.promotionPrice ?? null) : null,
+        imageUrl: product.imageUrls?.[0] || product.thumbnailUrl || product.thumbnail
       })
       await refreshCart()
       setShowSuccessToast(true)

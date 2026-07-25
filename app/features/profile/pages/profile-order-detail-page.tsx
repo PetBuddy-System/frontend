@@ -151,11 +151,7 @@ export function ProfileOrderDetailPage({ orderId }: ProfileOrderDetailPageProps)
               {!isLoadingStatus && (canReturn || canReview || hasReview) && (
                 <div className='flex flex-wrap gap-3 justify-end border-t border-border pt-3 mt-2'>
                   {canReturn && (
-                    <Button
-                      type='button'
-                      onClick={() => setShowReturnForm(true)}
-                      className='flex items-center gap-2'
-                    >
+                    <Button type='button' onClick={() => setShowReturnForm(true)} className='flex items-center gap-2'>
                       <MaterialIcon name='assignment_return' className='text-lg' />
                       <span>Đổi trả hàng</span>
                     </Button>

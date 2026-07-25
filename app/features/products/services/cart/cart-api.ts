@@ -3,7 +3,13 @@ import { customFetch } from '~/api/mutator/custom-fetch'
 import { readStorage } from '~/shared/lib/storage'
 import { STORAGE_KEYS } from '~/shared/config/site'
 import { guestCart } from '~/shared/lib/cart'
-import type { CartResponse, AddToCartRequest, UpdateCartItemRequest, MergeCartRequest, CartItemResponse } from '~/shared/lib/cart'
+import type {
+  CartResponse,
+  AddToCartRequest,
+  UpdateCartItemRequest,
+  MergeCartRequest,
+  CartItemResponse
+} from '~/shared/lib/cart'
 
 interface ApiResponse<T> {
   success: boolean
@@ -23,7 +29,7 @@ export async function getCartApi(): Promise<CartResponse> {
   }
   const response = await customFetch<ApiResponse<CartResponse>>({
     url: CART_BASE_URL,
-    method: 'GET',
+    method: 'GET'
   })
   return response.data
 }
@@ -47,21 +53,18 @@ export async function addToCartApi(
       productName: request.productName,
       salePrice: request.salePrice,
       price: request.price,
-      imageUrl: request.imageUrl ?? '',
+      imageUrl: request.imageUrl ?? ''
     })
     return
   }
   await customFetch<ApiResponse<void>>({
     url: `${CART_BASE_URL}/items`,
     method: 'POST',
-    data: { productId: request.productId, quantity: request.quantity },
+    data: { productId: request.productId, quantity: request.quantity }
   })
 }
 
-export async function updateCartItemApi(
-  cartItemId: string,
-  request: UpdateCartItemRequest
-): Promise<CartItemResponse> {
+export async function updateCartItemApi(cartItemId: string, request: UpdateCartItemRequest): Promise<CartItemResponse> {
   if (!isLoggedIn()) {
     const updated = guestCart.update(cartItemId, request)
     if (Array.isArray(updated)) {
@@ -75,7 +78,7 @@ export async function updateCartItemApi(
   const response = await customFetch<ApiResponse<CartItemResponse>>({
     url: `${CART_BASE_URL}/items/${cartItemId}`,
     method: 'PUT',
-    data: request,
+    data: request
   })
 
   return response.data
@@ -87,7 +90,7 @@ export async function removeCartItemApi(cartItemId: string): Promise<void> {
   }
   await customFetch<ApiResponse<void>>({
     url: `${CART_BASE_URL}/items/${cartItemId}`,
-    method: 'DELETE',
+    method: 'DELETE'
   })
 }
 
@@ -96,19 +99,19 @@ export async function mergeCartApi(): Promise<CartResponse> {
   if (guestItems.length === 0) {
     const response = await customFetch<ApiResponse<CartResponse>>({
       url: CART_BASE_URL,
-      method: 'GET',
+      method: 'GET'
     })
     return response.data
   }
 
   const request: MergeCartRequest = {
-    items: guestItems.map((item) => ({ productId: item.productId, quantity: item.quantity })),
+    items: guestItems.map((item) => ({ productId: item.productId, quantity: item.quantity }))
   }
 
   const response = await customFetch<ApiResponse<CartResponse>>({
     url: `${CART_BASE_URL}/merge`,
     method: 'POST',
-    data: request,
+    data: request
   })
 
   guestCart.clear()

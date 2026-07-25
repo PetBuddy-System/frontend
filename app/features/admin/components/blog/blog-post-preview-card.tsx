@@ -10,23 +10,13 @@ export interface BlogPostPreviewCardProps {
   imagePreviewUrl: string
 }
 
-export function BlogPostPreviewCard({
-  title,
-  excerpt,
-  label,
-  author,
-  imagePreviewUrl
-}: BlogPostPreviewCardProps) {
+export function BlogPostPreviewCard({ title, excerpt, label, author, imagePreviewUrl }: BlogPostPreviewCardProps) {
   const { t } = useTranslation('admin')
 
   return (
     <section className='rounded-3xl border border-border bg-card p-6 shadow-sm'>
-      <h3 className='text-base font-extrabold text-card-foreground'>
-        {t('blogManagement.create.preview.title')}
-      </h3>
-      <p className='mt-1 text-sm text-muted-foreground'>
-        {t('blogManagement.create.preview.subtitle')}
-      </p>
+      <h3 className='text-base font-extrabold text-card-foreground'>{t('blogManagement.create.preview.title')}</h3>
+      <p className='mt-1 text-sm text-muted-foreground'>{t('blogManagement.create.preview.subtitle')}</p>
 
       <div className='mt-4 overflow-hidden rounded-2xl border border-border'>
         <div className='h-40 w-full bg-muted'>

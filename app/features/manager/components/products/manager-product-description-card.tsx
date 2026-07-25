@@ -2,9 +2,7 @@ export interface ManagerProductDescriptionCardProps {
   description: string | null
 }
 
-export function ManagerProductDescriptionCard({
-  description
-}: ManagerProductDescriptionCardProps) {
+export function ManagerProductDescriptionCard({ description }: ManagerProductDescriptionCardProps) {
   return (
     <div className='bg-card rounded-2xl border border-border p-6 shadow-sm'>
       <h3 className='text-lg font-bold text-foreground font-display mb-3'>Mô tả sản phẩm</h3>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 
 import { cn } from '~/shared/lib/cn'
 import { updateOrderStatusApi } from '~/features/profile/services'
-import { getPaymentByOrderIdApi, retryMomoPaymentApi } from '~/features/products/services/payment/payment-api'
+import { getPaymentByOrderIdApi, retryMomoPaymentApi, retryVnPayPaymentApi } from '~/features/products/services/payment/payment-api'
 import type { VoucherResponse } from '~/shared/lib/voucher'
 import { formatDateOnly, formatTimeOnly } from '~/shared/lib/date'
 
@@ -69,7 +69,7 @@ function getStatusLabel(status: string) {
     case 'SHIPPING':
       return 'Đang giao'
     case 'DELIVERED':
-      return 'Đã giao (Chờ nhận)'
+      return 'Đã giao'
     case 'COMPLETED':
       return 'Đã giao'
     case 'CANCELLED':
@@ -78,6 +78,11 @@ function getStatusLabel(status: string) {
       return 'Hết hạn'
     case 'CANCEL_REQUESTED':
       return 'Chờ hoàn tiền'
+    case 'DELIVERY_FAILED':
+    case 'RETURNED_TO_WAREHOUSE':
+    case 'AWAITING_REDELIVERY':
+    case 'COORDINATOR_REVIEW':
+      return 'Giao thất bại'
     default:
       return status
   }
@@ -124,14 +129,15 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
   const isOnlinePayment =
     order.payment?.paymentMethod === 'CARD' ||
     order.payment?.paymentMethod === 'MOMO' ||
+    order.payment?.paymentMethod === 'VNPAY' ||
     order.paymentMethod === 'CARD' ||
-    order.paymentMethod === 'MOMO'
+    order.paymentMethod === 'MOMO' ||
+    order.paymentMethod === 'VNPAY'
   const isPaid = order.payment?.status === 'PAID' || order.paymentStatus === 'PAID'
   const canPayAgain =
     isOnlinePayment &&
     !isPaid &&
-    order.status !== 'CANCELLED' &&
-    order.status !== 'EXPIRED'
+    order.status === 'PENDING'
 
   return (
     <>
@@ -139,7 +145,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
         onClick={() => navigate(`/profile/orders/${order.orderId}`)}
         className={cn(
           'order-card flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer',
-          (order.status === 'CANCELLED' || order.status === 'EXPIRED') && 'opacity-75'
+          (order.status === 'CANCELLED' || order.status === 'EXPIRED' || order.status === 'DELIVERY_FAILED' || order.status === 'RETURNED_TO_WAREHOUSE') && 'opacity-75'
         )}
       >
         <div className="flex flex-col gap-1">
@@ -151,7 +157,7 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                 getStatusBadgeClassName(order.status)
               )}
             >
-              {getStatusLabel(order.status)} | {order.status}
+              {getStatusLabel(order.status)}
             </span>
           </div>
           <span>Ngày đặt: {formatDateOnly(order.createdAt)}</span>
@@ -186,6 +192,10 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                     const isMomo =
                       order.payment?.paymentMethod === 'MOMO' ||
                       order.paymentMethod === 'MOMO'
+                    const isVnPay =
+                      order.payment?.paymentMethod === 'VNPAY' ||
+                      order.paymentMethod === 'VNPAY'
+
                     if (isMomo) {
                       const res = await retryMomoPaymentApi(order.orderId)
                       if (res.success && res.data?.momoPayUrl) {
@@ -194,6 +204,15 @@ export function OrderHistoryCard({ order, onRefresh }: OrderHistoryCardProps) {
                         window.location.href = res.data.momoPayUrl
                       } else {
                         alert(res.message || 'Không tìm thấy liên kết thanh toán MoMo.')
+                      }
+                    } else if (isVnPay) {
+                      const res = await retryVnPayPaymentApi(order.orderId)
+                      if (res.success && res.data?.vnpayPayUrl) {
+                        sessionStorage.setItem('pendingVnPayOrderId', String(order.orderId))
+                        sessionStorage.setItem('isVnPayRetry', 'true')
+                        window.location.href = res.data.vnpayPayUrl
+                      } else {
+                        alert(res.message || 'Không tìm thấy liên kết thanh toán VNPAY.')
                       }
                     } else {
                       const res = await getPaymentByOrderIdApi(order.orderId)

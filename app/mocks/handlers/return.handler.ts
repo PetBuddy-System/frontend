@@ -92,7 +92,11 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
         fileUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=400&auto=format&fit=crop',
         fileType: 'IMAGE'
       }
-    ]
+    ],
+    returnedToStoreAt: null,
+    completedAt: null,
+    restockedAt: null,
+    staffNote: null
   },
   {
     returnRequestId: 2,
@@ -132,7 +136,10 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
         refundAmount: 150000
       }
     ],
-    mediaFiles: []
+    mediaFiles: [],
+    returnedToStoreAt: null,
+    completedAt: null,
+    restockedAt: null
   },
   {
     returnRequestId: 3,
@@ -180,7 +187,8 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
         fileUrl: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?q=80&w=400&auto=format&fit=crop',
         fileType: 'IMAGE'
       }
-    ]
+    ],
+    restockedAt: '2023-11-05T09:00:00.000Z'
   },
   {
     returnRequestId: 4,
@@ -217,7 +225,10 @@ const INITIAL_RETURNS: MockReturnRequest[] = [
         refundAmount: 250000
       }
     ],
-    mediaFiles: []
+    mediaFiles: [],
+    returnedToStoreAt: null,
+    completedAt: null,
+    restockedAt: null
   }
 ]
 
@@ -354,7 +365,11 @@ export const returnHandlers = [
         bankAccountHolder: body.bankAccountHolder || null,
         createdAt: new Date().toISOString(),
         returnItems,
-        mediaFiles: []
+        mediaFiles: [],
+        returnedToStoreAt: null,
+        completedAt: null,
+        restockedAt: null,
+        staffNote: null
       }
 
       returns.unshift(newReturn)
@@ -584,7 +599,12 @@ export const returnHandlers = [
         const customerEmail = r.requestedBy?.email?.toLowerCase() || ''
         const rCode = r.returnCode.toLowerCase()
         const oCode = r.orderCode.toLowerCase()
-        return customerName.includes(keyword) || customerEmail.includes(keyword) || rCode.includes(keyword) || oCode.includes(keyword)
+        return (
+          customerName.includes(keyword) ||
+          customerEmail.includes(keyword) ||
+          rCode.includes(keyword) ||
+          oCode.includes(keyword)
+        )
       })
     }
 
@@ -594,7 +614,7 @@ export const returnHandlers = [
     const pageReturns = returns.slice(start, end)
 
     // Ensure formats
-    const formattedReturns = pageReturns.map(r => {
+    const formattedReturns = pageReturns.map((r) => {
       const mediaMapped = r.mediaFiles.map((m, idx) => {
         if (typeof m === 'string') {
           return { mediaFileId: 100 + idx, fileUrl: m, fileType: 'IMAGE' }
@@ -611,7 +631,7 @@ export const returnHandlers = [
         mediaFiles: mediaMapped,
         returnItems: r.returnItems.map((item, idx) => ({
           ...item,
-          orderDetailId: item.orderDetailId || (11 + idx),
+          orderDetailId: item.orderDetailId || 11 + idx,
           productImage: item.productImage || null
         }))
       }
@@ -675,7 +695,7 @@ export const returnHandlers = [
       mediaFiles: mediaMapped,
       returnItems: returnReq.returnItems.map((item, idx) => ({
         ...item,
-        orderDetailId: item.orderDetailId || (11 + idx),
+        orderDetailId: item.orderDetailId || 11 + idx,
         productImage: item.productImage || null
       }))
     }

@@ -72,7 +72,7 @@ export function ReturnWarrantyStepReason({
   // ✅ Nếu refund method hiện tại không có trong options, reset về option đầu tiên
   useEffect(() => {
     if (refundOptions.length > 0 && isReturnType) {
-      const isValid = refundOptions.some(opt => opt.value === refundMethod)
+      const isValid = refundOptions.some((opt) => opt.value === refundMethod)
       if (!isValid) {
         onRefundMethodChange(refundOptions[0].value)
       }
@@ -196,7 +196,9 @@ export function ReturnWarrantyStepReason({
             {/* Thông tin ngân hàng nếu chọn BANK_TRANSFER */}
             {refundMethod === 'BANK_TRANSFER' && (
               <div className='space-y-3 rounded-xl border border-border bg-muted/40 p-4 animate-in fade-in slide-in-from-top-1 duration-200'>
-                <p className='text-xs font-bold text-primary mb-1 uppercase tracking-wider'>Thông tin tài khoản nhận tiền</p>
+                <p className='text-xs font-bold text-primary mb-1 uppercase tracking-wider'>
+                  Thông tin tài khoản nhận tiền
+                </p>
 
                 <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
                   <div className='space-y-1.5'>

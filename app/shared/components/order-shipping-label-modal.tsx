@@ -55,7 +55,7 @@ export function OrderShippingLabelModal({ order, onClose }: OrderShippingLabelMo
   const codAmount = isPaidOnline ? 0 : order.finalAmount
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center bg-black/40 backdrop-blur-sm p-4 print:p-0 print:bg-white print:backdrop-blur-none">
+    <div className='fixed inset-0 z-50 flex flex-col items-center bg-black/40 backdrop-blur-sm p-4 print:p-0 print:bg-white print:backdrop-blur-none'>
       <style>{`
         @media print {
           body * { visibility: hidden !important; }
@@ -81,64 +81,58 @@ export function OrderShippingLabelModal({ order, onClose }: OrderShippingLabelMo
         }
       `}</style>
 
-      <div className="bg-card w-full max-w-[900px] rounded-xl border border-border shadow-2xl overflow-hidden flex flex-col max-h-[90vh] print:max-h-none print:shadow-none print:border-none print:rounded-none">
-        <div className="no-print flex justify-between items-center p-6 border-b border-border bg-card">
+      <div className='bg-card w-full max-w-[900px] rounded-xl border border-border shadow-2xl overflow-hidden flex flex-col max-h-[90vh] print:max-h-none print:shadow-none print:border-none print:rounded-none'>
+        <div className='no-print flex justify-between items-center p-6 border-b border-border bg-card'>
           <div>
-            <h2 className="font-bold text-lg text-foreground">
+            <h2 className='font-bold text-lg text-foreground'>
               {t('shippingLabel.previewTitle', 'Xem trước đơn hàng')}
             </h2>
-            <p className="text-sm text-muted-foreground">
-              {t('shippingLabel.orderCodeLabel', 'Mã vận đơn:')}{' '}
-              <span className="font-mono">{order.orderCode}</span>
+            <p className='text-sm text-muted-foreground'>
+              {t('shippingLabel.orderCodeLabel', 'Mã vận đơn:')} <span className='font-mono'>{order.orderCode}</span>
             </p>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground"
-          >
-            <MaterialIcon name="close" className="text-[20px]" />
+          <button onClick={onClose} className='p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground'>
+            <MaterialIcon name='close' className='text-[20px]' />
           </button>
         </div>
 
-        <div className="no-print px-6 py-4 bg-muted/30 border-b border-border flex justify-end gap-3 items-center">
+        <div className='no-print px-6 py-4 bg-muted/30 border-b border-border flex justify-end gap-3 items-center'>
           <button
             onClick={onClose}
-            className="px-4 py-2.5 rounded-lg font-semibold text-sm text-foreground hover:bg-muted transition-colors border border-border"
+            className='px-4 py-2.5 rounded-lg font-semibold text-sm text-foreground hover:bg-muted transition-colors border border-border'
           >
             {t('shippingLabel.close', 'Đóng')}
           </button>
           <button
             onClick={() => window.print()}
-            className="bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 shadow-md hover:bg-primary/90 active:scale-95 transition-all"
+            className='bg-primary text-primary-foreground px-6 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 shadow-md hover:bg-primary/90 active:scale-95 transition-all'
           >
-            <MaterialIcon name="print" className="text-[20px]" />
+            <MaterialIcon name='print' className='text-[20px]' />
             {t('shippingLabel.print', 'In đơn hàng')}
           </button>
         </div>
 
-        <div className="p-10 bg-muted/20 overflow-y-auto flex-1 min-h-0 flex justify-center print:p-0 print:bg-white">
-          <main className="print-label-content bg-white border border-neutral-300 text-black w-full max-w-[180mm] min-h-[120mm] flex flex-col rounded shadow-sm">
-            <section className="grid grid-cols-2 border-b border-neutral-300">
-              <div className="p-6 border-r border-neutral-300 flex flex-col justify-center">
-                <p className="font-bold text-lg text-black mb-2">PetBuddy</p>
+        <div className='p-10 bg-muted/20 overflow-y-auto flex-1 min-h-0 flex justify-center print:p-0 print:bg-white'>
+          <main className='print-label-content bg-white border border-neutral-300 text-black w-full max-w-[180mm] min-h-[120mm] flex flex-col rounded shadow-sm'>
+            <section className='grid grid-cols-2 border-b border-neutral-300'>
+              <div className='p-6 border-r border-neutral-300 flex flex-col justify-center'>
+                <p className='font-bold text-lg text-black mb-2'>PetBuddy</p>
               </div>
-              <div className="p-6 flex flex-col items-center justify-center">
-                <div className="barcode-strip w-full max-w-[200px] mb-2" />
-                <div className="font-mono text-[14px] font-bold tracking-[0.3em] text-black">
-                  {order.orderCode}
-                </div>
+              <div className='p-6 flex flex-col items-center justify-center'>
+                <div className='barcode-strip w-full max-w-[200px] mb-2' />
+                <div className='font-mono text-[14px] font-bold tracking-[0.3em] text-black'>{order.orderCode}</div>
               </div>
             </section>
 
-            <section className="grid grid-cols-2 border-b border-neutral-300">
-              <div className="p-4 border-r border-neutral-300">
-                <p className="text-[10px] font-bold uppercase mb-2 text-neutral-600">
+            <section className='grid grid-cols-2 border-b border-neutral-300'>
+              <div className='p-4 border-r border-neutral-300'>
+                <p className='text-[10px] font-bold uppercase mb-2 text-neutral-600'>
                   {t('shippingLabel.senderLabel', 'Từ (Sender):')}
                 </p>
-                <p className="text-base font-bold leading-tight mb-1 text-black">
+                <p className='text-base font-bold leading-tight mb-1 text-black'>
                   {t('shippingLabel.storeName', 'PetBuddy Store')}
                 </p>
-                <p className="text-sm leading-snug text-black">
+                <p className='text-sm leading-snug text-black'>
                   {isLoadingStore
                     ? t('shippingLabel.loadingStoreAddress', 'Đang tải địa chỉ...')
                     : storeError
@@ -146,94 +140,94 @@ export function OrderShippingLabelModal({ order, onClose }: OrderShippingLabelMo
                       : storeAddress}
                 </p>
               </div>
-              <div className="p-4 border-r border-neutral-300">
-                <p className="text-[10px] font-bold uppercase mb-2 text-neutral-600">
+              <div className='p-4 border-r border-neutral-300'>
+                <p className='text-[10px] font-bold uppercase mb-2 text-neutral-600'>
                   {t('shippingLabel.recipientLabel', 'Đến (Recipient):')}
                 </p>
-                <p className="text-base font-bold leading-tight mb-1 text-black">
+                <p className='text-base font-bold leading-tight mb-1 text-black'>
                   {order.recipientName || t('shippingLabel.notProvided', 'Chưa cung cấp')}
                 </p>
-                <p className="text-sm font-bold mb-2 text-black">
+                <p className='text-sm font-bold mb-2 text-black'>
                   {order.phoneNumber || t('shippingLabel.notProvided', 'Chưa cung cấp')}
                 </p>
-                <p className="text-sm leading-snug text-black">
+                <p className='text-sm leading-snug text-black'>
                   {order.address || t('shippingLabel.notProvided', 'Chưa cung cấp')}
                 </p>
               </div>
             </section>
 
-            <section className="grid grid-cols-2 grid-rows-2 border-l border-r border-b border-neutral-300 flex-grow">
-              <div className="p-4 border-r border-b border-neutral-300 bg-neutral-50/50 grid grid-cols-2 gap-4">
+            <section className='grid grid-cols-2 grid-rows-2 border-l border-r border-b border-neutral-300 flex-grow'>
+              <div className='p-4 border-r border-b border-neutral-300 bg-neutral-50/50 grid grid-cols-2 gap-4'>
                 <div>
-                  <p className="text-[10px] font-bold uppercase mb-2 text-neutral-600">
+                  <p className='text-[10px] font-bold uppercase mb-2 text-neutral-600'>
                     {t('shippingLabel.itemsLabel', 'Hàng hóa (Items):')}
                   </p>
-                  <div className="space-y-1 max-h-24 overflow-y-auto">
+                  <div className='space-y-1 max-h-24 overflow-y-auto'>
                     {order.orderDetails?.map((detail) => (
-                      <p key={detail.orderDetailId} className="text-sm font-medium text-black">
+                      <p key={detail.orderDetailId} className='text-sm font-medium text-black'>
                         {detail.quantity} x {detail.productName}
                       </p>
                     ))}
                   </div>
-                  <p className="text-[11px] text-neutral-600 mt-1">
+                  <p className='text-[11px] text-neutral-600 mt-1'>
                     {t('shippingLabel.totalQuantity', '(Tổng SL: {{count}})', { count: totalQuantity })}
                   </p>
                 </div>
-                <div className="border-l border-dashed border-neutral-300 pl-4">
-                  <p className="text-[10px] font-bold uppercase mb-0.5 text-black">
+                <div className='border-l border-dashed border-neutral-300 pl-4'>
+                  <p className='text-[10px] font-bold uppercase mb-0.5 text-black'>
                     {t('shippingLabel.weightLabel', 'Khối lượng:')}
                   </p>
-                  <p className="text-sm font-bold text-black">
+                  <p className='text-sm font-bold text-black'>
                     {totalWeight} {t('shippingLabel.gramUnit', 'gram')}
                   </p>
                 </div>
               </div>
 
-              <div className="p-4 border-b border-neutral-300 bg-neutral-50/50">
-                <p className="text-[10px] font-bold uppercase mb-1 text-black">
+              <div className='p-4 border-b border-neutral-300 bg-neutral-50/50'>
+                <p className='text-[10px] font-bold uppercase mb-1 text-black'>
                   {t('shippingLabel.noteLabel', 'Ghi chú:')}
                 </p>
-                <div className="bg-neutral-100 p-2 rounded border border-neutral-300">
-                  <p className="text-[11px] italic leading-tight text-black">
+                <div className='bg-neutral-100 p-2 rounded border border-neutral-300'>
+                  <p className='text-[11px] italic leading-tight text-black'>
                     {order.note || t('shippingLabel.noNote', 'Không có ghi chú')}
                   </p>
                 </div>
               </div>
 
-              <div className="p-6 border-r border-neutral-300 flex flex-col items-center justify-center text-center">
-                <p className="text-sm font-medium text-neutral-600 mb-1">
+              <div className='p-6 border-r border-neutral-300 flex flex-col items-center justify-center text-center'>
+                <p className='text-sm font-medium text-neutral-600 mb-1'>
                   {t('shippingLabel.codLabel', 'Tiền thu người nhận (COD):')}
                 </p>
-                <p className="text-[32px] font-bold leading-none text-primary">
+                <p className='text-[32px] font-bold leading-none text-primary'>
                   {formatCODAmount(codAmount)}{' '}
-                  <span className="text-lg font-semibold">{t('shippingLabel.currencyUnit', 'VNĐ')}</span>
+                  <span className='text-lg font-semibold'>{t('shippingLabel.currencyUnit', 'VNĐ')}</span>
                 </p>
                 {isPaidOnline && (
-                  <p className="text-[11px] text-emerald-700 font-semibold mt-1">
+                  <p className='text-[11px] text-emerald-700 font-semibold mt-1'>
                     {t('shippingLabel.paidOnline', '(Đã thanh toán trực tuyến)')}
                   </p>
                 )}
               </div>
 
-              <div className="p-6 flex flex-col items-center justify-center text-center">
-                <div className="w-full border-2 border-dashed border-neutral-300 p-6 min-h-[140px] flex flex-col items-center justify-between">
-                  <p className="text-base font-bold text-black">
+              <div className='p-6 flex flex-col items-center justify-center text-center'>
+                <div className='w-full border-2 border-dashed border-neutral-300 p-6 min-h-[140px] flex flex-col items-center justify-between'>
+                  <p className='text-base font-bold text-black'>
                     {t('shippingLabel.signatureTitle', 'Chữ ký người nhận')}
                   </p>
-                  <div className="w-full">
-                    <p className="text-[10px] font-bold text-neutral-600 uppercase mb-4">
+                  <div className='w-full'>
+                    <p className='text-[10px] font-bold text-neutral-600 uppercase mb-4'>
                       {t('shippingLabel.signatureConfirm', 'Xác nhận hàng nguyên vẹn, không móp vỡ')}
                     </p>
-                    <div className="border-b border-dotted border-neutral-300 w-3/4 mx-auto" />
+                    <div className='border-b border-dotted border-neutral-300 w-3/4 mx-auto' />
                   </div>
                 </div>
               </div>
             </section>
 
-            <footer className="p-3 border-l border-r border-b border-neutral-300 bg-neutral-100/50 text-center">
-              <p className="text-[10px] font-bold text-neutral-600 uppercase tracking-widest">
+            <footer className='p-3 border-l border-r border-b border-neutral-300 bg-neutral-100/50 text-center'>
+              <p className='text-[10px] font-bold text-neutral-600 uppercase tracking-widest'>
                 {t('shippingLabel.footerText', '© {{year}} PetBuddy Logistics - Hệ thống vận hành bưu cục thông minh', {
-                  year: new Date().getFullYear(),
+                  year: new Date().getFullYear()
                 })}
               </p>
             </footer>

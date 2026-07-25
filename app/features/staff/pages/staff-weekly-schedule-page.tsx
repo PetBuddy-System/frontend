@@ -23,19 +23,9 @@ import {
   getStaffScheduleShiftClassName,
   getStaffScheduleStatusClassName
 } from '../lib/staff-schedule-style'
-import {
-  staffScheduleApi,
-  type StaffScheduleResponse,
-  type StaffScheduleStatus
-} from '../services'
+import { staffScheduleApi, type StaffScheduleResponse, type StaffScheduleStatus } from '../services'
 
-const STATUS_OPTIONS: Array<StaffScheduleStatus | 'ALL'> = [
-  'ALL',
-  'SCHEDULED',
-  'WORKING',
-  'COMPLETED',
-  'CANCELLED'
-]
+const STATUS_OPTIONS: Array<StaffScheduleStatus | 'ALL'> = ['ALL', 'SCHEDULED', 'WORKING', 'COMPLETED', 'CANCELLED']
 
 function groupSchedulesByDate(schedules: StaffScheduleResponse[]) {
   return schedules.reduce<Record<string, StaffScheduleResponse[]>>((groups, schedule) => {
@@ -159,7 +149,11 @@ export function StaffWeeklySchedulePage() {
 
             <section className='grid gap-4 md:grid-cols-4'>
               <StatCard icon='calendar_month' label={t('staffSchedule.stats.total')} value={String(stats.total)} />
-              <StatCard icon='event_available' label={t('staffSchedule.stats.scheduled')} value={String(stats.scheduled)} />
+              <StatCard
+                icon='event_available'
+                label={t('staffSchedule.stats.scheduled')}
+                value={String(stats.scheduled)}
+              />
               <StatCard icon='play_circle' label={t('staffSchedule.stats.working')} value={String(stats.working)} />
               <StatCard icon='task_alt' label={t('staffSchedule.stats.completed')} value={String(stats.completed)} />
             </section>
@@ -269,9 +263,7 @@ export function StaffWeeklySchedulePage() {
                       return (
                         <article key={dateValue} className='min-h-[28rem] bg-card'>
                           <div className='sticky top-0 z-10 border-b border-border bg-card px-3 py-3'>
-                            <p className='text-xs font-bold uppercase text-muted-foreground'>
-                              {formatWeekday(day)}
-                            </p>
+                            <p className='text-xs font-bold uppercase text-muted-foreground'>{formatWeekday(day)}</p>
                             <p className='font-display text-3xl font-bold text-foreground'>
                               {formatStaffScheduleDay(day)}
                             </p>
@@ -283,9 +275,7 @@ export function StaffWeeklySchedulePage() {
                                 <button
                                   key={schedule.staffScheduleId}
                                   type='button'
-                                  onClick={() =>
-                                    void navigate(`/staff/weekly-schedule/${schedule.staffScheduleId}`)
-                                  }
+                                  onClick={() => void navigate(`/staff/weekly-schedule/${schedule.staffScheduleId}`)}
                                   className={cn(
                                     'group rounded-lg border p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring',
                                     getStaffScheduleShiftClassName(schedule.shiftType)
@@ -295,7 +285,10 @@ export function StaffWeeklySchedulePage() {
                                     <span className='font-display text-base font-bold'>
                                       {t(`staffSchedule.shiftTypes.${schedule.shiftType}`)}
                                     </span>
-                                    <MaterialIcon name='open_in_new' className='text-base opacity-70 group-hover:opacity-100' />
+                                    <MaterialIcon
+                                      name='open_in_new'
+                                      className='text-base opacity-70 group-hover:opacity-100'
+                                    />
                                   </div>
                                   <div className='mt-3 grid gap-1 text-xs font-semibold'>
                                     <span className='flex items-center justify-between gap-2'>
